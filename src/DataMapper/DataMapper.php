@@ -1,4 +1,4 @@
-<?php declare(strict_types=1);
+<?php
 /**
  * Part of Windwalker project.
  *
@@ -564,7 +564,13 @@ class DataMapper extends AbstractDataMapper implements DatabaseMapperInterface
                 $type = explode(' ', $detail->Type)[0];
                 $type = explode('(', $type)[0];
 
-                settype($value, $dataType::getPhpType($type));
+                $phpType = $dataType::getPhpType($type);
+
+                if ($this->useNull($value, $detail) && $phpType !== 'string') {
+                    $value = null;
+                } else {
+                    settype($value, $phpType);
+                }
 
                 $entity[$field] = $value;
             }
@@ -582,7 +588,9 @@ class DataMapper extends AbstractDataMapper implements DatabaseMapperInterface
      */
     public function castForStore(Entity $entity)
     {
-        foreach ($entity->dump() as $field => $value) {
+        foreach ($entity->getFields() as $field => $detail) {
+            $value = $entity[$field];
+            
             if (null === $value) {
                 continue;
             }
@@ -592,6 +600,8 @@ class DataMapper extends AbstractDataMapper implements DatabaseMapperInterface
             switch ($cast) {
                 case 'int':
                 case 'integer':
+                case 'bool':
+                case 'boolean':
                     $entity->$field = (int) $value;
                     break;
                 case 'real':
@@ -599,10 +609,6 @@ class DataMapper extends AbstractDataMapper implements DatabaseMapperInterface
                 case 'double':
                 case 'string':
                     $entity->$field = (string) $value;
-                    break;
-                case 'bool':
-                case 'boolean':
-                    $entity->$field = (int) $value;
                     break;
                 case 'object':
                     $entity->$field = is_object($value) ? json_encode($value) : $value;
@@ -634,6 +640,21 @@ class DataMapper extends AbstractDataMapper implements DatabaseMapperInterface
         }
 
         return $entity;
+    }
+
+    /**
+     * useNull
+     *
+     * @param mixed     $value
+     * @param \stdClass $detail
+     *
+     * @return  bool
+     *
+     * @since  __DEPLOY_VERSION__
+     */
+    protected function useNull($value, \stdClass $detail): bool
+    {
+        return strtolower($detail->Null) !== 'no' && $value === '';
     }
 
     /**
