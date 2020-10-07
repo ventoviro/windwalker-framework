@@ -24,7 +24,7 @@ class DriverFactory
     {
         $names = explode('_', $name);
 
-        $platformName = AbstractPlatform::getPlatformName($names[0]);
+        $platformName = ucfirst(AbstractPlatform::getShortName($names[0]));
 
         $driverClass = sprintf(
             __NAMESPACE__ . '\%s\%sDriver',
