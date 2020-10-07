@@ -66,4 +66,4 @@ jobs:
         run: php -S localhost:8100 bin/test-server.php &> /dev/null &
 
       - name: Run test suite
-        run: php vendor/bin/phpunit -v --configuration phpunit.ci.xml
+        run: php vendor/bin/phpunit --configuration phpunit.ci.xml
