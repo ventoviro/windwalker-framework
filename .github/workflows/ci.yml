@@ -10,9 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     services:
       postgres:
-        image: postgres
+        image: postgres:latest
         env:
-          POSTGRES_USER: postgres:latest
+          POSTGRES_USER: postgres
           POSTGRES_PASSWORD: ut1234
           POSTGRES_DB: windwalker_test
         ports:
