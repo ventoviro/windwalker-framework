@@ -12,9 +12,9 @@ declare(strict_types=1);
 namespace Windwalker;
 
 use FilesystemIterator;
-use Webmozart\Glob\Glob;
 use Windwalker\Filesystem\FileObject;
 use Windwalker\Filesystem\Filesystem;
+use Windwalker\Filesystem\Glob;
 
 /**
  * Support node style double star finder.

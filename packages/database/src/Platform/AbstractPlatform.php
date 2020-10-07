@@ -76,6 +76,9 @@ abstract class AbstractPlatform
             case 'sqlite':
                 $platform = 'SQLite';
                 break;
+
+            default:
+                $platform = ucfirst($platform);
         }
 
         return $platform;

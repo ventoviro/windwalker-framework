@@ -43,7 +43,6 @@
         "reactivex/rxphp": "^2.0",
         "react/event-loop": "^1.1",
         "mikey179/vfsstream": "^1.6",
-        "webmozart/glob": "^4.1",
         "symfony/dom-crawler": "^5.0",
         "symfony/css-selector": "^5.0",
         "ext-openssl": "*",

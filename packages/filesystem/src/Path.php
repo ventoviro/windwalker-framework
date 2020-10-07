@@ -363,4 +363,63 @@ class Path
 
         return mb_ereg_replace("([\.]{2,})", '', $file);
     }
+
+    /**
+     * Returns whether a path is absolute.
+     *
+     * @param string $path A path string.
+     *
+     * @return bool Returns true if the path is absolute, false if it is
+     *              relative or empty.
+     *
+     * @since 1.0 Added method.
+     * @since 2.0 Method now fails if $path is not a string.
+     */
+    public static function isAbsolute(string $path): bool
+    {
+        if ('' === $path) {
+            return false;
+        }
+
+        // Strip scheme
+        if (false !== ($pos = strpos($path, '://'))) {
+            $path = substr($path, $pos + 3);
+        }
+
+        // UNIX root "/" or "\" (Windows style)
+        if ('/' === $path[0] || '\\' === $path[0]) {
+            return true;
+        }
+
+        // Windows root
+        if (strlen($path) > 1 && ctype_alpha($path[0]) && ':' === $path[1]) {
+            // Special case: "C:"
+            if (2 === strlen($path)) {
+                return true;
+            }
+
+            // Normal case: "C:/ or "C:\"
+            if ('/' === $path[2] || '\\' === $path[2]) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Returns whether a path is relative.
+     *
+     * @param string $path A path string.
+     *
+     * @return bool Returns true if the path is relative or empty, false if
+     *              it is absolute.
+     *
+     * @since 1.0 Added method.
+     * @since 2.0 Method now fails if $path is not a string.
+     */
+    public static function isRelative(string $path): bool
+    {
+        return !static::isAbsolute($path);
+    }
 }
