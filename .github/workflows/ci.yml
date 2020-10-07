@@ -25,15 +25,18 @@ jobs:
         options: --health-cmd="redis-cli ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
       - uses: actions/checkout@v2
-      - uses: KeisukeYamashita/memcached-actions@v1
-      # MuySQL
-      - uses: mirromutth/mysql-action@v1.1
+      # Memcached
+      - name: Setup Memcached
+        uses: KeisukeYamashita/memcached-actions@v1
+      # MySQL
+      - name: Setup MySQL
+        uses: mirromutth/mysql-action@v1.1
         with:
           mysql version: 5.7
           mysql database: windwalker_test
           mysql root password: ut1234
       # PostgreSQL
-      - name: Setup PostgreSQL latest
+      - name: Setup PostgreSQL
         run: docker run --rm --name=postgres -e POSTGRES_PASSWORD=ut1234 -e POSTGRES_DB=windwalker_test -p 5432:5432 -d postgres
       # PHP
       - name: Setup PHP
@@ -42,6 +45,7 @@ jobs:
           php-version: ${{ matrix.php-versions }}
           extensions: |
             mbstring, intl, sodium, fileinfo, pdo, pdo_mysql, pdo_pgsql, mysqli
+            memcached
 #          coverage: xdebug
 #          tools: php-cs-fixer, phpunit
       - name: Get composer cache directory
