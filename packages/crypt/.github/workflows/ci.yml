@@ -26,7 +26,7 @@ jobs:
           key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
           restore-keys: ${{ runner.os }}-composer-
       - name: Install dependencies
-        run: composer install --prefer-dist --prefer-stable  --no-progress --no-suggest --ignore-platform-reqs
+        run: composer update --prefer-dist --prefer-stable   --no-progress --no-suggest --ignore-platform-reqs
 
       - name: Run test suite
         run: php vendor/bin/phpunit --configuration phpunit.ci.xml
