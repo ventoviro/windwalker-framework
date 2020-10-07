@@ -25,13 +25,17 @@ jobs:
         options: --health-cmd="redis-cli ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
       - uses: actions/checkout@v2
+      - uses: KeisukeYamashita/memcached-actions@v1
+      # MuySQL
       - uses: mirromutth/mysql-action@v1.1
         with:
-          mysql version: '5.7' # Optional, default value is "latest". The version of the MySQL
-          mysql database: 'windwalker_test' # Optional, default value is "test". The specified database which will be create
-          mysql root password: ut1234 # Required if "mysql user" is empty, default is empty. The root superuser password
+          mysql version: 5.7
+          mysql database: windwalker_test
+          mysql root password: ut1234
+      # PostgreSQL
       - name: Setup PostgreSQL latest
         run: docker run --rm --name=postgres -e POSTGRES_PASSWORD=ut1234 -e POSTGRES_DB=windwalker_test -p 5432:5432 -d postgres
+      # PHP
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:

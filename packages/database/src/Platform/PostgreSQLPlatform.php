@@ -754,7 +754,7 @@ class PostgreSQLPlatform extends AbstractPlatform
                 ->where('s.relkind', 'S')
                 ->where('d.deptype', 'a')
                 ->where('t.relname', $table);
-            echo $query->render(true);
+
             return $this->db->prepare($query)->all();
         }
 
