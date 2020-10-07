@@ -12,7 +12,7 @@ jobs:
       postgres:
         image: postgres
         env:
-          POSTGRES_USER: postgres
+          POSTGRES_USER: postgres:latest
           POSTGRES_PASSWORD: ut1234
           POSTGRES_DB: windwalker_test
         ports:
