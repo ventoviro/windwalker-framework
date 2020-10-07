@@ -30,8 +30,9 @@ jobs:
         run: composer global require lyrasoft/cli --no-progress --no-suggest --ignore-platform-reqs
 
       - name: Run Sniffer
-      - run: $VENDOR/bin/lyra sniffer sync
-      - run: $VENDOR/bin/phpcs src --standard=$VENDOR/lyrasoft/cli/tmp/development-tools/Sniffer/Windwalker -n --extensions=php
+        run: |
+          $VENDOR/bin/lyra sniffer sync
+          $VENDOR/bin/phpcs src --standard=$VENDOR/lyrasoft/cli/tmp/development-tools/Sniffer/Windwalker -n --extensions=php
 
 #      - name: Start PHP Server
 #        run: php -S localhost:8100 bin/test-server.php &> /dev/null &
