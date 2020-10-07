@@ -9,15 +9,15 @@ jobs:
         php-versions: [ '8.0' ]
     runs-on: ubuntu-latest
     services:
-      postgres:
-        image: postgres:latest
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: ut1234
-          POSTGRES_DB: windwalker_test
-        ports:
-          - 5432/tcp
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 3
+#      postgres:
+#        image: postgres:latest
+#        env:
+#          POSTGRES_USER: postgres
+#          POSTGRES_PASSWORD: ut1234
+#          POSTGRES_DB: windwalker_test
+#        ports:
+#          - 5432/tcp
+#        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 3
       redis:
         image: redis
         ports:
@@ -30,6 +30,8 @@ jobs:
           mysql version: '5.7' # Optional, default value is "latest". The version of the MySQL
           mysql database: 'windwalker_test' # Optional, default value is "test". The specified database which will be create
           mysql root password: ut1234 # Required if "mysql user" is empty, default is empty. The root superuser password
+      - name: Setup PostgreSQL latest
+        run: docker run --rm --name=postgres -e POSTGRES_PASSWORD=ut1234 -e POSTGRES_DB=windwalker_test -p 5432:5432 -d postgres
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
@@ -56,4 +58,4 @@ jobs:
         run: php -S localhost:8100 bin/test-server.php &> /dev/null &
 
       - name: Run test suite
-        run: php vendor/bin/phpunit --configuration phpunit.ci.xml
+        run: php vendor/bin/phpunit -v --configuration phpunit.ci.xml
