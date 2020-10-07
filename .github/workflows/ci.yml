@@ -44,8 +44,8 @@ jobs:
         with:
           php-version: ${{ matrix.php-versions }}
           extensions: |
-            mbstring, intl, sodium, fileinfo, pdo, pdo_mysql, pdo_pgsql, mysqli
-            memcached
+            mbstring, intl, sodium, fileinfo, pdo, pdo_mysql, pdo_pgsql, pdo_sqlite, mysqli,
+            php-memcached, redis, sqlite3, swoole
 #          coverage: xdebug
 #          tools: php-cs-fixer, phpunit
       - name: Get composer cache directory
