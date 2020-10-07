@@ -12,7 +12,7 @@
         <const name="WINDWALKER_TEST_DB_DSN_POSTGRESQL"  value="host=127.0.0.1;database=windwalker_test;username=postgres;password=ut1234;prefix=ww_" />
         <!--<const name="WINDWALKER_TEST_DB_DSN_ORACLE" value="host=localhost;port=5432;database=windwalker_test;username=root;password=ut1234;prefix=ww_" />-->
         <!--<const name="WINDWALKER_TEST_DB_DSN_SQLSRV" value="host=localhost;port=1521;database=windwalker_test;username=root;password=ut1234;prefix=ww_" />-->
-        <!--<const name="WINDWALKER_TEST_DB_DSN_SQLITE" value="database=tmp/test.db;prefix=ww_" />-->
+        <const name="WINDWALKER_TEST_DB_DSN_SQLITE" value="database=tmp/test.db;prefix=ww_" />
 	</php>
 	<testsuites>
 		<testsuite name="Unit">
