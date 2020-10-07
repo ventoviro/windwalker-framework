@@ -9,6 +9,15 @@ jobs:
         php-versions: [ '8.0' ]
     runs-on: ubuntu-latest
     services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: ut1234
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
       redis:
         image: redis
         ports:
