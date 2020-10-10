@@ -135,7 +135,7 @@ class OpensslCipher implements CipherInterface
      */
     public function encrypt(HiddenString $str, Key $key, string $encoder = SafeEncoder::BASE64): string
     {
-        $salt = $this->randomPseudoBytes(static::PBKDF2_SALT_BYTE_SIZE);
+        $salt = OpensslCipher::randomPseudoBytes(static::PBKDF2_SALT_BYTE_SIZE);
 
         [$encKey, $hmacKey] = $this->derivateSecureKeys($key->get(), $salt);
 
@@ -186,13 +186,13 @@ class OpensslCipher implements CipherInterface
     /**
      * randomPseudoBytes
      *
-     * @param  int  $size
+     * @param  int|null  $size
      *
      * @return  string
      *
      * @throws CryptException
      */
-    protected function randomPseudoBytes(?int $size = null): string
+    protected static function randomPseudoBytes(?int $size = null): string
     {
         $size = $size ?: static::PBKDF2_SALT_BYTE_SIZE;
 
@@ -214,7 +214,7 @@ class OpensslCipher implements CipherInterface
      */
     public function getIV(): string
     {
-        return $this->randomPseudoBytes($this->getIVSize());
+        return OpensslCipher::randomPseudoBytes($this->getIVSize());
     }
 
     /**
@@ -297,5 +297,10 @@ class OpensslCipher implements CipherInterface
     public function getMethod(): string
     {
         return $this->method;
+    }
+
+    public static function generateKey(?int $length = null): Key
+    {
+        return new Key(static::randomPseudoBytes($length));
     }
 }
