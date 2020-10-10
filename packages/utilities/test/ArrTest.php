@@ -141,6 +141,20 @@ class ArrTest extends TestCase
             'no-gender' => 'empty',
         ];
 
+        self::assertEquals($exp, Arr::collapse($src, true));
+
+        $exp = [
+            'Jarvis',
+            'Phil Coulson',
+            'Hulk',
+            'Pepper',
+            'Iron Man',
+            'Nick Fury',
+            'Loki',
+            'Black Widow',
+            'empty',
+        ];
+
         self::assertEquals($exp, Arr::collapse($src));
     }
 

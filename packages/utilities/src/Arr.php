@@ -311,17 +311,22 @@ abstract class Arr
      * Collapse array to one dimension
      *
      * @param  array|object  $data
+     * @param  bool          $keepKey
      *
      * @return  array
      */
-    public static function collapse($data): array
+    public static function collapse(array|object $data, $keepKey = false): array
     {
         $result = [];
 
         array_walk_recursive(
             $data,
-            static function ($v, $k) use (&$result) {
-                $result[$k] = $v;
+            static function ($v, $k) use ($keepKey, &$result) {
+                if ($keepKey) {
+                    $result[$k] = $v;
+                } else {
+                    $result[] = $v;
+                }
             }
         );
 

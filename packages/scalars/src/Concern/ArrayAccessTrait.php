@@ -85,13 +85,15 @@ trait ArrayAccessTrait
     /**
      * collapse
      *
+     * @param  bool  $keepKey
+     *
      * @return  static
      *
      * @since  3.5.10
      */
-    public function collapse()
+    public function collapse(bool $keepKey = true)
     {
-        return $this->newInstance(Arr::collapse($this->dump()));
+        return $this->newInstance(Arr::collapse($this->dump(), $keepKey));
     }
 
     /**
