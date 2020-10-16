@@ -23,11 +23,11 @@ class MockFilter implements FilterInterface
     /**
      * clean
      *
-     * @param string $text
+     * @param  string  $value
      *
      * @return  mixed
      */
-    public function filter($text)
+    public function filter(mixed $value): mixed
     {
         return 'abc';
     }

@@ -27,5 +27,5 @@ interface ValidatorInterface
      *
      * @return  bool
      */
-    public function test($value, bool $strict = false): bool;
+    public function test(mixed $value, bool $strict = false): bool;
 }

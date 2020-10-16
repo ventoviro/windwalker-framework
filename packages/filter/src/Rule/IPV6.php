@@ -29,7 +29,7 @@ class IPV6 extends AbstractRegexFilter
     /**
      * @inheritDoc
      */
-    public function test($value, bool $strict = false): bool
+    public function test(mixed $value, bool $strict = false): bool
     {
         return filter_var(
             FILTER_VALIDATE_IP,

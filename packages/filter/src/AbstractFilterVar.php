@@ -19,7 +19,7 @@ abstract class AbstractFilterVar extends AbstractFilter
     /**
      * @inheritDoc
      */
-    public function filter($value)
+    public function filter(mixed $value): mixed
     {
         return filter_var($value, $this->getFilterName(), (int) $this->getOptions());
     }

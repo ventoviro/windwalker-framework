@@ -19,7 +19,7 @@ abstract class AbstractCallbackFilter extends AbstractFilter
     /**
      * @inheritDoc
      */
-    public function filter($value)
+    public function filter(mixed $value): mixed
     {
         return $this->getHandler()($value);
     }

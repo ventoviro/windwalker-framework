@@ -49,9 +49,9 @@ class Length extends AbstractFilter
      *
      * @param $value
      *
-     * @return false|string
+     * @return mixed
      */
-    public function filter($value)
+    public function filter(mixed $value): mixed
     {
         $value = (string) $value;
 

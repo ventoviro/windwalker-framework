@@ -38,7 +38,7 @@ class NestedFilter extends AbstractFilter
     /**
      * @inheritDoc
      */
-    public function filter($value)
+    public function filter(mixed $value): mixed
     {
         $paths = \Windwalker\collect(TypeCast::toArray($value))
             ->flatten()
@@ -61,7 +61,7 @@ class NestedFilter extends AbstractFilter
     /**
      * @inheritDoc
      */
-    public function test($value, bool $strict = false): bool
+    public function test(mixed $value, bool $strict = false): bool
     {
         $paths = \Windwalker\collect(TypeCast::toArray($value))
             ->flatten()
@@ -76,7 +76,7 @@ class NestedFilter extends AbstractFilter
                     if (!$filter->test(Arr::get($value, $path))) {
                         throw ValidateException::create(
                             $filter,
-                            'Validator: ' . $filter::class . ' returns false, value is: ' . Assert::describeValue($value)
+                            'Validator: ' . TypeCast::forceString($filter) . ' returns false, value is: ' . Assert::describeValue($value)
                         );
                     }
                 }

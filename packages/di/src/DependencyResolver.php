@@ -188,6 +188,16 @@ class DependencyResolver
                 continue;
             }
 
+            throw new DependencyResolutionException(
+                sprintf(
+                    'Cannot resolve argument %s: $%s for %s%s()',
+                    $i + 1,
+                    $dependencyVarName,
+                    $method instanceof \ReflectionMethod ? $method->getDeclaringClass()->getName() . '::' : '',
+                    $method->getShortName()
+                )
+            );
+
             $methodArgs[$dependencyVarName] = null;
         }
 

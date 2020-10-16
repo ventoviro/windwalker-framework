@@ -32,6 +32,10 @@ class CompositeRenderer implements RendererInterface, TemplateFactoryInterface
     use OptionAccessTrait;
 
     protected array $factories = [
+        'edge' => [
+            EdgeRenderer::class,
+            ['edge.php']
+        ],
         'blade' => [
             BladeRenderer::class,
             ['blade.php']
@@ -39,10 +43,6 @@ class CompositeRenderer implements RendererInterface, TemplateFactoryInterface
         'plates' => [
             PlatesRenderer::class,
             ['php']
-        ],
-        'edge' => [
-            EdgeRenderer::class,
-            ['edge.php']
         ],
         'mustache' => [
             MustacheRenderer::class,
@@ -292,7 +292,7 @@ class CompositeRenderer implements RendererInterface, TemplateFactoryInterface
     public function addFileExtensions(string $type, array|string $extensions): void
     {
         LogicAssert::assert(
-            $this->getFactory($type),
+            (bool) $this->getFactory($type),
             sprintf(
                 'Factory %s not registered.',
                 $type

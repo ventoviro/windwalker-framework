@@ -21,8 +21,24 @@ abstract class AbstractFilter implements FilterInterface, ValidatorInterface
     /**
      * @inheritDoc
      */
-    public function test($value, bool $strict = false): bool
+    public function test(mixed $value, bool $strict = false): bool
     {
         return CompareHelper::compare($this->filter($value), $value, '=', $strict);
+    }
+
+    /**
+     * Render debug info.
+     *
+     * @return  string
+     */
+    public function __toString(): string
+    {
+        $params = [];
+
+        foreach (get_object_vars($this) as $key => $value) {
+            $params[] = $key . ': ' . json_encode($value);
+        }
+
+        return static::class . ' ' . implode(', ', $params);
     }
 }

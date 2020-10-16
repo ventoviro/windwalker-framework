@@ -14,6 +14,7 @@ namespace Windwalker\Filter;
 use Windwalker\Filter\Exception\ValidateException;
 use Windwalker\Utilities\Assert\Assert;
 use Windwalker\Utilities\Iterator\PriorityQueue;
+use Windwalker\Utilities\TypeCast;
 
 /**
  * The ChainFilter class.
@@ -61,7 +62,7 @@ class ChainFilter implements FilterInterface, ValidatorInterface
     /**
      * @inheritDoc
      */
-    public function filter($value)
+    public function filter(mixed $value): mixed
     {
         foreach (clone $this->filters as $filter) {
             $value = $filter->filter($value);
@@ -73,13 +74,13 @@ class ChainFilter implements FilterInterface, ValidatorInterface
     /**
      * @inheritDoc
      */
-    public function test($value, bool $strict = false): bool
+    public function test(mixed $value, bool $strict = false): bool
     {
         foreach (clone $this->filters as $filter) {
             if (!$filter->test($value, $strict)) {
                 throw ValidateException::create(
                     $filter,
-                    'Validator: ' . $filter::class . ' returns false, value is: ' . Assert::describeValue($value)
+                    'Validator: ' . TypeCast::forceString($filter) . ' returns false, value is: ' . Assert::describeValue($value)
                 );
             }
         }

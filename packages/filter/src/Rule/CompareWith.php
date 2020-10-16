@@ -59,7 +59,7 @@ class CompareWith extends AbstractFilter
     /**
      * @inheritDoc
      */
-    public function filter($value)
+    public function filter(mixed $value): mixed
     {
         return CompareHelper::compare($this->compare, $value, $this->operator, $this->strict);
     }

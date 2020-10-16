@@ -21,7 +21,7 @@ class Absolute extends AbstractFilter
     /**
      * @inheritDoc
      */
-    public function filter($value)
+    public function filter(mixed $value): mixed
     {
         return abs($value);
     }

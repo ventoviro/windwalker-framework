@@ -39,7 +39,7 @@ class CastTo extends AbstractFilter
     /**
      * @inheritDoc
      */
-    public function filter($value)
+    public function filter(mixed $value): mixed
     {
         return TypeCast::try($value, $this->type, $this->strict);
     }

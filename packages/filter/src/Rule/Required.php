@@ -21,7 +21,7 @@ class Required extends AbstractFilter
     /**
      * @inheritDoc
      */
-    public function filter($value)
+    public function filter(mixed $value): mixed
     {
         return $value;
     }
@@ -29,7 +29,7 @@ class Required extends AbstractFilter
     /**
      * @inheritDoc
      */
-    public function test($value, bool $strict = false): bool
+    public function test(mixed $value, bool $strict = false): bool
     {
         return $value !== '' && $value !== null;
     }
