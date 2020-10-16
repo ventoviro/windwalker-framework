@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Utilities\Assert;
 
 use Windwalker\Utilities\SimpleTemplate;
+use Windwalker\Utilities\Str;
 
 /**
  * The Assert class.
@@ -102,7 +103,7 @@ class Assert
         return trim(($trace['class'] ?? '') . '::' . ($trace['function']), ':') . '()';
     }
 
-    public static function describeValue($value): string
+    public static function describeValue(mixed $value, ?int $truncate = 50): string
     {
         if ($value === null) {
             return '(NULL)';
@@ -125,6 +126,8 @@ class Assert
         }
 
         if (is_string($value)) {
+            $value = Str::truncate($value, $truncate, '...');
+
             return sprintf('string(%s) "%s"', strlen($value), $value);
         }
 

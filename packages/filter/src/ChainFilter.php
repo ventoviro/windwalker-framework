@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Filter;
 
 use Windwalker\Filter\Exception\ValidateException;
+use Windwalker\Utilities\Assert\Assert;
 use Windwalker\Utilities\Iterator\PriorityQueue;
 
 /**
@@ -78,7 +79,7 @@ class ChainFilter implements FilterInterface, ValidatorInterface
             if (!$filter->test($value, $strict)) {
                 throw ValidateException::create(
                     $filter,
-                    'Validator: ' . $filter::class . ' returns false, value is: ' . get_debug_type($value)
+                    'Validator: ' . $filter::class . ' returns false, value is: ' . Assert::describeValue($value)
                 );
             }
         }

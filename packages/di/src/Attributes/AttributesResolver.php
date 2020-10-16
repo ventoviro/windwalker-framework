@@ -35,6 +35,26 @@ class AttributesResolver extends GlobalAttributesResolver
         parent::__construct($options);
     }
 
+    /**
+     * @return Container
+     */
+    public function getContainer(): Container
+    {
+        return $this->container;
+    }
+
+    /**
+     * @param  Container  $container
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setContainer(Container $container): static
+    {
+        $this->container = $container;
+
+        return $this;
+    }
+
     protected function prepareAttribute(object $attribute): void
     {
         $ref = new \ReflectionObject($attribute);
