@@ -15,6 +15,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Windwalker\DI\Attributes\AttributesResolver;
+use Windwalker\DI\Concern\ConfigRegisterTrait;
 use Windwalker\DI\Definition\DefinitionFactory;
 use Windwalker\DI\Definition\DefinitionInterface;
 use Windwalker\DI\Definition\ObjectBuilderDefinition;
@@ -22,6 +23,7 @@ use Windwalker\DI\Definition\StoreDefinitionInterface;
 use Windwalker\DI\Exception\DefinitionException;
 use Windwalker\DI\Exception\DefinitionNotFoundException;
 use Windwalker\Utilities\Assert\ArgumentsAssert;
+use Windwalker\Utilities\Assert\TypeAssert;
 use Windwalker\Utilities\Contract\ArrayAccessibleInterface;
 use Windwalker\Utilities\Wrapper\ValueReference;
 
@@ -30,6 +32,8 @@ use Windwalker\Utilities\Wrapper\ValueReference;
  */
 class Container implements ContainerInterface, \IteratorAggregate, \Countable, ArrayAccessibleInterface
 {
+    use ConfigRegisterTrait;
+
     public const SHARED = 1 << 0;
     public const PROTECTED = 1 << 1;
     public const AUTO_WIRE = 1 << 2;
@@ -709,7 +713,7 @@ class Container implements ContainerInterface, \IteratorAggregate, \Countable, A
         return $value;
     }
 
-    public function loadParameters($source, ?string $format = null, array $options = []): Parameters
+    public function loadParameters(mixed $source, ?string $format = null, array $options = []): Parameters
     {
         $this->parameters = $this->parameters->load($source, $format, $options);
 

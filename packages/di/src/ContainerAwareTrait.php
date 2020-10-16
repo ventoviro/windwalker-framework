@@ -16,7 +16,7 @@ namespace Windwalker\DI;
  */
 trait ContainerAwareTrait
 {
-    protected ?Container $container;
+    protected ?Container $container = null;
 
     /**
      * @return Container
