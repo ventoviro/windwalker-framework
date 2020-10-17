@@ -221,7 +221,7 @@ class Container implements ContainerInterface, \IteratorAggregate, \Countable, A
      *
      * @throws \ReflectionException
      */
-    public function resolve($source, array $args = [], int $options = 0)
+    public function resolve(mixed $source, array $args = [], int $options = 0)
     {
         ArgumentsAssert::assert(
             $source !== null,
