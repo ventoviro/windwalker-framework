@@ -94,7 +94,7 @@ class Output implements OutputInterface
      */
     public function header(string $string, bool $replace = true, int $code = null)
     {
-        header( $string, $replace, (int) $code);
+        header($string, $replace, (int) $code);
 
         return $this;
     }
