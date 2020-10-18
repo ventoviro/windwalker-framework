@@ -95,7 +95,7 @@ class ObjectBuilderDefinition implements DefinitionInterface
         );
 
         foreach ($this->extends as $extend) {
-            $object = $extend($object, $this->container);
+            $object = $extend($object, $container);
         }
 
         return $object;

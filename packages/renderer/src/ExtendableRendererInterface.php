@@ -23,5 +23,5 @@ interface ExtendableRendererInterface
      *
      * @return  static  Retrun self to support chaining.
      */
-    public function extend(callable $callable);
+    public function extend(callable $callable): static;
 }

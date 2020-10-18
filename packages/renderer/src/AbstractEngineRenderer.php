@@ -83,7 +83,7 @@ abstract class AbstractEngineRenderer implements
     /**
      * @inheritDoc
      */
-    public function extend(callable $callable)
+    public function extend(callable $callable): static
     {
         $builder = $this->getBuilder();
 
