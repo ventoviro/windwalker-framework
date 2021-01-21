@@ -431,7 +431,7 @@ class Uri implements UriInterface
             throw new \InvalidArgumentException('Path should not contain `?` and `#` symbols.');
         }
 
-        $path = UriHelper::cleanPath($path);
+        $path = UriNormalize::normalizePath($path);
         $path = UriHelper::filterPath($path);
 
         $new = clone $this;
