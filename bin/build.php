@@ -96,7 +96,7 @@ class Build extends Console
      *
      * @return  boolean
      */
-    protected function doExecute()
+    protected function doExecute(): bool
     {
         if ($this->getOption('h')) {
             return $this->help();
@@ -228,7 +228,7 @@ class Build extends Console
      *
      * @return  string
      */
-    protected function exec($command, $arguments = [], $options = [])
+    protected function exec($command, $arguments = [], $options = []): string
     {
         $arguments = implode(' ', (array) $arguments);
         $options   = implode(' ', (array) $options);
@@ -251,7 +251,7 @@ class Build extends Console
      *
      * @return  boolean
      */
-    protected function help()
+    protected function help(): bool
     {
         $help = <<<HELP
 Windwalker Build Command.

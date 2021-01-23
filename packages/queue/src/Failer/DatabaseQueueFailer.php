@@ -107,7 +107,7 @@ class DatabaseQueueFailer implements QueueFailerInterface
      *
      * @return array|null
      */
-    public function get($conditions): ?array
+    public function get(mixed $conditions): ?array
     {
         $item = $this->db->select('*')
             ->from($this->table)
@@ -124,7 +124,7 @@ class DatabaseQueueFailer implements QueueFailerInterface
      *
      * @return  bool
      */
-    public function remove($conditions): bool
+    public function remove(mixed $conditions): bool
     {
         $this->db->delete($this->table)
             ->where('id', $conditions)
@@ -163,7 +163,7 @@ class DatabaseQueueFailer implements QueueFailerInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setTable(string $table)
+    public function setTable(string $table): static
     {
         $this->table = $table;
 

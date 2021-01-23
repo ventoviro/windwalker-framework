@@ -24,7 +24,7 @@ class MergeComposer extends \Asika\SimpleConsole\Console
      *
      * @return  int
      */
-    protected function doExecute()
+    protected function doExecute(): int
     {
         $packages = \Windwalker\Filesystem\Filesystem::folders(PACKAGES_PATH);
 

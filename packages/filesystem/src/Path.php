@@ -299,7 +299,7 @@ class Path
      *
      * @since   2.0
      */
-    public static function getExtension(string $file)
+    public static function getExtension(string $file): string
     {
         return pathinfo($file, PATHINFO_EXTENSION);
     }
@@ -313,7 +313,7 @@ class Path
      *
      * @since   2.0
      */
-    public static function getFilename(string $path)
+    public static function getFilename(string $path): string
     {
         $name = pathinfo($path, PATHINFO_FILENAME);
 
@@ -357,7 +357,7 @@ class Path
      *
      * @since  3.4.5
      */
-    public static function makeUtf8Safe($file)
+    public static function makeUtf8Safe($file): bool|string
     {
         $file = mb_ereg_replace("([^\w\s\d\-_~,;\[\]\(\).])", '', $file);
 

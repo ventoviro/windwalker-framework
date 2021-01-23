@@ -113,7 +113,7 @@ class BeanstalkdQueueDriver implements QueueDriverInterface
      *
      * @return BeanstalkdQueueDriver
      */
-    public function delete(QueueMessage $message)
+    public function delete(QueueMessage $message): static
     {
         $channel = $message->getChannel() ?: $this->channel;
 
@@ -129,7 +129,7 @@ class BeanstalkdQueueDriver implements QueueDriverInterface
      *
      * @return static
      */
-    public function release(QueueMessage $message)
+    public function release(QueueMessage $message): static
     {
         $this->client->release(
             new Job($message->getId(), ''),
@@ -148,7 +148,7 @@ class BeanstalkdQueueDriver implements QueueDriverInterface
      * @return  Pheanstalk
      * @throws \DomainException
      */
-    public function getPheanstalk($host = null)
+    public function getPheanstalk($host = null): Pheanstalk
     {
         if (!class_exists(Pheanstalk::class)) {
             throw new \DomainException('Please install pda/pheanstalk first.');

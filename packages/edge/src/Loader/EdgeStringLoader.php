@@ -76,7 +76,7 @@ class EdgeStringLoader implements EdgeLoaderInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setContent($content)
+    public function setContent($content): static
     {
         $this->content = $content;
 

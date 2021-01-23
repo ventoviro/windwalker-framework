@@ -50,7 +50,7 @@ class AttachmentResponse extends Response
      * @return  static
      * @throws \InvalidArgumentException
      */
-    public function withFile($file)
+    public function withFile(string $file): static
     {
         if (!is_file($file)) {
             throw new \InvalidArgumentException('File: ' . $file . ' not exists.');
@@ -68,7 +68,7 @@ class AttachmentResponse extends Response
      * @throws \InvalidArgumentException
      * @throws \RuntimeException
      */
-    public function withFileData($data)
+    public function withFileData(string $data): static
     {
         $stream = new Stream('php://temp', Stream::MODE_READ_WRITE_RESET);
 
@@ -86,7 +86,7 @@ class AttachmentResponse extends Response
      * @return  static
      * @throws \InvalidArgumentException
      */
-    protected function withFileStream(StreamInterface $stream)
+    protected function withFileStream(StreamInterface $stream): static
     {
         return $this->withBody($stream)->withHeader('Content-Length', (string) $stream->getSize());
     }
@@ -99,7 +99,7 @@ class AttachmentResponse extends Response
      * @return  static
      * @throws \InvalidArgumentException
      */
-    public function withFilename($filename)
+    public function withFilename(string $filename): static
     {
         return $this->withHeader(
             'Content-Disposition',

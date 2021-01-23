@@ -43,7 +43,7 @@ class PromiseResponse extends Response
      *
      * @since  3.4
      */
-    public function then(callable $callback)
+    public function then(callable $callback): static
     {
         $this->thenCallables[] = $callback;
 
@@ -59,7 +59,7 @@ class PromiseResponse extends Response
      *
      * @since  3.4
      */
-    public function fail(callable $callback)
+    public function fail(callable $callback): static
     {
         $this->rejectCallables[] = $callback;
 
@@ -75,7 +75,7 @@ class PromiseResponse extends Response
      *
      * @since  3.4
      */
-    public function resolve($value)
+    public function resolve($value): mixed
     {
         try {
             foreach ($this->thenCallables as $then) {
@@ -99,7 +99,7 @@ class PromiseResponse extends Response
      *
      * @since  3.4.5
      */
-    public function reject($e)
+    public function reject($e): mixed
     {
         foreach ($this->rejectCallables as $reject) {
             $e = $reject($e);

@@ -36,7 +36,7 @@ class LoopFailureEvent extends AbstractEvent
      *
      * @return  static  Return self to support chaining.
      */
-    public function setWorker(Worker $worker)
+    public function setWorker(Worker $worker): static
     {
         $this->worker = $worker;
 
@@ -56,7 +56,7 @@ class LoopFailureEvent extends AbstractEvent
      *
      * @return  static  Return self to support chaining.
      */
-    public function setMessage(string $message)
+    public function setMessage(string $message): static
     {
         $this->message = $message;
 
@@ -76,7 +76,7 @@ class LoopFailureEvent extends AbstractEvent
      *
      * @return  static  Return self to support chaining.
      */
-    public function setException(\Throwable $exception)
+    public function setException(\Throwable $exception): static
     {
         $this->exception = $exception;
 

@@ -153,7 +153,7 @@ class SubscribableListenerProvider implements SubscribableListenerProviderInterf
         return false;
     }
 
-    private static function toCallable(object $subscriber, $methodName)
+    private static function toCallable(object $subscriber, $methodName): callable|array
     {
         if (is_callable($methodName)) {
             return $methodName;

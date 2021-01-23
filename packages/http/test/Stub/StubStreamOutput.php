@@ -74,7 +74,7 @@ class StubStreamOutput extends StreamOutput
      *
      * @return  static
      */
-    public function header($string, $replace = true, $code = null)
+    public function header($string, $replace = true, $code = null): static
     {
         if (strpos($string, ':') !== false) {
             [$header, $value] = explode(': ', $string, 2);

@@ -33,7 +33,7 @@ class CompareHelper
      *
      * @throws InvalidArgumentException
      */
-    public static function compare($a, $b, ?string $operator = null, $strict = false): int|bool
+    public static function compare(mixed $a, mixed $b, ?string $operator = null, bool $strict = false): int|bool
     {
         if ($operator === null) {
             return $a <=> $b;

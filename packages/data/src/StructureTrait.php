@@ -50,7 +50,7 @@ trait StructureTrait
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function setFormatRegistry(FormatRegistry $formatRegistry)
+    public function setFormatRegistry(FormatRegistry $formatRegistry): static
     {
         $this->formatRegistry = $formatRegistry;
 
@@ -68,7 +68,7 @@ trait StructureTrait
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function load($data, ?string $format = null, array $options = [])
+    public function load($data, ?string $format = null, array $options = []): static
     {
         $this->storage = Arr::mergeRecursive($this->storage, $this->loadData($data, $format, $options));
 
@@ -86,7 +86,7 @@ trait StructureTrait
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function withLoad($data, ?string $format = null, array $options = [])
+    public function withLoad($data, ?string $format = null, array $options = []): StructureTrait|static
     {
         $new = clone $this;
 

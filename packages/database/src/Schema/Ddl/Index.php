@@ -45,21 +45,21 @@ class Index
         $this->indexName = $indexName;
     }
 
-    public function tableName(string $tableName)
+    public function tableName(string $tableName): static
     {
         $this->tableName = $tableName;
 
         return $this;
     }
 
-    public function name(string $indexName)
+    public function name(string $indexName): static
     {
         $this->indexName = $indexName;
 
         return $this;
     }
 
-    public function comment(?string $indexComment)
+    public function comment(?string $indexComment): static
     {
         $this->indexComment = $indexComment;
 

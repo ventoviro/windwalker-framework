@@ -67,7 +67,7 @@ class Expression
      *
      * @return  mixed|Clause
      */
-    public function build($name, ...$args)
+    public function build($name, ...$args): mixed
     {
         $method = StrNormalise::toCamelCase($name);
 
@@ -95,7 +95,7 @@ class Expression
      *
      * @return  static  Return self to support chaining.
      */
-    public function setQuery(Query $query)
+    public function setQuery(Query $query): static
     {
         $this->query = $query;
 

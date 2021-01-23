@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Http\Helper;
 
+use JetBrains\PhpStorm\Pure;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -35,15 +36,14 @@ abstract class HeaderHelper
      *
      * @since  3.0
      */
-    public static function getValue(array $headers, $name, $default = null)
+    #[Pure]
+    public static function getValue(array $headers, string $name, mixed $default = null): mixed
     {
         $name = strtolower($name);
         $headers = array_change_key_case($headers, CASE_LOWER);
 
         if (array_key_exists($name, $headers)) {
-            $value = is_array($headers[$name]) ? implode(', ', $headers[$name]) : $headers[$name];
-
-            return $value;
+            return is_array($headers[$name]) ? implode(', ', $headers[$name]) : $headers[$name];
         }
 
         return $default;
@@ -60,9 +60,9 @@ abstract class HeaderHelper
      *
      * @see http://tools.ietf.org/html/rfc7230#section-3.2
      */
-    public static function isValidName($name)
+    public static function isValidName(mixed $name): bool
     {
-        return preg_match('/^[a-zA-Z0-9\'`#$%&*+.^_|~!-]+$/', $name);
+        return (bool) preg_match('/^[a-zA-Z0-9\'`#$%&*+.^_|~!-]+$/', (string) $name);
     }
 
     /**
@@ -79,13 +79,13 @@ abstract class HeaderHelper
      *
      * @return  string  Filtered value.
      */
-    public static function filter($value)
+    public static function filter(mixed $value): string
     {
         $value = (string) $value;
         $length = strlen($value);
         $string = '';
 
-        for ($i = 0; $i < $length; $i += 1) {
+        for ($i = 0; $i < $length; ++$i) {
             $ascii = ord($value[$i]);
 
             // Detect continuation sequences
@@ -95,7 +95,7 @@ abstract class HeaderHelper
 
                 if ($lf === 10 && in_array($ws, [9, 32], true)) {
                     $string .= $value[$i] . $value[$i + 1];
-                    $i += 1;
+                    ++$i;
                 }
 
                 continue;
@@ -123,12 +123,14 @@ abstract class HeaderHelper
      * and tabs in header value. every new line must only contains
      * a single CRLF and a space or tab after it.
      *
+     * @param  mixed  $value
+     *
      * @return  boolean  Valid or not.
      *
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
      * @see https://tools.ietf.org/html/rfc7230
      */
-    public static function isValidValue($value)
+    public static function isValidValue(mixed $value): bool
     {
         $value = (string) $value;
 
@@ -169,7 +171,7 @@ abstract class HeaderHelper
      *
      * @return  boolean  Valid or not.
      */
-    public static function isValidProtocolVersion($version)
+    public static function isValidProtocolVersion(mixed $version): bool
     {
         if (!is_string($version) || empty($version)) {
             return false;
@@ -185,7 +187,7 @@ abstract class HeaderHelper
      *
      * @return  array  Converted array.
      */
-    public static function allToArray($value)
+    public static function allToArray($value): array
     {
         if ($value instanceof \Traversable) {
             $value = iterator_to_array($value);
@@ -213,7 +215,7 @@ abstract class HeaderHelper
      *
      * @return  boolean  valid or not.
      */
-    public static function arrayOnlyContainsString(array $array)
+    public static function arrayOnlyContainsString(array $array): bool
     {
         foreach ($array as $value) {
             if (!is_string($value)) {
@@ -234,7 +236,7 @@ abstract class HeaderHelper
      *
      *
      */
-    public static function toHeaderLines($headers, $toString = false)
+    public static function toHeaderLines($headers, $toString = false): array|string
     {
         $headerArray = [];
 
@@ -260,7 +262,7 @@ abstract class HeaderHelper
      *
      * @since   3.0
      */
-    public static function normalizeHeaderName($header)
+    public static function normalizeHeaderName($header): string
     {
         $filtered = str_replace('-', ' ', $header);
         $filtered = ucwords($filtered);
@@ -354,7 +356,7 @@ abstract class HeaderHelper
      *
      * @since  3.5.14
      */
-    private static function makeUtf8Safe(string $file)
+    private static function makeUtf8Safe(string $file): bool|string
     {
         $file = mb_ereg_replace("([^\w\s\d\-_~,;\[\]\(\).])", '', $file);
 

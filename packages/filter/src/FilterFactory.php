@@ -166,7 +166,7 @@ class FilterFactory
      *
      * @return  $this
      */
-    public function addFactory(string $type, callable|string $factory)
+    public function addFactory(string $type, callable|string $factory): static
     {
         if (is_string($factory)) {
             $factory = fn () => new $factory();
@@ -184,7 +184,7 @@ class FilterFactory
      *
      * @return  $this
      */
-    public function removeFactory(string $type)
+    public function removeFactory(string $type): static
     {
         unset($this->factories[$type]);
 
@@ -204,7 +204,7 @@ class FilterFactory
      *
      * @return  static  Return self to support chaining.
      */
-    public function setFactories(array $factories)
+    public function setFactories(array $factories): static
     {
         $this->factories = $factories;
 

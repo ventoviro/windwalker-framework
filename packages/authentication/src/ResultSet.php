@@ -35,7 +35,7 @@ class ResultSet implements \IteratorAggregate
         }
     }
 
-    public function addResult(string $name, AuthResult $result)
+    public function addResult(string $name, AuthResult $result): static
     {
         $this->results[$name] = $result;
 

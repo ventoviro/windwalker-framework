@@ -31,7 +31,7 @@ class KeyValueGrid extends Grid
      *
      * @return static
      */
-    public static function create(array $attrs = [])
+    public static function create(array $attrs = []): static
     {
         return new static($attrs);
     }
@@ -57,7 +57,7 @@ class KeyValueGrid extends Grid
      *
      * @return  static
      */
-    public function addHeader(string $keyTitle = 'Key', string $valueTitle = 'Value', array $attrs = [])
+    public function addHeader(string $keyTitle = 'Key', string $valueTitle = 'Value', array $attrs = []): static
     {
         $this->addRow((array) $this->getValue($attrs, static::ROW), static::ROW_HEAD)
             ->setRowCell(static::COL_KEY, $keyTitle, (array) $this->getValue($attrs, static::COL_KEY))
@@ -75,7 +75,7 @@ class KeyValueGrid extends Grid
      *
      * @return static
      */
-    public function addItem(string $key, $value = null, array $attrs = [])
+    public function addItem(string $key, $value = null, array $attrs = []): static
     {
         if (is_array($value) || is_object($value)) {
             $value = print_r($value, true);
@@ -99,7 +99,7 @@ class KeyValueGrid extends Grid
      *
      * @return  static
      */
-    public function addItems(array $items = null, array $attrs = [])
+    public function addItems(array $items = null, array $attrs = []): static
     {
         $this->configure(
             $items,
@@ -119,7 +119,7 @@ class KeyValueGrid extends Grid
      *
      * @return  static
      */
-    public function addTitle(string $name, array $attrs = [])
+    public function addTitle(string $name, array $attrs = []): static
     {
         $attrs[static::COL_KEY]['colspan'] = 2;
 
@@ -136,7 +136,7 @@ class KeyValueGrid extends Grid
      *
      * @return  static
      */
-    public function configure(array $items, callable $handler)
+    public function configure(array $items, callable $handler): static
     {
         if (!is_callable($handler)) {
             throw new \InvalidArgumentException(__METHOD__ . ' Handler should be callable.');
@@ -162,7 +162,7 @@ class KeyValueGrid extends Grid
      *
      * @return  mixed
      */
-    protected function getValue(array $options, string $name, $default = null)
+    protected function getValue(array $options, string $name, $default = null): mixed
     {
         return $options[$name] ?? $default;
     }

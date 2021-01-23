@@ -94,7 +94,7 @@ class ArrayMethod implements MethodInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setVerifyHandler(callable $verifyHandler)
+    public function setVerifyHandler(callable $verifyHandler): static
     {
         $this->verifyHandler = $verifyHandler;
 
@@ -118,7 +118,7 @@ class ArrayMethod implements MethodInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setUsers(array $users)
+    public function setUsers(array $users): static
     {
         $this->users = $users;
 

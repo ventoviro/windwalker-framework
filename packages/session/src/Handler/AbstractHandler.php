@@ -30,7 +30,7 @@ abstract class AbstractHandler implements HandlerInterface, \SessionUpdateTimest
      *
      * @return bool true on success, false on failure
      */
-    public function open($savePath, $sessionName)
+    public function open($savePath, $sessionName): bool
     {
         return true;
     }
@@ -40,7 +40,7 @@ abstract class AbstractHandler implements HandlerInterface, \SessionUpdateTimest
      *
      * @return bool true on success, false on failure
      */
-    public function close()
+    public function close(): bool
     {
         return true;
     }
@@ -52,7 +52,7 @@ abstract class AbstractHandler implements HandlerInterface, \SessionUpdateTimest
      *
      * @return  bool
      */
-    public function validateId($id)
+    public function validateId($id): bool
     {
         $this->loadedData = $this->read($id);
 
@@ -70,7 +70,7 @@ abstract class AbstractHandler implements HandlerInterface, \SessionUpdateTimest
      *
      * @return  string
      */
-    public function read($id)
+    public function read($id): string
     {
         $data = $this->loadedData;
 
@@ -95,7 +95,7 @@ abstract class AbstractHandler implements HandlerInterface, \SessionUpdateTimest
      * @link https://php.net/manual/en/sessionidinterface.create-sid.php
      * @return string
      */
-    public function create_sid()
+    public function create_sid(): string
     {
         return session_create_id();
     }

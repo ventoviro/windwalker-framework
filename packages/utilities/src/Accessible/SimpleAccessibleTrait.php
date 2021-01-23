@@ -30,7 +30,7 @@ trait SimpleAccessibleTrait
      *
      * @return  mixed
      */
-    public function &get($key)
+    public function &get($key): mixed
     {
         $ret = null;
 
@@ -51,7 +51,7 @@ trait SimpleAccessibleTrait
      *
      * @return  static
      */
-    public function set($key, $value)
+    public function set($key, $value): static
     {
         $this->getStorage()[$key] = $value;
 
@@ -68,7 +68,7 @@ trait SimpleAccessibleTrait
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function def($key, $default)
+    public function def($key, $default): static
     {
         $this->getStorage()[$key] = $this->getStorage()[$key] ?? $default;
 
@@ -98,7 +98,7 @@ trait SimpleAccessibleTrait
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function remove($key)
+    public function remove($key): static
     {
         if ($this->has($key)) {
             unset($this->getStorage()[$key]);

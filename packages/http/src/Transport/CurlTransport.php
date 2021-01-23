@@ -83,7 +83,7 @@ class CurlTransport extends AbstractTransport
      * @since   2.0
      * @throws  \UnexpectedValueException
      */
-    public function getResponse($content, $info)
+    public function getResponse(mixed $content, mixed $info): Response|ResponseInterface
     {
         // Create the response object.
         $return = $this->createResponse();
@@ -271,7 +271,7 @@ class CurlTransport extends AbstractTransport
      * @return  ResponseInterface
      * @since   2.1
      */
-    public function download(RequestInterface $request, string|StreamInterface $dest, array $options = [])
+    public function download(RequestInterface $request, string|StreamInterface $dest, array $options = []): ResponseInterface
     {
         if (!$dest) {
             throw new \InvalidArgumentException('Target file path is empty.');
@@ -295,7 +295,7 @@ class CurlTransport extends AbstractTransport
      *
      * @since   2.1
      */
-    public static function isSupported()
+    public static function isSupported(): bool
     {
         return function_exists('curl_init') && is_callable('curl_init');
     }
@@ -309,7 +309,7 @@ class CurlTransport extends AbstractTransport
      *
      * @since  3.4.2
      */
-    protected function setCABundleToOptions(array $options)
+    protected function setCABundleToOptions(array $options): array
     {
         if ($this->getOption('certpath')) {
             $options[CURLOPT_CAINFO] = $this->getOption('certpath');

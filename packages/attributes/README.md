@@ -388,7 +388,7 @@ class Controller
 {
     #[\Method('GET')]
     #[\Json]
-    public function index()
+    public function index():Response
     {
         return new Response();
     }

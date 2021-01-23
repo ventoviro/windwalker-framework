@@ -64,8 +64,10 @@ class DeferredScheduler implements SchedulerInterface
      *
      * @return  DeferredScheduler
      */
-    public static function registerEventLoop($loop, bool $disableShutdown = false): DeferredScheduler
-    {
+    public static function registerEventLoop(
+        LoopInterface|callable $loop,
+        bool $disableShutdown = false
+    ): DeferredScheduler {
         if ($disableShutdown) {
             TaskQueue::getInstance()->disableShutdownRunner();
         }

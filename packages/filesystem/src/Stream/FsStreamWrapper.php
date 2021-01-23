@@ -132,7 +132,7 @@ class FsStreamWrapper
         return $result;
     }
 
-    public function stream_open($path, $mode, $options, &$opened_path)
+    public function stream_open($path, $mode, $options, &$opened_path): bool
     {
         [, $path] = explode('://', $path);
 
@@ -145,22 +145,22 @@ class FsStreamWrapper
         return true;
     }
 
-    public function stream_read($count)
+    public function stream_read($count): string
     {
         return $this->stream->read($count);
     }
 
-    public function stream_write($data)
+    public function stream_write($data): int
     {
         return $this->stream->write($data);
     }
 
-    public function stream_tell()
+    public function stream_tell(): int
     {
         return $this->stream->tell();
     }
 
-    public function stream_eof()
+    public function stream_eof(): bool
     {
         return $this->stream->eof();
     }
@@ -175,7 +175,7 @@ class FsStreamWrapper
         return $this->stream->getMetadata($path);
     }
 
-    public function stream_stat()
+    public function stream_stat(): bool|array
     {
         // Just fake stat
         return stat(__FILE__);

@@ -80,7 +80,7 @@ class PhpServer extends AbstractServer
      *
      * @return  static  Return self to support chaining.
      */
-    public function setOutput(OutputInterface $output)
+    public function setOutput(OutputInterface $output): static
     {
         $this->output = $output;
 

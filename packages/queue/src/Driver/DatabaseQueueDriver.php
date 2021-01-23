@@ -143,7 +143,7 @@ class DatabaseQueueDriver implements QueueDriverInterface
      *
      * @return static
      */
-    public function delete(QueueMessage $message)
+    public function delete(QueueMessage $message): static
     {
         $channel = $message->getChannel() ?: $this->channel;
 
@@ -163,7 +163,7 @@ class DatabaseQueueDriver implements QueueDriverInterface
      * @return static
      * @throws \Exception
      */
-    public function release(QueueMessage $message)
+    public function release(QueueMessage $message): static
     {
         $channel = $message->getChannel() ?: $this->channel;
 
@@ -204,7 +204,7 @@ class DatabaseQueueDriver implements QueueDriverInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setTable(string $table)
+    public function setTable(string $table): static
     {
         $this->table = $table;
 
@@ -228,7 +228,7 @@ class DatabaseQueueDriver implements QueueDriverInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setDb(DatabaseAdapter $db)
+    public function setDb(DatabaseAdapter $db): static
     {
         $this->db = $db;
 
@@ -240,7 +240,7 @@ class DatabaseQueueDriver implements QueueDriverInterface
      *
      * @return  static
      */
-    public function reconnect()
+    public function reconnect(): static
     {
         $this->disconnect();
 
@@ -256,7 +256,7 @@ class DatabaseQueueDriver implements QueueDriverInterface
      *
      * @since  3.5.2
      */
-    public function disconnect()
+    public function disconnect(): static
     {
         $this->db->disconnect();
 

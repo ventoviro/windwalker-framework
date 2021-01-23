@@ -58,7 +58,7 @@ class ArrTest extends TestCase
      *
      * @return  array
      */
-    public function providerTestDef()
+    public function providerTestDef(): array
     {
         return [
             [
@@ -359,7 +359,7 @@ class ArrTest extends TestCase
      *
      * @return  array
      */
-    public function providerTestRemove()
+    public function providerTestRemove(): array
     {
         return [
             [
@@ -741,7 +741,7 @@ class ArrTest extends TestCase
      *
      * @return  array
      */
-    public function providerTestSort()
+    public function providerTestSort(): array
     {
         return [
             'simple array' => [
@@ -827,7 +827,7 @@ class ArrTest extends TestCase
      *
      * @return  array
      */
-    public function providerTestInvert()
+    public function providerTestInvert(): array
     {
         return [
             'Case 1' => [

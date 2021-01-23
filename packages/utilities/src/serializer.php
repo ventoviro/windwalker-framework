@@ -31,7 +31,7 @@ function unserialize(string $data, ?array $options = null)
     return \Opis\Closure\unserialize($data, $options);
 }
 
-function closure(\Closure $closure)
+function closure(\Closure $closure): SerializableClosure
 {
     if (!class_exists(SerializableClosure::class)) {
         throw new \LogicException('Please install opis/closure first');

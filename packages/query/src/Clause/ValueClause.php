@@ -66,7 +66,7 @@ class ValueClause implements ClauseInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function &getValue()
+    public function &getValue(): mixed
     {
         return $this->value;
     }
@@ -80,7 +80,7 @@ class ValueClause implements ClauseInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function value($value)
+    public function value($value): static
     {
         $this->value = $value;
 
@@ -94,7 +94,7 @@ class ValueClause implements ClauseInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setPlaceholder(string $placeholder)
+    public function setPlaceholder(string $placeholder): static
     {
         $this->placeholder = $placeholder;
 

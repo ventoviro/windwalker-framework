@@ -20,7 +20,7 @@ class FormFactory
 {
     public static ?Form $form = null;
 
-    public static function form(?Form $form = null)
+    public static function form(?Form $form = null): ?Form
     {
         if ($form !== null) {
             static::$form = $form;

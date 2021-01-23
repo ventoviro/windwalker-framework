@@ -37,7 +37,7 @@ class ClosureDefinition implements DefinitionInterface
      *
      * @return mixed
      */
-    public function resolve(Container $container)
+    public function resolve(Container $container): mixed
     {
         return ($this->handler)($container);
     }
@@ -49,7 +49,7 @@ class ClosureDefinition implements DefinitionInterface
      *
      * @return  void
      */
-    public function set($value): void
+    public function set(mixed $value): void
     {
         $this->handler = $value;
     }

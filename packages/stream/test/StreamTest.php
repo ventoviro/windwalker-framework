@@ -411,7 +411,7 @@ class StreamTest extends TestCase
      *
      * @return  string
      */
-    protected function createTempFile()
+    protected function createTempFile(): string
     {
         return $this->tmpnam = tempnam(sys_get_temp_dir(), 'windwalker');
     }

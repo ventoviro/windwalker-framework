@@ -25,7 +25,7 @@ class LanguageNormalizeTest extends \PHPUnit\Framework\TestCase
      *
      * @return  array
      */
-    public function getToTagCases()
+    public function getToTagCases(): array
     {
         return [
             [

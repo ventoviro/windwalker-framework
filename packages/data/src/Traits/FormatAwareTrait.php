@@ -33,7 +33,7 @@ trait FormatAwareTrait
      *
      * @return  static  Return self to support chaining.
      */
-    public function setFormatRegistry(?FormatRegistry $formatRegistry)
+    public function setFormatRegistry(?FormatRegistry $formatRegistry): static
     {
         $this->formatRegistry = $formatRegistry;
 

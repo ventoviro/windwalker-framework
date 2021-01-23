@@ -74,7 +74,7 @@ class ArrConverterTraitTest extends TestCase
      *
      * @return  array
      */
-    public function providerTestGroup()
+    public function providerTestGroup(): array
     {
         return [
             'A scalar array' => [

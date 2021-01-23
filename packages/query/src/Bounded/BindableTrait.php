@@ -44,7 +44,7 @@ trait BindableTrait
         $dataType = null,
         int $length = 0,
         $driverOptions = null
-    ) {
+    ): static {
         // If is array, loop for all elements.
         if (is_array($key)) {
             foreach ($key as $k => &$v) {
@@ -96,7 +96,7 @@ trait BindableTrait
         $key = null,
         $value = null,
         $dataType = null
-    ) {
+    ): static {
         return $this->bindParam($key, $value, $dataType);
     }
 
@@ -124,7 +124,7 @@ trait BindableTrait
      *
      * @return  static
      */
-    public function resetBounded()
+    public function resetBounded(): static
     {
         $this->bounded = [];
 
@@ -138,7 +138,7 @@ trait BindableTrait
      *
      * @return  static
      */
-    public function unbind($keys)
+    public function unbind(mixed $keys): static
     {
         $keys = (array) $keys;
 

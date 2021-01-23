@@ -80,7 +80,7 @@ abstract class AbstractTransportTest extends TestCase
      *
      * @return Request
      */
-    protected function createRequest($stream = null)
+    protected function createRequest($stream = null): Request
     {
         return new Request($stream ?: new StringStream());
     }

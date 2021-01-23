@@ -39,7 +39,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
 
     public const XML = 'xml';
 
-    protected $type = self::HTML;
+    protected string $type = self::HTML;
 
     /**
      * create
@@ -50,7 +50,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
      *
      * @return  DOMElement
      */
-    public static function create(string $name, array $attributes = [], $content = null)
+    public static function create(string $name, array $attributes = [], $content = null): DOMElement
     {
         [$name, $id, $class] = array_values(static::splitCSSSelector($name));
 
@@ -134,7 +134,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
      *
      * @return DOMNode The node added.
      */
-    public function appendChild($newnode): DOMNode
+    public function appendChild(mixed $newnode): DOMNode
     {
         if (!$newnode instanceof DOMNode) {
             return self::insertContentTo($newnode, $this);
@@ -185,7 +185,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
      *
      * @return  string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return $this->render(null);
     }
@@ -224,7 +224,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
      *
      * @return  static  Return self to support chaining.
      */
-    public function setAttributes(array $attribs)
+    public function setAttributes(array $attribs): static
     {
         foreach ($attribs as $key => $attribute) {
             $this->setAttribute($key, $attribute);
@@ -236,7 +236,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
     /**
      * @inheritDoc
      */
-    public function setAttribute($name, $value)
+    public function setAttribute($name, $value): bool|DOMAttr
     {
         if ($value === true) {
             return $this->setAttribute($name, '');
@@ -305,7 +305,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
      * @return boolean True on success or false on failure.
      *                 The return value will be casted to boolean if non-boolean was returned.
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return $this->hasAttribute($offset);
     }
@@ -317,7 +317,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
      *
      * @return mixed Can return all value types.
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->getAttribute($offset);
     }
@@ -353,9 +353,9 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
      * @param DOMNode $node
      * @param bool    $deep
      *
-     * @return  static
+     * @return  static|NativeDOMElement
      */
-    public function with(DOMNode $node, bool $deep = true)
+    public function with(DOMNode $node, bool $deep = true): NativeDOMElement|static
     {
         if ($node instanceof DOMDocument) {
             $dom = $node;
@@ -375,7 +375,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
      *
      * @return  static
      */
-    public function createChild(string $name, array $attributes = [], $content = null)
+    public function createChild(string $name, array $attributes = [], $content = null): DOMNode|static
     {
         $ele = static::create($name, $attributes, $content);
 
@@ -406,7 +406,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
      *
      * @since  3.5.3
      */
-    public function addClass(string $class)
+    public function addClass(string $class): static
     {
         $classes = array_filter(explode(' ', $class), 'strlen');
 
@@ -424,7 +424,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
      *
      * @since  3.5.3
      */
-    public function removeClass(string $class)
+    public function removeClass(string $class): static
     {
         $classes = array_filter(explode(' ', $class), 'strlen');
 
@@ -443,7 +443,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
      *
      * @since  3.5.3
      */
-    public function toggleClass(string $class, ?bool $force = null)
+    public function toggleClass(string $class, ?bool $force = null): static
     {
         $this->classList->toggle($class, $force);
 
@@ -476,7 +476,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
      *
      * @since  3.5.3
      */
-    public function data(string $name, $value = null)
+    public function data(string $name, $value = null): string|static
     {
         if ($value === null) {
             return $this->getAttribute('data-' . $name);
@@ -490,7 +490,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
      *
      * @return  static
      */
-    public function asXML()
+    public function asXML(): static
     {
         $this->type = static::XML;
 
@@ -502,7 +502,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
      *
      * @return  static
      */
-    public function asHTML()
+    public function asHTML(): static
     {
         $this->type = static::HTML;
 
@@ -518,7 +518,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
      *
      * @since  3.5.3
      */
-    public function __get($name)
+    public function __get($name): mixed
     {
         if ($name === 'dataset') {
             return new DOMStringMap($this);

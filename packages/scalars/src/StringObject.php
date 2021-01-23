@@ -143,7 +143,7 @@ class StringObject implements Countable, ArrayAccess, IteratorAggregate, \String
      * @throws BadMethodCallException
      * @throws ReflectionException
      */
-    public function __call(string $name, array $args)
+    public function __call(string $name, array $args): mixed
     {
         $class = Str::class;
 
@@ -171,10 +171,10 @@ class StringObject implements Countable, ArrayAccess, IteratorAggregate, \String
      * @param  string  $method
      * @param  array   $args
      *
-     * @return  static
+     * @return  mixed
      * @throws ReflectionException
      */
-    protected function callProxy(string $class, string $method, array $args)
+    protected function callProxy(string $class, string $method, array $args): mixed
     {
         $new = $this->cloneInstance();
 
@@ -263,7 +263,7 @@ class StringObject implements Countable, ArrayAccess, IteratorAggregate, \String
      *
      * @return string|static Can return all value types.
      */
-    public function offsetGet($offset)
+    public function offsetGet($offset): StringObject|string|static
     {
         return $this->getChar($offset);
     }
@@ -350,7 +350,7 @@ class StringObject implements Countable, ArrayAccess, IteratorAggregate, \String
      *
      * @return  static  Return self to support chaining.
      */
-    public function withEncoding(string $encoding)
+    public function withEncoding(string $encoding): static
     {
         return $this->cloneInstance(
             static function (StringObject $new) use ($encoding) {
@@ -376,7 +376,7 @@ class StringObject implements Countable, ArrayAccess, IteratorAggregate, \String
      *
      * @return  static  Return self to support chaining.
      */
-    public function withString(string $string)
+    public function withString(string $string): static
     {
         return $this->cloneInstance(
             static function (StringObject $new) use ($string) {
@@ -457,7 +457,7 @@ class StringObject implements Countable, ArrayAccess, IteratorAggregate, \String
      *
      * @return  static
      */
-    public function apply(callable $callback, ...$args)
+    public function apply(callable $callback, ...$args): static
     {
         return $this->cloneInstance(
             static function ($new) use ($callback, $args) {
@@ -476,7 +476,7 @@ class StringObject implements Countable, ArrayAccess, IteratorAggregate, \String
      *
      * @since  3.5.14
      */
-    public function pipe(callable $callback, ...$args)
+    public function pipe(callable $callback, ...$args): static
     {
         return $callback($this, ...$args);
     }

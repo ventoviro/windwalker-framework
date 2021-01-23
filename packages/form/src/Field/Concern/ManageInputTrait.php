@@ -77,7 +77,7 @@ trait ManageInputTrait
      *
      * @return  static  Return self to support chaining.
      */
-    public function setInput(DOMElement $element)
+    public function setInput(DOMElement $element): static
     {
         $this->input = $element;
 
@@ -115,7 +115,7 @@ trait ManageInputTrait
      *
      * @return  static
      */
-    public function setAttribute(string $name, $value)
+    public function setAttribute(string $name, $value): static
     {
         $this->getInput()->setAttribute($name, $value);
 
@@ -130,7 +130,7 @@ trait ManageInputTrait
      *
      * @return  static
      */
-    public function attr(string $name, $value = null)
+    public function attr(string $name, $value = null): static
     {
         return $this->setAttribute($name, $value);
     }
@@ -140,21 +140,21 @@ trait ManageInputTrait
         return $this->getInput()->classList->value;
     }
 
-    public function setClass(string $class)
+    public function setClass(string $class): static
     {
         $this->getInput()->setAttribute('class', $class);
 
         return $this;
     }
 
-    public function addClass(...$args)
+    public function addClass(...$args): static
     {
         $this->getInput()->classList->add(...$args);
 
         return $this;
     }
 
-    public function removeClass(...$args)
+    public function removeClass(...$args): static
     {
         $this->getInput()->classList->remove(...$args);
 

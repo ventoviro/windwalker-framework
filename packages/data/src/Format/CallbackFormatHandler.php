@@ -31,8 +31,8 @@ class CallbackFormatHandler implements FormatInterface
     /**
      * CallbackFormatHandler constructor.
      *
-     * @param  callable  $parser
-     * @param  callable  $dumper
+     * @param  callable|null  $parser
+     * @param  callable|null  $dumper
      */
     public function __construct(?callable $parser = null, ?callable $dumper = null)
     {
@@ -61,11 +61,11 @@ class CallbackFormatHandler implements FormatInterface
      * @param  string  $string   Formatted string
      * @param  array   $options  An array of options for the formatter.
      *
-     * @return  Data array
+     * @return  mixed
      *
      * @since   2.0
      */
-    public function parse(string $string, array $options = [])
+    public function parse(string $string, array $options = []): mixed
     {
         return ($this->parser)($string, $options);
     }
@@ -91,7 +91,7 @@ class CallbackFormatHandler implements FormatInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function setParser(?callable $parser)
+    public function setParser(?callable $parser): static
     {
         $this->parser = $parser
             ?? static function (): string {
@@ -122,7 +122,7 @@ class CallbackFormatHandler implements FormatInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function setDumper(?callable $dumper)
+    public function setDumper(?callable $dumper): static
     {
         $this->dumper = $dumper
             ?? static function (): array {

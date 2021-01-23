@@ -247,7 +247,7 @@ class Edge
      *
      * @return  static  Return self to support chaining.
      */
-    public function setContext(?object $context)
+    public function setContext(?object $context): static
     {
         $this->context = $context;
 
@@ -261,7 +261,7 @@ class Edge
      *
      * @return string
      */
-    protected function normalizeName($name)
+    protected function normalizeName($name): string
     {
         // TODO: Handle namespace
 
@@ -425,7 +425,7 @@ class Edge
      *
      * @return  static
      */
-    public function addGlobal(string $name, string $value)
+    public function addGlobal(string $name, string $value): static
     {
         $this->globals[$name] = $value;
 
@@ -439,7 +439,7 @@ class Edge
      *
      * @return  static
      */
-    public function removeGlobal(string $name)
+    public function removeGlobal(string $name): static
     {
         unset($this->globals[$name]);
 
@@ -486,7 +486,7 @@ class Edge
      *
      * @return  static  Return self to support chaining.
      */
-    public function setCompiler(EdgeCompilerInterface $compiler)
+    public function setCompiler(EdgeCompilerInterface $compiler): static
     {
         $this->compiler = $compiler;
 
@@ -510,7 +510,7 @@ class Edge
      *
      * @return  static  Return self to support chaining.
      */
-    public function setLoader(EdgeLoaderInterface $loader)
+    public function setLoader(EdgeLoaderInterface $loader): static
     {
         $this->loader = $loader;
 
@@ -525,7 +525,7 @@ class Edge
      *
      * @return static
      */
-    public function addExtension(EdgeExtensionInterface $extension, ?string $name = null)
+    public function addExtension(EdgeExtensionInterface $extension, ?string $name = null): static
     {
         if (!$name) {
             $name = $extension->getName();
@@ -543,7 +543,7 @@ class Edge
      *
      * @return  static
      */
-    public function removeExtension(string $name)
+    public function removeExtension(string $name): static
     {
         if (array_key_exists($name, $this->extensions)) {
             unset($this->extensions[$name]);
@@ -597,7 +597,7 @@ class Edge
      *
      * @return  static  Return self to support chaining.
      */
-    public function setExtensions(array $extensions)
+    public function setExtensions(array $extensions): static
     {
         $this->extensions = $extensions;
 
@@ -621,7 +621,7 @@ class Edge
      *
      * @return  static  Return self to support chaining.
      */
-    public function setCache(EdgeCacheInterface $cache)
+    public function setCache(EdgeCacheInterface $cache): static
     {
         $this->cache = $cache;
 

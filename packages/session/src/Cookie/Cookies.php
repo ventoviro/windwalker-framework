@@ -56,7 +56,7 @@ class Cookies implements CookiesInterface
         return array_change_key_case(get_object_vars($this), CASE_LOWER);
     }
 
-    public function setOptions(array $options)
+    public function setOptions(array $options): static
     {
         $this->expires = $options['expires'] ?? $this->expires;
         $this->path = $options['path'] ?? $this->path;
@@ -81,7 +81,7 @@ class Cookies implements CookiesInterface
      *
      * @return static Return self to support chaining.
      */
-    public function expires(int|string|\DateTimeInterface $expires)
+    public function expires(int|string|\DateTimeInterface $expires): static
     {
         if (is_string($expires) && !is_numeric($expires)) {
             $date = new \DateTimeImmutable('now');
@@ -110,7 +110,7 @@ class Cookies implements CookiesInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function path(string $path)
+    public function path(string $path): static
     {
         $this->path = $path;
 
@@ -130,7 +130,7 @@ class Cookies implements CookiesInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function domain(string $domain)
+    public function domain(string $domain): static
     {
         $this->domain = $domain;
 
@@ -150,7 +150,7 @@ class Cookies implements CookiesInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function secure(bool $secure)
+    public function secure(bool $secure): static
     {
         $this->secure = $secure;
 
@@ -170,7 +170,7 @@ class Cookies implements CookiesInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function httpOnly(bool $httpOnly)
+    public function httpOnly(bool $httpOnly): static
     {
         $this->httpOnly = $httpOnly;
 
@@ -190,7 +190,7 @@ class Cookies implements CookiesInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function sameSite(string $sameSite)
+    public function sameSite(string $sameSite): static
     {
         $this->sameSite = $sameSite;
 

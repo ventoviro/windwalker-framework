@@ -25,7 +25,7 @@ class CryptHelperTest extends \PHPUnit\Framework\TestCase
      *
      * @return  array
      */
-    public function limitIntegerProvider()
+    public function limitIntegerProvider(): array
     {
         return [
             [10, 5, 10, 15],

@@ -29,7 +29,7 @@ abstract class AbstractReseter
      *
      * @return  static
      */
-    public static function create(string $platform)
+    public static function create(string $platform): static
     {
         $class = __NAMESPACE__ . '\\' . AbstractPlatform::getPlatformName($platform) . 'Reseter';
 

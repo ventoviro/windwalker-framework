@@ -137,7 +137,7 @@ class RabbitmqQueueDriver implements QueueDriverInterface
      *
      * @return RabbitmqQueueDriver
      */
-    public function delete(QueueMessage $message)
+    public function delete(QueueMessage $message): static
     {
         $this->channel->basic_ack($message->get('delivery_tag'));
 
@@ -151,7 +151,7 @@ class RabbitmqQueueDriver implements QueueDriverInterface
      *
      * @return static
      */
-    public function release(QueueMessage $message)
+    public function release(QueueMessage $message): static
     {
         $this->delete($message);
 
@@ -182,7 +182,7 @@ class RabbitmqQueueDriver implements QueueDriverInterface
      * @return  AMQPStreamConnection
      * @throws \DomainException
      */
-    public function getAMQPConnection(array $options)
+    public function getAMQPConnection(array $options): AMQPStreamConnection
     {
         if (!class_exists(AMQPStreamConnection::class)) {
             throw new \DomainException('Please install php-amqplib/php-amqplib first.');

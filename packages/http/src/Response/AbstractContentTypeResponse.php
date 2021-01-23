@@ -46,21 +46,21 @@ abstract class AbstractContentTypeResponse extends Response
     /**
      * Handle body to stream object.
      *
-     * @param   string $body The body data.
+     * @param  string  $body  The body data.
      *
      * @return  StreamInterface  Converted to stream object.
      */
-    abstract protected function handleBody($body);
+    abstract protected function handleBody(string $body): StreamInterface;
 
     /**
      * withContent
      *
-     * @param   string $content
+     * @param  string  $content
      *
      * @return  static
      * @throws \InvalidArgumentException
      */
-    public function withContent($content)
+    public function withContent(string $content): static
     {
         return $this->withBody($this->handleBody($content));
     }
@@ -68,11 +68,11 @@ abstract class AbstractContentTypeResponse extends Response
     /**
      * Add Content-Type to header.
      *
-     * @param   string $contentType The content type.
+     * @param  string  $contentType  The content type.
      *
      * @return  static
      */
-    public function withContentType($contentType)
+    public function withContentType(string $contentType): static
     {
         $contentType = $this->normalizeContentType($contentType);
 
@@ -88,12 +88,12 @@ abstract class AbstractContentTypeResponse extends Response
     /**
      * Add content-type to headers variable if not exists.
      *
-     * @param   array  $headers     The headers variable.
-     * @param   string $contentType The content-type.
+     * @param  array   $headers      The headers variable.
+     * @param  string  $contentType  The content-type.
      *
      * @return array
      */
-    protected function addContentTypeToHeader($headers, $contentType)
+    protected function addContentTypeToHeader(array $headers, string $contentType): array
     {
         $keys = array_change_key_case(array_keys($headers), CASE_LOWER);
 
@@ -107,11 +107,11 @@ abstract class AbstractContentTypeResponse extends Response
     /**
      * Normalize content-type.
      *
-     * @param   string $contentType Content-type string.
+     * @param  string  $contentType  Content-type string.
      *
      * @return  string
      */
-    protected function normalizeContentType($contentType)
+    protected function normalizeContentType(string $contentType): string
     {
         return strtolower((string) $contentType);
     }

@@ -51,7 +51,7 @@ class YamlFormat implements FormatInterface
      *
      * @since   2.0
      */
-    public function parse(string $string, array $options = [])
+    public function parse(string $string, array $options = []): mixed
     {
         $flags = $options['flags'] ?? 0;
 

@@ -96,7 +96,7 @@ class QueueMessage implements \JsonSerializable
      *
      * @return  mixed
      */
-    public function get(string $name, $default = null)
+    public function get(string $name, $default = null): mixed
     {
         return $this->body[$name] ?? $default;
     }
@@ -109,7 +109,7 @@ class QueueMessage implements \JsonSerializable
      *
      * @return  static
      */
-    public function set(string $name, $value)
+    public function set(string $name, $value): static
     {
         $this->body[$name] = $value;
 
@@ -133,7 +133,7 @@ class QueueMessage implements \JsonSerializable
      *
      * @return  static  Return self to support chaining.
      */
-    public function setId(int|string $id)
+    public function setId(int|string $id): static
     {
         $this->id = $id;
 
@@ -157,7 +157,7 @@ class QueueMessage implements \JsonSerializable
      *
      * @return  static  Return self to support chaining.
      */
-    public function setAttempts(int $attempts)
+    public function setAttempts(int $attempts): static
     {
         $this->attempts = $attempts;
 
@@ -181,7 +181,7 @@ class QueueMessage implements \JsonSerializable
      *
      * @return  static  Return self to support chaining.
      */
-    public function setSerializedJob(string $job)
+    public function setSerializedJob(string $job): static
     {
         $this->body['job'] = $job;
 
@@ -205,7 +205,7 @@ class QueueMessage implements \JsonSerializable
      *
      * @return  static  Return self to support chaining.
      */
-    public function setData(array $data)
+    public function setData(array $data): static
     {
         $this->body['data'] = $data;
 
@@ -229,7 +229,7 @@ class QueueMessage implements \JsonSerializable
      *
      * @return  static  Return self to support chaining.
      */
-    public function setChannel(?string $queue)
+    public function setChannel(?string $queue): static
     {
         $this->body['channel'] = $queue;
 
@@ -253,7 +253,7 @@ class QueueMessage implements \JsonSerializable
      *
      * @return  static  Return self to support chaining.
      */
-    public function setBody(array $body)
+    public function setBody(array $body): static
     {
         $this->body = $body;
 
@@ -277,7 +277,7 @@ class QueueMessage implements \JsonSerializable
      *
      * @return  static  Return self to support chaining.
      */
-    public function setRawBody(string $rawBody)
+    public function setRawBody(string $rawBody): static
     {
         $this->rawBody = $rawBody;
 
@@ -301,7 +301,7 @@ class QueueMessage implements \JsonSerializable
      *
      * @return  static  Return self to support chaining.
      */
-    public function setName(string $name)
+    public function setName(string $name): static
     {
         $this->body['name'] = $name;
 
@@ -325,7 +325,7 @@ class QueueMessage implements \JsonSerializable
      *
      * @return  static  Return self to support chaining.
      */
-    public function setDelay(int $delay)
+    public function setDelay(int $delay): static
     {
         $this->delay = $delay;
 
@@ -339,7 +339,7 @@ class QueueMessage implements \JsonSerializable
      *
      * @throws \InvalidArgumentException
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): array
     {
         return $this->body;
     }
@@ -357,7 +357,7 @@ class QueueMessage implements \JsonSerializable
      *
      * @return  static  Return self to support chaining.
      */
-    public function setDeleted(bool $deleted)
+    public function setDeleted(bool $deleted): static
     {
         $this->deleted = $deleted;
 

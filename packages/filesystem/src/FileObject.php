@@ -71,7 +71,7 @@ class FileObject extends \SplFileInfo
      *
      * @return  static
      */
-    public static function wrap($file, ?string $root = null)
+    public static function wrap($file, ?string $root = null): static
     {
         if ($file instanceof \SplFileInfo) {
             $file = new static($file->getPathname());
@@ -94,7 +94,7 @@ class FileObject extends \SplFileInfo
      *
      * @return  static|null
      */
-    public static function wrapIfNotNull($file, ?string $root = null)
+    public static function wrapIfNotNull($file, ?string $root = null): ?static
     {
         if ($file === null) {
             return null;
@@ -166,7 +166,7 @@ class FileObject extends \SplFileInfo
      * @throws  FilesystemException
      * @since   2.0
      */
-    public function mkdir(int $mode = 0755)
+    public function mkdir(int $mode = 0755): static
     {
         static $nested = 0;
 
@@ -224,7 +224,7 @@ class FileObject extends \SplFileInfo
      *
      * @return  static
      */
-    public function copyTo($dest, bool $force = false)
+    public function copyTo($dest, bool $force = false): static
     {
         $dest = static::wrap($dest);
 
@@ -335,7 +335,7 @@ class FileObject extends \SplFileInfo
      *
      * @return  static
      */
-    public function moveTo($dest, bool $force = false)
+    public function moveTo($dest, bool $force = false): static
     {
         $dest = static::wrap($dest);
 
@@ -435,7 +435,7 @@ class FileObject extends \SplFileInfo
      *
      * @return  static
      */
-    public function write($buffer)
+    public function write($buffer): static
     {
         ArgumentsAssert::assert(
             is_stringable($buffer),
@@ -462,7 +462,7 @@ class FileObject extends \SplFileInfo
      *
      * @return  static
      */
-    public function writeStream($stream)
+    public function writeStream($stream): static
     {
         if (!$stream instanceof StreamInterface) {
             $stream = new Stream($stream, Stream::MODE_READ_ONLY_FROM_BEGIN);
@@ -483,7 +483,7 @@ class FileObject extends \SplFileInfo
      *
      * @return  static
      */
-    public function delete()
+    public function delete(): static
     {
         $path = $this->getPathname();
 
@@ -583,7 +583,7 @@ class FileObject extends \SplFileInfo
      *
      * @return  static
      */
-    public function getParent(int $levels = 1)
+    public function getParent(int $levels = 1): static
     {
         return static::wrap(dirname($this->getPathname(), $levels));
     }
@@ -612,7 +612,7 @@ class FileObject extends \SplFileInfo
      *
      * @return  static
      */
-    public function touch(?int $time = null, ?int $atime = null)
+    public function touch(?int $time = null, ?int $atime = null): static
     {
         touch($this->getPathname(), ...func_get_args());
 
@@ -626,7 +626,7 @@ class FileObject extends \SplFileInfo
      *
      * @return  static
      */
-    public function appendPath(string $path)
+    public function appendPath(string $path): static
     {
         $newPath = $this->getPathname() . $path;
 
@@ -640,7 +640,7 @@ class FileObject extends \SplFileInfo
      *
      * @return  static
      */
-    public function prependPath(string $path)
+    public function prependPath(string $path): static
     {
         $newPath = $path . $this->getPathname();
 
@@ -711,14 +711,14 @@ class FileObject extends \SplFileInfo
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function setRoot(?string $root)
+    public function setRoot(?string $root): static
     {
         $this->root = $root;
 
         return $this;
     }
 
-    public static function __callStatic(string $name, $args)
+    public static function __callStatic(string $name, $args): Promise
     {
         $allows = [
             'read',

@@ -123,7 +123,7 @@ class SimpleTemplate
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function setDelimiter(string $delimiter)
+    public function setDelimiter(string $delimiter): static
     {
         $this->delimiter = $delimiter;
 
@@ -143,7 +143,7 @@ class SimpleTemplate
      *
      * @return  static  Return self to support chaining.
      */
-    public function setTemplate(string $template)
+    public function setTemplate(string $template): static
     {
         $this->template = $template;
 

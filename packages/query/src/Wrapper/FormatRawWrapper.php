@@ -51,7 +51,7 @@ class FormatRawWrapper extends RawWrapper
      *
      * @since  3.5.1
      */
-    public function get()
+    public function get(): mixed
     {
         return $this->query->format(parent::get(), ...$this->args);
     }

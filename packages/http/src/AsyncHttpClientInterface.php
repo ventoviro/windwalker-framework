@@ -26,5 +26,5 @@ interface AsyncHttpClientInterface
      *
      * @return  PromiseInterface|mixed
      */
-    public function sendAsyncRequest(RequestInterface $request);
+    public function sendAsyncRequest(RequestInterface $request): mixed;
 }

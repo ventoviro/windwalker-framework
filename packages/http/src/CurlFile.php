@@ -55,7 +55,7 @@ class CurlFile
      *
      * @since  3.5.13
      */
-    public function getFile()
+    public function getFile(): string
     {
         return $this->file;
     }

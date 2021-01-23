@@ -31,7 +31,7 @@ trait ObjectBuilderAwareTrait
      *
      * @return  static  Return self to support chaining.
      */
-    public function setObjectBuilder(?ObjectBuilder $objectBuilder)
+    public function setObjectBuilder(?ObjectBuilder $objectBuilder): static
     {
         $this->objectBuilder = $objectBuilder;
 

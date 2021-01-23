@@ -53,7 +53,7 @@ class SimpleAsyncTransport implements AsyncTransportInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setTransport(TransportInterface $transport)
+    public function setTransport(TransportInterface $transport): static
     {
         $this->transport = $transport;
 

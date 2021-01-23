@@ -51,7 +51,7 @@ class PathCollection
      *
      * @since  2.0
      */
-    public function addPaths(array $paths)
+    public function addPaths(array $paths): static|PathCollection
     {
         $new = clone $this;
 
@@ -73,7 +73,7 @@ class PathCollection
      * @throws \InvalidArgumentException
      * @since  2.0
      */
-    public function add($path)
+    public function add($path): static|PathCollection
     {
         $new = clone $this;
 
@@ -117,7 +117,7 @@ class PathCollection
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function withPaths(array $paths)
+    public function withPaths(array $paths): static|PathCollection
     {
         $new = clone $this;
 
@@ -207,7 +207,7 @@ class PathCollection
      *
      * @return  static  Return new object.
      */
-    public function appendAll(string $appended)
+    public function appendAll(string $appended): static|PathCollection
     {
         return $this->map(
             static function (FileObject $path) use ($appended) {
@@ -223,7 +223,7 @@ class PathCollection
      *
      * @return  static  Return new object.
      */
-    public function prependAll(string $prepended)
+    public function prependAll(string $prepended): static|PathCollection
     {
         return $this->map(
             static function (FileObject $path) use ($prepended) {
@@ -239,7 +239,7 @@ class PathCollection
      *
      * @return  static Return new object.
      */
-    public function map(callable $callback)
+    public function map(callable $callback): static|PathCollection
     {
         $new = clone $this;
 

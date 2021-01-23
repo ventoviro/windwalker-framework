@@ -66,7 +66,7 @@ class ArrayObject implements AccessibleInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public static function create($data = [])
+    public static function create($data = []): static
     {
         return new static($data);
     }
@@ -82,7 +82,7 @@ class ArrayObject implements AccessibleInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public static function explode(string $delimiter, string $string, ?int $limit = null)
+    public static function explode(string $delimiter, string $string, ?int $limit = null): static
     {
         return new static(explode(...array_filter(func_get_args(), fn ($v) => $v !== null)));
     }
@@ -94,7 +94,7 @@ class ArrayObject implements AccessibleInterface
      *
      * @return  static
      */
-    protected function newInstance($data = [])
+    protected function newInstance($data = []): ArrayObject|static
     {
         $new = clone $this;
 
@@ -113,7 +113,7 @@ class ArrayObject implements AccessibleInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function with($key, $value)
+    public function with(mixed $key, mixed $value): ArrayObject|static
     {
         $new = clone $this;
 
@@ -132,7 +132,7 @@ class ArrayObject implements AccessibleInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function withDef($key, $default)
+    public function withDef(mixed $key, mixed $default): ArrayObject|static
     {
         $new = clone $this;
 
@@ -150,7 +150,7 @@ class ArrayObject implements AccessibleInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function withRemove($key)
+    public function withRemove(mixed $key): ArrayObject|static
     {
         $new = clone $this;
 
@@ -168,7 +168,7 @@ class ArrayObject implements AccessibleInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function withReset(array $storage = [])
+    public function withReset(array $storage = []): ArrayObject|static
     {
         $new = clone $this;
 
@@ -187,7 +187,7 @@ class ArrayObject implements AccessibleInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function bind($data, array $options = [])
+    public function bind(mixed $data, array $options = []): static
     {
         $items = TypeCast::toArray($data);
 
@@ -212,7 +212,7 @@ class ArrayObject implements AccessibleInterface
      *
      * @since  3.5
      */
-    public function keys($search = null, ?bool $strict = null)
+    public function keys($search = null, ?bool $strict = null): ArrayObject|static
     {
         return $this->newInstance(array_keys($this->storage, ...array_filter(func_get_args())));
     }
@@ -227,7 +227,7 @@ class ArrayObject implements AccessibleInterface
      *
      * @since  3.5
      */
-    public function column($name, ?string $key = null)
+    public function column(mixed $name, ?string $key = null): static
     {
         return new static(array_column($this->storage, $name, $key));
     }
@@ -242,7 +242,7 @@ class ArrayObject implements AccessibleInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function setColumn($name, $value)
+    public function setColumn(mixed $name, mixed $value): ArrayObject|static
     {
         return $this->newInstance()->apply(
             function (array $storage) use ($name, $value) {
@@ -265,7 +265,7 @@ class ArrayObject implements AccessibleInterface
      *
      * @return  static
      */
-    public function apply(callable $callback, ...$args)
+    public function apply(callable $callback, ...$args): ArrayObject|static
     {
         return $this->newInstance($callback(TypeCast::toArray($this), ...$args));
     }
@@ -275,7 +275,7 @@ class ArrayObject implements AccessibleInterface
      *
      * @return  static
      */
-    public function values()
+    public function values(): ArrayObject|static
     {
         return $this->newInstance(array_values(TypeCast::toArray($this)));
     }
@@ -288,7 +288,7 @@ class ArrayObject implements AccessibleInterface
      *
      * @return  static
      */
-    public function pipe(callable $callback, ...$args)
+    public function pipe(callable $callback, ...$args): static
     {
         return $callback($this, ...$args);
     }
@@ -303,7 +303,7 @@ class ArrayObject implements AccessibleInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function tap(callable $callback, ...$args)
+    public function tap(callable $callback, ...$args): static
     {
         $callback($this, ...$args);
 
@@ -320,7 +320,7 @@ class ArrayObject implements AccessibleInterface
      *
      * @since  3.5
      */
-    public function search($value, bool $strict = false)
+    public function search(mixed $value, bool $strict = false): bool|int|string
     {
         return array_search($value, $this->storage, $strict);
     }
@@ -349,7 +349,7 @@ class ArrayObject implements AccessibleInterface
      *
      * @since  3.5
      */
-    public function sum()
+    public function sum(): float|int
     {
         return array_sum($this->storage);
     }
@@ -361,7 +361,7 @@ class ArrayObject implements AccessibleInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function avg()
+    public function avg(): float|int
     {
         return $this->sum() / $this->count();
     }
@@ -375,7 +375,7 @@ class ArrayObject implements AccessibleInterface
      *
      * @since  3.5
      */
-    public function unique(int $sortFlags = SORT_STRING)
+    public function unique(int $sortFlags = SORT_STRING): static
     {
         return new static(array_unique($this->storage, $sortFlags));
     }
@@ -390,7 +390,7 @@ class ArrayObject implements AccessibleInterface
      *
      * @since  3.5
      */
-    public function contains($value, bool $strict = false): bool
+    public function contains(mixed $value, bool $strict = false): bool
     {
         return (bool) in_array($value, $this->storage, $strict);
     }
@@ -404,7 +404,7 @@ class ArrayObject implements AccessibleInterface
      *
      * @since  3.5
      */
-    public function keyExists($key): bool
+    public function keyExists(mixed $key): bool
     {
         return array_key_exists($key, $this->storage);
     }
@@ -451,7 +451,7 @@ class ArrayObject implements AccessibleInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public static function wrap($value)
+    public static function wrap(mixed $value): static
     {
         if (!$value instanceof static) {
             $value = new static($value);
@@ -469,7 +469,7 @@ class ArrayObject implements AccessibleInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public static function unwrap($value)
+    public static function unwrap(mixed $value): mixed
     {
         if ($value instanceof static) {
             $value = $value->dump();
@@ -485,7 +485,7 @@ class ArrayObject implements AccessibleInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function wrapAll()
+    public function wrapAll(): static
     {
         return $this->mapAs(static::class);
     }

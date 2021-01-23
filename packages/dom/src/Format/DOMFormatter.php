@@ -63,7 +63,7 @@ class DOMFormatter
      *
      * @return  static
      */
-    public static function getInstance()
+    public static function getInstance(): static
     {
         if (empty(static::$instance)) {
             static::$instance = new static();
@@ -91,7 +91,7 @@ class DOMFormatter
      *
      * @return  string  Formatted Html string.
      */
-    public static function format(string $buffer)
+    public static function format(string $buffer): string
     {
         return static::getInstance()->indent($buffer);
     }
@@ -265,7 +265,7 @@ class DOMFormatter
      *
      * @return  mixed
      */
-    public static function minify($buffer)
+    public static function minify($buffer): mixed
     {
         $search = [
             // Strip whitespaces after tags, except space

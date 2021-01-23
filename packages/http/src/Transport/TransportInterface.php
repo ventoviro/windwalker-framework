@@ -45,7 +45,7 @@ interface TransportInterface
      * @return  ResponseInterface
      * @since   2.1
      */
-    public function download(RequestInterface $request, string|StreamInterface $dest, array $options = []);
+    public function download(RequestInterface $request, string|StreamInterface $dest, array $options = []): ResponseInterface;
 
     /**
      * Method to check if HTTP transport layer available for using
@@ -54,5 +54,5 @@ interface TransportInterface
      *
      * @since   2.1
      */
-    public static function isSupported();
+    public static function isSupported(): bool;
 }

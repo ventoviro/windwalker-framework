@@ -207,7 +207,7 @@ class CompositeRenderer implements RendererInterface, TemplateFactoryInterface, 
      *
      * @return static Return self to support chaining.
      */
-    public function setPaths(array|string|SplPriorityQueue $paths)
+    public function setPaths(array|string|SplPriorityQueue $paths): static
     {
         if ($paths instanceof SplPriorityQueue) {
             $paths = new PriorityQueue($paths);
@@ -236,7 +236,7 @@ class CompositeRenderer implements RendererInterface, TemplateFactoryInterface, 
      *
      * @return  static
      */
-    public function addPath(string $path, int $priority = 100)
+    public function addPath(string $path, int $priority = 100): static
     {
         $this->paths->insert($path, $priority);
 
@@ -248,7 +248,7 @@ class CompositeRenderer implements RendererInterface, TemplateFactoryInterface, 
      *
      * @return  static
      */
-    public function clearPaths()
+    public function clearPaths(): static
     {
         $this->setPaths([]);
 
@@ -377,7 +377,7 @@ class CompositeRenderer implements RendererInterface, TemplateFactoryInterface, 
      *
      * @return  static
      */
-    public function alias(string $alias, string $layout)
+    public function alias(string $alias, string $layout): static
     {
         $this->aliases[$alias] = $layout;
 
@@ -406,7 +406,7 @@ class CompositeRenderer implements RendererInterface, TemplateFactoryInterface, 
      *
      * @return  static  Return self to support chaining.
      */
-    public function setAliases(array $aliases)
+    public function setAliases(array $aliases): static
     {
         $this->aliases = $aliases;
 

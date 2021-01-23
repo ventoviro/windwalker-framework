@@ -173,7 +173,7 @@ class PdoQueueFailer implements QueueFailerInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setTable(string $table)
+    public function setTable(string $table): static
     {
         $this->table = $table;
 

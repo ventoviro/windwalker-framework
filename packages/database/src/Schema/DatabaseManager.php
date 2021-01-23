@@ -23,7 +23,7 @@ class DatabaseManager extends AbstractMetaManager
      *
      * @return  static
      */
-    public function select()
+    public function select(): static
     {
         $this->db->getPlatform()->selectDatabase($this->getName());
 
@@ -38,7 +38,7 @@ class DatabaseManager extends AbstractMetaManager
      *
      * @return static
      */
-    public function create(bool $ifNotExists = false, array $options = [])
+    public function create(bool $ifNotExists = false, array $options = []): static
     {
         if ($ifNotExists && in_array($this->getName(), $this->db->listDatabases(), true)) {
             return $this;
@@ -56,7 +56,7 @@ class DatabaseManager extends AbstractMetaManager
      *
      * @return  static
      */
-    public function drop(bool $ifExists = false)
+    public function drop(bool $ifExists = false): static
     {
         $name = $this->getName();
 

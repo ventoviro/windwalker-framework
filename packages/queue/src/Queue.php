@@ -216,7 +216,7 @@ class Queue
      *
      * @return  static  Return self to support chaining.
      */
-    public function setDriver(QueueDriverInterface $driver)
+    public function setDriver(QueueDriverInterface $driver): static
     {
         $this->driver = $driver;
 

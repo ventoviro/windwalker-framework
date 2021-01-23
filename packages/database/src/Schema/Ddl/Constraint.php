@@ -57,7 +57,7 @@ class Constraint
      *
      * @return  static  Return self to support chaining.
      */
-    public function name(string $constraintName)
+    public function name(string $constraintName): static
     {
         $this->constraintName = $constraintName;
 
@@ -69,7 +69,7 @@ class Constraint
      *
      * @return  static  Return self to support chaining.
      */
-    public function type(string $constraintType)
+    public function type(string $constraintType): static
     {
         $this->constraintType = $constraintType;
 
@@ -81,7 +81,7 @@ class Constraint
      *
      * @return  static  Return self to support chaining.
      */
-    public function tableName(string $tableName)
+    public function tableName(string $tableName): static
     {
         $this->tableName = $tableName;
 
@@ -93,7 +93,7 @@ class Constraint
      *
      * @return  static  Return self to support chaining.
      */
-    public function referencedSchema(?string $referencedTableSchema)
+    public function referencedSchema(?string $referencedTableSchema): static
     {
         $this->referencedTableSchema = $referencedTableSchema;
 
@@ -105,7 +105,7 @@ class Constraint
      *
      * @return  static  Return self to support chaining.
      */
-    public function referencedTableName(?string $referencedTableName)
+    public function referencedTableName(?string $referencedTableName): static
     {
         $this->referencedTableName = $referencedTableName;
 
@@ -117,7 +117,7 @@ class Constraint
      *
      * @return  static  Return self to support chaining.
      */
-    public function matchOption(?string $matchOption)
+    public function matchOption(?string $matchOption): static
     {
         $this->matchOption = $matchOption;
 
@@ -129,7 +129,7 @@ class Constraint
      *
      * @return  static  Return self to support chaining.
      */
-    public function onUpdate(?string $updateRule)
+    public function onUpdate(?string $updateRule): static
     {
         $this->updateRule = $updateRule;
 
@@ -141,7 +141,7 @@ class Constraint
      *
      * @return  static  Return self to support chaining.
      */
-    public function onDelete(?string $deleteRule)
+    public function onDelete(?string $deleteRule): static
     {
         $this->deleteRule = $deleteRule;
 
@@ -162,7 +162,7 @@ class Constraint
      *
      * @return  static  Return self to support chaining.
      */
-    public function referencedColumns(array $referencedColumns)
+    public function referencedColumns(array $referencedColumns): static
     {
         $cols = [];
 
@@ -188,7 +188,7 @@ class Constraint
      *
      * @return  $this
      */
-    public function columns(array $columns)
+    public function columns(array $columns): static
     {
         $cols = [];
 

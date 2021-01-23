@@ -278,7 +278,7 @@ class DependencyResolver
      *
      * @since  3.5.1
      */
-    public function &resolveParameterValue(&$value, \ReflectionParameter $param, int $options = 0)
+    public function &resolveParameterValue(&$value, \ReflectionParameter $param, int $options = 0): mixed
     {
         if ($value instanceof ObjectBuilderDefinition) {
             $value = $this->container->resolve($value);
@@ -316,7 +316,7 @@ class DependencyResolver
      *
      * @throws ReflectionException
      */
-    public function call(callable $callable, array $args = [], ?object $context = null, int $options = 0)
+    public function call(callable $callable, array $args = [], ?object $context = null, int $options = 0): mixed
     {
         $ref = new ReflectionCallable($callable);
 

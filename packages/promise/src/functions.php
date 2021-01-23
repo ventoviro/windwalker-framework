@@ -98,7 +98,7 @@ function async(callable $callable): ExtendedPromiseInterface
  *
  * @return  mixed
  */
-function await(PromiseInterface $promise)
+function await(PromiseInterface $promise): mixed
 {
     return $promise->wait();
 }

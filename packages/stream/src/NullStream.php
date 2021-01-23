@@ -34,7 +34,7 @@ class NullStream implements StreamInterface
      * @see http://php.net/manual/en/language.oop5.magic.php#object.tostring
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return '';
     }
@@ -66,7 +66,7 @@ class NullStream implements StreamInterface
      *
      * @return int|null Returns the size in bytes if known, or null if unknown.
      */
-    public function getSize()
+    public function getSize(): ?int
     {
         return 0;
     }
@@ -77,7 +77,7 @@ class NullStream implements StreamInterface
      * @return int Position of the file pointer
      * @throws \RuntimeException on error.
      */
-    public function tell()
+    public function tell(): int
     {
         return 0;
     }
@@ -87,7 +87,7 @@ class NullStream implements StreamInterface
      *
      * @return bool
      */
-    public function eof()
+    public function eof(): bool
     {
         return true;
     }
@@ -97,7 +97,7 @@ class NullStream implements StreamInterface
      *
      * @return bool
      */
-    public function isSeekable()
+    public function isSeekable(): bool
     {
         return true;
     }
@@ -117,7 +117,7 @@ class NullStream implements StreamInterface
      * @return bool
      * @throws \RuntimeException on failure.
      */
-    public function seek($offset, $whence = SEEK_SET)
+    public function seek($offset, $whence = SEEK_SET): bool
     {
         return true;
     }
@@ -142,7 +142,7 @@ class NullStream implements StreamInterface
      *
      * @return bool
      */
-    public function isWritable()
+    public function isWritable(): bool
     {
         return true;
     }
@@ -155,7 +155,7 @@ class NullStream implements StreamInterface
      * @return int Returns the number of bytes written to the stream.
      * @throws \RuntimeException on failure.
      */
-    public function write($string)
+    public function write($string): int
     {
         return 0;
     }
@@ -165,7 +165,7 @@ class NullStream implements StreamInterface
      *
      * @return bool
      */
-    public function isReadable()
+    public function isReadable(): bool
     {
         return true;
     }
@@ -181,7 +181,7 @@ class NullStream implements StreamInterface
      *     if no bytes are available.
      * @throws \RuntimeException if an error occurs.
      */
-    public function read($length)
+    public function read($length): string
     {
         return '';
     }
@@ -193,7 +193,7 @@ class NullStream implements StreamInterface
      * @throws \RuntimeException if unable to read or an error occurs while
      *     reading.
      */
-    public function getContents()
+    public function getContents(): string
     {
         return '';
     }
@@ -212,7 +212,7 @@ class NullStream implements StreamInterface
      *     provided. Returns a specific key value if a key is provided and the
      *     value is found, or null if the key is not found.
      */
-    public function getMetadata($key = null)
+    public function getMetadata($key = null): mixed
     {
         return null;
     }

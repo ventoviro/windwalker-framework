@@ -128,7 +128,7 @@ class ReflectionCallable implements \Reflector
      * @deprecated 7.4
      * @removed    8.0
      */
-    public static function export()
+    public static function export(): ?string
     {
         return null;
     }
@@ -141,7 +141,7 @@ class ReflectionCallable implements \Reflector
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return (string) $this->getReflector();
     }

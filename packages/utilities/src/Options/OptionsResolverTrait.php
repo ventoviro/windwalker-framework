@@ -55,7 +55,7 @@ trait OptionsResolverTrait
         return $this->options;
     }
 
-    public function setOptions(array $options)
+    public function setOptions(array $options): static
     {
         $this->options = OptionsResolverFactory::getByClass(static::class)->resolve($options);
 

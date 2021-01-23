@@ -83,7 +83,7 @@ class WhereWrapper implements WrapperInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function getVar1()
+    public function getVar1(): mixed
     {
         return $this->var1;
     }
@@ -97,7 +97,7 @@ class WhereWrapper implements WrapperInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function setVar1($var1)
+    public function setVar1($var1): static
     {
         $this->var1 = $var1;
 
@@ -111,7 +111,7 @@ class WhereWrapper implements WrapperInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function getVar2()
+    public function getVar2(): mixed
     {
         return $this->var2;
     }
@@ -125,7 +125,7 @@ class WhereWrapper implements WrapperInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function setVar2($var2)
+    public function setVar2($var2): static
     {
         $this->var2 = $var2;
 
@@ -153,7 +153,7 @@ class WhereWrapper implements WrapperInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function setOperator(string $operator)
+    public function setOperator(string $operator): static
     {
         $this->operator = $operator;
 

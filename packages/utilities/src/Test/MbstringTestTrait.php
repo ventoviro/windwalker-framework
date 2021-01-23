@@ -27,7 +27,7 @@ trait MbstringTestTrait
      *
      * @since   2.0
      */
-    public function isAsciiProvider()
+    public function isAsciiProvider(): array
     {
         return [
             ['ascii', true],
@@ -47,7 +47,7 @@ trait MbstringTestTrait
      *
      * @since   2.0
      */
-    public function strposProvider()
+    public function strposProvider(): array
     {
         return [
             [3, 'missing', 'sing', 0],
@@ -68,7 +68,7 @@ trait MbstringTestTrait
      *
      * @since   2.0
      */
-    public function strrposProvider()
+    public function strrposProvider(): array
     {
         return [
             [3, 'missing', 'sing', 0],
@@ -88,7 +88,7 @@ trait MbstringTestTrait
      *
      * @since   2.0
      */
-    public function substrProvider()
+    public function substrProvider(): array
     {
         return [
             ['issauga', 'Mississauga', 4, null],
@@ -106,7 +106,7 @@ trait MbstringTestTrait
      *
      * @since   2.0
      */
-    public function strtolowerProvider()
+    public function strtolowerProvider(): array
     {
         return [
             ['Windwalker! Rocks', 'windwalker! rocks'],
@@ -123,7 +123,7 @@ trait MbstringTestTrait
      *
      * @since   2.0
      */
-    public function strtoupperProvider()
+    public function strtoupperProvider(): array
     {
         return [
             ['Windwalker! Rocks', 'WINDWALKER! ROCKS'],
@@ -140,7 +140,7 @@ trait MbstringTestTrait
      *
      * @since   2.0
      */
-    public function strlenProvider()
+    public function strlenProvider(): array
     {
         return [
             ['Windwalker! Rocks', 17],
@@ -154,7 +154,7 @@ trait MbstringTestTrait
      *
      * @since   2.0
      */
-    public function strIreplaceProvider()
+    public function strIreplaceProvider(): array
     {
         return [
             ['Pig', 'cow', 'the pig jumped', null, 'the cow jumped'],
@@ -181,7 +181,7 @@ trait MbstringTestTrait
      *
      * @since   2.0
      */
-    public function strSplitProvider()
+    public function strSplitProvider(): array
     {
         return [
             ['string', 1, ['s', 't', 'r', 'i', 'n', 'g']],
@@ -199,7 +199,7 @@ trait MbstringTestTrait
      *
      * @since   2.0
      */
-    public function strcasecmpProvider()
+    public function strcasecmpProvider(): array
     {
         return [
             ['THIS IS STRING1', 'this is string1', 0],
@@ -217,7 +217,7 @@ trait MbstringTestTrait
      *
      * @since   2.0
      */
-    public function strcmpProvider()
+    public function strcmpProvider(): array
     {
         return [
             ['THIS IS STRING1', 'this is string1', -1],
@@ -235,7 +235,7 @@ trait MbstringTestTrait
      *
      * @since   2.0
      */
-    public function strcspnProvider()
+    public function strcspnProvider(): array
     {
         return [
             ['subject <a> string <a>', '<>', 0, null, 8],
@@ -253,7 +253,7 @@ trait MbstringTestTrait
      *
      * @since   2.0
      */
-    public function stristrProvider()
+    public function stristrProvider(): array
     {
         return [
             ['haystack', 'needle', false],
@@ -269,7 +269,7 @@ trait MbstringTestTrait
      *
      * @since   2.0
      */
-    public function strrevProvider()
+    public function strrevProvider(): array
     {
         return [
             ['abc def', 'fed cba'],
@@ -285,7 +285,7 @@ trait MbstringTestTrait
      *
      * @since   2.0
      */
-    public function strspnProvider()
+    public function strspnProvider(): array
     {
         return [
             ['A321 Main Street', '0123456789', 1, 2, 2],
@@ -310,7 +310,7 @@ trait MbstringTestTrait
      *
      * @since   2.0
      */
-    public function substrReplaceProvider()
+    public function substrReplaceProvider(): array
     {
         return [
             ['321 Broadway Avenue', '321 Main Street', 'Broadway Avenue', 4, null],
@@ -327,7 +327,7 @@ trait MbstringTestTrait
      *
      * @since   2.0
      */
-    public function ltrimProvider()
+    public function ltrimProvider(): array
     {
         return [
             ['   abc def', null, 'abc def'],
@@ -347,7 +347,7 @@ trait MbstringTestTrait
      *
      * @since   2.0
      */
-    public function rtrimProvider()
+    public function rtrimProvider(): array
     {
         return [
             ['abc def   ', null, 'abc def'],
@@ -367,7 +367,7 @@ trait MbstringTestTrait
      *
      * @since   2.0
      */
-    public function trimProvider()
+    public function trimProvider(): array
     {
         return [
             ['  abc def   ', null, 'abc def'],
@@ -387,7 +387,7 @@ trait MbstringTestTrait
      *
      * @since   2.0
      */
-    public function ucfirstProvider()
+    public function ucfirstProvider(): array
     {
         return [
             ['george', 'George'],
@@ -403,7 +403,7 @@ trait MbstringTestTrait
      *
      * @return  array
      */
-    public function lcfirstProvider()
+    public function lcfirstProvider(): array
     {
         return [
             ['GEORGE', 'gEORGE'],
@@ -421,7 +421,7 @@ trait MbstringTestTrait
      *
      * @since   2.0
      */
-    public function ucwordsProvider()
+    public function ucwordsProvider(): array
     {
         return [
             ['george washington', 'George Washington'],
@@ -439,7 +439,7 @@ trait MbstringTestTrait
      *
      * @since   2.0
      */
-    public function convertEncodingProvider()
+    public function convertEncodingProvider(): array
     {
         return [
             ['Åbc Öde €2.0', 'UTF-8', 'ISO-8859-15', "\xc5bc \xd6de \xA42.0"],
@@ -454,7 +454,7 @@ trait MbstringTestTrait
      *
      * @since   2.0
      */
-    public function isUtf8Provider()
+    public function isUtf8Provider(): array
     {
         return [
             ["\xCF\xB0", true],
@@ -476,7 +476,7 @@ trait MbstringTestTrait
      *
      * @since   2.0
      */
-    public function unicodeToUtf8Provider()
+    public function unicodeToUtf8Provider(): array
     {
         return [
             ["\u0422\u0435\u0441\u0442 \u0441\u0438\u0441\u0442\u0435\u043c\u044b", "Тест системы"],
@@ -491,7 +491,7 @@ trait MbstringTestTrait
      *
      * @since   2.0
      */
-    public function unicodeToUtf16Provider()
+    public function unicodeToUtf16Provider(): array
     {
         return [
             ["\u0422\u0435\u0441\u0442 \u0441\u0438\u0441\u0442\u0435\u043c\u044b", "Тест системы"],
@@ -504,7 +504,7 @@ trait MbstringTestTrait
      *
      * @return  array
      */
-    public function providerTestShuffle()
+    public function providerTestShuffle(): array
     {
         return [
             ['foo bar'],
@@ -518,7 +518,7 @@ trait MbstringTestTrait
      *
      * @return  array
      */
-    public function substrCountProvider()
+    public function substrCountProvider(): array
     {
         return [
             ['FooBarFlowerSakura', 'Flower', 1, Utf8String::CASE_SENSITIVE],

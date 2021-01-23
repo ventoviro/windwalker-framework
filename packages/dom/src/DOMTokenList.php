@@ -217,7 +217,7 @@ class DOMTokenList
      *
      * @return  bool
      */
-    public function __isset(string $name)
+    public function __isset(string $name): bool
     {
         if ($name === 'value') {
             return true;
@@ -233,7 +233,7 @@ class DOMTokenList
      *
      * @return  mixed
      */
-    public function __get(string $name)
+    public function __get(string $name): mixed
     {
         if ($name === 'value') {
             return $this->element->getAttribute($this->name);

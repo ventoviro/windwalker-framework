@@ -91,7 +91,7 @@ class Console
      *
      * @return  int
      */
-    public function execute(\Closure $callback = null)
+    public function execute(\Closure $callback = null): int
     {
         try {
             if ($this->getOption($this->helpOptions)) {
@@ -131,7 +131,7 @@ class Console
      *
      * @return  mixed
      */
-    protected function doExecute()
+    protected function doExecute(): mixed
     {
         // Please override this method.
         return 0;
@@ -144,7 +144,7 @@ class Console
      *
      * @return  mixed
      */
-    protected function delegate($method)
+    protected function delegate($method): mixed
     {
         $args = func_get_args();
         array_shift($args);
@@ -161,7 +161,7 @@ class Console
      *
      * @return  string
      */
-    protected function getHelp()
+    protected function getHelp(): string
     {
         return trim($this->help);
     }
@@ -173,7 +173,7 @@ class Console
      *
      * @return  int
      */
-    protected function handleException($e)
+    protected function handleException($e): int
     {
         $v = $this->getOption('v');
 
@@ -203,7 +203,7 @@ class Console
      *
      * @return  mixed|null
      */
-    public function getArgument($offset, $default = null)
+    public function getArgument($offset, $default = null): mixed
     {
         if (!isset($this->args[$offset])) {
             return $default;
@@ -220,7 +220,7 @@ class Console
      *
      * @return  static
      */
-    public function setArgument($offset, $value)
+    public function setArgument($offset, $value): \static
     {
         $this->args[$offset] = $value;
 
@@ -235,7 +235,7 @@ class Console
      *
      * @return  mixed|null
      */
-    public function getOption($name, $default = null)
+    public function getOption($name, $default = null): mixed
     {
         $name = (array) $name;
 
@@ -256,7 +256,7 @@ class Console
      *
      * @return  static
      */
-    public function setOption($name, $value)
+    public function setOption($name, $value): \static
     {
         $name = (array) $name;
 
@@ -275,7 +275,7 @@ class Console
      *
      * @return  static
      */
-    public function out($text = null, $nl = true)
+    public function out($text = null, $nl = true): \static
     {
         fwrite(STDOUT, $text . ($nl ? "\n" : ''));
 
@@ -290,7 +290,7 @@ class Console
      *
      * @return  static
      */
-    public function err($text = null, $nl = true)
+    public function err($text = null, $nl = true): \static
     {
         fwrite(STDERR, $text . ($nl ? "\n" : ''));
 
@@ -305,7 +305,7 @@ class Console
      *
      * @return  string
      */
-    public function in($ask = '', $default = null, $bool = false)
+    public function in($ask = '', $default = null, $bool = false): bool|string
     {
         $this->out($ask, false);
 
@@ -327,7 +327,7 @@ class Console
      *
      * @return  bool
      */
-    public function mapBoolean($in)
+    public function mapBoolean($in): ?bool
     {
         $in = strtolower((string) $in);
 
@@ -349,7 +349,7 @@ class Console
      *
      * @return  static
      */
-    protected function exec($command)
+    protected function exec($command): \static
     {
         $this->out('>> ' . $command);
 

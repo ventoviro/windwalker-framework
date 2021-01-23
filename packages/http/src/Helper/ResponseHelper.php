@@ -97,7 +97,7 @@ abstract class ResponseHelper
      *
      * @return  string
      */
-    public static function getPhrase($code)
+    public static function getPhrase($code): ?string
     {
         if (isset(static::$phrases[$code])) {
             return static::$phrases[$code];
@@ -113,7 +113,7 @@ abstract class ResponseHelper
      *
      * @return  boolean  Valid or not.
      */
-    public static function validateStatus($code)
+    public static function validateStatus($code): bool
     {
         $code = (int) $code;
 

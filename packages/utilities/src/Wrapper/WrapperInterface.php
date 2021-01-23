@@ -27,5 +27,5 @@ interface WrapperInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function __invoke($src);
+    public function __invoke($src): mixed;
 }

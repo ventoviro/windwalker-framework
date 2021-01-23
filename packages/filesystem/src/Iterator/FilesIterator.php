@@ -25,7 +25,7 @@ class FilesIterator extends NestedIterator
     /**
      * @var string|null
      */
-    protected $path;
+    protected ?string $path = null;
 
     /**
      * create
@@ -36,7 +36,7 @@ class FilesIterator extends NestedIterator
      *
      * @return  static
      */
-    public static function create(string $path, bool $recursive = false, int $options = null)
+    public static function create(string $path, bool $recursive = false, int $options = null): static
     {
         $instance = new static(static::createInnerIterator($path, $recursive, $options));
 
@@ -62,11 +62,11 @@ class FilesIterator extends NestedIterator
      *
      * @param  string   $path       The directory path.
      * @param  boolean  $recursive  True to recursive.
-     * @param  integer  $options    FilesystemIterator Flags provides which will affect the behavior of some methods.
+     * @param  ?int     $options    FilesystemIterator Flags provides which will affect the behavior of some methods.
      *
      * @return  \Iterator  File & dir iterator.
      */
-    public static function createInnerIterator(string $path, bool $recursive = false, int $options = null): \Iterator
+    public static function createInnerIterator(string $path, bool $recursive = false, ?int $options = null): \Iterator
     {
         $path = Path::clean($path);
 
@@ -106,7 +106,7 @@ class FilesIterator extends NestedIterator
     /**
      * first
      *
-     * @return  FileObject
+     * @return FileObject|null
      */
     public function first(): ?FileObject
     {
@@ -138,7 +138,7 @@ class FilesIterator extends NestedIterator
     /**
      * @inheritDoc
      */
-    protected function cloneNew()
+    protected function cloneNew(): static
     {
         $iter = parent::cloneNew();
 

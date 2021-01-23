@@ -44,7 +44,7 @@ class CallbackFilter extends AbstractCallbackFilter
      *
      * @return  static  Return self to support chaining.
      */
-    public function setHandler(callable $handler)
+    public function setHandler(callable $handler): static
     {
         $this->handler = $handler;
 

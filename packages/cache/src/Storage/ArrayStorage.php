@@ -28,7 +28,7 @@ class ArrayStorage implements StorageInterface
     /**
      * @inheritDoc
      */
-    public function get(string $key)
+    public function get(string $key): mixed
     {
         $data = $this->data[$key] ?? null;
 
@@ -82,7 +82,7 @@ class ArrayStorage implements StorageInterface
     /**
      * @inheritDoc
      */
-    public function save(string $key, $value, int $expiration = 0): bool
+    public function save(string $key, mixed $value, int $expiration = 0): bool
     {
         $this->data[$key] = [
             $expiration,
@@ -113,7 +113,7 @@ class ArrayStorage implements StorageInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function setData(array $data)
+    public function setData(array $data): static
     {
         $this->data = $data;
 

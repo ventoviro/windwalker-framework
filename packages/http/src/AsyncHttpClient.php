@@ -95,7 +95,7 @@ class AsyncHttpClient extends HttpClient
      *
      * @return  static
      */
-    public function reset()
+    public function reset(): static
     {
         foreach ($this->tasks as $task) {
             curl_multi_remove_handle($this->mh, $task['handle']);
@@ -140,7 +140,7 @@ class AsyncHttpClient extends HttpClient
      * @return  Response[]
      * @throws \RuntimeException
      */
-    public function resolve(callable $callback = null)
+    public function resolve(callable $callback = null): array
     {
         $active = null;
         $mh = $this->getMainHandle();
@@ -203,7 +203,7 @@ class AsyncHttpClient extends HttpClient
      * @return  static  Return self to support chaining.
      * @throws \InvalidArgumentException
      */
-    public function setTransport(TransportInterface $transport)
+    public function setTransport(TransportInterface $transport): static
     {
         if (!$transport instanceof CurlTransport) {
             throw new \InvalidArgumentException(
@@ -225,7 +225,7 @@ class AsyncHttpClient extends HttpClient
      *
      * @return  \RuntimeException[]
      */
-    public function getErrors()
+    public function getErrors(): array
     {
         return $this->errors;
     }
@@ -235,7 +235,7 @@ class AsyncHttpClient extends HttpClient
      *
      * @return  \resource[]
      */
-    public function getHandles()
+    public function getHandles(): array
     {
         return array_column($this->tasks, 'handle');
     }
@@ -247,7 +247,7 @@ class AsyncHttpClient extends HttpClient
      *
      * @since  3.4
      */
-    public function getTasks()
+    public function getTasks(): array
     {
         return $this->tasks;
     }

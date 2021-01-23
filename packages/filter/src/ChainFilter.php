@@ -48,7 +48,7 @@ class ChainFilter implements FilterInterface, ValidatorInterface
      *
      * @return ChainFilter
      */
-    public function addFilter(FilterInterface|callable $filter, int $priority = PriorityQueue::NORMAL)
+    public function addFilter(FilterInterface|callable $filter, int $priority = PriorityQueue::NORMAL): static
     {
         if (!$filter instanceof FilterInterface) {
             $filter = new CallbackFilter($filter);

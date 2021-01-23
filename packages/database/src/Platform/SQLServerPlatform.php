@@ -430,7 +430,7 @@ class SQLServerPlatform extends AbstractPlatform
      *
      * @return  static
      */
-    public function transactionStart()
+    public function transactionStart(): static
     {
         if (!$this->depth) {
             parent::transactionStart();
@@ -449,7 +449,7 @@ class SQLServerPlatform extends AbstractPlatform
      *
      * @return  static
      */
-    public function transactionCommit()
+    public function transactionCommit(): static
     {
         if ($this->depth <= 1) {
             parent::transactionCommit();
@@ -463,7 +463,7 @@ class SQLServerPlatform extends AbstractPlatform
      *
      * @return  static
      */
-    public function transactionRollback()
+    public function transactionRollback(): static
     {
         if ($this->depth <= 1) {
             parent::transactionRollback();

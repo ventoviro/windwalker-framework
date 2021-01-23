@@ -37,7 +37,7 @@ class PhpSerializer implements SerializerInterface
      *
      * @return mixed
      */
-    public function unserialize(string $data)
+    public function unserialize(string $data): mixed
     {
         return unserialize($data);
     }

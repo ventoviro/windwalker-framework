@@ -69,7 +69,7 @@ trait ManageComponentTrait
      *
      * @return string
      */
-    public function renderComponent()
+    public function renderComponent(): string
     {
         $name = array_pop($this->componentStack);
 

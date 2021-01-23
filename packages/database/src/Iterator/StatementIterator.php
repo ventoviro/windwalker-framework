@@ -85,7 +85,7 @@ class StatementIterator implements \Countable, \Iterator
      *
      * @return mixed Can return any type.
      */
-    public function current()
+    public function current(): mixed
     {
         return $this->current;
     }
@@ -110,7 +110,7 @@ class StatementIterator implements \Countable, \Iterator
      *
      * @return mixed scalar on success, or null on failure.
      */
-    public function key()
+    public function key(): mixed
     {
         return $this->key;
     }

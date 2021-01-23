@@ -50,7 +50,7 @@ class Response implements ResponseInterface
      *
      * @return  static
      */
-    public static function fromString(string $body, int $status = 200, array $headers = [])
+    public static function fromString(string $body, int $status = 200, array $headers = []): static
     {
         return new static(Stream::fromString($body), $status, $headers);
     }
@@ -116,7 +116,7 @@ class Response implements ResponseInterface
      *
      * @return int Status code.
      */
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
         return $this->statusCode;
     }
@@ -143,7 +143,7 @@ class Response implements ResponseInterface
      * @return static
      * @throws \InvalidArgumentException For invalid status code arguments.
      */
-    public function withStatus($code, $reasonPhrase = '')
+    public function withStatus($code, $reasonPhrase = ''): Response|static
     {
         if (!ResponseHelper::validateStatus($code)) {
             throw new \InvalidArgumentException('Invalid status code: ' . $code);
@@ -170,7 +170,7 @@ class Response implements ResponseInterface
      *
      * @return  string  Reason phrase; must return an empty string if none present.
      */
-    public function getReasonPhrase()
+    public function getReasonPhrase(): ?string
     {
         if (!$this->reasonPhrase) {
             $this->reasonPhrase = ResponseHelper::getPhrase($this->statusCode);

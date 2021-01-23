@@ -70,7 +70,7 @@ class BoundedHelper
      *
      * @return  string
      */
-    public static function emulatePrepared($escaper, $sql, array $bounded): string
+    public static function emulatePrepared(mixed $escaper, string $sql, array $bounded): string
     {
         if ($bounded === []) {
             return $sql;

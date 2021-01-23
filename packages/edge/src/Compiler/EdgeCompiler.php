@@ -255,7 +255,7 @@ class EdgeCompiler implements EdgeCompilerInterface
      *
      * @return mixed
      */
-    protected function compileStatements(string $value)
+    protected function compileStatements(string $value): mixed
     {
         return preg_replace_callback(
             '/\B@(@?\w+)([ \t]*)(\( ( (?>[^()]+) | (?3) )* \))?/x',
@@ -308,7 +308,7 @@ class EdgeCompiler implements EdgeCompilerInterface
      *
      * @return EdgeCompiler
      */
-    public function directive(string $name, callable $handler)
+    public function directive(string $name, callable $handler): static
     {
         $this->directives[$name] = $handler;
 
@@ -332,7 +332,7 @@ class EdgeCompiler implements EdgeCompilerInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setDirectives(array $directives)
+    public function setDirectives(array $directives): static
     {
         $this->directives = $directives;
 
@@ -346,7 +346,7 @@ class EdgeCompiler implements EdgeCompilerInterface
      *
      * @return static
      */
-    public function parser(callable $handler)
+    public function parser(callable $handler): static
     {
         $this->parsers[] = $handler;
 
@@ -360,7 +360,7 @@ class EdgeCompiler implements EdgeCompilerInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setParsers(array $parsers)
+    public function setParsers(array $parsers): static
     {
         $this->parsers = $parsers;
 

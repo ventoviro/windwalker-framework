@@ -124,7 +124,7 @@ class Column
      *
      * @return  static  Return self to support chaining.
      */
-    public function columnDefault($value): static
+    public function columnDefault(mixed $value): static
     {
         $this->columnDefault = $value;
 
@@ -143,7 +143,7 @@ class Column
      *
      * @return  static  Return self to support chaining.
      */
-    public function defaultValue($value): static
+    public function defaultValue(mixed $value): static
     {
         return $this->columnDefault($value);
     }

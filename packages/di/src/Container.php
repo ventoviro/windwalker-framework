@@ -116,7 +116,7 @@ class Container implements ContainerInterface, \IteratorAggregate, \Countable, A
      * @return Container
      * @throws DefinitionException
      */
-    public function set(string $id, $value, int $options = 0)
+    public function set(string $id, mixed $value, int $options = 0): static
     {
         $definition = $this->getDefinition($id);
 
@@ -144,7 +144,7 @@ class Container implements ContainerInterface, \IteratorAggregate, \Countable, A
      * @return static
      * @throws DefinitionException
      */
-    public function share(string $id, $value, int $options = 0)
+    public function share(string $id, mixed $value, int $options = 0): static
     {
         return $this->set($id, $value, $options | static::SHARED);
     }
@@ -159,7 +159,7 @@ class Container implements ContainerInterface, \IteratorAggregate, \Countable, A
      * @return static
      * @throws DefinitionException
      */
-    public function protect(string $id, $value, int $options = 0)
+    public function protect(string $id, $value, int $options = 0): static
     {
         return $this->set($id, $value, $options | static::PROTECTED);
     }
@@ -172,7 +172,7 @@ class Container implements ContainerInterface, \IteratorAggregate, \Countable, A
      *
      * @return  $this
      */
-    public function setDefinition(string $id, StoreDefinitionInterface $value)
+    public function setDefinition(string $id, StoreDefinitionInterface $value): static
     {
         $this->storage[$id] = $value;
 
@@ -193,7 +193,7 @@ class Container implements ContainerInterface, \IteratorAggregate, \Countable, A
      *
      * @throws NotFoundExceptionInterface  No entry was found for **this** identifier.
      */
-    public function get($id, bool $forceNew = false)
+    public function get($id, bool $forceNew = false): mixed
     {
         $definition = $this->getDefinition($id);
 
@@ -221,7 +221,7 @@ class Container implements ContainerInterface, \IteratorAggregate, \Countable, A
      *
      * @throws \ReflectionException
      */
-    public function resolve(mixed $source, array $args = [], int $options = 0)
+    public function resolve(mixed $source, array $args = [], int $options = 0): mixed
     {
         ArgumentsAssert::assert(
             $source !== null,
@@ -286,7 +286,7 @@ class Container implements ContainerInterface, \IteratorAggregate, \Countable, A
      *
      * @since   2.1
      */
-    public function remove(string $id)
+    public function remove(string $id): static
     {
         $id = $this->resolveAlias($id);
 
@@ -306,7 +306,7 @@ class Container implements ContainerInterface, \IteratorAggregate, \Countable, A
      *
      * @since   2.0.7
      */
-    public function fork(string $id, string $newId, bool $forceNew = false)
+    public function fork(string $id, string $newId, bool $forceNew = false): mixed
     {
         $raw = clone $this->getDefinition($id);
 
@@ -387,7 +387,7 @@ class Container implements ContainerInterface, \IteratorAggregate, \Countable, A
      * @throws DefinitionException
      * @since   3.0
      */
-    public function bind(string $id, $value, int $options = 0)
+    public function bind(string $id, mixed $value, int $options = 0): static
     {
         $value = static fn(Container $container) => $container->newInstance($value, [], $options);
 
@@ -406,7 +406,7 @@ class Container implements ContainerInterface, \IteratorAggregate, \Countable, A
      * @throws DefinitionException
      * @since   3.0
      */
-    public function bindShared(string $id, $value, int $options = 0)
+    public function bindShared(string $id, mixed $value, int $options = 0): static
     {
         return $this->bind($id, $value, $options | static::SHARED);
     }
@@ -423,7 +423,7 @@ class Container implements ContainerInterface, \IteratorAggregate, \Countable, A
      * @throws DefinitionException
      * @since   3.0
      */
-    public function prepareObject(string $class, ?\Closure $extend = null, int $options = 0)
+    public function prepareObject(string $class, ?\Closure $extend = null, int $options = 0): static
     {
         $handler = static fn(Container $container) => $container->newInstance($class, [], $options);
 
@@ -448,7 +448,7 @@ class Container implements ContainerInterface, \IteratorAggregate, \Countable, A
      * @throws DefinitionException
      * @since   3.0
      */
-    public function prepareSharedObject(string $class, \Closure $extend = null, int $options = 0)
+    public function prepareSharedObject(string $class, \Closure $extend = null, int $options = 0): static
     {
         return $this->prepareObject($class, $extend, $options | static::SHARED);
     }
@@ -512,7 +512,7 @@ class Container implements ContainerInterface, \IteratorAggregate, \Countable, A
      * @throws DefinitionException
      * @since   3.0
      */
-    public function createObject(string $class, array $args = [], int $options = 0)
+    public function createObject(string $class, array $args = [], int $options = 0): mixed
     {
         $callback = fn(Container $container) => $container->newInstance($class, $args, $options);
 
@@ -531,7 +531,7 @@ class Container implements ContainerInterface, \IteratorAggregate, \Countable, A
      * @throws DefinitionException
      * @since   3.0
      */
-    public function createSharedObject(string $class, array $args = [], int $options = 0)
+    public function createSharedObject(string $class, array $args = [], int $options = 0): mixed
     {
         return $this->createObject($class, $args, $options | static::SHARED);
     }
@@ -548,7 +548,7 @@ class Container implements ContainerInterface, \IteratorAggregate, \Countable, A
      *
      * @throws \ReflectionException
      */
-    public function call(callable $callable, array $args = [], ?object $context = null, int $options = 0)
+    public function call(callable $callable, array $args = [], ?object $context = null, int $options = 0): mixed
     {
         return $this->dependencyResolver->call($callable, $args, $context, $options);
     }
@@ -580,7 +580,7 @@ class Container implements ContainerInterface, \IteratorAggregate, \Countable, A
      *
      * @return  mixed|object
      */
-    public function newInstance($class, array $args = [], int $options = 0)
+    public function newInstance(mixed $class, array $args = [], int $options = 0): mixed
     {
         return $this->dependencyResolver->newInstance($class, $args, $options);
     }
@@ -594,7 +594,7 @@ class Container implements ContainerInterface, \IteratorAggregate, \Countable, A
      *
      * @since   2.0
      */
-    public function registerServiceProvider(ServiceProviderInterface $provider)
+    public function registerServiceProvider(ServiceProviderInterface $provider): static
     {
         $provider->register($this);
 
@@ -611,7 +611,7 @@ class Container implements ContainerInterface, \IteratorAggregate, \Countable, A
      *
      * @since   2.0
      */
-    public function alias(string $alias, string $id)
+    public function alias(string $alias, string $id): static
     {
         $this->aliases[$alias] = $id;
 
@@ -627,7 +627,7 @@ class Container implements ContainerInterface, \IteratorAggregate, \Countable, A
      *
      * @since   2.0
      */
-    protected function resolveAlias(string $id)
+    protected function resolveAlias(string $id): string
     {
         while (isset($this->aliases[$id])) {
             $id = $this->aliases[$id];
@@ -645,7 +645,7 @@ class Container implements ContainerInterface, \IteratorAggregate, \Countable, A
      *
      * @since  3.2
      */
-    public function removeAlias(string $alias)
+    public function removeAlias(string $alias): static
     {
         unset($this->aliases[$alias]);
 
@@ -674,7 +674,7 @@ class Container implements ContainerInterface, \IteratorAggregate, \Countable, A
      *
      * @since   2.0
      */
-    public function createChild()
+    public function createChild(): static
     {
         $child = new static($this);
         $child->level = $this->level + 1;
@@ -717,7 +717,7 @@ class Container implements ContainerInterface, \IteratorAggregate, \Countable, A
      *
      * @return  static  Return self to support chaining.
      */
-    public function setParent(?Container $parent)
+    public function setParent(?Container $parent): static
     {
         $this->parent = $parent;
 
@@ -732,7 +732,7 @@ class Container implements ContainerInterface, \IteratorAggregate, \Countable, A
      *
      * @return  mixed
      */
-    public function getParam(string $path, string $delimiter = '.')
+    public function getParam(string $path, string $delimiter = '.'): mixed
     {
         $value = $this->getParameters()->getDeep($path, $delimiter);
 
@@ -763,7 +763,7 @@ class Container implements ContainerInterface, \IteratorAggregate, \Countable, A
      *
      * @return  static  Return self to support chaining.
      */
-    public function setParameters(Parameters $parameters)
+    public function setParameters(Parameters $parameters): static
     {
         $this->parameters = $parameters;
 
@@ -793,7 +793,7 @@ class Container implements ContainerInterface, \IteratorAggregate, \Countable, A
      *
      * @return  static  Return self to support chaining.
      */
-    public function setOptions(int $options)
+    public function setOptions(int $options): static
     {
         $this->options = $options;
 
@@ -815,7 +815,7 @@ class Container implements ContainerInterface, \IteratorAggregate, \Countable, A
      *
      * @return bool
      */
-    public function offsetExists($id): bool
+    public function offsetExists(mixed $id): bool
     {
         return $this->has($id);
     }
@@ -827,7 +827,7 @@ class Container implements ContainerInterface, \IteratorAggregate, \Countable, A
      *
      * @return mixed
      */
-    public function &offsetGet($id)
+    public function &offsetGet(mixed $id): mixed
     {
         $item = $this->get($id);
 
@@ -842,7 +842,7 @@ class Container implements ContainerInterface, \IteratorAggregate, \Countable, A
      *
      * @return void
      */
-    public function offsetSet($id, $value): void
+    public function offsetSet(mixed $id, mixed $value): void
     {
         $this->set($id, $value);
     }
@@ -854,7 +854,7 @@ class Container implements ContainerInterface, \IteratorAggregate, \Countable, A
      *
      * @return void
      */
-    public function offsetUnset($id): void
+    public function offsetUnset(mixed $id): void
     {
         $this->remove($id);
     }
@@ -872,7 +872,7 @@ class Container implements ContainerInterface, \IteratorAggregate, \Countable, A
      *
      * @return  static  Return self to support chaining.
      */
-    public function setDependencyResolver(DependencyResolver $dependencyResolver)
+    public function setDependencyResolver(DependencyResolver $dependencyResolver): static
     {
         $this->dependencyResolver = $dependencyResolver;
 
@@ -884,7 +884,7 @@ class Container implements ContainerInterface, \IteratorAggregate, \Countable, A
      *
      * @return  static  Return self to support chaining.
      */
-    public function setAttributesResolver(AttributesResolver $attributesResolver)
+    public function setAttributesResolver(AttributesResolver $attributesResolver): static
     {
         $attributesResolver->setContainer($this);
         $this->attributesResolver = $attributesResolver;

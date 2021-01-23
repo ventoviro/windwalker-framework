@@ -57,7 +57,7 @@ class PhpInputStream extends Stream
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         if (static::$reachedEof) {
             return static::$cache;
@@ -73,7 +73,7 @@ class PhpInputStream extends Stream
      *
      * @return bool
      */
-    public function isWritable()
+    public function isWritable(): bool
     {
         return false;
     }
@@ -90,7 +90,7 @@ class PhpInputStream extends Stream
      *
      * @throws \RuntimeException if an error occurs.
      */
-    public function read($length)
+    public function read($length): string
     {
         $content = parent::read($length);
 
@@ -112,7 +112,7 @@ class PhpInputStream extends Stream
      *
      * @throws \RuntimeException if unable to read or an error occurs while reading.
      */
-    public function getContents($maxLength = -1)
+    public function getContents($maxLength = -1): string
     {
         if (static::$reachedEof) {
             return static::$cache;

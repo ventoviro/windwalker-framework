@@ -115,7 +115,7 @@ namespace Windwalker {
      *
      * @since  3.5.1
      */
-    function tap($value, callable $callable)
+    function tap($value, callable $callable): mixed
     {
         $callable($value);
 
@@ -178,7 +178,7 @@ namespace Windwalker {
      *
      * @since  __DEPLOY_VERSION__
      */
-    function value($value, ...$args)
+    function value($value, ...$args): mixed
     {
         if ($value instanceof \WeakReference) {
             return $value->get();
@@ -201,7 +201,7 @@ namespace Windwalker {
      *
      * @return  mixed
      */
-    function unwrap($value, ...$args)
+    function unwrap($value, ...$args): mixed
     {
         if ($value instanceof WrapperInterface) {
             return $value(...$args);

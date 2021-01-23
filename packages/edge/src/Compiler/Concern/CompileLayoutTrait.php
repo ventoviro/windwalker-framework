@@ -154,7 +154,7 @@ trait CompileLayoutTrait
      *
      * @return string
      */
-    protected function compileParent()
+    protected function compileParent(): string
     {
         return Edge::parentPlaceholder($this->lastSection ?: '');
     }

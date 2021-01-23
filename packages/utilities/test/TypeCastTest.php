@@ -51,7 +51,7 @@ class TypeCastTest extends TestCase
      *
      * @since   2.0
      */
-    public function providerTestToArray()
+    public function providerTestToArray(): array
     {
         return [
             'string' => [
@@ -109,7 +109,7 @@ class TypeCastTest extends TestCase
      *
      * @return  array
      */
-    public function providerTestToObject()
+    public function providerTestToObject(): array
     {
         return [
             'single object' => [
@@ -260,7 +260,7 @@ class TypeCastTest extends TestCase
         }
     }
 
-    public function providerTry()
+    public function providerTry(): array
     {
         return [
             // To int
@@ -474,7 +474,7 @@ class TypeCastTest extends TestCase
         }
     }
 
-    public function providerTryStrict()
+    public function providerTryStrict(): array
     {
         return [
             // To int

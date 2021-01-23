@@ -32,7 +32,7 @@ trait StringModifyTrait
      *
      * @return  ArrayObject
      */
-    public function chop($length = 1)
+    public function chop($length = 1): ArrayObject
     {
         ArgumentsAssert::assert($length >= 1, '{caller} $length must larger than 1, %s given', $length);
 
@@ -48,7 +48,7 @@ trait StringModifyTrait
      *
      * @return  static
      */
-    public function replace($search, $replacement, int &$count = null)
+    public function replace($search, $replacement, int &$count = null): static
     {
         return $this->cloneInstance(
             function (StringObject $new) use ($search, $replacement, &$count) {
@@ -79,7 +79,7 @@ trait StringModifyTrait
      *
      * @return  static
      */
-    public function reverse()
+    public function reverse(): static
     {
         return $this->cloneInstance(
             function (StringObject $new) {
@@ -97,7 +97,7 @@ trait StringModifyTrait
      *
      * @return  static
      */
-    public function substrReplace(string $replace, int $start, int $offset = null)
+    public function substrReplace(string $replace, int $start, int $offset = null): static
     {
         return $this->cloneInstance(
             function (StringObject $new) use ($replace, $start, $offset) {
@@ -113,7 +113,7 @@ trait StringModifyTrait
      *
      * @return  static
      */
-    public function trimLeft(string $charlist = null)
+    public function trimLeft(string $charlist = null): static
     {
         return $this->cloneInstance(
             function (StringObject $new) use ($charlist) {
@@ -129,7 +129,7 @@ trait StringModifyTrait
      *
      * @return  static
      */
-    public function trimRight(string $charlist = null)
+    public function trimRight(string $charlist = null): static
     {
         return $this->cloneInstance(
             function (StringObject $new) use ($charlist) {
@@ -145,7 +145,7 @@ trait StringModifyTrait
      *
      * @return  static
      */
-    public function trim(string $charlist = null)
+    public function trim(string $charlist = null): static
     {
         return $this->cloneInstance(
             function (StringObject $new) use ($charlist) {
@@ -159,7 +159,7 @@ trait StringModifyTrait
      *
      * @return  static
      */
-    public function upperCaseFirst()
+    public function upperCaseFirst(): static
     {
         return $this->cloneInstance(
             function (StringObject $new) {
@@ -173,7 +173,7 @@ trait StringModifyTrait
      *
      * @return  static
      */
-    public function lowerCaseFirst()
+    public function lowerCaseFirst(): static
     {
         return $this->cloneInstance(
             function (StringObject $new) {
@@ -187,7 +187,7 @@ trait StringModifyTrait
      *
      * @return  static
      */
-    public function upperCaseWords()
+    public function upperCaseWords(): static
     {
         return $this->cloneInstance(
             function (StringObject $new) {
@@ -205,7 +205,7 @@ trait StringModifyTrait
      *
      * @since  3.5.13
      */
-    public function stripHtmlTags(?string $allowTags = null)
+    public function stripHtmlTags(?string $allowTags = null): static
     {
         return $this->cloneInstance(
             static function (self $new) use ($allowTags) {
@@ -223,7 +223,7 @@ trait StringModifyTrait
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function append($string)
+    public function append($string): StringObject
     {
         return tap(
             clone $this,
@@ -242,7 +242,7 @@ trait StringModifyTrait
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function prepend($string)
+    public function prepend($string): StringObject
     {
         return tap(
             clone $this,

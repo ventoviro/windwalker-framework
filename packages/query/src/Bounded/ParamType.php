@@ -52,7 +52,7 @@ class ParamType
      *
      * @return  mixed|string
      */
-    public static function convertToPDO(string $type)
+    public static function convertToPDO(string $type): mixed
     {
         return static::PDO_MAPS[$type] ?? $type;
     }
@@ -64,7 +64,7 @@ class ParamType
      *
      * @return  mixed|string
      */
-    public static function convertToMysqli(string $type)
+    public static function convertToMysqli(string $type): mixed
     {
         return static::MYSQLI_MAPS[$type] ?? $type;
     }

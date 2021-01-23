@@ -36,7 +36,7 @@ class HTMLFactory extends DOMFactory
      *
      * @return  DOMElement
      */
-    public static function element(string $name, $value = null)
+    public static function element(string $name, $value = null): DOMElement
     {
         return parent::element($name, $value)->asHTML();
     }
@@ -76,7 +76,7 @@ class HTMLFactory extends DOMFactory
         return $doc->documentElement->firstChild;
     }
 
-    public static function __callStatic($name, $args)
+    public static function __callStatic($name, $args): DOMElement
     {
         return DOMElement::create($name, ...$args);
     }

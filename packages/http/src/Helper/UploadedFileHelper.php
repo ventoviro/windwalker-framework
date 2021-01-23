@@ -29,7 +29,7 @@ class UploadedFileHelper
      *
      * @return  string
      */
-    public static function getUploadMessage($code)
+    public static function getUploadMessage($code): string
     {
         switch ($code) {
             case UPLOAD_ERR_INI_SIZE:

@@ -104,7 +104,7 @@ class RegexFilterIterator extends FilterIterator
      *
      * @return int The current position.
      */
-    public function key()
+    public function key(): ?int
     {
         if (!$this->valid()) {
             return null;
@@ -135,7 +135,7 @@ class RegexFilterIterator extends FilterIterator
      *
      * @return bool Whether the path is accepted.
      */
-    public function accept()
+    public function accept(): bool
     {
         $path = ($this->mode & self::FILTER_VALUE) ? $this->current() : parent::key();
 

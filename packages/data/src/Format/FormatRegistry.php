@@ -66,7 +66,7 @@ class FormatRegistry
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function parse(string $string, string $format, array $options = [])
+    public function parse(string $string, string $format, array $options = []): array
     {
         return $this->getFormatHandler($this->resolveFormatAlias($format))
             ->parse($string, $options);
@@ -119,7 +119,7 @@ class FormatRegistry
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function registerFormat(string $format, $handlerOrParser, ?callable $dumper = null)
+    public function registerFormat(string $format, $handlerOrParser, ?callable $dumper = null): static
     {
         if ($handlerOrParser instanceof FormatInterface) {
             $this->handlers[strtolower($format)] = $handlerOrParser;
@@ -155,7 +155,7 @@ class FormatRegistry
         return new $class();
     }
 
-    public function removeHandler(string $formst)
+    public function removeHandler(string $formst): static
     {
         unset($this->handlers[strtolower($formst)]);
 
@@ -172,14 +172,14 @@ class FormatRegistry
         return $this->extMaps[strtolower($ext)] ?? $ext;
     }
 
-    public function alias(string $alias, string $format)
+    public function alias(string $alias, string $format): static
     {
         $this->aliases[strtolower($alias)] = strtoupper($format);
 
         return $this;
     }
 
-    public function extMap(string $ext, string $format)
+    public function extMap(string $ext, string $format): static
     {
         $this->extMaps[strtolower($ext)] = strtolower($format);
 

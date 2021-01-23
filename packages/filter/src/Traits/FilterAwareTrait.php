@@ -33,7 +33,7 @@ trait FilterAwareTrait
      *
      * @return  static  Return self to support chaining.
      */
-    public function setFilterFactory(?FilterFactory $filterFactory)
+    public function setFilterFactory(?FilterFactory $filterFactory): static
     {
         $this->filterFactory = $filterFactory;
 

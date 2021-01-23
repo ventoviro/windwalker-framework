@@ -104,7 +104,7 @@ class IronmqQueueDriver implements QueueDriverInterface
      *
      * @return IronmqQueueDriver
      */
-    public function delete(QueueMessage $message)
+    public function delete(QueueMessage $message): static
     {
         $channel = $message->getChannel() ?: $this->channel;
 
@@ -120,7 +120,7 @@ class IronmqQueueDriver implements QueueDriverInterface
      *
      * @return static
      */
-    public function release(QueueMessage $message)
+    public function release(QueueMessage $message): static
     {
         $channel = $message->getChannel() ?: $this->channel;
 
@@ -143,7 +143,7 @@ class IronmqQueueDriver implements QueueDriverInterface
      *
      * @return  IronMQ
      */
-    public function getIronMQ($projectId, $token, array $options)
+    public function getIronMQ($projectId, $token, array $options): IronMQ
     {
         if (!class_exists(IronMQ::class)) {
             throw new \DomainException('Please install iron-io/iron_mq first.');

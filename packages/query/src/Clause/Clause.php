@@ -105,7 +105,7 @@ class Clause implements \Countable, ClauseInterface
      *
      * @since   2.0
      */
-    public function append($elements): static
+    public function append(mixed $elements): static
     {
         if (is_array($elements)) {
             $this->elements = array_merge($this->elements, $elements);
@@ -123,7 +123,7 @@ class Clause implements \Countable, ClauseInterface
      *
      * @return  static
      */
-    public function prepend($elements): static
+    public function prepend(mixed $elements): static
     {
         if (!is_array($elements)) {
             $elements = [$elements];
@@ -228,7 +228,7 @@ class Clause implements \Countable, ClauseInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function setElements($elements): static
+    public function setElements(mixed $elements): static
     {
         $this->elements = [];
 

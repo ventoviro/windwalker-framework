@@ -166,7 +166,7 @@ abstract class AbstractRequest implements RequestInterface
      * @return static
      * @throws \InvalidArgumentException if the request target is invalid.
      */
-    public function withRequestTarget($requestTarget)
+    public function withRequestTarget(mixed $requestTarget): AbstractRequest|static
     {
         if (preg_match('/\s/', $requestTarget)) {
             throw new \InvalidArgumentException('RequestTarget cannot contain whitespace.');
@@ -204,7 +204,7 @@ abstract class AbstractRequest implements RequestInterface
      * @return static
      * @throws \InvalidArgumentException for invalid HTTP methods.
      */
-    public function withMethod($method)
+    public function withMethod(string $method): AbstractRequest|static
     {
         $method = $this->validateMethod($method);
 
@@ -224,7 +224,7 @@ abstract class AbstractRequest implements RequestInterface
      * @return UriInterface Returns a UriInterface instance
      *     representing the URI of the request.
      */
-    public function getUri()
+    public function getUri(): Uri|UriInterface|StreamInterface|string|null
     {
         return $this->uri;
     }
@@ -261,7 +261,7 @@ abstract class AbstractRequest implements RequestInterface
      *
      * @return static
      */
-    public function withUri(UriInterface $uri, $preserveHost = false)
+    public function withUri(UriInterface $uri, $preserveHost = false): AbstractRequest|static
     {
         $new      = clone $this;
         $new->uri = $uri;

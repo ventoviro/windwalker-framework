@@ -37,7 +37,7 @@ class JsonSerializer implements SerializerInterface
      *
      * @return mixed
      */
-    public function unserialize(string $data)
+    public function unserialize(string $data): mixed
     {
         return json_decode((string) $data, false);
     }

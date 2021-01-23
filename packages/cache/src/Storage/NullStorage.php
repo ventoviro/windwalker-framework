@@ -19,7 +19,7 @@ class NullStorage implements StorageInterface
     /**
      * @inheritDoc
      */
-    public function get(string $key)
+    public function get(string $key): mixed
     {
         return null;
     }
@@ -51,7 +51,7 @@ class NullStorage implements StorageInterface
     /**
      * @inheritDoc
      */
-    public function save(string $key, $value, int $expiration = 0): bool
+    public function save(string $key, mixed $value, int $expiration = 0): bool
     {
         return true;
     }

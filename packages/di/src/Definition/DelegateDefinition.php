@@ -41,7 +41,7 @@ class DelegateDefinition implements DefinitionInterface
      *
      * @return mixed
      */
-    public function resolve(Container $container)
+    public function resolve(Container $container): mixed
     {
         $handler = $this->handler ?? fn ($value, Container $container) => $value;
 

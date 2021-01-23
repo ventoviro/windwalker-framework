@@ -28,7 +28,7 @@ trait TestAccessorTrait
      *
      * @throws \ReflectionException
      */
-    public function getValue($obj, string $name)
+    public function getValue($obj, string $name): mixed
     {
         return ReflectAccessor::getValue($obj, $name);
     }
@@ -60,7 +60,7 @@ trait TestAccessorTrait
      *
      * @throws \ReflectionException
      */
-    public function invoke(object $obj, string $method, ...$args)
+    public function invoke(object $obj, string $method, ...$args): mixed
     {
         return ReflectAccessor::invoke($obj, $method, ...$args);
     }

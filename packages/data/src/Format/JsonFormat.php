@@ -42,7 +42,7 @@ class JsonFormat implements FormatInterface
      *
      * @return mixed Data array.
      */
-    public function parse(string $string, array $options = [])
+    public function parse(string $string, array $options = []): mixed
     {
         $assoc  = $options['assoc'] ?? true;
         $depth  = $options['depth'] ?? 512;

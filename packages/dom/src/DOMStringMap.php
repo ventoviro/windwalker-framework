@@ -86,7 +86,7 @@ class DOMStringMap
      *
      * @since  3.5.3
      */
-    public function __get($name)
+    public function __get($name): string
     {
         return $this->element->getAttribute($this->toDataKey($name));
     }
@@ -115,7 +115,7 @@ class DOMStringMap
      *
      * @since  3.5.3
      */
-    public function __isset($name)
+    public function __isset($name): bool
     {
         return $this->element->hasAttribute($this->toDataKey($name));
     }

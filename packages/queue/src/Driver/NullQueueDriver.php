@@ -51,7 +51,7 @@ class NullQueueDriver implements QueueDriverInterface
      *
      * @return static
      */
-    public function delete(QueueMessage $message)
+    public function delete(QueueMessage $message): static
     {
         return $this;
     }
@@ -63,7 +63,7 @@ class NullQueueDriver implements QueueDriverInterface
      *
      * @return static
      */
-    public function release(QueueMessage $message)
+    public function release(QueueMessage $message): static
     {
         return $this;
     }

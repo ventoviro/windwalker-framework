@@ -53,7 +53,7 @@ class FlashBag
         return $msg;
     }
 
-    public function all()
+    public function all(): ?array
     {
         $storage = $this->storage;
 
@@ -75,7 +75,7 @@ class FlashBag
      *
      * @return  static  Return self to support chaining.
      */
-    public function setStorage(?array &$storage)
+    public function setStorage(?array &$storage): static
     {
         $this->storage = &$storage;
 

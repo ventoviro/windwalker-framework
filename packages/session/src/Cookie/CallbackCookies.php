@@ -76,7 +76,7 @@ class CallbackCookies implements CookiesInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setGetter(callable $getter)
+    public function setGetter(callable $getter): static
     {
         $this->getter = $getter;
 
@@ -96,7 +96,7 @@ class CallbackCookies implements CookiesInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setSetter(callable $setter)
+    public function setSetter(callable $setter): static
     {
         $this->setter = $setter;
 

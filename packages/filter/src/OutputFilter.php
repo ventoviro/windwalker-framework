@@ -33,7 +33,7 @@ class OutputFilter
      *
      * @return  object
      */
-    public static function objectHTMLSafe(&$mixed, $quote_style = ENT_QUOTES, $exclude_keys = '')
+    public static function objectHTMLSafe(&$mixed, $quote_style = ENT_QUOTES, $exclude_keys = ''): object
     {
         if (is_object($mixed)) {
             foreach (get_object_vars($mixed) as $k => $v) {
@@ -61,7 +61,7 @@ class OutputFilter
      *
      * @return  string  Processed string
      */
-    public static function linkXHTMLSafe($input)
+    public static function linkXHTMLSafe($input): string
     {
         $regex = 'href="([^"]*(&(amp;){0})[^"]*)*?"';
 
@@ -86,7 +86,7 @@ class OutputFilter
      *
      * @since   2.0
      */
-    public static function stringURLSafe($string)
+    public static function stringURLSafe($string): string
     {
         // Remove any '-' from the string since they will be used as concatenaters
         $str = str_replace('-', ' ', $string);
@@ -114,7 +114,7 @@ class OutputFilter
      *
      * @since   2.0
      */
-    public static function stringURLUnicodeSlug($string)
+    public static function stringURLUnicodeSlug($string): string
     {
         // Replace double byte whitespaces by single byte (East Asian languages)
         $str = preg_replace('/\xE3\x80\x80/', ' ', $string);
@@ -146,7 +146,7 @@ class OutputFilter
      *
      * @return  string  Processed string.
      */
-    public static function ampReplace($text)
+    public static function ampReplace($text): string
     {
         $text = str_replace('&&', '*--*', $text);
         $text = str_replace('&#', '*-*', $text);
@@ -165,7 +165,7 @@ class OutputFilter
      *
      * @return  string  Cleaned text.
      */
-    public static function cleanText(&$text)
+    public static function cleanText(&$text): string
     {
         $text = preg_replace("'<script[^>]*>.*?</script>'si", '', $text);
         $text = preg_replace('/<a\s+.*?href="([^"]+)"[^>]*>([^<]+)<\/a>/is', '\2 (\1)', $text);
@@ -187,7 +187,7 @@ class OutputFilter
      *
      * @return  string  Cleaned string
      */
-    public static function stripImages($string)
+    public static function stripImages($string): string
     {
         return preg_replace('#(<[/]?img.*>)#U', '', $string);
     }
@@ -199,7 +199,7 @@ class OutputFilter
      *
      * @return  string  Cleaned string
      */
-    public static function stripIframes($string)
+    public static function stripIframes($string): string
     {
         return preg_replace('#(<[/]?iframe.*>)#U', '', $string);
     }
@@ -211,7 +211,7 @@ class OutputFilter
      *
      * @return  mixed
      */
-    public static function stripScript($string)
+    public static function stripScript($string): mixed
     {
         return preg_replace("'<script[^>]*>.*?</script>'si", '', $string);
     }
@@ -223,7 +223,7 @@ class OutputFilter
      *
      * @return  mixed
      */
-    public static function stripStyle($string)
+    public static function stripStyle($string): mixed
     {
         return preg_replace("'<style[^>]*>.*?</style>'si", '', $string);
     }
@@ -235,7 +235,7 @@ class OutputFilter
      *
      * @return  mixed
      */
-    public static function stripLinks($string)
+    public static function stripLinks($string): mixed
     {
         return preg_replace('/<link[^>]*>/', '', $string);
     }

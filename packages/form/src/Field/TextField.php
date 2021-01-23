@@ -88,7 +88,7 @@ class TextField extends AbstractInputField
      *
      * @return  static
      */
-    public function addOption(DOMElement $option)
+    public function addOption(DOMElement $option): static
     {
         $this->options[] = $option;
 
@@ -103,7 +103,7 @@ class TextField extends AbstractInputField
      *
      * @return static
      */
-    public function option($value = null, array $attrs = [])
+    public function option($value = null, array $attrs = []): static
     {
         $attrs['value'] = $value;
 
@@ -119,7 +119,7 @@ class TextField extends AbstractInputField
      *
      * @return  static
      */
-    public function setOptions(array $options)
+    public function setOptions(array $options): static
     {
         $this->options = $options;
 
@@ -145,7 +145,7 @@ class TextField extends AbstractInputField
      *
      * @since  3.4.2
      */
-    public function maxlength(?int $length = null, bool $addFilter = true, bool $utf8 = true)
+    public function maxlength(?int $length = null, bool $addFilter = true, bool $utf8 = true): mixed
     {
         if ($addFilter) {
             $this->addFilter(new Length($length, $utf8));

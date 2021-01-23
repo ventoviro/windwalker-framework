@@ -82,7 +82,7 @@ class Form implements \IteratorAggregate
      *
      * @throws \ReflectionException
      */
-    public function defineFormFields(FieldDefinitionInterface|string $define)
+    public function defineFormFields(FieldDefinitionInterface|string $define): static
     {
         if (is_string($define)) {
             $define = $this->getObjectBuilder()->createObject($define);
@@ -148,7 +148,7 @@ class Form implements \IteratorAggregate
         return $field;
     }
 
-    public function addFields(array $fields, ?string $fieldset = null, string $namespace = '')
+    public function addFields(array $fields, ?string $fieldset = null, string $namespace = ''): static
     {
         foreach ($fields as $field) {
             $this->addField($field, $fieldset, $namespace);
@@ -164,7 +164,7 @@ class Form implements \IteratorAggregate
      *
      * @return  $this
      */
-    public function fill(array $data)
+    public function fill(array $data): static
     {
         foreach ($this->fields as $name => $field) {
             $value = Arr::get($data, $name, '/');
@@ -184,7 +184,7 @@ class Form implements \IteratorAggregate
      *
      * @return  $this
      */
-    public function bind(array &$data)
+    public function bind(array &$data): static
     {
         $this->bounded = &$data;
 
@@ -248,14 +248,14 @@ class Form implements \IteratorAggregate
      *
      * @return  $this
      */
-    public function removeField(string $namespace)
+    public function removeField(string $namespace): static
     {
         unset($this->fields[$namespace]);
 
         return $this;
     }
 
-    public function wrap(?string $fieldset = null, ?string $group = null, ?callable $handler = null)
+    public function wrap(?string $fieldset = null, ?string $group = null, ?callable $handler = null): static
     {
         if ($fieldset) {
             $this->fieldsets[$fieldset] ??= new Fieldset($fieldset, null);
@@ -281,7 +281,7 @@ class Form implements \IteratorAggregate
         return $this;
     }
 
-    public function register(\Closure $handler)
+    public function register(\Closure $handler): static
     {
         $this->attributeResolver->resolveCallable($handler)($this);
 
@@ -295,7 +295,7 @@ class Form implements \IteratorAggregate
         return $this->fieldsets[$name];
     }
 
-    public function group(string $name, callable $handler)
+    public function group(string $name, callable $handler): static
     {
         $this->wrap(null, $name, $handler);
 
@@ -421,7 +421,7 @@ class Form implements \IteratorAggregate
      *
      * @return  static  Return self to support chaining.
      */
-    public function setRenderer(FormRendererInterface $renderer)
+    public function setRenderer(FormRendererInterface $renderer): static
     {
         $this->renderer = $renderer;
 
@@ -441,7 +441,7 @@ class Form implements \IteratorAggregate
      *
      * @return  static  Return self to support chaining.
      */
-    public function setNamespace(string $namespace)
+    public function setNamespace(string $namespace): static
     {
         $this->namespace = $namespace;
 

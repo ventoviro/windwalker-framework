@@ -102,7 +102,7 @@ class PgsqlStatement extends AbstractStatement
     /**
      * @inheritDoc
      */
-    public function close()
+    public function close(): static
     {
         if ($this->cursor) {
             pg_free_result($this->cursor);

@@ -70,7 +70,7 @@ class SqlsrvConnection extends AbstractConnection
     /**
      * @inheritDoc
      */
-    public function disconnect()
+    public function disconnect(): mixed
     {
         if (!$this->isConnected()) {
             return true;

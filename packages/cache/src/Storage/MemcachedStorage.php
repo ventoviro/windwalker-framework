@@ -40,7 +40,7 @@ class MemcachedStorage implements StorageInterface
     /**
      * @inheritDoc
      */
-    public function get(string $key)
+    public function get(string $key): mixed
     {
         $this->connect();
 
@@ -93,7 +93,7 @@ class MemcachedStorage implements StorageInterface
     /**
      * @inheritDoc
      */
-    public function save(string $key, $value, int $expiration = 0): bool
+    public function save(string $key, mixed $value, int $expiration = 0): bool
     {
         $this->connect();
 
@@ -107,7 +107,7 @@ class MemcachedStorage implements StorageInterface
      *
      * @return  static
      */
-    protected function connect()
+    protected function connect(): static
     {
         // We want to only create the driver once.
         if ($this->driver) {

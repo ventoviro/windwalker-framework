@@ -76,7 +76,7 @@ class Authentication implements AuthenticationInterface
      *
      * @return  static
      */
-    public function addMethod(string $name, MethodInterface $method)
+    public function addMethod(string $name, MethodInterface $method): static
     {
         $this->methods[$name] = $method;
 
@@ -102,7 +102,7 @@ class Authentication implements AuthenticationInterface
      *
      * @return  $this
      */
-    public function removeMethod(string $name)
+    public function removeMethod(string $name): static
     {
         unset($this->methods[$name]);
 

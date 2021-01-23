@@ -106,7 +106,7 @@ final class Glob
      * @return string[] The matching paths. The keys of the array are
      *                  incrementing integers.
      */
-    public static function glob($glob, $flags = 0)
+    public static function glob($glob, $flags = 0): array
     {
         $results = iterator_to_array(new GlobIterator($glob, $flags));
 
@@ -135,7 +135,7 @@ final class Glob
      *
      * @return bool Returns `true` if the path is matched by the glob.
      */
-    public static function match($path, $glob, $flags = 0)
+    public static function match($path, $glob, $flags = 0): bool
     {
         if (!self::isDynamic($glob)) {
             return $glob === $path;
@@ -174,7 +174,7 @@ final class Glob
      * @return string[] The paths matching the glob indexed by their original
      *                  keys.
      */
-    public static function filter(array $paths, $glob, $flags = self::FILTER_VALUE)
+    public static function filter(array $paths, $glob, $flags = self::FILTER_VALUE): array
     {
         if (($flags & self::FILTER_VALUE) && ($flags & self::FILTER_KEY)) {
             throw new InvalidArgumentException('The flags Glob::FILTER_VALUE and Glob::FILTER_KEY cannot be passed at the same time.');
@@ -253,7 +253,7 @@ final class Glob
      *
      * @return string The base path of the glob.
      */
-    public static function getBasePath($glob, $flags = 0)
+    public static function getBasePath($glob, $flags = 0): string
     {
         // Search the static prefix for the last "/"
         $staticPrefix = self::getStaticPrefix($glob, $flags);
@@ -310,7 +310,7 @@ final class Glob
      *
      * @return string The regular expression for matching the glob.
      */
-    public static function toRegEx($glob, $flags = 0, $delimiter = '~')
+    public static function toRegEx($glob, $flags = 0, $delimiter = '~'): string
     {
         if (!Path::isAbsolute($glob) && false === strpos($glob, '://')) {
             throw new InvalidArgumentException(sprintf(
@@ -455,7 +455,7 @@ final class Glob
      *
      * @return string The static prefix of the glob.
      */
-    public static function getStaticPrefix($glob, $flags = 0)
+    public static function getStaticPrefix($glob, $flags = 0): string
     {
         if (!Path::isAbsolute($glob) && false === strpos($glob, '://')) {
             throw new InvalidArgumentException(sprintf(
@@ -524,7 +524,7 @@ final class Glob
      * @return bool Returns `true` if the glob contains a dynamic part and
      *              `false` otherwise.
      */
-    public static function isDynamic($glob)
+    public static function isDynamic($glob): bool
     {
         return false !== strpos($glob, '*') || false !== strpos($glob, '{') || false !== strpos($glob, '?') || false !== strpos($glob, '[');
     }

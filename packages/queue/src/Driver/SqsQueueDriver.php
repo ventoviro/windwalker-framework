@@ -115,7 +115,7 @@ class SqsQueueDriver implements QueueDriverInterface
      *
      * @return static
      */
-    public function delete(QueueMessage $message)
+    public function delete(QueueMessage $message): static
     {
         $this->client->deleteMessage(
             [
@@ -134,7 +134,7 @@ class SqsQueueDriver implements QueueDriverInterface
      *
      * @return static
      */
-    public function release(QueueMessage $message)
+    public function release(QueueMessage $message): static
     {
         $this->client->changeMessageVisibility(
             [
@@ -154,7 +154,7 @@ class SqsQueueDriver implements QueueDriverInterface
      *
      * @return string
      */
-    public function getQueueUrl(?string $channel = null)
+    public function getQueueUrl(?string $channel = null): string
     {
         $channel = $channel ?: $this->channel;
 

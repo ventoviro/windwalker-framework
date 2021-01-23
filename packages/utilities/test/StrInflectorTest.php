@@ -29,7 +29,7 @@ class StrInflectorTest extends TestCase
      *
      * @since   2.0
      */
-    public function providerIsCountable()
+    public function providerIsCountable(): array
     {
         return [
             ['id', true],
@@ -45,7 +45,7 @@ class StrInflectorTest extends TestCase
      *
      * @since   2.0
      */
-    public function providerSinglePlural()
+    public function providerSinglePlural(): array
     {
         return [
             // Regular plurals

@@ -64,7 +64,7 @@ abstract class AbstractPdoConnection extends AbstractConnection
      *
      * @return  \PDO
      */
-    protected function doConnect(array $options)
+    protected function doConnect(array $options): \PDO
     {
         $attrs = array_replace(
             static::$defaultAttributes,
@@ -90,9 +90,11 @@ abstract class AbstractPdoConnection extends AbstractConnection
     /**
      * @inheritDoc
      */
-    public function disconnect()
+    public function disconnect(): mixed
     {
         $this->connection = null;
+
+        return true;
     }
 
     /**

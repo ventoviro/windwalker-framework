@@ -51,7 +51,7 @@ class FormTest extends TestCase
      *
      * @return  Form
      */
-    protected function getByDefine($ns = '')
+    protected function getByDefine($ns = ''): Form
     {
         $form = new Form($ns);
 

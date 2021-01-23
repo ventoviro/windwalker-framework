@@ -233,7 +233,7 @@ class Worker implements EventListenableInterface
      *
      * @return  mixed
      */
-    protected function runJob(JobInterface $job)
+    protected function runJob(JobInterface $job): mixed
     {
         return $job();
     }

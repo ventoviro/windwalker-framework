@@ -67,7 +67,7 @@ class HttpClient implements HttpClientInterface, AsyncHttpClientInterface
     public static function create(
         array $options = [],
         ?TransportInterface $transport = null
-    ) {
+    ): static {
         return new static($options, $transport);
     }
 
@@ -141,7 +141,7 @@ class HttpClient implements HttpClientInterface, AsyncHttpClientInterface
      *
      * @since   2.1
      */
-    public function options(Stringable|string $url, array $options = [])
+    public function options(Stringable|string $url, array $options = []): ResponseInterface
     {
         return $this->request('OPTIONS', $url, null, $options);
     }
@@ -156,7 +156,7 @@ class HttpClient implements HttpClientInterface, AsyncHttpClientInterface
      *
      * @since   2.1
      */
-    public function head(Stringable|string $url, array $options = [])
+    public function head(Stringable|string $url, array $options = []): ResponseInterface
     {
         return $this->request('HEAD', $url, null, $options);
     }
@@ -171,7 +171,7 @@ class HttpClient implements HttpClientInterface, AsyncHttpClientInterface
      *
      * @since   2.1
      */
-    public function get(Stringable|string $url, $options = [])
+    public function get(Stringable|string $url, $options = []): ResponseInterface
     {
         return $this->request('GET', $url, null, $options);
     }
@@ -187,7 +187,7 @@ class HttpClient implements HttpClientInterface, AsyncHttpClientInterface
      *
      * @since   2.1
      */
-    public function post(Stringable|string $url, $body, array $options = [])
+    public function post(Stringable|string $url, $body, array $options = []): ResponseInterface
     {
         return $this->request('POST', $url, $body, $options);
     }
@@ -203,7 +203,7 @@ class HttpClient implements HttpClientInterface, AsyncHttpClientInterface
      *
      * @since   2.1
      */
-    public function put(Stringable|string $url, $body, array $options = [])
+    public function put(Stringable|string $url, $body, array $options = []): ResponseInterface
     {
         return $this->request('PUT', $url, $body, $options);
     }
@@ -219,7 +219,7 @@ class HttpClient implements HttpClientInterface, AsyncHttpClientInterface
      *
      * @since   2.1
      */
-    public function delete(Stringable|string $url, $body = null, array $options = [])
+    public function delete(Stringable|string $url, $body = null, array $options = []): ResponseInterface
     {
         return $this->request('DELETE', $url, $body, $options);
     }
@@ -234,7 +234,7 @@ class HttpClient implements HttpClientInterface, AsyncHttpClientInterface
      *
      * @since   2.1
      */
-    public function trace(Stringable|string $url, array $options = [])
+    public function trace(Stringable|string $url, array $options = []): ResponseInterface
     {
         return $this->request('TRACE', $url, null, $options);
     }
@@ -250,7 +250,7 @@ class HttpClient implements HttpClientInterface, AsyncHttpClientInterface
      *
      * @since   2.1
      */
-    public function patch(Stringable|string $url, $body, array $options = [])
+    public function patch(Stringable|string $url, $body, array $options = []): ResponseInterface
     {
         return $this->request('PATCH', $url, $body, $options);
     }
@@ -272,7 +272,7 @@ class HttpClient implements HttpClientInterface, AsyncHttpClientInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setTransport(TransportInterface $transport)
+    public function setTransport(TransportInterface $transport): static
     {
         $this->transport = $transport;
 
@@ -369,7 +369,7 @@ class HttpClient implements HttpClientInterface, AsyncHttpClientInterface
         Stringable|string $url,
         $body,
         array $options
-    ) {
+    ): RequestInterface {
         $options = Arr::mergeRecursive($this->getOptions(), $options);
 
         return static::prepareRequest($request, $method, $url, $body, $options);
@@ -415,7 +415,7 @@ class HttpClient implements HttpClientInterface, AsyncHttpClientInterface
         Stringable|string $url,
         $body = null,
         array $options = []
-    ) {
+    ): mixed {
         $request = $this->preprocessRequest(new Request(), $method, $url, $body, $options);
 
         return $this->sendAsyncRequest($request);
@@ -449,7 +449,7 @@ class HttpClient implements HttpClientInterface, AsyncHttpClientInterface
      *
      * @return  PromiseInterface|mixed
      */
-    public function sendAsyncRequest(RequestInterface $request)
+    public function sendAsyncRequest(RequestInterface $request): mixed
     {
         return $this->getAsyncTransport()->sendRequest($request);
     }
@@ -468,7 +468,7 @@ class HttpClient implements HttpClientInterface, AsyncHttpClientInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setAsyncTransport(?AsyncTransportInterface $asyncTransport)
+    public function setAsyncTransport(?AsyncTransportInterface $asyncTransport): static
     {
         $this->asyncTransport = $asyncTransport;
 

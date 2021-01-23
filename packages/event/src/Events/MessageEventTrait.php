@@ -52,7 +52,7 @@ trait MessageEventTrait
      *
      * @return  static  Return self to support chaining.
      */
-    public function setMessageType(string $messageType)
+    public function setMessageType(string $messageType): static
     {
         $this->messageType = $messageType;
 

@@ -28,7 +28,7 @@ interface StatementInterface extends BindableInterface, \IteratorAggregate, Even
      *
      * @return  static
      */
-    public function execute(?array $params = null);
+    public function execute(?array $params = null): static;
 
     /**
      * Fetch 1 row and move cursor to next position.
@@ -78,7 +78,7 @@ interface StatementInterface extends BindableInterface, \IteratorAggregate, Even
      *
      * @return  static
      */
-    public function close();
+    public function close(): static;
 
     /**
      * Count results.
@@ -92,7 +92,7 @@ interface StatementInterface extends BindableInterface, \IteratorAggregate, Even
      *
      * @return  mixed
      */
-    public function getCursor();
+    public function getCursor(): mixed;
 
     /**
      * isExecuted

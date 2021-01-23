@@ -243,7 +243,7 @@ class DatabaseAdapter implements EventListenableInterface
      *
      * @throws \Throwable
      */
-    public function transaction(callable $callback, bool $autoCommit = true, bool $enabled = true)
+    public function transaction(callable $callback, bool $autoCommit = true, bool $enabled = true): mixed
     {
         return $this->getPlatform()->transaction($callback, $autoCommit, $enabled);
     }

@@ -35,7 +35,7 @@ interface EdgeCompilerInterface
      *
      * @return static
      */
-    public function directive(string $name, callable $handler);
+    public function directive(string $name, callable $handler): static;
 
     /**
      * parser
@@ -44,5 +44,5 @@ interface EdgeCompilerInterface
      *
      * @return static
      */
-    public function parser(callable $handler);
+    public function parser(callable $handler): static;
 }

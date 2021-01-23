@@ -33,7 +33,7 @@ abstract class ServerHelper
      *
      * @return  mixed
      */
-    public static function getValue(array $servers, $name, $default = null)
+    public static function getValue(array $servers, $name, $default = null): mixed
     {
         if (array_key_exists($name, $servers)) {
             return $servers[$name];
@@ -51,7 +51,7 @@ abstract class ServerHelper
      *
      * @return  boolean
      */
-    public static function validateUploadedFiles(array $files)
+    public static function validateUploadedFiles(array $files): bool
     {
         foreach ($files as $file) {
             if (is_array($file)) {
@@ -75,7 +75,7 @@ abstract class ServerHelper
      *
      * @return  array|false
      */
-    public static function getAllHeaders()
+    public static function getAllHeaders(): bool|array
     {
         if (function_exists('getallheaders')) {
             return getallheaders();
@@ -101,7 +101,7 @@ abstract class ServerHelper
      *
      * @link  http://php.net/manual/en/function.getallheaders.php#99814
      */
-    public static function apacheRequestHeaders()
+    public static function apacheRequestHeaders(): array
     {
         if (function_exists('apache_request_headers')) {
             return apache_request_headers();
@@ -149,7 +149,7 @@ abstract class ServerHelper
             // Separate content from headers
             $part = ltrim($part, "\r\n");
 
-            list($rawHeaders, $content) = explode("\r\n\r\n", $part, 2);
+            [$rawHeaders, $content] = explode("\r\n\r\n", $part, 2);
 
             $content = substr($content, 0, strlen($content) - 2);
 
@@ -158,7 +158,7 @@ abstract class ServerHelper
             $headers = [];
 
             foreach ($rawHeaders as $header) {
-                list($name, $value) = explode(':', $header, 2);
+                [$name, $value] = explode(':', $header, 2);
 
                 $headers[strtolower($name)] = ltrim($value, ' ');
             }
@@ -223,7 +223,7 @@ abstract class ServerHelper
      *
      * @since   2.0
      */
-    public static function setByPath(array &$data, $path, $value, $separator = '.')
+    public static function setByPath(array &$data, $path, $value, $separator = '.'):bool
     {
         $nodes = array_values(explode($separator, $path));
 

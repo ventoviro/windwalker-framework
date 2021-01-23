@@ -72,7 +72,7 @@ class Loop
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function loop(int $index, $key)
+    public function loop(int $index, $key): static
     {
         $this->index = $index;
         $this->key   = $key;
@@ -92,7 +92,7 @@ class Loop
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function key()
+    public function key(): mixed
     {
         return $this->key;
     }

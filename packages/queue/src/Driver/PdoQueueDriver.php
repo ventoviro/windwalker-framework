@@ -174,7 +174,7 @@ class PdoQueueDriver implements QueueDriverInterface
      *
      * @return PdoQueueDriver
      */
-    public function delete(QueueMessage $message)
+    public function delete(QueueMessage $message): static
     {
         $channel = $message->getChannel() ?: $this->channel;
 
@@ -198,7 +198,7 @@ class PdoQueueDriver implements QueueDriverInterface
      * @return static
      * @throws \Exception
      */
-    public function release(QueueMessage $message)
+    public function release(QueueMessage $message): static
     {
         $channel = $message->getChannel() ?: $this->channel;
 
@@ -228,7 +228,7 @@ class PdoQueueDriver implements QueueDriverInterface
      *
      * @return  mixed
      */
-    public function getTable()
+    public function getTable(): mixed
     {
         return $this->table;
     }
@@ -240,7 +240,7 @@ class PdoQueueDriver implements QueueDriverInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setTable($table)
+    public function setTable($table): static
     {
         $this->table = $table;
 
@@ -252,7 +252,7 @@ class PdoQueueDriver implements QueueDriverInterface
      *
      * @return  \PDO
      */
-    public function getPdo()
+    public function getPdo(): \PDO
     {
         return $this->pdo;
     }
@@ -264,7 +264,7 @@ class PdoQueueDriver implements QueueDriverInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setPdo(\PDO $pdo)
+    public function setPdo(\PDO $pdo): static
     {
         $this->pdo = $pdo;
 
@@ -276,7 +276,7 @@ class PdoQueueDriver implements QueueDriverInterface
      *
      * @return  static
      */
-    public function reconnect()
+    public function reconnect(): static
     {
         // PDO cannot reconnect.
 

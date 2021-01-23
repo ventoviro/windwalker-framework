@@ -116,7 +116,7 @@ class FlysystemStorage extends FileStorage
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function setDriver(Filesystem $driver)
+    public function setDriver(Filesystem $driver): static
     {
         $this->driver = $driver;
 

@@ -19,7 +19,7 @@ namespace Windwalker;
  *
  * @return  mixed
  */
-function go(callable $handler, $params = null)
+function go(callable $handler, $params = null): mixed
 {
     if (function_exists('\go')) {
         return \go($handler, $params);

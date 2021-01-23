@@ -120,7 +120,7 @@ class MysqliStatement extends AbstractStatement
     /**
      * @inheritDoc
      */
-    public function close()
+    public function close(): static
     {
         if ($this->cursor) {
             $this->cursor->free_result();

@@ -264,7 +264,7 @@ abstract class TypeCast
      *
      * @since  __DEPLOY_VERSION__
      */
-    public static function try($value, string $type, bool $strict = false)
+    public static function try($value, string $type, bool $strict = false): mixed
     {
         switch (strtolower($type)) {
             case 'int':
@@ -337,7 +337,7 @@ abstract class TypeCast
      *
      * @since  __DEPLOY_VERSION__
      */
-    public static function __callStatic(string $name, array $args)
+    public static function __callStatic(string $name, array $args): mixed
     {
         $tryMethods = [
             'tryInteger',

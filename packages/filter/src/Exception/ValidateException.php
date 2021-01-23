@@ -46,7 +46,7 @@ class ValidateException extends \UnexpectedValueException
      *
      * @return  static  Return self to support chaining.
      */
-    public function setValidator(ValidatorInterface $validator)
+    public function setValidator(ValidatorInterface $validator): static
     {
         $this->validator = $validator;
 

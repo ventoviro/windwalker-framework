@@ -74,7 +74,7 @@ class AsClause implements ClauseInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function alias(string $alias)
+    public function alias(string $alias): static
     {
         $this->alias = $alias;
 
@@ -102,7 +102,7 @@ class AsClause implements ClauseInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function value($column)
+    public function value(string $column): static
     {
         $this->value = $column;
 

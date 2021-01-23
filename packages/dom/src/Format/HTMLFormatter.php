@@ -194,7 +194,7 @@ class HTMLFormatter extends DOMFormatter
      *
      * @return  static  Return self to support chaining.
      */
-    public function setInlineElements(array $inlineElements)
+    public function setInlineElements(array $inlineElements): static
     {
         $this->inlineElements = (array) $inlineElements;
 
@@ -256,7 +256,7 @@ class HTMLFormatter extends DOMFormatter
      *
      * @return  static
      */
-    public function addInlineElement(string $element)
+    public function addInlineElement(string $element): static
     {
         $this->inlineElements[] = strtolower(trim($element));
 
@@ -270,7 +270,7 @@ class HTMLFormatter extends DOMFormatter
      *
      * @return  static
      */
-    public function addUnpairedElement(string $element)
+    public function addUnpairedElement(string $element): static
     {
         $this->unpairedElements[] = strtolower(trim($element));
 
@@ -284,7 +284,7 @@ class HTMLFormatter extends DOMFormatter
      *
      * @return  static  Return self to support chaining.
      */
-    public function setUnpairedElements(array $unpairedElements)
+    public function setUnpairedElements(array $unpairedElements): static
     {
         $this->unpairedElements = (array) $unpairedElements;
 

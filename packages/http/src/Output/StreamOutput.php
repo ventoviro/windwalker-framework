@@ -165,7 +165,7 @@ class StreamOutput extends Output
      *
      * @return  static  Return self to support chaining.
      */
-    public function setMaxBufferLength(int $maxBufferLength)
+    public function setMaxBufferLength(int $maxBufferLength): static
     {
         $this->maxBufferLength = $maxBufferLength;
 
@@ -189,7 +189,7 @@ class StreamOutput extends Output
      *
      * @return  static  Return self to support chaining.
      */
-    public function setDelay(int $delay)
+    public function setDelay(int $delay): static
     {
         $this->delay = $delay;
 

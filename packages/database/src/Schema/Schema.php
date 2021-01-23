@@ -217,7 +217,7 @@ class Schema
         return $this->getTable()->getDb()->getNullDate();
     }
 
-    public function __call(string $name, array $args)
+    public function __call(string $name, array $args): Column
     {
         $column = array_shift($args);
 
@@ -251,7 +251,7 @@ class Schema
      *
      * @return  static  Return self to support chaining.
      */
-    public function setIndexes(array $indexes)
+    public function setIndexes(array $indexes): static
     {
         $this->indexes = $indexes;
 
@@ -271,7 +271,7 @@ class Schema
      *
      * @return  static  Return self to support chaining.
      */
-    public function setConstraints(array $constraints)
+    public function setConstraints(array $constraints): static
     {
         $this->constraints = $constraints;
 

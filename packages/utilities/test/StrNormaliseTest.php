@@ -28,7 +28,7 @@ class StrNormaliseTest extends TestCase
      *
      * @since   2.0
      */
-    public function providerSplitCamelCase()
+    public function providerSplitCamelCase(): array
     {
         return [
             // Note: string, expected
@@ -49,7 +49,7 @@ class StrNormaliseTest extends TestCase
      *
      * @since   2.0
      */
-    public function seedTestToPascalCase()
+    public function seedTestToPascalCase(): array
     {
         return [
             ['FooBar', 'Foo Bar'],
@@ -68,7 +68,7 @@ class StrNormaliseTest extends TestCase
      *
      * @since   2.0
      */
-    public function seedTestToKebabCase()
+    public function seedTestToKebabCase(): array
     {
         return [
             ['Foo-Bar', 'Foo Bar'],
@@ -90,7 +90,7 @@ class StrNormaliseTest extends TestCase
      *
      * @since   2.0
      */
-    public function seedTestToSpaceSeparated()
+    public function seedTestToSpaceSeparated(): array
     {
         return [
             ['Foo Bar', 'Foo Bar'],
@@ -112,7 +112,7 @@ class StrNormaliseTest extends TestCase
      *
      * @since   2.0
      */
-    public function seedTestToUnderscoreSeparated()
+    public function seedTestToUnderscoreSeparated(): array
     {
         return [
             ['Foo_Bar', 'Foo Bar'],
@@ -134,7 +134,7 @@ class StrNormaliseTest extends TestCase
      *
      * @since   2.0
      */
-    public function seedTestToVariable()
+    public function seedTestToVariable(): array
     {
         return [
             ['myFooBar', 'My Foo Bar'],
@@ -153,7 +153,7 @@ class StrNormaliseTest extends TestCase
      *
      * @since   2.0
      */
-    public function seedTestToKey()
+    public function seedTestToKey(): array
     {
         return [
             ['foo_bar', 'Foo Bar'],

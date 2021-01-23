@@ -40,7 +40,7 @@ class StubService
      *
      * @since  3.4.4
      */
-    public function run()
+    public function run(): string
     {
         return 'OK';
     }
@@ -52,7 +52,7 @@ class StubService
      *
      * @since  3.4.4
      */
-    public function getCounter()
+    public function getCounter(): int
     {
         return static::$counter;
     }

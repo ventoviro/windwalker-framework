@@ -36,7 +36,7 @@ trait AccessibleTrait
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function reset(array $storage = [])
+    public function reset(array $storage = []): static
     {
         $this->storage = $storage;
 
@@ -50,7 +50,7 @@ trait AccessibleTrait
      *
      * @return bool
      */
-    public function offsetExists($key): bool
+    public function offsetExists(mixed $key): bool
     {
         return $this->has($key);
     }
@@ -62,7 +62,7 @@ trait AccessibleTrait
      *
      * @return mixed
      */
-    public function &offsetGet($key)
+    public function &offsetGet(mixed $key): mixed
     {
         return $this->get($key);
     }
@@ -75,7 +75,7 @@ trait AccessibleTrait
      *
      * @return void
      */
-    public function offsetSet($key, $value): void
+    public function offsetSet(mixed $key, mixed $value): void
     {
         if ($key === null || $key === '') {
             $this->storage[] = $value;
@@ -93,7 +93,7 @@ trait AccessibleTrait
      *
      * @return void
      */
-    public function offsetUnset($key): void
+    public function offsetUnset(mixed $key): void
     {
         $this->remove($key);
     }
@@ -105,7 +105,7 @@ trait AccessibleTrait
      *
      * @return mixed
      */
-    public function &__get($key)
+    public function &__get(mixed $key): mixed
     {
         return $this->get($key);
     }
@@ -118,7 +118,7 @@ trait AccessibleTrait
      *
      * @return void
      */
-    public function __set($key, $value)
+    public function __set(mixed $key, mixed $value)
     {
         $this->set($key, $value);
     }
@@ -130,7 +130,7 @@ trait AccessibleTrait
      *
      * @return bool
      */
-    public function __isset($key)
+    public function __isset(mixed $key): bool
     {
         return $this->has($key);
     }
@@ -142,7 +142,7 @@ trait AccessibleTrait
      *
      * @return void
      */
-    public function __unset($key)
+    public function __unset(mixed $key)
     {
         $this->remove($key);
     }

@@ -33,7 +33,7 @@ trait AttributesAwareTrait
      *
      * @return  static
      */
-    public function setAttributesResolver(AttributesResolver $attributesResolver)
+    public function setAttributesResolver(AttributesResolver $attributesResolver): static
     {
         $this->attributeResolver = $attributesResolver;
 

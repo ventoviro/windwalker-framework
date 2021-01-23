@@ -103,7 +103,7 @@ abstract class AbstractField
      *
      * @since  3.5.19
      */
-    public static function create(...$args)
+    public static function create(...$args): static
     {
         return new static(...$args);
     }
@@ -193,11 +193,11 @@ abstract class AbstractField
     /**
      * prepareStore
      *
-     * @param mixed $value
+     * @param  mixed  $value
      *
      * @return  mixed
      */
-    public function prepareStore($value)
+    public function prepareStore(mixed $value): mixed
     {
         return $value;
     }
@@ -235,7 +235,7 @@ abstract class AbstractField
      *
      * @return  static  Return self to support chaining.
      */
-    public function setName(string $name)
+    public function setName(string $name): static
     {
         $this->name = $name;
 
@@ -319,7 +319,7 @@ abstract class AbstractField
      *
      * @return  static  Return self to support chaining.
      */
-    public function setFieldset(?string $fieldset)
+    public function setFieldset(?string $fieldset): static
     {
         $this->fieldset = $fieldset;
 
@@ -331,7 +331,7 @@ abstract class AbstractField
      *
      * @return  mixed
      */
-    public function getValue()
+    public function getValue(): mixed
     {
         return $this->viewFilter->filter($this->getComputedValue());
     }
@@ -343,7 +343,7 @@ abstract class AbstractField
      *
      * @since  3.5.21
      */
-    public function getComputedValue()
+    public function getComputedValue(): mixed
     {
         return ($this->value !== null && $this->value !== '') ? $this->value : $this->get('default');
     }
@@ -353,7 +353,7 @@ abstract class AbstractField
      *
      * @return  mixed
      */
-    public function getRawValue()
+    public function getRawValue(): mixed
     {
         return $this->value;
     }
@@ -365,14 +365,14 @@ abstract class AbstractField
      *
      * @return  static  Return self to support chaining.
      */
-    public function setValue($value)
+    public function setValue($value): static
     {
         $this->value = $value;
 
         return $this;
     }
 
-    public function bindValue(&$value)
+    public function bindValue(&$value): static
     {
         $this->value = &$value;
 
@@ -396,7 +396,7 @@ abstract class AbstractField
      *
      * @return  static  Return self to support chaining.
      */
-    public function setNamespace(string $namespace)
+    public function setNamespace(string $namespace): static
     {
         $this->namespace = FormNormalizer::clearNamespace($namespace);
 
@@ -410,7 +410,7 @@ abstract class AbstractField
      *
      * @return  $this
      */
-    public function appendNamespace(string $ns)
+    public function appendNamespace(string $ns): static
     {
         $this->namespace .= '/' . $ns;
 
@@ -419,7 +419,7 @@ abstract class AbstractField
         return $this;
     }
 
-    public function setDefaultValue($value)
+    public function setDefaultValue($value): static
     {
         return $this->set('default', $value);
     }
@@ -437,7 +437,7 @@ abstract class AbstractField
      *
      * @return mixed The return value of this attribute.
      */
-    public function get(string $name, $default = null)
+    public function get(string $name, $default = null): mixed
     {
         return $this->getState($name, $default);
     }
@@ -450,7 +450,7 @@ abstract class AbstractField
      *
      * @return  static
      */
-    public function set(string $name, $value)
+    public function set(string $name, mixed $value): static
     {
         $this->setState($name, $value);
 
@@ -474,7 +474,7 @@ abstract class AbstractField
      *
      * @return  static  Return self to support chaining.
      */
-    public function setForm(Form $form)
+    public function setForm(Form $form): static
     {
         $this->form = $form;
 
@@ -520,7 +520,7 @@ abstract class AbstractField
      *
      * @throws \BadMethodCallException
      */
-    public function __call($method, $args)
+    public function __call(string $method, array $args): mixed
     {
         $accessors = $this->getAccessors();
 

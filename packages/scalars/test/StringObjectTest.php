@@ -151,7 +151,7 @@ class StringObjectTest extends TestCase
      *
      * @return  array
      */
-    public function offsetGetProvider()
+    public function offsetGetProvider(): array
     {
         return [
             [0, '白'],
@@ -189,7 +189,7 @@ class StringObjectTest extends TestCase
      *
      * @return  array
      */
-    public function offsetSetProvider()
+    public function offsetSetProvider(): array
     {
         return [
             ['Foobar', ' B', 3, 'Foo Bar'],
@@ -223,7 +223,7 @@ class StringObjectTest extends TestCase
      *
      * @return  array
      */
-    public function offsetUnsetProvider()
+    public function offsetUnsetProvider(): array
     {
         return [
             ['Foobar', 3, 'Fooar'],
@@ -307,7 +307,7 @@ class StringObjectTest extends TestCase
      *
      * @return  array
      */
-    public function toLowerCaseProvider()
+    public function toLowerCaseProvider(): array
     {
         return [
             ['FooBar', 'foobar'],
@@ -341,7 +341,7 @@ class StringObjectTest extends TestCase
      *
      * @return  array
      */
-    public function toUpperCaseProvider()
+    public function toUpperCaseProvider(): array
     {
         return [
             ['FooBar', 'FOOBAR'],
@@ -374,7 +374,7 @@ class StringObjectTest extends TestCase
      *
      * @return  array
      */
-    public function lengthProvider()
+    public function lengthProvider(): array
     {
         return [
             ['Foo Bar', 7],
@@ -418,7 +418,7 @@ class StringObjectTest extends TestCase
      *
      * @return  array
      */
-    public function replaceProvider()
+    public function replaceProvider(): array
     {
         return [
             ['Foobar', 'oo', 'ii', 'Fiibar', 1],
@@ -713,7 +713,7 @@ class StringObjectTest extends TestCase
      *
      * @return  array
      */
-    public function indexOfProvider()
+    public function indexOfProvider(): array
     {
         return [
             ['FooBar', 'B', 3],
@@ -748,7 +748,7 @@ class StringObjectTest extends TestCase
      *
      * @return  array
      */
-    public function indexOfLastProvider()
+    public function indexOfLastProvider(): array
     {
         return [
             ['FooBarBaz', 'B', 6],
@@ -783,7 +783,7 @@ class StringObjectTest extends TestCase
      *
      * @return  array
      */
-    public function explodeProvider()
+    public function explodeProvider(): array
     {
         return [
             ['Foo/Bar/Yoo', '/', ['Foo', 'Bar', 'Yoo']],

@@ -51,7 +51,7 @@ class EventEmitter extends EventDispatcher implements
     /**
      * @inheritDoc
      */
-    public function dispatch(object $event)
+    public function dispatch(object $event): object
     {
         return tap(
             parent::dispatch($event),
@@ -78,7 +78,7 @@ class EventEmitter extends EventDispatcher implements
     /**
      * @inheritDoc
      */
-    public function subscribe(object $subscriber, ?int $priority = null)
+    public function subscribe(object $subscriber, ?int $priority = null): static
     {
         $this->provider->subscribe($subscriber, $priority);
 
@@ -88,7 +88,7 @@ class EventEmitter extends EventDispatcher implements
     /**
      * @inheritDoc
      */
-    public function on(string $event, callable $callable, ?int $priority = null)
+    public function on(string $event, callable $callable, ?int $priority = null): static
     {
         $this->provider->on($event, $callable, $priority);
 
@@ -98,7 +98,7 @@ class EventEmitter extends EventDispatcher implements
     /**
      * @inheritDoc
      */
-    public function once(string $event, callable $callable, ?int $priority = null)
+    public function once(string $event, callable $callable, ?int $priority = null): static
     {
         $this->on($event, disposable($callable), $priority);
 
@@ -141,7 +141,7 @@ class EventEmitter extends EventDispatcher implements
      *
      * @throws \ReflectionException
      */
-    public function remove($listenerOrSubscriber)
+    public function remove($listenerOrSubscriber): static
     {
         $this->provider->remove($listenerOrSubscriber);
 
@@ -157,7 +157,7 @@ class EventEmitter extends EventDispatcher implements
      * @return  static
      * @throws \ReflectionException
      */
-    public function off($event, $listenerOrSubscriber = null)
+    public function off($event, $listenerOrSubscriber = null): static
     {
         $this->provider->off($event, $listenerOrSubscriber);
 
@@ -183,7 +183,7 @@ class EventEmitter extends EventDispatcher implements
      *
      * @return  static
      */
-    public function appendProvider(ListenerProviderInterface $provider)
+    public function appendProvider(ListenerProviderInterface $provider): static
     {
         $this->provider->appendProvider($provider);
 
@@ -197,7 +197,7 @@ class EventEmitter extends EventDispatcher implements
      *
      * @return  static
      */
-    public function registerDealer(EventDispatcherInterface $dispatcher)
+    public function registerDealer(EventDispatcherInterface $dispatcher): static
     {
         $this->dealers[] = $dispatcher;
 
@@ -209,7 +209,7 @@ class EventEmitter extends EventDispatcher implements
      *
      * @return  static
      */
-    public function resetDealers()
+    public function resetDealers(): static
     {
         $this->dealers = [];
 

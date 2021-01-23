@@ -27,7 +27,7 @@ trait ArrayAccessTrait
      *
      * @return  mixed
      */
-    public function first(callable $conditions = null)
+    public function first(callable $conditions = null): mixed
     {
         if ($conditions) {
             foreach ($this->storage as $key => $value) {
@@ -49,7 +49,7 @@ trait ArrayAccessTrait
      *
      * @return  mixed
      */
-    public function last(callable $conditions = null)
+    public function last(callable $conditions = null): mixed
     {
         if ($conditions) {
             $prev = null;
@@ -77,7 +77,7 @@ trait ArrayAccessTrait
      *
      * @since  3.5.10
      */
-    public function flatten(string $delimiter = '.', int $depth = 0, ?string $prefix = null)
+    public function flatten(string $delimiter = '.', int $depth = 0, ?string $prefix = null): static
     {
         return $this->newInstance(Arr::flatten($this->dump(), $delimiter, $depth, $prefix));
     }
@@ -91,7 +91,7 @@ trait ArrayAccessTrait
      *
      * @since  3.5.10
      */
-    public function collapse(bool $keepKey = true)
+    public function collapse(bool $keepKey = true): static
     {
         return $this->newInstance(Arr::collapse($this->dump(), $keepKey));
     }
@@ -106,7 +106,7 @@ trait ArrayAccessTrait
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function page(int $page, int $limit)
+    public function page(int $page, int $limit): static|ArrayAccessTrait
     {
         $new = clone $this;
 

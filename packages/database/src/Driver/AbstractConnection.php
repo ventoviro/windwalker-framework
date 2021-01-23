@@ -74,7 +74,7 @@ abstract class AbstractConnection implements ConnectionInterface
      *
      * @return  mixed
      */
-    public function connect()
+    public function connect(): mixed
     {
         if ($this->connection) {
             return $this->connection;
@@ -90,7 +90,7 @@ abstract class AbstractConnection implements ConnectionInterface
      *
      * @return  mixed
      */
-    abstract public function disconnect();
+    abstract public function disconnect(): mixed;
 
     /**
      * isConnected
@@ -105,7 +105,7 @@ abstract class AbstractConnection implements ConnectionInterface
     /**
      * @return mixed
      */
-    public function get()
+    public function get(): mixed
     {
         return $this->connection;
     }

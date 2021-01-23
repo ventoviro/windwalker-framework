@@ -27,7 +27,7 @@ class NoHeaderOutput extends Output
      *
      * @return  $this
      */
-    public function header(string $string, bool $replace = true, int $code = null)
+    public function header(string $string, bool $replace = true, int $code = null): static
     {
         return $this;
     }

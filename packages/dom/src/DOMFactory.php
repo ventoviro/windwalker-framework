@@ -97,7 +97,7 @@ class DOMFactory
      *
      * @return  DOMElement
      */
-    public static function element(string $name, $value = null)
+    public static function element(string $name, $value = null): DOMElement
     {
         if ($value !== null) {
             $ele = static::document()->createElement($name, $value);

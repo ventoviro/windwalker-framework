@@ -76,7 +76,7 @@ class MultiCurlTransport implements AsyncTransportInterface
      *
      * @return  static
      */
-    public function reset()
+    public function reset(): static
     {
         foreach ($this->tasks as $task) {
             curl_multi_remove_handle($this->mh, $task['handle']);
@@ -114,7 +114,7 @@ class MultiCurlTransport implements AsyncTransportInterface
      *
      * @return  mixed|PromiseInterface
      */
-    public function resolve()
+    public function resolve(): mixed
     {
         $this->promise ??= $this->prepareResolvePromise();
 
@@ -188,7 +188,7 @@ class MultiCurlTransport implements AsyncTransportInterface
      *
      * @return  mixed
      */
-    public function download(RequestInterface $request, StreamInterface|string $dest, array $options = [])
+    public function download(RequestInterface $request, StreamInterface|string $dest, array $options = []): mixed
     {
     }
 
@@ -197,7 +197,7 @@ class MultiCurlTransport implements AsyncTransportInterface
      *
      * @return  mixed
      */
-    public static function isSupported()
+    public static function isSupported(): mixed
     {
     }
 
@@ -214,7 +214,7 @@ class MultiCurlTransport implements AsyncTransportInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setTransport(CurlTransport $transport)
+    public function setTransport(CurlTransport $transport): static
     {
         $this->transport = $transport;
 

@@ -23,7 +23,7 @@ class PhpHelper
      *
      * @return  boolean
      */
-    public static function isWeb()
+    public static function isWeb(): bool
     {
         return in_array(
             PHP_SAPI,
@@ -41,7 +41,7 @@ class PhpHelper
      *
      * @return  boolean
      */
-    public static function isCli()
+    public static function isCli(): bool
     {
         return in_array(
             PHP_SAPI,
@@ -57,7 +57,7 @@ class PhpHelper
      *
      * @return  boolean
      */
-    public static function isHHVM()
+    public static function isHHVM(): bool
     {
         return defined('HHVM_VERSION');
     }
@@ -67,7 +67,7 @@ class PhpHelper
      *
      * @return  boolean
      */
-    public static function isPHP()
+    public static function isPHP(): bool
     {
         return !static::isHHVM();
     }
@@ -77,7 +77,7 @@ class PhpHelper
      *
      * @return  boolean
      */
-    public static function isEmbed()
+    public static function isEmbed(): bool
     {
         return in_array(
             PHP_SAPI,
@@ -92,7 +92,7 @@ class PhpHelper
      *
      * @return string
      */
-    public function getVersion()
+    public function getVersion(): string
     {
         return PHP_VERSION;
     }
@@ -122,7 +122,7 @@ class PhpHelper
      *
      * @return boolean
      */
-    public function hasXdebug()
+    public function hasXdebug(): bool
     {
         return static::isPHP() && extension_loaded('xdebug');
     }
@@ -132,7 +132,7 @@ class PhpHelper
      *
      * @return  boolean
      */
-    public static function hasPcntl()
+    public static function hasPcntl(): bool
     {
         return extension_loaded('PCNTL');
     }
@@ -142,7 +142,7 @@ class PhpHelper
      *
      * @return  boolean
      */
-    public static function hasCurl()
+    public static function hasCurl(): bool
     {
         return function_exists('curl_init');
     }
@@ -152,7 +152,7 @@ class PhpHelper
      *
      * @return  boolean
      */
-    public static function hasMcrypt()
+    public static function hasMcrypt(): bool
     {
         return extension_loaded('mcrypt');
     }

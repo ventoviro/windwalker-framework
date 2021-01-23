@@ -67,7 +67,7 @@ class Fieldset implements AttributeInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function name(string $name)
+    public function name(string $name): static
     {
         $this->name = $name;
 
@@ -87,7 +87,7 @@ class Fieldset implements AttributeInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function title(?string $title)
+    public function title(?string $title): static
     {
         $this->title = $title;
 

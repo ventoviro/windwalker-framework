@@ -208,7 +208,7 @@ class NestedIterator implements \OuterIterator
     /**
      * @inheritDoc
      */
-    public function key()
+    public function key(): float|bool|int|string|null
     {
         return $this->compileIterator()->key();
     }
@@ -216,7 +216,7 @@ class NestedIterator implements \OuterIterator
     /**
      * @inheritDoc
      */
-    public function valid()
+    public function valid(): bool
     {
         return $this->compileIterator()->valid();
     }
@@ -234,7 +234,7 @@ class NestedIterator implements \OuterIterator
      *
      * @return  static
      */
-    protected function cloneNew()
+    protected function cloneNew(): static
     {
         return new static($this->getInnerIterator());
     }

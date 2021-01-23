@@ -48,7 +48,7 @@ class RecursiveDirectoryIterator extends \RecursiveDirectoryIterator
     /**
      * {@inheritdoc}
      */
-    public function getChildren()
+    public function getChildren(): static
     {
         return new static($this->getPathname(), $this->getFlags());
     }
@@ -56,7 +56,7 @@ class RecursiveDirectoryIterator extends \RecursiveDirectoryIterator
     /**
      * {@inheritdoc}
      */
-    public function key()
+    public function key(): array|string
     {
         $key = parent::key();
 
@@ -70,7 +70,7 @@ class RecursiveDirectoryIterator extends \RecursiveDirectoryIterator
     /**
      * {@inheritdoc}
      */
-    public function current()
+    public function current(): array|\SplFileInfo|string|\RecursiveDirectoryIterator
     {
         $current = parent::current();
 

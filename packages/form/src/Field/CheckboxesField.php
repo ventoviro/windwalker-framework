@@ -77,7 +77,7 @@ class CheckboxesField extends ListField
      *
      * @return  array
      */
-    public function getValue()
+    public function getValue(): array
     {
         $value = parent::getValue();
 

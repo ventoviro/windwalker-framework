@@ -137,7 +137,7 @@ class EdgeFileCache implements EdgeCacheInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setPath(string $path)
+    public function setPath(string $path): static
     {
         $this->path = $path;
 

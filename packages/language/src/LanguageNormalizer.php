@@ -57,7 +57,7 @@ abstract class LanguageNormalizer
      *
      * @return  string
      */
-    public static function normalize(string $key)
+    public static function normalize(string $key): string
     {
         // Only allow A-Z a-z 0-9 and "_", other characters will be replace with "_".
         $key = preg_replace('/[^A-Z0-9]+/i', '.', $key);

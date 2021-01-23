@@ -28,7 +28,7 @@ trait FilesystemTestTrait
      *
      * @return  mixed
      */
-    public static function assertPathEquals($expect, $actual, string $message = '')
+    public static function assertPathEquals($expect, $actual, string $message = ''): mixed
     {
         return self::assertEquals(
             Path::clean($expect),
@@ -46,7 +46,7 @@ trait FilesystemTestTrait
      *
      * @return  mixed
      */
-    public static function assertRealpathEquals($expect, $actual, string $message = '')
+    public static function assertRealpathEquals($expect, $actual, string $message = ''): mixed
     {
         return self::assertEquals(
             Path::normalize($expect),

@@ -122,7 +122,7 @@ class ResqueQueueDriver implements QueueDriverInterface
      *
      * @return ResqueQueueDriver
      */
-    public function delete(QueueMessage $message)
+    public function delete(QueueMessage $message): static
     {
         $channel = $message->getChannel() ?: $this->channel;
 
@@ -138,7 +138,7 @@ class ResqueQueueDriver implements QueueDriverInterface
      *
      * @return static
      */
-    public function release(QueueMessage $message)
+    public function release(QueueMessage $message): static
     {
         $this->push($message);
 
@@ -185,7 +185,7 @@ class ResqueQueueDriver implements QueueDriverInterface
      * @return bool
      * @throws \DomainException
      */
-    public static function supportDelayed($throwError = false)
+    public static function supportDelayed($throwError = false): bool
     {
         if (!class_exists(\ResqueScheduler::class)) {
             if ($throwError) {

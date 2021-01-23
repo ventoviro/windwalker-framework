@@ -40,7 +40,7 @@ class RawWrapper implements WrapperInterface, \Stringable
      *
      * @since  3.5.1
      */
-    public function get()
+    public function get(): mixed
     {
         return $this->value;
     }
@@ -64,7 +64,7 @@ class RawWrapper implements WrapperInterface, \Stringable
     /**
      * @inheritDoc
      */
-    public function __invoke($src = null)
+    public function __invoke($src = null): mixed
     {
         return $this->get();
     }
@@ -72,7 +72,7 @@ class RawWrapper implements WrapperInterface, \Stringable
     /**
      * @inheritDoc
      */
-    public function __toString()
+    public function __toString(): string
     {
         return (string) $this->get();
     }

@@ -34,5 +34,5 @@ interface DefinitionInterface
      *
      * @return  void
      */
-    public function set($value): void;
+    public function set(mixed $value): void;
 }

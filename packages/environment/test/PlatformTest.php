@@ -100,7 +100,7 @@ class PlatformTest extends TestCase
      *
      * @return  array
      */
-    public function getIsWinTestData()
+    public function getIsWinTestData(): array
     {
         return [
             ['CYGWIN_NT-5.1', false],
@@ -124,7 +124,7 @@ class PlatformTest extends TestCase
      *
      * @return  array
      */
-    public function getIsUnixTestData()
+    public function getIsUnixTestData(): array
     {
         return [
             ['CYGWIN_NT-5.1', true],
@@ -148,7 +148,7 @@ class PlatformTest extends TestCase
      *
      * @return  array
      */
-    public function getIsLinuxTestData()
+    public function getIsLinuxTestData(): array
     {
         return [
             ['CYGWIN_NT-5.1', false],

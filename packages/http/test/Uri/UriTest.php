@@ -202,7 +202,7 @@ class UriTest extends TestCase
      *
      * @return  array
      */
-    public function authorityProvider()
+    public function authorityProvider(): array
     {
         return [
             'host-only' => ['http://foo.com/bar', 'foo.com'],
@@ -226,7 +226,7 @@ class UriTest extends TestCase
         self::assertEquals($expected, $uri->getAuthority());
     }
 
-    public function queryStringsForEncoding()
+    public function queryStringsForEncoding(): array
     {
         return [
             'key-only' => ['k^ey', 'k%5Eey'],
@@ -277,7 +277,7 @@ class UriTest extends TestCase
      *
      * @return  array
      */
-    public function seedInvalidArguments()
+    public function seedInvalidArguments(): array
     {
         $methods = [
             'withScheme',

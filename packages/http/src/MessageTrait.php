@@ -75,7 +75,7 @@ trait MessageTrait
      *
      * @return static
      */
-    public function withProtocolVersion($version)
+    public function withProtocolVersion($version): MessageTrait|static
     {
         if (!is_string($version)) {
             throw new \InvalidArgumentException(
@@ -220,7 +220,7 @@ trait MessageTrait
      * @return static
      * @throws \InvalidArgumentException for invalid header names or values.
      */
-    public function withHeader($name, $value)
+    public function withHeader($name, $value): static
     {
         $new = $this->createHeader($name);
 
@@ -246,7 +246,7 @@ trait MessageTrait
      * @return static
      * @throws \InvalidArgumentException for invalid header names or values.
      */
-    public function withAddedHeader($name, $value)
+    public function withAddedHeader($name, $value): MessageTrait|static
     {
         $value = HeaderHelper::allToArray($value);
 
@@ -284,7 +284,7 @@ trait MessageTrait
      *
      * @return $this
      */
-    public function withoutHeader($name)
+    public function withoutHeader($name): MessageTrait|static
     {
         if (!$this->hasHeader($name)) {
             return clone $this;
@@ -324,7 +324,7 @@ trait MessageTrait
      * @return static
      * @throws \InvalidArgumentException When the body is not valid.
      */
-    public function withBody(StreamInterface $body)
+    public function withBody(StreamInterface $body): MessageTrait|static
     {
         $new = clone $this;
 
@@ -340,7 +340,7 @@ trait MessageTrait
      *
      * @return  static
      */
-    protected function createHeader($name)
+    protected function createHeader($name): MessageTrait|static
     {
         $new = clone $this;
 

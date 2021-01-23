@@ -94,7 +94,7 @@ class Build extends Console
      *
      * @return  boolean
      */
-    protected function doExecute()
+    protected function doExecute(): bool
     {
         foreach ($this->subtrees as $subtree => $class) {
             $tmp = __DIR__ . '/../tmp/git';
@@ -129,7 +129,7 @@ class Build extends Console
         return true;
     }
 
-    protected function runProcess($cmd, $cwd)
+    protected function runProcess($cmd, $cwd): int
     {
         $this->out()->out('>> ' . $cmd)->out();
 
@@ -156,7 +156,7 @@ class Build extends Console
      *
      * @return  string
      */
-    protected function exec($command, $arguments = [], $options = [])
+    protected function exec($command, $arguments = [], $options = []): string
     {
         $arguments = implode(' ', (array) $arguments);
         $options   = implode(' ', (array) $options);
@@ -179,7 +179,7 @@ class Build extends Console
      *
      * @return  boolean
      */
-    protected function help()
+    protected function help(): bool
     {
         $help = <<<HELP
 Windwalker Build Command.

@@ -59,10 +59,10 @@ class StubOutput extends Output
      *
      * @return  static
      */
-    public function header($string, $replace = true, $code = null)
+    public function header($string, $replace = true, $code = null): static
     {
         if (strpos($string, ':') !== false) {
-            list($header, $value) = explode(': ', $string, 2);
+            [$header, $value] = explode(': ', $string, 2);
 
             if ($replace) {
                 $this->message = $this->message->withHeader($header, $value);

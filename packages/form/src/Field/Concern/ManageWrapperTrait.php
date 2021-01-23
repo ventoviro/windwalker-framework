@@ -53,7 +53,7 @@ trait ManageWrapperTrait
         return $wrapper->render();
     }
 
-    public function modifyWrapper(callable $handler)
+    public function modifyWrapper(callable $handler): static
     {
         $handler($this->getWrapper());
 
@@ -73,7 +73,7 @@ trait ManageWrapperTrait
      *
      * @return  static  Return self to support chaining.
      */
-    public function setWrapper(DOMElement $wrapper)
+    public function setWrapper(DOMElement $wrapper): static
     {
         $this->wrapper = $wrapper;
 
@@ -100,7 +100,7 @@ trait ManageWrapperTrait
      *
      * @return  static
      */
-    public function setWrapperAttribute(string $name, string $value)
+    public function setWrapperAttribute(string $name, string $value): static
     {
         $this->getWrapper()->setAttribute($name, $value);
 
@@ -120,7 +120,7 @@ trait ManageWrapperTrait
      *
      * @return  static
      */
-    public function wrapperAttr(string $name, $value = null)
+    public function wrapperAttr(string $name, $value = null): static
     {
         return $this->setAttribute($name, $value);
     }
@@ -130,21 +130,21 @@ trait ManageWrapperTrait
         return $this->getWrapper()->classList->value;
     }
 
-    public function setWrapperClass(string $class)
+    public function setWrapperClass(string $class): static
     {
         $this->getWrapper()->setAttribute('class', $class);
 
         return $this;
     }
 
-    public function addWrapperClass(...$args)
+    public function addWrapperClass(...$args): static
     {
         $this->getWrapper()->classList->add(...$args);
 
         return $this;
     }
 
-    public function removeWrapperClass(...$args)
+    public function removeWrapperClass(...$args): static
     {
         $this->getWrapper()->classList->remove(...$args);
 

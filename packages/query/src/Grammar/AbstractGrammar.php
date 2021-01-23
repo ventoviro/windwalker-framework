@@ -59,7 +59,7 @@ abstract class AbstractGrammar
      *
      * @return  static
      */
-    public static function create(?string $name = null)
+    public static function create(?string $name = null): BaseGrammar|static
     {
         if ($name === null) {
             if ($grammar = DefaultConnection::getGrammar()) {
@@ -375,7 +375,7 @@ abstract class AbstractGrammar
      *
      * @return  static  Return self to support chaining.
      */
-    public function setEscaper(Escaper $escaper)
+    public function setEscaper(Escaper $escaper): static
     {
         $this->escaper = $escaper;
 

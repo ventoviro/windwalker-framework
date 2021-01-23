@@ -38,7 +38,7 @@ class UncaughtException extends \Exception
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function getReason()
+    public function getReason(): mixed
     {
         return $this->reason;
     }

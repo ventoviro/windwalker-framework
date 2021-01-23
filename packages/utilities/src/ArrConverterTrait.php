@@ -101,7 +101,7 @@ trait ArrConverterTrait
      *
      * @return  array  Pivoted array.
      */
-    public static function extractPrefix($origin, string $prefix, $target = null)
+    public static function extractPrefix($origin, string $prefix, $target = null): object|array
     {
         $target = is_object($target) ? $target : (array) $target;
 

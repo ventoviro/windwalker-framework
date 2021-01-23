@@ -82,7 +82,7 @@ class MbUtf8StringTest extends TestCase
      * @param  string   $needle    @todo
      * @param  integer  $offset    @todo
      *
-     * @return  array
+     * @return  void
      *
      * @dataProvider  strrposProvider
      * @since         2.0
@@ -101,7 +101,7 @@ class MbUtf8StringTest extends TestCase
      * @param  string    $start   @todo
      * @param  bool|int  $length  @todo
      *
-     * @return  array
+     * @return  void
      *
      * @dataProvider  substrProvider
      * @since         2.0
@@ -118,12 +118,12 @@ class MbUtf8StringTest extends TestCase
      * @param  string  $string  @todo
      * @param  string  $expect  @todo
      *
-     * @return  array
+     * @return  void
      *
      * @dataProvider  strtolowerProvider
      * @since         2.0
      */
-    public function testStrtolower($string, $expect)
+    public function testStrtolower($string, $expect): void
     {
         $actual = Utf8String::strtolower($string);
         $this->assertEquals($expect, $actual);
@@ -135,12 +135,12 @@ class MbUtf8StringTest extends TestCase
      * @param  string  $string  @todo
      * @param  string  $expect  @todo
      *
-     * @return  array
+     * @return  void
      *
      * @dataProvider  strtoupperProvider
      * @since         2.0
      */
-    public function testStrtoupper($string, $expect)
+    public function testStrtoupper($string, $expect): void
     {
         $actual = Utf8String::strtoupper($string);
         $this->assertEquals($expect, $actual);
@@ -152,12 +152,12 @@ class MbUtf8StringTest extends TestCase
      * @param  string  $string  @todo
      * @param  string  $expect  @todo
      *
-     * @return  array
+     * @return  void
      *
      * @dataProvider  strlenProvider
      * @since         2.0
      */
-    public function testStrlen($string, $expect)
+    public function testStrlen($string, $expect): void
     {
         $actual = Utf8String::strlen($string);
         $this->assertEquals($expect, $actual);
@@ -172,12 +172,12 @@ class MbUtf8StringTest extends TestCase
      * @param  integer  $count    @todo
      * @param  string   $expect   @todo
      *
-     * @return  array
+     * @return  void
      *
      * @dataProvider  strIreplaceProvider
      * @since         2.0
      */
-    public function testStrIreplace($search, $replace, $subject, $count, $expect)
+    public function testStrIreplace($search, $replace, $subject, $count, $expect): void
     {
         $actual = Utf8String::strIreplace($search, $replace, $subject, $count);
         $this->assertEquals($expect, $actual);
@@ -190,12 +190,12 @@ class MbUtf8StringTest extends TestCase
      * @param  int     $split_length  @todo
      * @param  string  $expect        @todo
      *
-     * @return  array
+     * @return  void
      *
      * @dataProvider  strSplitProvider
      * @since         2.0
      */
-    public function testStrSplit($string, $split_length, $expect)
+    public function testStrSplit($string, $split_length, $expect): void
     {
         $actual = Utf8String::strSplit($string, $split_length);
         $this->assertEquals($expect, $actual);
@@ -232,12 +232,12 @@ class MbUtf8StringTest extends TestCase
      * @param  string  $locale   @todo
      * @param  string  $expect   @todo
      *
-     * @return  array
+     * @return  void
      *
      * @dataProvider  strcmpProvider
      * @since         2.0
      */
-    public function testStrcmp($string1, $string2, $expect)
+    public function testStrcmp($string1, $string2, $expect): void
     {
         $actual = Utf8String::strcmp($string1, $string2);
 
@@ -257,12 +257,12 @@ class MbUtf8StringTest extends TestCase
      * @param  integer  $len       @todo
      * @param  string   $expect    @todo
      *
-     * @return  array
+     * @return  void
      *
      * @dataProvider  strcspnProvider
      * @since         2.0
      */
-    public function testStrcspn($haystack, $needles, $start, $len, $expect)
+    public function testStrcspn($haystack, $needles, $start, $len, $expect): void
     {
         $actual = Utf8String::strcspn($haystack, $needles, $start, $len);
         $this->assertEquals($expect, $actual);
@@ -275,12 +275,12 @@ class MbUtf8StringTest extends TestCase
      * @param  string  $needle    @todo
      * @param  string  $expect    @todo
      *
-     * @return  array
+     * @return  void
      *
      * @dataProvider  stristrProvider
      * @since         2.0
      */
-    public function testStristr($haystack, $needle, $expect)
+    public function testStristr($haystack, $needle, $expect): void
     {
         $actual = Utf8String::stristr($haystack, $needle);
         $this->assertEquals($expect, $actual);
@@ -292,12 +292,12 @@ class MbUtf8StringTest extends TestCase
      * @param  string  $string  @todo
      * @param  string  $expect  @todo
      *
-     * @return  array
+     * @return  void
      *
      * @dataProvider  strrevProvider
      * @since         2.0
      */
-    public function testStrrev($string, $expect)
+    public function testStrrev($string, $expect): void
     {
         $actual = Utf8String::strrev($string);
         $this->assertEquals($expect, $actual);
@@ -312,12 +312,12 @@ class MbUtf8StringTest extends TestCase
      * @param  integer  $length   @todo
      * @param  string   $expect   @todo
      *
-     * @return  array
+     * @return  void
      *
      * @dataProvider  strspnProvider
      * @since         2.0
      */
-    public function testStrspn($subject, $mask, $start, $length, $expect)
+    public function testStrspn($subject, $mask, $start, $length, $expect): void
     {
         $actual = Utf8String::strspn($subject, $mask, $start, $length);
         $this->assertEquals($expect, $actual);
@@ -337,7 +337,7 @@ class MbUtf8StringTest extends TestCase
      * @dataProvider  substrReplaceProvider
      * @since         2.0
      */
-    public function testSubstrReplace($expect, $string, $replacement, $start, $length)
+    public function testSubstrReplace($expect, $string, $replacement, $start, $length): void
     {
         $actual = Utf8String::substrReplace($string, $replacement, $start, $length);
         $this->assertEquals($expect, $actual);
@@ -355,7 +355,7 @@ class MbUtf8StringTest extends TestCase
      * @dataProvider  ltrimProvider
      * @since         2.0
      */
-    public function testLtrim($string, $charlist, $expect)
+    public function testLtrim($string, $charlist, $expect): void
     {
         if ($charlist === null) {
             $actual = Utf8String::ltrim($string);
@@ -378,7 +378,7 @@ class MbUtf8StringTest extends TestCase
      * @dataProvider  rtrimProvider
      * @since         2.0
      */
-    public function testRtrim($string, $charlist, $expect)
+    public function testRtrim($string, $charlist, $expect): void
     {
         if ($charlist === null) {
             $actual = Utf8String::rtrim($string);
@@ -401,7 +401,7 @@ class MbUtf8StringTest extends TestCase
      * @dataProvider  trimProvider
      * @since         2.0
      */
-    public function testTrim($string, $charlist, $expect)
+    public function testTrim($string, $charlist, $expect): void
     {
         if ($charlist === null) {
             $actual = Utf8String::trim($string);
@@ -423,7 +423,7 @@ class MbUtf8StringTest extends TestCase
      * @dataProvider  ucfirstProvider
      * @since         2.0
      */
-    public function testUcfirst($string, $expect)
+    public function testUcfirst($string, $expect): void
     {
         $actual = Utf8String::ucfirst($string);
         $this->assertEquals($expect, $actual);
@@ -456,7 +456,7 @@ class MbUtf8StringTest extends TestCase
      * @dataProvider  ucwordsProvider
      * @since         2.0
      */
-    public function testUcwords($string, $expect)
+    public function testUcwords($string, $expect): void
     {
         $actual = Utf8String::ucwords($string);
         $this->assertEquals($expect, $actual);
@@ -490,7 +490,7 @@ class MbUtf8StringTest extends TestCase
      * @dataProvider  convertEncodingProvider
      * @since         2.0
      */
-    public function testConvertEncoding($source, $from_encoding, $to_encoding, $expect)
+    public function testConvertEncoding($source, $from_encoding, $to_encoding, $expect): void
     {
         $actual = Utf8String::convertEncoding($source, $from_encoding, $to_encoding);
         $this->assertEquals($expect, $actual);
@@ -507,7 +507,7 @@ class MbUtf8StringTest extends TestCase
      * @dataProvider  isUtf8Provider
      * @since         2.0
      */
-    public function testValid($string, $expect)
+    public function testValid($string, $expect): void
     {
         $actual = Utf8String::isUtf8($string);
         $this->assertEquals($expect, $actual);
@@ -524,7 +524,7 @@ class MbUtf8StringTest extends TestCase
      * @dataProvider  unicodeToUtf8Provider
      * @since         2.0
      */
-    public function testUnicodeToUtf8($string, $expect)
+    public function testUnicodeToUtf8($string, $expect): void
     {
         $actual = Utf8String::unicodeToUtf8($string);
         $this->assertEquals($expect, $actual);
@@ -541,7 +541,7 @@ class MbUtf8StringTest extends TestCase
      * @dataProvider  unicodeToUtf16Provider
      * @since         2.0
      */
-    public function testUnicodeToUtf16($string, $expect)
+    public function testUnicodeToUtf16($string, $expect): void
     {
         $actual = Utf8String::unicodeToUtf16($string);
         $this->assertEquals($expect, $actual);
@@ -558,7 +558,7 @@ class MbUtf8StringTest extends TestCase
      * @dataProvider  isUtf8Provider
      * @since         2.0
      */
-    public function testCompliant($string, $expect)
+    public function testCompliant($string, $expect): void
     {
         $actual = Utf8String::compliant($string);
         $this->assertEquals($expect, $actual);

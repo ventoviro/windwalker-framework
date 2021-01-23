@@ -37,7 +37,7 @@ abstract class AbstractHtml5Field extends TextField
      *
      * @since  3.4.2
      */
-    public function max(?int $max = null, bool $addFilter = true)
+    public function max(?int $max = null, bool $addFilter = true): mixed
     {
         if ($addFilter) {
             $this->addFilter(new Range(null, $max));
@@ -56,7 +56,7 @@ abstract class AbstractHtml5Field extends TextField
      *
      * @since  3.4.2
      */
-    public function min(?int $min = null, bool $addFilter = true)
+    public function min(?int $min = null, bool $addFilter = true): mixed
     {
         if ($addFilter) {
             $this->addFilter(new Range($min, null));
@@ -77,7 +77,7 @@ abstract class AbstractHtml5Field extends TextField
      *
      * @since  3.4.2
      */
-    public function range(?int $min, ?int $max, bool $addFilter = true)
+    public function range(?int $min, ?int $max, bool $addFilter = true): static
     {
         if ($addFilter) {
             $this->addFilter(new Range($min, $max));

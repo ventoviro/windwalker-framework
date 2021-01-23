@@ -214,7 +214,7 @@ class PathTest extends AbstractVfsTestCase
      *
      * @since   2.0
      */
-    public function dataTestMakeSafe()
+    public function dataTestMakeSafe(): array
     {
         return [
             [

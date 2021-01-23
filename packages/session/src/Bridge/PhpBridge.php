@@ -266,7 +266,7 @@ class PhpBridge implements BridgeInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setStorage(array $storage)
+    public function setStorage(array $storage): static
     {
         $this->storage = $storage;
 
@@ -341,7 +341,7 @@ class PhpBridge implements BridgeInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setHandler(HandlerInterface $handler)
+    public function setHandler(HandlerInterface $handler): static
     {
         if ($this->getStatus() === PHP_SESSION_ACTIVE) {
             throw new \RuntimeException('Cannot change handler during session active.');
@@ -357,7 +357,7 @@ class PhpBridge implements BridgeInterface
         return $this->serializer;
     }
 
-    public function setSerializer(?FormatInterface $serializer)
+    public function setSerializer(?FormatInterface $serializer): static
     {
         if ($this->getStatus() === PHP_SESSION_ACTIVE) {
             throw new \RuntimeException('Cannot change serializer during session active.');

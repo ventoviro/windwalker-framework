@@ -21,7 +21,7 @@ abstract class AbstractEvent implements EventInterface
     /**
      * The event name.
      *
-     * @var    string
+     * @var string|null
      *
      * @since  2.0
      */
@@ -44,7 +44,7 @@ abstract class AbstractEvent implements EventInterface
      *
      * @return  static
      */
-    public static function wrap($event, array $args = [])
+    public static function wrap(string|EventInterface $event, array $args = []): string|static|EventInterface|AbstractEvent
     {
         ArgumentsAssert::assert(
             is_string($event) || $event instanceof EventInterface,
@@ -92,8 +92,10 @@ abstract class AbstractEvent implements EventInterface
 
     /**
      * @inheritDoc
+     *
+     * @return EventInterface|AbstractEvent
      */
-    public function mirror(string $name, array $args = [])
+    public function mirror(string $name, array $args = []): static
     {
         $new = clone $this;
 
@@ -111,7 +113,7 @@ abstract class AbstractEvent implements EventInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setName(string $name)
+    public function setName(string $name): static
     {
         $this->name = $name;
 
@@ -142,7 +144,7 @@ abstract class AbstractEvent implements EventInterface
      *
      * @return  static
      */
-    public function merge(array $arguments)
+    public function merge(array $arguments): static
     {
         foreach ($arguments as $key => &$value) {
             $this->$key = &$value;
@@ -159,7 +161,7 @@ abstract class AbstractEvent implements EventInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setArguments(array $arguments)
+    public function setArguments(array $arguments): static
     {
         $this->clear();
 
@@ -175,7 +177,7 @@ abstract class AbstractEvent implements EventInterface
      *
      * @since   2.0
      */
-    public function clear()
+    public function clear(): static
     {
         $props = (new \ReflectionClass($this))->getDefaultProperties();
 

@@ -80,7 +80,7 @@ class PdoStatement extends AbstractStatement
     /**
      * @inheritDoc
      */
-    public function bindParam($key = null, &$value = null, $dataType = null, int $length = 0, $driverOptions = null)
+    public function bindParam($key = null, &$value = null, $dataType = null, int $length = 0, $driverOptions = null): static
     {
         if (is_array($key)) {
             foreach ($key as $k => $v) {
@@ -106,7 +106,7 @@ class PdoStatement extends AbstractStatement
     /**
      * @inheritDoc
      */
-    public function close()
+    public function close(): static
     {
         if ($this->cursor) {
             $this->cursor->closeCursor();

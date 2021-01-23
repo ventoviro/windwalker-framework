@@ -24,11 +24,11 @@ class TextResponse extends AbstractContentTypeResponse
     /**
      * Handle body to stream object.
      *
-     * @param   string $body The body data.
+     * @param  string  $body  The body data.
      *
      * @return  StreamInterface  Converted to stream object.
      */
-    protected function handleBody($body)
+    protected function handleBody(string $body): StreamInterface
     {
         if (is_string($body)) {
             $stream = new Stream('php://temp', 'wb+');

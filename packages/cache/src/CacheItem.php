@@ -85,7 +85,7 @@ class CacheItem implements CacheItemInterface
      *
      * @since   2.0
      */
-    public function get()
+    public function get(): mixed
     {
         if ($this->isHit() === false) {
             return null;
@@ -103,7 +103,7 @@ class CacheItem implements CacheItemInterface
      *
      * @return  static
      */
-    public function set($value)
+    public function set($value): static
     {
         if ($this->key === null) {
             return $this;
@@ -152,7 +152,7 @@ class CacheItem implements CacheItemInterface
      * @return static
      *   The called object.
      */
-    public function expiresAt($expiration)
+    public function expiresAt($expiration): static
     {
         try {
             if ($expiration instanceof DateTimeInterface) {
@@ -185,7 +185,7 @@ class CacheItem implements CacheItemInterface
      * @return static
      *   The called object.
      */
-    public function expiresAfter($time)
+    public function expiresAfter($time): static
     {
         try {
             if ($time instanceof \DateInterval) {
@@ -228,7 +228,7 @@ class CacheItem implements CacheItemInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function setIsHit(bool $hit)
+    public function setIsHit(bool $hit): static
     {
         $this->hit = $hit;
 

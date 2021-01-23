@@ -90,7 +90,7 @@ class ReactServer extends AbstractServer
      *
      * @return  static  Return self to support chaining.
      */
-    public function setLoop(?LoopInterface $loop)
+    public function setLoop(?LoopInterface $loop): static
     {
         $this->loop = $loop;
 
@@ -115,7 +115,7 @@ class ReactServer extends AbstractServer
      *
      * @return  static  Return self to support chaining.
      */
-    public function setSocket(?ReactServerInterface $socket)
+    public function setSocket(?ReactServerInterface $socket): static
     {
         $this->socket = $socket;
 
@@ -172,7 +172,7 @@ class ReactServer extends AbstractServer
      *
      * @return  static  Return self to support chaining.
      */
-    public function setServer(?Server $server)
+    public function setServer(?Server $server): static
     {
         $this->server = $server;
 

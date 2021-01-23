@@ -176,7 +176,7 @@ class Chris
      *
      * @return  int
      */
-    public function taxed_value()
+    public function taxed_value(): float|int
     {
         return $this->value - ($this->value * 0.4);
     }

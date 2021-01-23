@@ -47,7 +47,7 @@ class RequestEvent extends AbstractEvent
      *
      * @return  static  Return self to support chaining.
      */
-    public function setResponse(ResponseInterface $response)
+    public function setResponse(ResponseInterface $response): static
     {
         $this->response = $response;
 
@@ -59,7 +59,7 @@ class RequestEvent extends AbstractEvent
      *
      * @return  static  Return self to support chaining.
      */
-    public function setRequest(ServerRequestInterface $request)
+    public function setRequest(ServerRequestInterface $request): static
     {
         $this->request = $request;
 
@@ -79,7 +79,7 @@ class RequestEvent extends AbstractEvent
      *
      * @return  static  Return self to support chaining.
      */
-    public function setId(int $id)
+    public function setId(int $id): static
     {
         $this->id = $id;
 

@@ -23,7 +23,7 @@ interface AccessorAccessibleInterface
      *
      * @return mixed
      */
-    public function &get($key);
+    public function &get(mixed $key): mixed;
 
     /**
      * Set value to this object.
@@ -33,7 +33,7 @@ interface AccessorAccessibleInterface
      *
      * @return  static
      */
-    public function set($key, $value);
+    public function set(mixed $key, mixed $value): static;
 
     /**
      * Set value default if not exists.
@@ -45,7 +45,7 @@ interface AccessorAccessibleInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function def($key, $default);
+    public function def(mixed $key, mixed $default): static;
 
     /**
      * Check a key exists or not.
@@ -56,7 +56,7 @@ interface AccessorAccessibleInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function has($key): bool;
+    public function has(mixed $key): bool;
 
     /**
      * Creates a copy of storage.

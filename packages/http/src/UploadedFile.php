@@ -152,7 +152,7 @@ class UploadedFile implements UploadedFileInterface
      * @throws \RuntimeException in cases when no stream is available or can be
      *                           created.
      */
-    public function getStream()
+    public function getStream(): Stream|StreamInterface
     {
         if ($this->moved) {
             throw new \RuntimeException('The file has already moved.');
@@ -235,7 +235,7 @@ class UploadedFile implements UploadedFileInterface
      *
      * @return   int|null  The file size in bytes or null if unknown.
      */
-    public function getSize()
+    public function getSize(): ?int
     {
         return $this->size;
     }
@@ -255,7 +255,7 @@ class UploadedFile implements UploadedFileInterface
      *
      * @return   int  One of PHP's UPLOAD_ERR_XXX constants.
      */
-    public function getError()
+    public function getError(): int
     {
         return $this->error;
     }
@@ -273,7 +273,7 @@ class UploadedFile implements UploadedFileInterface
      * @return   string|null  The filename sent by the client or null if none
      *                        was provided.
      */
-    public function getClientFilename()
+    public function getClientFilename(): ?string
     {
         return $this->clientFilename;
     }
@@ -291,7 +291,7 @@ class UploadedFile implements UploadedFileInterface
      * @return   string|null  The media type sent by the client or null if none
      *                        was provided.
      */
-    public function getClientMediaType()
+    public function getClientMediaType(): ?string
     {
         return $this->clientMediaType;
     }
@@ -323,7 +323,7 @@ class UploadedFile implements UploadedFileInterface
      *
      * @return  string
      */
-    public function getSapi()
+    public function getSapi(): string
     {
         return $this->sapi;
     }
@@ -335,7 +335,7 @@ class UploadedFile implements UploadedFileInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setSapi($sapi)
+    public function setSapi($sapi): static
     {
         $this->sapi = $sapi;
 

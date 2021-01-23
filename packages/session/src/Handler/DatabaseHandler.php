@@ -94,7 +94,7 @@ class DatabaseHandler extends AbstractHandler
      * @return  boolean  True on success, false otherwise.
      * @since   2.0
      */
-    public function write($id, $data)
+    public function write($id, $data): bool
     {
         $columns = $this->getOption('columns');
 
@@ -153,7 +153,7 @@ class DatabaseHandler extends AbstractHandler
      * @throws \Exception
      * @since   2.0
      */
-    public function destroy($id)
+    public function destroy($id): bool
     {
         $columns = $this->getOption('columns');
 
@@ -174,7 +174,7 @@ class DatabaseHandler extends AbstractHandler
      * @throws  \Exception
      * @since   2.0
      */
-    public function gc($lifetime)
+    public function gc($lifetime): bool
     {
         // Determine the timestamp threshold with which to purge old sessions.
         $past = time() - $lifetime;
@@ -194,7 +194,7 @@ class DatabaseHandler extends AbstractHandler
      *
      * @return  bool
      */
-    public function updateTimestamp($session_id, $session_data)
+    public function updateTimestamp($session_id, $session_data): bool
     {
         $columns = $this->getOption('columns');
 

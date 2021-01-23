@@ -35,7 +35,7 @@ class Authorisation implements AuthorisationInterface
      *
      * @return  boolean
      */
-    public function authorise(string $policy, $user, $data = null, ...$args): bool
+    public function authorise(string $policy, mixed $user, mixed $data = null, mixed ...$args): bool
     {
         if (!$this->hasPolicy($policy)) {
             throw new \OutOfBoundsException(sprintf('Policy "%s" not exists', $policy));
@@ -52,7 +52,7 @@ class Authorisation implements AuthorisationInterface
      *
      * @return  static
      */
-    public function addPolicy(string $name, callable|PolicyInterface $handler)
+    public function addPolicy(string $name, callable|PolicyInterface $handler): static
     {
         if (is_callable($handler)) {
             $handler = new CallbackPolicy($handler);
@@ -86,7 +86,7 @@ class Authorisation implements AuthorisationInterface
      *
      * @return  static
      */
-    public function registerPolicyProvider(PolicyProviderInterface $policy)
+    public function registerPolicyProvider(PolicyProviderInterface $policy): static
     {
         $policy->register($this);
 
@@ -122,7 +122,7 @@ class Authorisation implements AuthorisationInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setPolicies(array $policies)
+    public function setPolicies(array $policies): static
     {
         foreach ($policies as $name => $policy) {
             $this->addPolicy($name, $policy);

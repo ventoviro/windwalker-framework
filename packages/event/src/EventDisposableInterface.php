@@ -25,5 +25,5 @@ interface EventDisposableInterface
      *
      * @return  static
      */
-    public function once(string $event, callable $callable, ?int $priority = null);
+    public function once(string $event, callable $callable, ?int $priority = null): static;
 }

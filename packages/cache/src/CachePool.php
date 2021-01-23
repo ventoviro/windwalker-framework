@@ -72,7 +72,7 @@ class CachePool implements CacheItemPoolInterface, CacheInterface, LoggerAwareIn
     /**
      * @inheritDoc
      */
-    public function getItem($key)
+    public function getItem($key): CacheItemInterface|CacheItem
     {
         $item = new CacheItem($key);
         $item->setLogger($this->logger);
@@ -91,7 +91,7 @@ class CachePool implements CacheItemPoolInterface, CacheInterface, LoggerAwareIn
      *
      * @return \Traversable|CacheItemInterface[]
      */
-    public function getItems(iterable $keys = [])
+    public function getItems(iterable $keys = []): \Traversable|array|\Generator
     {
         foreach ($keys as $key) {
             yield $key => $this->getItem($key);
@@ -337,7 +337,7 @@ class CachePool implements CacheItemPoolInterface, CacheInterface, LoggerAwareIn
      *
      * @throws \Psr\Cache\InvalidArgumentException
      */
-    public function call(string $key, callable $handler, $ttl = null)
+    public function call(string $key, callable $handler, $ttl = null): mixed
     {
         $item = $this->getItem($key);
 
@@ -394,7 +394,7 @@ class CachePool implements CacheItemPoolInterface, CacheInterface, LoggerAwareIn
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function setStorage(StorageInterface $storage)
+    public function setStorage(StorageInterface $storage): static
     {
         $this->storage = $storage;
 
@@ -422,7 +422,7 @@ class CachePool implements CacheItemPoolInterface, CacheInterface, LoggerAwareIn
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function setSerializer(SerializerInterface $serializer)
+    public function setSerializer(SerializerInterface $serializer): static
     {
         $this->serializer = $serializer;
 
@@ -450,7 +450,7 @@ class CachePool implements CacheItemPoolInterface, CacheInterface, LoggerAwareIn
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function autoCommit(bool $autoCommit)
+    public function autoCommit(bool $autoCommit): static
     {
         $this->autoCommit = $autoCommit;
 

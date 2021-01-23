@@ -52,7 +52,7 @@ class Environment
      *
      * @return  static  Return self to support chaining.
      */
-    public function setPlatform(Platform $platform)
+    public function setPlatform(Platform $platform): static
     {
         $this->platform = $platform;
 

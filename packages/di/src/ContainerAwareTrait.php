@@ -31,7 +31,7 @@ trait ContainerAwareTrait
      *
      * @return  static  Return self to support chaining.
      */
-    public function setContainer(?Container $container)
+    public function setContainer(?Container $container): static
     {
         $this->container = $container;
 

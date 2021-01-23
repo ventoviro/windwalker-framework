@@ -48,7 +48,7 @@ class AttributeHandler
         // }
     }
 
-    public function set(callable $handler)
+    public function set(callable $handler): static
     {
         $this->handler = $handler;
 

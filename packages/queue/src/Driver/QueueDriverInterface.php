@@ -45,7 +45,7 @@ interface QueueDriverInterface
      *
      * @return static
      */
-    public function delete(QueueMessage $message);
+    public function delete(QueueMessage $message): static;
 
     /**
      * release
@@ -54,5 +54,5 @@ interface QueueDriverInterface
      *
      * @return static
      */
-    public function release(QueueMessage $message);
+    public function release(QueueMessage $message): static;
 }

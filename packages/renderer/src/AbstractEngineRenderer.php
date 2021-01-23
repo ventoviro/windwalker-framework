@@ -111,7 +111,7 @@ abstract class AbstractEngineRenderer implements
      *
      * @return  static  Return self to support chaining.
      */
-    public function setBuilder(?Closure $builder)
+    public function setBuilder(?Closure $builder): static
     {
         $this->builder = $builder;
 

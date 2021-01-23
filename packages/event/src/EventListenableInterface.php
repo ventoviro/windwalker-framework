@@ -29,7 +29,7 @@ interface EventListenableInterface
      *
      * @since   2.0
      */
-    public function subscribe(object $subscriber, ?int $priority = null);
+    public function subscribe(object $subscriber, ?int $priority = null): static;
 
     /**
      * Add single listener.
@@ -42,5 +42,5 @@ interface EventListenableInterface
      *
      * @since   3.0
      */
-    public function on(string $event, callable $callable, ?int $priority = null);
+    public function on(string $event, callable $callable, ?int $priority = null): static;
 }

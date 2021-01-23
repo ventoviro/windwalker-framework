@@ -40,7 +40,7 @@ class QueryEndEvent extends AbstractEvent
      *
      * @return  static  Return self to support chaining.
      */
-    public function setResult(bool $result)
+    public function setResult(bool $result): static
     {
         $this->result = $result;
 
@@ -50,7 +50,7 @@ class QueryEndEvent extends AbstractEvent
     /**
      * @return mixed
      */
-    public function getQuery()
+    public function getQuery(): mixed
     {
         return $this->query;
     }
@@ -60,7 +60,7 @@ class QueryEndEvent extends AbstractEvent
      *
      * @return  static  Return self to support chaining.
      */
-    public function setQuery($query)
+    public function setQuery($query): static
     {
         $this->query = $query;
 
@@ -80,7 +80,7 @@ class QueryEndEvent extends AbstractEvent
      *
      * @return  static  Return self to support chaining.
      */
-    public function setSql(string $sql)
+    public function setSql(string $sql): static
     {
         $this->sql = $sql;
 
@@ -100,7 +100,7 @@ class QueryEndEvent extends AbstractEvent
      *
      * @return  static  Return self to support chaining.
      */
-    public function setBounded(array $bounded)
+    public function setBounded(array $bounded): static
     {
         $this->bounded = $bounded;
 

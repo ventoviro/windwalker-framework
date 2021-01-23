@@ -35,7 +35,7 @@ class StopEvent extends AbstractEvent
      *
      * @return  static  Return self to support chaining.
      */
-    public function setReason(string $reason)
+    public function setReason(string $reason): static
     {
         $this->reason = $reason;
 

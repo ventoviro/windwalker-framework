@@ -39,7 +39,7 @@ class MysqliConnection extends AbstractConnection
         return $options;
     }
 
-    protected function doConnect(array $options)
+    protected function doConnect(array $options): bool|\mysqli
     {
         mysqli_report(MYSQLI_REPORT_ALL | MYSQLI_REPORT_STRICT);
 
@@ -54,7 +54,7 @@ class MysqliConnection extends AbstractConnection
     /**
      * @inheritDoc
      */
-    public function disconnect()
+    public function disconnect(): mixed
     {
         if (!$this->isConnected()) {
             return true;

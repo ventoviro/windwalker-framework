@@ -92,7 +92,7 @@ class Output implements OutputInterface
      *
      * @see     header()
      */
-    public function header(string $string, bool $replace = true, int $code = null)
+    public function header(string $string, bool $replace = true, int $code = null): static
     {
         header($string, $replace, (int) $code);
 
@@ -106,7 +106,7 @@ class Output implements OutputInterface
      *
      * @return  static  Instance of $this to allow chaining.
      */
-    public function sendHeaders(ResponseInterface $response)
+    public function sendHeaders(ResponseInterface $response): static
     {
         foreach ($response->getHeaders() as $header => $values) {
             $first = true;
@@ -168,7 +168,7 @@ class Output implements OutputInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setOutputStream(StreamInterface|string|null $outputStream)
+    public function setOutputStream(StreamInterface|string|null $outputStream): static
     {
         $this->outputStream = $outputStream
             ?? Stream::wrap($outputStream ?? 'php://output', Stream::MODE_WRITE_ONLY_RESET);

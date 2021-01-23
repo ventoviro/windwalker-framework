@@ -63,7 +63,7 @@ class SyncQueueDriver implements QueueDriverInterface
      *
      * @return SyncQueueDriver
      */
-    public function delete(QueueMessage $message)
+    public function delete(QueueMessage $message): static
     {
         return $this;
     }
@@ -75,7 +75,7 @@ class SyncQueueDriver implements QueueDriverInterface
      *
      * @return static
      */
-    public function release(QueueMessage $message)
+    public function release(QueueMessage $message): static
     {
         return $this;
     }

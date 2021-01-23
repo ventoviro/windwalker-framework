@@ -254,7 +254,7 @@ class Uri implements UriInterface
      *
      * @throws  \InvalidArgumentException for invalid or unsupported schemes.
      */
-    public function withScheme($scheme)
+    public function withScheme($scheme): Uri|static
     {
         if (!is_string($scheme)) {
             throw new \InvalidArgumentException('URI Scheme should be a string.');
@@ -283,7 +283,7 @@ class Uri implements UriInterface
      *
      * @return  static  A new instance with the specified user information.
      */
-    public function withUserInfo($user, $password = null)
+    public function withUserInfo($user, $password = null): Uri|static
     {
         ArgumentsAssert::assert(
             is_string($user),
@@ -309,7 +309,7 @@ class Uri implements UriInterface
      *
      * @return  static
      */
-    public function withUser(?string $user)
+    public function withUser(?string $user): Uri|static
     {
         $new = clone $this;
         $new->user = $user;
@@ -324,7 +324,7 @@ class Uri implements UriInterface
      *
      * @return  static
      */
-    public function withPassword(?string $password)
+    public function withPassword(?string $password): Uri|static
     {
         $new = clone $this;
         $new->pass = $password;
@@ -346,7 +346,7 @@ class Uri implements UriInterface
      *
      * @throws  \InvalidArgumentException for invalid hostnames.
      */
-    public function withHost($host)
+    public function withHost($host): Uri|static
     {
         if (!is_string($host)) {
             throw new \InvalidArgumentException('URI Host should be a string.');
@@ -376,7 +376,7 @@ class Uri implements UriInterface
      * @return  static  A new instance with the specified port.
      * @throws  \InvalidArgumentException for invalid ports.
      */
-    public function withPort($port)
+    public function withPort($port): Uri|static
     {
         if (is_array($port) || is_object($port)) {
             throw new \InvalidArgumentException('Invalid port type.');
@@ -419,7 +419,7 @@ class Uri implements UriInterface
      * @return  static  A new instance with the specified path.
      * @throws  \InvalidArgumentException for invalid paths.
      */
-    public function withPath($path)
+    public function withPath($path): Uri|static
     {
         if (!is_string($path)) {
             throw new \InvalidArgumentException('URI Path should be a string.');
@@ -449,7 +449,7 @@ class Uri implements UriInterface
      *
      * @since  3.5.2
      */
-    public function withQueryParams($query)
+    public function withQueryParams($query): Uri|static
     {
         if (!is_string($query)) {
             $query = UriHelper::buildQuery((array) $query);
@@ -474,7 +474,7 @@ class Uri implements UriInterface
      * @return  static  A new instance with the specified query string.
      * @throws  \InvalidArgumentException for invalid query strings.
      */
-    public function withQuery($query)
+    public function withQuery($query): Uri|static
     {
         if (!is_string($query)) {
             throw new \InvalidArgumentException('URI Query should be a string.');
@@ -499,7 +499,7 @@ class Uri implements UriInterface
      *
      * @since  3.5.2
      */
-    public function withVar(string $name, $value)
+    public function withVar(string $name, $value): Uri|static
     {
         $new = clone $this;
 
@@ -523,7 +523,7 @@ class Uri implements UriInterface
      *
      * @since  3.5.2
      */
-    public function withoutVar(string $name)
+    public function withoutVar(string $name): Uri|static
     {
         $new = clone $this;
 
@@ -549,7 +549,7 @@ class Uri implements UriInterface
      *
      * @return  static  A new instance with the specified fragment.
      */
-    public function withFragment($fragment)
+    public function withFragment($fragment): Uri|static
     {
         if (!is_string($fragment)) {
             throw new \InvalidArgumentException('URI Fragment should be a string.');
@@ -584,7 +584,7 @@ class Uri implements UriInterface
      *
      * @since   2.0
      */
-    public function toString(int $parts = self::ALL)
+    public function toString(int $parts = self::ALL): string
     {
         // Make sure the query is created
         $query = $this->getQuery();
@@ -650,7 +650,7 @@ class Uri implements UriInterface
      *
      * @since   2.0
      */
-    public function getVar(string $name, $default = null)
+    public function getVar(string $name, $default = null): mixed
     {
         return $this->vars[$name] ?? $default;
     }

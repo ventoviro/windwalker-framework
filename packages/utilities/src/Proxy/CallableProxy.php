@@ -54,7 +54,7 @@ class CallableProxy
      *
      * @return  mixed|void
      */
-    public function __invoke(...$args)
+    public function __invoke(...$args): mixed
     {
         $callback = $this->callable;
 

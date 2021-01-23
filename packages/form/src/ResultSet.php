@@ -33,7 +33,7 @@ class ResultSet
         }
     }
 
-    public function addResult(string $name, ValidateResult $result)
+    public function addResult(string $name, ValidateResult $result): static
     {
         $this->results[$name] = $result;
 

@@ -37,7 +37,7 @@ class RawSerializer implements SerializerInterface
      *
      * @return string|null
      */
-    public function unserialize(string $data)
+    public function unserialize(string $data): ?string
     {
         return $data;
     }

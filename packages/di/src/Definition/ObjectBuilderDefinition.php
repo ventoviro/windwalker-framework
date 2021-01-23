@@ -87,7 +87,7 @@ class ObjectBuilderDefinition implements DefinitionInterface
      * @return object
      * @throws \ReflectionException
      */
-    public function resolve(Container $container)
+    public function resolve(Container $container): object
     {
         $object = $container->newInstance(
             $this->getClass(),
@@ -123,7 +123,7 @@ class ObjectBuilderDefinition implements DefinitionInterface
      * @throws DependencyResolutionException
      * @throws \ReflectionException
      */
-    public function getArgument($name, $default = null)
+    public function getArgument($name, $default = null): array
     {
         if (!isset($this->arguments[$name])) {
             return $default;
@@ -140,7 +140,7 @@ class ObjectBuilderDefinition implements DefinitionInterface
      *
      * @return  static Return self to support chaining.
      */
-    public function setArgument($name, $value)
+    public function setArgument($name, $value): static
     {
         if (!$value instanceof \Closure) {
             $value = fn() => $value;
@@ -173,7 +173,7 @@ class ObjectBuilderDefinition implements DefinitionInterface
      *
      * @return  static
      */
-    public function removeArgument($name)
+    public function removeArgument($name): static
     {
         unset($this->arguments[$name], $this->caches[$name]);
 
@@ -205,7 +205,7 @@ class ObjectBuilderDefinition implements DefinitionInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setArguments($arguments)
+    public function setArguments($arguments): static
     {
         foreach ($arguments as $name => $argument) {
             $this->setArgument($name, $argument);
@@ -219,7 +219,7 @@ class ObjectBuilderDefinition implements DefinitionInterface
      *
      * @return  static
      */
-    public function reset()
+    public function reset(): static
     {
         $this->arguments = [];
         $this->caches = [];
@@ -237,7 +237,7 @@ class ObjectBuilderDefinition implements DefinitionInterface
      *
      * @since  3.5.20
      */
-    public function extend(callable $handler)
+    public function extend(callable $handler): static
     {
         $this->extends[] = $handler;
 
@@ -251,7 +251,7 @@ class ObjectBuilderDefinition implements DefinitionInterface
      *
      * @since  3.5.20
      */
-    public function clearExtends()
+    public function clearExtends(): static
     {
         $this->extends = [];
 
@@ -268,7 +268,7 @@ class ObjectBuilderDefinition implements DefinitionInterface
      * @throws DependencyResolutionException
      * @throws \ReflectionException
      */
-    public function __call($name, $args)
+    public function __call($name, $args): mixed
     {
         $allowMethods = [
             'bind',
@@ -321,7 +321,7 @@ class ObjectBuilderDefinition implements DefinitionInterface
      *
      * @since  3.5.1
      */
-    public function setContainer(Container $container)
+    public function setContainer(Container $container): static
     {
         $this->container = $container;
 
@@ -335,7 +335,7 @@ class ObjectBuilderDefinition implements DefinitionInterface
      *
      * @since  3.5.19
      */
-    public function getClass()
+    public function getClass(): callable|string
     {
         return $this->class;
     }

@@ -83,7 +83,7 @@ class ReflectAccessor
      * @throws ReflectionException
      * @since   2.0
      */
-    public static function getValue(object $object, string $propertyName)
+    public static function getValue(object $object, string $propertyName): mixed
     {
         $ref = new ReflectionClass($object);
 
@@ -128,7 +128,7 @@ class ReflectAccessor
      * @throws ReflectionException
      * @since   2.0
      */
-    public static function invoke(object $object, string $methodName, ...$args)
+    public static function invoke(object $object, string $methodName, ...$args): mixed
     {
         $method = new ReflectionMethod($object, $methodName);
         $method->setAccessible(true);

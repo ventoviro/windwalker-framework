@@ -79,7 +79,7 @@ class AttributeTest extends TestCase
 
         $obj = new class {
             #[ToUpper]
-            public function foo()
+            public function foo(): string
             {
                 return 'foo';
             }
@@ -104,7 +104,7 @@ class AttributeTest extends TestCase
             public function foo(
                 #[ParamLower]
                 StringObject $foo
-            ) {
+            ): string {
                 return (string) $foo;
             }
         };

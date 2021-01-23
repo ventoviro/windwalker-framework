@@ -38,7 +38,7 @@ interface BindableInterface
         $dataType = null,
         int $length = 0,
         $driverOptions = null
-    );
+    ): static;
 
     /**
      * Method to add a variable to an internal array that will be bound to a prepared SQL statement before query
@@ -58,5 +58,5 @@ interface BindableInterface
         $key = null,
         $value = null,
         $dataType = null
-    );
+    ): static;
 }

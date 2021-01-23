@@ -57,7 +57,7 @@ class XmlFormat implements FormatInterface
      *
      * @since   2.0
      */
-    public function parse(string $string, array $options = [])
+    public function parse(string $string, array $options = []): array
     {
         $obj = [];
 
@@ -78,7 +78,7 @@ class XmlFormat implements FormatInterface
      *
      * @return  mixed  Native value of the SimpleXMLElement object.
      */
-    protected static function getValueFromNode($node)
+    protected static function getValueFromNode($node): mixed
     {
         switch ($node['type']) {
             case 'integer':

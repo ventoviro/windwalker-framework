@@ -297,7 +297,7 @@ class AttributesResolver extends ObjectBuilder
      * @param  string  $attributeClass
      * @param  int     $target
      *
-     * @return  \Windwalker\DI\Attributes\static
+     * @return  \Windwalker\DI\Attributesstatic
      */
     public function registerAttribute(string $attributeClass, int $target = \Attribute::TARGET_ALL): static
     {
@@ -317,9 +317,9 @@ class AttributesResolver extends ObjectBuilder
      * @param  string  $attributeClass
      * @param  int     $target
      *
-     * @return  \Windwalker\DI\Attributes\static
+     * @return  \Windwalker\DI\Attributesstatic
      */
-    public function removeAttribute(string $attributeClass, int $target = \Attribute::TARGET_ALL)
+    public function removeAttribute(string $attributeClass, int $target = \Attribute::TARGET_ALL): static
     {
         if ($target === \Attribute::TARGET_ALL || $target === AttributeType::ALL) {
             unset($this->registry[strtolower($attributeClass)]);

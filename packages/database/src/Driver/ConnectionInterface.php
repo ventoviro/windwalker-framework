@@ -21,14 +21,14 @@ interface ConnectionInterface
      *
      * @return  mixed
      */
-    public function connect();
+    public function connect(): mixed;
 
     /**
      * disconnect
      *
      * @return  mixed
      */
-    public function disconnect();
+    public function disconnect(): mixed;
 
     /**
      * isConnected
@@ -40,7 +40,7 @@ interface ConnectionInterface
     /**
      * @return mixed
      */
-    public function get();
+    public function get(): mixed;
 
     /**
      * @return string

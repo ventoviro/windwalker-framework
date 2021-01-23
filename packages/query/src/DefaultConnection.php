@@ -28,7 +28,7 @@ class DefaultConnection
     /**
      * @return mixed
      */
-    public static function getEscaper()
+    public static function getEscaper(): mixed
     {
         return static::$escaper;
     }
@@ -38,7 +38,7 @@ class DefaultConnection
      *
      * @return  void
      */
-    public static function setEscaper($escaper): void
+    public static function setEscaper(mixed $escaper): void
     {
         static::$escaper = $escaper;
     }

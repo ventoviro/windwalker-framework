@@ -114,7 +114,7 @@ class TableManager extends AbstractMetaManager
      *
      * @return  static
      */
-    public function save($schema, bool $ifNotExists = true, array $options = [])
+    public function save($schema, bool $ifNotExists = true, array $options = []): static
     {
         $schema = $this->callSchema($schema);
 
@@ -475,7 +475,7 @@ class TableManager extends AbstractMetaManager
      *
      * @return  static  Return self to support chaining.
      */
-    public function setName(?string $name)
+    public function setName(?string $name): static
     {
         if ($name !== null) {
             $names = explode('.', $name);
@@ -542,7 +542,7 @@ class TableManager extends AbstractMetaManager
      *
      * @return  static  Return self to support chaining.
      */
-    public function setErratas(array $erratas)
+    public function setErratas(array $erratas): static
     {
         $this->erratas = $erratas;
 

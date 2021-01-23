@@ -32,7 +32,7 @@ interface DriverInterface
      *
      * @return  mixed
      */
-    public function disconnect();
+    public function disconnect(): mixed;
 
     /**
      * Prepare a statement.

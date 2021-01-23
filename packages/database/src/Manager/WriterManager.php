@@ -201,7 +201,7 @@ class WriterManager
      * @return  mixed
      * @throws \JsonException
      */
-    public function saveOne(string $table, array|object $data, array|string|null $key, array $options = [])
+    public function saveOne(string $table, array|object $data, array|string|null $key, array $options = []): mixed
     {
         if (is_array($data)) {
             $id = $data[$key] ?? null;
@@ -271,7 +271,7 @@ class WriterManager
      * @return array|\Traversable
      * @throws \JsonException
      */
-    public function saveMultiple(string $table, iterable $items, array|string|null $key, array $options = [])
+    public function saveMultiple(string $table, iterable $items, array|string|null $key, array $options = []): \Traversable|array
     {
         $result = [];
 
@@ -355,7 +355,7 @@ class WriterManager
      *
      * @since   2.0
      */
-    public function countAffected()
+    public function countAffected(): int
     {
         return $this->getStatement()->countAffected();
     }
@@ -369,7 +369,7 @@ class WriterManager
      *
      * @since   2.0
      */
-    public function lastInsertId(?string $sequence = null)
+    public function lastInsertId(?string $sequence = null): ?string
     {
         return $this->db->getDriver()->lastInsertId($sequence);
     }
@@ -391,7 +391,7 @@ class WriterManager
      *
      * @return  DatabaseAdapter
      */
-    public function getDb()
+    public function getDb(): DatabaseAdapter
     {
         return $this->db;
     }
@@ -401,7 +401,7 @@ class WriterManager
      *
      * @return  StatementInterface
      */
-    public function getStatement()
+    public function getStatement(): StatementInterface
     {
         return $this->statement;
     }
@@ -413,7 +413,7 @@ class WriterManager
      *
      * @return  static  Return self to support chaining.
      */
-    public function setStatement(StatementInterface $statement)
+    public function setStatement(StatementInterface $statement): static
     {
         $this->statement = $statement;
 

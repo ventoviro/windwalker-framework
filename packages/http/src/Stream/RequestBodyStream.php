@@ -38,7 +38,7 @@ class RequestBodyStream implements StreamInterface
      *
      * @return  string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return UriHelper::buildQuery($this->data);
     }
@@ -80,7 +80,7 @@ class RequestBodyStream implements StreamInterface
      *
      * @return  int
      */
-    public function tell()
+    public function tell(): int
     {
         return $this->cursor;
     }
@@ -113,7 +113,7 @@ class RequestBodyStream implements StreamInterface
      *
      * @return  mixed
      */
-    public function seek($offset, $whence = SEEK_SET)
+    public function seek($offset, $whence = SEEK_SET): mixed
     {
         $this->cursor = $offset;
 
@@ -125,7 +125,7 @@ class RequestBodyStream implements StreamInterface
      *
      * @return  mixed
      */
-    public function rewind()
+    public function rewind(): mixed
     {
         $this->cursor = 0;
 
@@ -137,7 +137,7 @@ class RequestBodyStream implements StreamInterface
      *
      * @return  bool
      */
-    public function isWritable()
+    public function isWritable(): bool
     {
         return true;
     }
@@ -149,7 +149,7 @@ class RequestBodyStream implements StreamInterface
      *
      * @return  int
      */
-    public function write($string)
+    public function write($string): ?int
     {
         if (is_string($string)) {
             $this->data = UriHelper::parseQuery($string);
@@ -165,7 +165,7 @@ class RequestBodyStream implements StreamInterface
      *
      * @return  bool
      */
-    public function isReadable()
+    public function isReadable(): bool
     {
         return true;
     }
@@ -177,7 +177,7 @@ class RequestBodyStream implements StreamInterface
      *
      * @return  string
      */
-    public function read($length)
+    public function read($length): string
     {
         return UriHelper::buildQuery($this->data);
     }
@@ -187,7 +187,7 @@ class RequestBodyStream implements StreamInterface
      *
      * @return  string
      */
-    public function getContents()
+    public function getContents(): string
     {
         return UriHelper::buildQuery($this->data);
     }
@@ -199,7 +199,7 @@ class RequestBodyStream implements StreamInterface
      *
      * @return  array|mixed|null
      */
-    public function getMetadata($key = null)
+    public function getMetadata($key = null): mixed
     {
 
     }

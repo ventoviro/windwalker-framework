@@ -28,5 +28,5 @@ interface AsyncTransportInterface
      *
      * @return  mixed|PromiseInterface
      */
-    public function sendRequest(RequestInterface $request, array $options = []);
+    public function sendRequest(RequestInterface $request, array $options = []): mixed;
 }

@@ -37,7 +37,7 @@ class PhpSerializeFormat implements FormatInterface
      *
      * @return  array
      */
-    public function parse(string $string, array $options = [])
+    public function parse(string $string, array $options = []): array
     {
         return unserialize($string, $options);
     }

@@ -47,7 +47,7 @@ abstract class AbstractStatement implements StatementInterface
      *
      * @param  mixed|resource  $cursor
      */
-    public function __construct($cursor)
+    public function __construct(mixed $cursor)
     {
         $this->cursor = $cursor;
     }
@@ -75,7 +75,7 @@ abstract class AbstractStatement implements StatementInterface
      *
      * @return  static
      */
-    public function execute(?array $params = null)
+    public function execute(?array $params = null): static
     {
         if ($this->executed) {
             return $this;
@@ -179,7 +179,7 @@ abstract class AbstractStatement implements StatementInterface
      *
      * @return  mixed|resource
      */
-    public function getCursor()
+    public function getCursor(): mixed
     {
         return $this->cursor;
     }

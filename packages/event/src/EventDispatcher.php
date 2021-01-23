@@ -38,7 +38,7 @@ class EventDispatcher implements EventDispatcherInterface
     /**
      * @inheritDoc
      */
-    public function dispatch(object $event)
+    public function dispatch(object $event): object
     {
         $stoppable = $event instanceof StoppableEventInterface;
 
@@ -93,7 +93,7 @@ class EventDispatcher implements EventDispatcherInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function setProvider(ListenerProviderInterface $provider)
+    public function setProvider(ListenerProviderInterface $provider): static
     {
         $this->provider = $provider;
 

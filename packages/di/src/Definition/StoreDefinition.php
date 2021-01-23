@@ -61,7 +61,7 @@ class StoreDefinition extends DelegateDefinition implements StoreDefinitionInter
      *
      * @return mixed
      */
-    public function resolve(Container $container)
+    public function resolve(Container $container): mixed
     {
         if (!$this->isShared()) {
             $this->reset();
@@ -94,7 +94,7 @@ class StoreDefinition extends DelegateDefinition implements StoreDefinitionInter
      *
      * @return  $this
      */
-    public function extend(\Closure $closure)
+    public function extend(\Closure $closure): static
     {
         $this->definition = new DelegateDefinition(
             $this->definition,

@@ -138,7 +138,7 @@ class SubscribableListenerProviderTest extends TestCase
         //
     }
 
-    protected function nope()
+    protected function nope(): \Closure
     {
         return function () {
             //

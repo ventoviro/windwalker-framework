@@ -38,7 +38,7 @@ class ScheduleCursor
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function get()
+    public function get(): mixed
     {
         return $this->cursor;
     }

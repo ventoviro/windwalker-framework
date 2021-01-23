@@ -81,7 +81,7 @@ class CompareWith extends AbstractFilter
      *
      * @return  static  Return self to support chaining.
      */
-    public function setOperator(?string $operator)
+    public function setOperator(?string $operator): static
     {
         $this->operator = $operator;
 
@@ -93,7 +93,7 @@ class CompareWith extends AbstractFilter
      *
      * @return  mixed|null
      */
-    public function getCompare()
+    public function getCompare(): mixed
     {
         return $this->compare;
     }
@@ -105,7 +105,7 @@ class CompareWith extends AbstractFilter
      *
      * @return  static  Return self to support chaining.
      */
-    public function setCompare($compare)
+    public function setCompare(mixed $compare): static
     {
         $this->compare = $compare;
 
@@ -119,7 +119,7 @@ class CompareWith extends AbstractFilter
      *
      * @return  static  Return self to support chaining.
      */
-    public function setStrict(bool $strict)
+    public function setStrict(bool $strict): static
     {
         $this->strict = $strict;
 

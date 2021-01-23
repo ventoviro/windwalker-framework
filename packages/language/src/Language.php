@@ -113,7 +113,7 @@ class Language implements LanguageInterface
      *
      * @return  $this
      */
-    public function load(string $file, $format = 'ini', array $options = [])
+    public function load(string $file, $format = 'ini', array $options = []): static
     {
         $string = $this->getFormatRegistry()->load($file, $format, $options);
 
@@ -294,7 +294,7 @@ class Language implements LanguageInterface
      *
      * @return  $this
      */
-    public function addString(string $key, string $string, ?string $locale = null)
+    public function addString(string $key, string $string, ?string $locale = null): static
     {
         $locale ??= $this->getLocale();
 
@@ -311,7 +311,7 @@ class Language implements LanguageInterface
      *
      * @return  $this
      */
-    public function addStrings(array $strings, ?string $locale = null)
+    public function addStrings(array $strings, ?string $locale = null): static
     {
         foreach ($strings as $key => $string) {
             $this->addString($key, $string, $locale);
@@ -327,7 +327,7 @@ class Language implements LanguageInterface
      *
      * @return  Language  Return self to support chaining.
      */
-    public function setDebug(bool $debug)
+    public function setDebug(bool $debug): static
     {
         $this->debug = $debug;
 
@@ -371,7 +371,7 @@ class Language implements LanguageInterface
      *
      * @return  Language  Return self to support chaining.
      */
-    public function setLocale(string $locale)
+    public function setLocale(string $locale): static
     {
         $this->locale = LanguageNormalizer::toBCP47($locale);
 
@@ -395,7 +395,7 @@ class Language implements LanguageInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setFallback($fallback)
+    public function setFallback($fallback): static
     {
         $this->fallback = LanguageNormalizer::toBCP47($fallback);
 
@@ -410,7 +410,7 @@ class Language implements LanguageInterface
      * @return  mixed
      * @throws \UnexpectedValueException
      */
-    public function normalize(string $string)
+    public function normalize(string $string): mixed
     {
         $handler = $this->getNormalizeHandler();
 
@@ -426,7 +426,7 @@ class Language implements LanguageInterface
      *
      * @return  callable
      */
-    public function getNormalizeHandler()
+    public function getNormalizeHandler(): array|callable
     {
         return $this->normalizeHandler;
     }
@@ -438,7 +438,7 @@ class Language implements LanguageInterface
      *
      * @return  Language  Return self to support chaining.
      */
-    public function setNormalizeHandler(callable $normalizeHandler)
+    public function setNormalizeHandler(callable $normalizeHandler): static
     {
         $this->normalizeHandler = $normalizeHandler;
 
@@ -458,7 +458,7 @@ class Language implements LanguageInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setSelector(PluralSelector $selector)
+    public function setSelector(PluralSelector $selector): static
     {
         $this->selector = $selector;
 
@@ -472,7 +472,7 @@ class Language implements LanguageInterface
      *
      * @return  static
      */
-    public function extract(string $namespace)
+    public function extract(string $namespace): static
     {
         $lang = new static($this->getLocale(), $this->getFallback(), $namespace);
 
@@ -502,7 +502,7 @@ class Language implements LanguageInterface
      *
      * @return  array
      */
-    public function getTrace()
+    public function getTrace(): array
     {
         return $this->trace;
     }
@@ -548,7 +548,7 @@ class Language implements LanguageInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setNamespace(string $namespace)
+    public function setNamespace(string $namespace): static
     {
         $this->namespace = $namespace;
 
@@ -576,7 +576,7 @@ class Language implements LanguageInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setParent(?self $parent)
+    public function setParent(?self $parent): static
     {
         $this->parent = $parent;
 

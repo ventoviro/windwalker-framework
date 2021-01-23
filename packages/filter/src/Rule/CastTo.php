@@ -65,7 +65,7 @@ class CastTo extends AbstractFilter
      *
      * @return  static  Return self to support chaining.
      */
-    public function setType(string $type)
+    public function setType(string $type): static
     {
         $this->type = $type;
 
@@ -85,7 +85,7 @@ class CastTo extends AbstractFilter
      *
      * @return  static  Return self to support chaining.
      */
-    public function setStrict(bool $strict)
+    public function setStrict(bool $strict): static
     {
         $this->strict = $strict;
 

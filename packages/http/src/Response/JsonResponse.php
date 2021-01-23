@@ -50,7 +50,7 @@ class JsonResponse extends TextResponse
      *
      * @return  string  Encoded json.
      */
-    protected function encode($data, $options = 0)
+    protected function encode($data, $options = 0): string
     {
         // Check is already json string.
         if (is_string($data) && strlen($data) >= 1) {
@@ -76,12 +76,12 @@ class JsonResponse extends TextResponse
     /**
      * withContent
      *
-     * @param   mixed $content
+     * @param  mixed  $content
      *
      * @return  static
      * @throws \InvalidArgumentException
      */
-    public function withContent($content)
+    public function withContent(string $content): static
     {
         return parent::withContent($this->encode($content));
     }

@@ -38,7 +38,7 @@ interface PromiseInterface
     public function then(
         $onFulfilled = null,
         $onRejected = null
-    );
+    ): static;
 
     /**
      * Get the state of the promise ("pending", "rejected", or "fulfilled").
@@ -73,5 +73,5 @@ interface PromiseInterface
      * @throws \LogicException if the promise has no wait function or if the
      *                         promise does not settle after waiting.
      */
-    public function wait();
+    public function wait(): mixed;
 }

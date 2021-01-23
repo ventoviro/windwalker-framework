@@ -33,7 +33,7 @@ class Parameters extends Collection
     /**
      * @inheritDoc
      */
-    public function extract(?string $path = null, bool $reference = false)
+    public function extract(?string $path = null, bool $reference = false): static
     {
         return tap(parent::extract($path, $reference), function ($new) use ($reference) {
             if ($reference) {
@@ -52,7 +52,7 @@ class Parameters extends Collection
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function &getDeep(string $path, string $delimiter = '.')
+    public function &getDeep(string $path, string $delimiter = '.'): mixed
     {
         $value = parent::getDeep($path, $delimiter);
 
@@ -74,7 +74,7 @@ class Parameters extends Collection
      *
      * @return  mixed
      */
-    public function &get($key)
+    public function &get($key): mixed
     {
         $value = parent::get($key);
 

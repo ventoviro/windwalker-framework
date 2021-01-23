@@ -35,7 +35,7 @@ class ListenersQueue implements \IteratorAggregate, \Countable
      *
      * @since   2.0
      */
-    public function add(callable $listener, ?int $priority = null)
+    public function add(callable $listener, ?int $priority = null): static
     {
         $this->queue[] = [$listener, $priority ?? ListenerPriority::NORMAL];
 
@@ -51,7 +51,7 @@ class ListenersQueue implements \IteratorAggregate, \Countable
      *
      * @since   2.0
      */
-    public function remove(callable $listener)
+    public function remove(callable $listener): static
     {
         $this->queue = array_values(
             array_filter(
@@ -131,7 +131,7 @@ class ListenersQueue implements \IteratorAggregate, \Countable
      *
      * @since   2.0
      */
-    public function getIterator()
+    public function getIterator(): \SplPriorityQueue
     {
         // SplPriorityQueue queue is a heap.
         $queue = new \SplPriorityQueue();
@@ -150,7 +150,7 @@ class ListenersQueue implements \IteratorAggregate, \Countable
      *
      * @since   2.0
      */
-    public function count()
+    public function count(): int
     {
         return count($this->queue);
     }

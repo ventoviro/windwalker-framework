@@ -30,7 +30,7 @@ class Event extends AbstractEvent implements \Serializable, AccessibleInterface
      *
      * @return  static
      */
-    public function merge(array $arguments)
+    public function merge(array $arguments): static
     {
         foreach ($arguments as $key => &$value) {
             $this->storage[$key] = &$value;
@@ -56,7 +56,7 @@ class Event extends AbstractEvent implements \Serializable, AccessibleInterface
      *
      * @since   2.0
      */
-    public function clear()
+    public function clear(): static
     {
         // Break the reference
         unset($this->storage);
@@ -73,7 +73,7 @@ class Event extends AbstractEvent implements \Serializable, AccessibleInterface
      *
      * @since   2.0
      */
-    public function serialize()
+    public function serialize(): string
     {
         return serialize([$this->name, $this->storage, $this->stopped]);
     }

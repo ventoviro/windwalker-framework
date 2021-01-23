@@ -83,7 +83,7 @@ class AttributesResolverTest extends TestCase
 
         $foo = new class {
             #[StrUpper]
-            public function foo()
+            public function foo(): string
             {
                 return 'foo';
             }

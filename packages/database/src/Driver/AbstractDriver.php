@@ -113,7 +113,7 @@ abstract class AbstractDriver implements DriverInterface
      *
      * @return  mixed
      */
-    public function disconnect()
+    public function disconnect(): mixed
     {
         return $this->getConnection()->disconnect();
     }
@@ -243,7 +243,7 @@ abstract class AbstractDriver implements DriverInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setPlatformName(string $platformName)
+    public function setPlatformName(string $platformName): static
     {
         $this->platformName = $platformName;
 
@@ -285,7 +285,7 @@ abstract class AbstractDriver implements DriverInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setConnection(ConnectionInterface $connection)
+    public function setConnection(ConnectionInterface $connection): static
     {
         $this->connection = $connection;
 

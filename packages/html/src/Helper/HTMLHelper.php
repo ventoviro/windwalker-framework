@@ -29,7 +29,7 @@ abstract class HTMLHelper
      *
      * @return  string  Repaired HTML.
      */
-    public static function repair(string $html, bool $useTidy = true)
+    public static function repair(string $html, bool $useTidy = true): string
     {
         if (function_exists('tidy_repair_string') && $useTidy) {
             $TidyConfig = [

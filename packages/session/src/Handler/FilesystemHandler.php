@@ -99,7 +99,7 @@ class FilesystemHandler extends AbstractHandler
      *
      * @return  bool
      */
-    public function destroy($id)
+    public function destroy($id): bool
     {
         Filesystem::delete($this->getFilePath($id));
 
@@ -113,7 +113,7 @@ class FilesystemHandler extends AbstractHandler
      *
      * @return  bool
      */
-    public function gc($maxlifetime)
+    public function gc($maxlifetime): bool
     {
         $past = time() - $maxlifetime;
 
@@ -136,7 +136,7 @@ class FilesystemHandler extends AbstractHandler
      *
      * @return  bool
      */
-    public function write($id, $data)
+    public function write($id, $data): bool
     {
         Filesystem::write($this->getFilePath($id), $data);
 
@@ -151,7 +151,7 @@ class FilesystemHandler extends AbstractHandler
      *
      * @return  bool
      */
-    public function updateTimestamp($id, $data)
+    public function updateTimestamp($id, $data): bool
     {
         $file = Filesystem::get($this->getFilePath($id));
 

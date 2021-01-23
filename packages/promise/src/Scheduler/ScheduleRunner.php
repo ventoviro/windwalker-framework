@@ -134,7 +134,7 @@ class ScheduleRunner implements SchedulerInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function setSchedulers(array $schedulers)
+    public function setSchedulers(array $schedulers): static
     {
         $this->schedulers = $schedulers;
 

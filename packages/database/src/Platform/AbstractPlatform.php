@@ -530,7 +530,7 @@ abstract class AbstractPlatform
      *
      * @return  static
      */
-    public function transactionStart()
+    public function transactionStart(): static
     {
         $driver = $this->db->getDriver();
 
@@ -550,7 +550,7 @@ abstract class AbstractPlatform
      *
      * @return  static
      */
-    public function transactionCommit()
+    public function transactionCommit(): static
     {
         $driver = $this->db->getDriver();
 
@@ -570,7 +570,7 @@ abstract class AbstractPlatform
      *
      * @return  static
      */
-    public function transactionRollback()
+    public function transactionRollback(): static
     {
         $driver = $this->db->getDriver();
 
@@ -596,7 +596,7 @@ abstract class AbstractPlatform
      *
      * @throws \Throwable
      */
-    public function transaction(callable $callback, bool $autoCommit = true, bool $enabled = true)
+    public function transaction(callable $callback, bool $autoCommit = true, bool $enabled = true): mixed
     {
         if (!$enabled) {
             $callback($this->db, $this);

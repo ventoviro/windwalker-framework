@@ -27,7 +27,7 @@ interface AuthorisationInterface
      *
      * @return  bool
      */
-    public function authorise(string $policy, $user, $data = null): bool;
+    public function authorise(string $policy, mixed $user, mixed $data = null): bool;
 
     /**
      * addPolicy
@@ -37,7 +37,7 @@ interface AuthorisationInterface
      *
      * @return  static
      */
-    public function addPolicy(string $name, callable $handler);
+    public function addPolicy(string $name, callable $handler): static;
 
     /**
      * registerPolicy
@@ -46,5 +46,5 @@ interface AuthorisationInterface
      *
      * @return  static
      */
-    public function registerPolicyProvider(PolicyProviderInterface $policy);
+    public function registerPolicyProvider(PolicyProviderInterface $policy): static;
 }

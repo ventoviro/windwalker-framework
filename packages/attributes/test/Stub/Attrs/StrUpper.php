@@ -20,7 +20,7 @@ use Windwalker\Scalars\StringObject;
 #[\Attribute]
 class StrUpper
 {
-    public function __invoke(AttributeHandler $handler)
+    public function __invoke(AttributeHandler $handler): \Closure
     {
         return function (...$args) use ($handler) {
             $value = $handler(...$args);

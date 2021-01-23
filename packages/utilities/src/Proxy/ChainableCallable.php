@@ -54,7 +54,7 @@ class ChainableCallable extends CallableProxy
      *
      * @return  static
      */
-    public function chain(callable $callable)
+    public function chain(callable $callable): static
     {
         $this->queue[] = $callable;
 

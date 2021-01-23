@@ -151,7 +151,7 @@ class Escaper
      *
      * @return  mixed
      */
-    public function getConnection()
+    public function getConnection(): mixed
     {
         if ($this->connection instanceof \WeakReference) {
             $conn = $this->connection->get();
@@ -169,7 +169,7 @@ class Escaper
      *
      * @return  static  Return self to support chaining.
      */
-    public function setConnection($connection)
+    public function setConnection($connection): static
     {
         if ($connection instanceof DatabaseAdapter) {
             $connection = $connection->getDriver();

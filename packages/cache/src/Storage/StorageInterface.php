@@ -23,7 +23,7 @@ interface StorageInterface
      *
      * @return  mixed
      */
-    public function get(string $key);
+    public function get(string $key): mixed;
 
     /**
      * has
@@ -59,5 +59,5 @@ interface StorageInterface
      *
      * @return bool
      */
-    public function save(string $key, $value, int $expiration = 0): bool;
+    public function save(string $key, mixed $value, int $expiration = 0): bool;
 }

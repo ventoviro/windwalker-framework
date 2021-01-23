@@ -77,7 +77,7 @@ class Session implements SessionInterface, ArrayAccessibleInterface
         }
     }
 
-    public function setName(string $name)
+    public function setName(string $name): static
     {
         $this->bridge->setSessionName($name);
 
@@ -89,7 +89,7 @@ class Session implements SessionInterface, ArrayAccessibleInterface
         return $this->bridge->getSessionName();
     }
 
-    public function setId(string $id)
+    public function setId(string $id): static
     {
         $this->bridge->setId($id);
 
@@ -214,7 +214,7 @@ class Session implements SessionInterface, ArrayAccessibleInterface
      *
      * @return  int
      */
-    public function count()
+    public function count(): int
     {
         return \Windwalker\count($this->getStorage());
     }
@@ -224,7 +224,7 @@ class Session implements SessionInterface, ArrayAccessibleInterface
      *
      * @return  mixed
      */
-    public function jsonSerialize()
+    public function jsonSerialize(): mixed
     {
         return $this->bridge->getStorage();
     }
@@ -269,7 +269,7 @@ class Session implements SessionInterface, ArrayAccessibleInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setCookies(?CookiesInterface $cookies)
+    public function setCookies(?CookiesInterface $cookies): static
     {
         $this->cookies = $cookies;
 
@@ -301,7 +301,7 @@ class Session implements SessionInterface, ArrayAccessibleInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setFlashBag(?FlashBag $flashBag)
+    public function setFlashBag(?FlashBag $flashBag): static
     {
         $this->flashBag = $flashBag;
 
@@ -318,7 +318,7 @@ class Session implements SessionInterface, ArrayAccessibleInterface
      *
      * @since   2.0
      */
-    public function addFlash(array|string $messages, string $type = 'info')
+    public function addFlash(array|string $messages, string $type = 'info'): static
     {
         foreach ((array) $messages as $message) {
             $this->getFlashBag()->add($message, $type);
@@ -334,7 +334,7 @@ class Session implements SessionInterface, ArrayAccessibleInterface
      *
      * @since   2.0
      */
-    public function getFlashes()
+    public function getFlashes(): array
     {
         return $this->getFlashBag()->all();
     }
@@ -352,7 +352,7 @@ class Session implements SessionInterface, ArrayAccessibleInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setBridge(BridgeInterface $bridge)
+    public function setBridge(BridgeInterface $bridge): static
     {
         $this->bridge = $bridge;
 
@@ -378,7 +378,7 @@ class Session implements SessionInterface, ArrayAccessibleInterface
      *
      * @return  mixed
      */
-    public function &offsetGet($key)
+    public function &offsetGet($key): mixed
     {
         return $this->get($key);
     }

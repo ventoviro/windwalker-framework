@@ -37,5 +37,5 @@ interface AuthenticationInterface
      *
      * @return  static
      */
-    public function addMethod(string $name, MethodInterface $method);
+    public function addMethod(string $name, MethodInterface $method): static;
 }

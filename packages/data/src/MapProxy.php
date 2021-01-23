@@ -81,7 +81,7 @@ class MapProxy
         return $new;
     }
 
-    public function __call(string $name, array $args)
+    public function __call(string $name, array $args): Collection
     {
         if ($this->column === null) {
             return $this->mapCollection($name, $args);

@@ -95,7 +95,7 @@ class SqlsrvStatement extends AbstractStatement
     /**
      * @inheritDoc
      */
-    public function close()
+    public function close(): static
     {
         sqlsrv_free_stmt($this->cursor);
         $this->cursor = null;

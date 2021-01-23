@@ -107,7 +107,7 @@ class ListField extends AbstractField
      *
      * @return  array|string
      */
-    public function getValue()
+    public function getValue(): array|string
     {
         $value = parent::getValue();
 
@@ -141,7 +141,7 @@ class ListField extends AbstractField
      *
      * @return  static
      */
-    public function setOptions(array $options, ?string $group = null)
+    public function setOptions(array $options, ?string $group = null): static
     {
         $this->resetOptions();
         $this->addOptions($options, $group);
@@ -159,7 +159,7 @@ class ListField extends AbstractField
      *
      * @since  3.5.19
      */
-    public function addOptions(array $options, ?string $group = null)
+    public function addOptions(array $options, ?string $group = null): static
     {
         if ($group) {
             $options = [$group => $options];
@@ -177,7 +177,7 @@ class ListField extends AbstractField
      *
      * @since  3.5.19
      */
-    public function resetOptions()
+    public function resetOptions(): static
     {
         $this->options = [];
 
@@ -233,7 +233,7 @@ class ListField extends AbstractField
      *
      * @return  static
      */
-    public function addOption(DOMElement $option, ?string $group = null)
+    public function addOption(DOMElement $option, ?string $group = null): static
     {
         $options = [$option];
 
@@ -256,7 +256,7 @@ class ListField extends AbstractField
      *
      * @return static
      */
-    public function option(\DOMNode|string|null $text = null, ?string $value = null, array $attrs = [], ?string $group = null)
+    public function option(\DOMNode|string|null $text = null, ?string $value = null, array $attrs = [], ?string $group = null): static
     {
         $attrs['value'] = $value;
 
@@ -280,7 +280,7 @@ class ListField extends AbstractField
      *
      * @return  static
      */
-    public function group(string $name, callable $callback)
+    public function group(string $name, callable $callback): static
     {
         $this->currentGroup = $name;
 

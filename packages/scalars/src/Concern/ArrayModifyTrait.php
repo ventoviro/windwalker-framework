@@ -31,7 +31,7 @@ trait ArrayModifyTrait
      *
      * @since  3.5
      */
-    public function pad(int $size, $value)
+    public function pad(int $size, mixed $value): static
     {
         return $this->newInstance(array_pad($this->storage, $size, $value));
     }
@@ -46,7 +46,7 @@ trait ArrayModifyTrait
      *
      * @since  3.5
      */
-    public function leftPad(int $size, $value)
+    public function leftPad(int $size, mixed $value): static
     {
         return $this->pad(-$size, $value);
     }
@@ -61,7 +61,7 @@ trait ArrayModifyTrait
      *
      * @since  3.5
      */
-    public function rightPad(int $size, $value)
+    public function rightPad(int $size, mixed $value): static
     {
         return $this->pad($size, $value);
     }
@@ -73,7 +73,7 @@ trait ArrayModifyTrait
      *
      * @since  3.5
      */
-    public function pop()
+    public function pop(): mixed
     {
         return array_pop($this->storage);
     }
@@ -85,7 +85,7 @@ trait ArrayModifyTrait
      *
      * @since  3.5
      */
-    public function shift()
+    public function shift(): mixed
     {
         return array_shift($this->storage);
     }
@@ -127,7 +127,7 @@ trait ArrayModifyTrait
      *
      * @since  3.5.13
      */
-    public function append(...$args)
+    public function append(...$args): static
     {
         $new = $this->storage;
         array_push($new, ...$args);
@@ -144,7 +144,7 @@ trait ArrayModifyTrait
      *
      * @since  3.5.13
      */
-    public function prepend(...$args)
+    public function prepend(...$args): static
     {
         $new = $this->storage;
         array_unshift($new, ...$args);
@@ -161,7 +161,7 @@ trait ArrayModifyTrait
      *
      * @since  3.5.13
      */
-    public function removeLast($num = 1)
+    public function removeLast($num = 1): static
     {
         return (clone $this)->splice(0, -$num);
     }
@@ -175,7 +175,7 @@ trait ArrayModifyTrait
      *
      * @since  3.5.13
      */
-    public function removeFirst($num = 1)
+    public function removeFirst($num = 1): static
     {
         return (clone $this)->splice($num);
     }
@@ -189,7 +189,7 @@ trait ArrayModifyTrait
      *
      * @since  3.5
      */
-    public function replace(...$args)
+    public function replace(...$args): static
     {
         return $this->newInstance(array_replace($this->storage, ...static::mapUnwrap($args)));
     }
@@ -203,7 +203,7 @@ trait ArrayModifyTrait
      *
      * @since  3.5
      */
-    public function replaceRecursive(...$args)
+    public function replaceRecursive(...$args): static
     {
         return $this->newInstance(array_replace_recursive($this->storage, ...static::mapUnwrap($args)));
     }
@@ -217,7 +217,7 @@ trait ArrayModifyTrait
      *
      * @since  3.5
      */
-    public function reverse(bool $preserveKeys = false)
+    public function reverse(bool $preserveKeys = false): static
     {
         return $this->newInstance(array_reverse($this->storage, $preserveKeys));
     }
@@ -233,7 +233,7 @@ trait ArrayModifyTrait
      *
      * @since  3.5
      */
-    public function slice(int $offset, ?int $length = null, bool $preserveKeys = false)
+    public function slice(int $offset, ?int $length = null, bool $preserveKeys = false): static
     {
         return $this->newInstance(array_slice($this->storage, ...func_get_args()));
     }
@@ -249,7 +249,7 @@ trait ArrayModifyTrait
      *
      * @since  3.5
      */
-    public function splice(int $offset, ?int $length = null, $replacement = null)
+    public function splice(int $offset, ?int $length = null, $replacement = null): static
     {
         return $this->newInstance(array_splice($this->storage, ...func_get_args()));
     }
@@ -264,7 +264,7 @@ trait ArrayModifyTrait
      *
      * @since  3.5
      */
-    public function insertAfter(int $key, ...$args)
+    public function insertAfter(int $key, ...$args): static|ArrayModifyTrait
     {
         $new = clone $this;
 
@@ -283,7 +283,7 @@ trait ArrayModifyTrait
      *
      * @since  3.5
      */
-    public function insertBefore(int $key, $value)
+    public function insertBefore(int $key, mixed $value): static|ArrayModifyTrait
     {
         $new = clone $this;
 
@@ -300,7 +300,7 @@ trait ArrayModifyTrait
      *
      * @return  static
      */
-    public function only(array $fields)
+    public function only(array $fields): static
     {
         return $this->newInstance(Arr::only($this->storage, $fields));
     }
@@ -314,7 +314,7 @@ trait ArrayModifyTrait
      *
      * @since  3.5.13
      */
-    public function except(array $fields)
+    public function except(array $fields): static
     {
         return $this->newInstance(Arr::except($this->storage, $fields));
     }
@@ -326,7 +326,7 @@ trait ArrayModifyTrait
      *
      * @since  3.5
      */
-    public function shuffle()
+    public function shuffle(): static
     {
         $new = $this->storage;
 
@@ -344,7 +344,7 @@ trait ArrayModifyTrait
      *
      * @return  mixed
      */
-    public function takeout($key, $default = null, $delimiter = '.')
+    public function takeout(mixed $key, mixed $default = null, string $delimiter = '.'): mixed
     {
         return Arr::takeout($this->storage, $key, $default, $delimiter);
     }
@@ -357,7 +357,7 @@ trait ArrayModifyTrait
      *
      * @return  static
      */
-    public function chunk(int $size, bool $preserveKeys = false)
+    public function chunk(int $size, bool $preserveKeys = false): static
     {
         return $this->newInstance(array_chunk($this->storage, $size, $preserveKeys))
             ->wrapAll();
@@ -373,7 +373,7 @@ trait ArrayModifyTrait
      *
      * @since  3.5.3
      */
-    public function group(?string $column = null, int $type = Arr::GROUP_TYPE_ARRAY)
+    public function group(?string $column = null, int $type = Arr::GROUP_TYPE_ARRAY): static
     {
         return $this->newInstance(Arr::group($this->dump(), $column, $type));
     }
@@ -385,7 +385,7 @@ trait ArrayModifyTrait
      *
      * @return  static
      */
-    public function keyBy(string $field)
+    public function keyBy(string $field): static
     {
         return $this->newInstance(Arr::group($this->dump(), $field, Arr::GROUP_TYPE_KEY_BY));
     }
@@ -399,7 +399,7 @@ trait ArrayModifyTrait
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function union(...$args)
+    public function union(...$args): static|ArrayModifyTrait
     {
         $new = clone $this;
 

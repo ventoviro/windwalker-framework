@@ -21,15 +21,15 @@ class DisposableCallable extends CallableProxy
     /**
      * @var bool
      */
-    protected $called = false;
+    protected bool $called = false;
 
     /**
      * @inheritDoc
      */
-    public function __invoke(...$args)
+    public function __invoke(...$args): mixed
     {
         if ($this->called) {
-            return;
+            return null;
         }
 
         return tap(

@@ -28,7 +28,7 @@ class StubTwigExtension extends AbstractExtension implements GlobalsInterface
      *
      * @return string The extension name
      */
-    public function getName()
+    public function getName(): string
     {
         return 'stub';
     }
@@ -38,7 +38,7 @@ class StubTwigExtension extends AbstractExtension implements GlobalsInterface
      *
      * @return array An array of filters
      */
-    public function getFilters()
+    public function getFilters(): array
     {
         return [
             new TwigFilter('armor', [$this, 'armor']),
@@ -50,7 +50,7 @@ class StubTwigExtension extends AbstractExtension implements GlobalsInterface
      *
      * @return array An array of functions
      */
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction('flower', [$this, 'flower']),
@@ -62,7 +62,7 @@ class StubTwigExtension extends AbstractExtension implements GlobalsInterface
      *
      * @return array An array of global variables
      */
-    public function getGlobals()
+    public function getGlobals(): array
     {
         return [
             'olive' => 'peace',
@@ -74,7 +74,7 @@ class StubTwigExtension extends AbstractExtension implements GlobalsInterface
      *
      * @return  string
      */
-    public function flower()
+    public function flower(): string
     {
         return 'sakura';
     }
@@ -84,7 +84,7 @@ class StubTwigExtension extends AbstractExtension implements GlobalsInterface
      *
      * @return  string
      */
-    public function armor()
+    public function armor(): string
     {
         return 'Iron Man';
     }

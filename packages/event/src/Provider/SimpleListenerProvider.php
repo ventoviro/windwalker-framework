@@ -66,7 +66,7 @@ class SimpleListenerProvider implements ListenerProviderInterface
      *
      * @return  static
      */
-    public function add(string $event, callable $listener)
+    public function add(string $event, callable $listener): static
     {
         if (!isset($this->listeners[$event])) {
             $this->listeners[$event] = [];
@@ -98,7 +98,7 @@ class SimpleListenerProvider implements ListenerProviderInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function setListeners(array $listeners)
+    public function setListeners(array $listeners): static
     {
         foreach ($listeners as $event => $listenerQueue) {
             foreach ($listenerQueue as $i => $listener) {

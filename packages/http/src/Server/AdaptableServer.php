@@ -41,7 +41,7 @@ abstract class AdaptableServer extends AbstractServer
      *
      * @return  static  Return self to support chaining.
      */
-    public function setAdapter(ServerInterface $adapter)
+    public function setAdapter(ServerInterface $adapter): static
     {
         $this->adapter = $adapter;
 

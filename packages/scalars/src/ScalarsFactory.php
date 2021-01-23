@@ -27,7 +27,7 @@ class ScalarsFactory
      *
      * @since  __DEPLOY_VERSION__
      */
-    public static function fromNative($value)
+    public static function fromNative(mixed $value): mixed
     {
         if (is_array($value)) {
             return new ArrayObject($value);

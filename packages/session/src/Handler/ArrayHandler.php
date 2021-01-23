@@ -64,7 +64,7 @@ class ArrayHandler extends AbstractHandler
      *
      * @return  bool
      */
-    public function destroy($id)
+    public function destroy($id): bool
     {
         unset($this->sessions[$id]);
 
@@ -78,7 +78,7 @@ class ArrayHandler extends AbstractHandler
      *
      * @return  bool
      */
-    public function gc($lifetime)
+    public function gc($lifetime): bool
     {
         $past = time() - $lifetime;
 
@@ -95,7 +95,7 @@ class ArrayHandler extends AbstractHandler
      *
      * @return  bool
      */
-    public function write($id, $data)
+    public function write($id, $data): bool
     {
         $this->sessions[$id] = static::createData($data);
 
@@ -110,7 +110,7 @@ class ArrayHandler extends AbstractHandler
      *
      * @return  bool
      */
-    public function updateTimestamp($id, $data)
+    public function updateTimestamp($id, $data): bool
     {
         if (isset($this->sessions[$id])) {
             $this->sessions[$id]['time'] = time();
@@ -132,7 +132,7 @@ class ArrayHandler extends AbstractHandler
      *
      * @return  static  Return self to support chaining.
      */
-    public function setSessions(array $sessions)
+    public function setSessions(array $sessions): static
     {
         $this->sessions = $sessions;
 

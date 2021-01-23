@@ -41,7 +41,7 @@ class UniqueIterator extends \FilterIterator
     /**
      * @inheritDoc
      */
-    public function accept()
+    public function accept(): bool
     {
         $current = $this->current();
 
@@ -61,7 +61,7 @@ class UniqueIterator extends \FilterIterator
      *
      * @return  mixed
      */
-    protected function formatValue($value)
+    protected function formatValue($value): mixed
     {
         switch ($this->flags) {
             case SORT_NUMERIC:
@@ -96,7 +96,7 @@ class UniqueIterator extends \FilterIterator
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function setFlags(int $flags)
+    public function setFlags(int $flags): static
     {
         $this->flags = $flags;
 

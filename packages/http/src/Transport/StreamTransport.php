@@ -64,7 +64,7 @@ class StreamTransport extends AbstractTransport
         return $this->getResponse($headers, $content);
     }
 
-    public function createConnection(RequestInterface $request, array $options = [])
+    public function createConnection(RequestInterface $request, array $options = []): bool
     {
         // Create the stream context options array with the required method offset.
         $opt = ['method' => $request->getMethod()];
@@ -160,7 +160,7 @@ class StreamTransport extends AbstractTransport
      * @since   2.1
      * @throws  \UnexpectedValueException
      */
-    protected function getResponse(array $headers, $body)
+    protected function getResponse(array $headers, $body): Response
     {
         // Create the response object.
         $return = new Response();
@@ -201,7 +201,7 @@ class StreamTransport extends AbstractTransport
      * @return  ResponseInterface
      * @since   2.1
      */
-    public function download(RequestInterface $request, string|StreamInterface $dest, array $options = [])
+    public function download(RequestInterface $request, string|StreamInterface $dest, array $options = []): ResponseInterface
     {
         if (!$dest) {
             throw new \InvalidArgumentException('Target file path is emptty.');
@@ -227,7 +227,7 @@ class StreamTransport extends AbstractTransport
      *
      * @since   2.0
      */
-    public static function isSupported()
+    public static function isSupported(): bool
     {
         return function_exists('fopen') && is_callable('fopen') && ini_get('allow_url_fopen');
     }

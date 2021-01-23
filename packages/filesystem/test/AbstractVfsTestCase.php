@@ -114,7 +114,7 @@ abstract class AbstractVfsTestCase extends TestCase
      *
      * @return  void
      */
-    public static function listFiles($files)
+    public static function listFiles(iterable $files): void
     {
         foreach ($files as $file) {
             echo $file . "\n";
@@ -128,7 +128,7 @@ abstract class AbstractVfsTestCase extends TestCase
      *
      * @return  mixed
      */
-    public static function cleanPaths($paths)
+    public static function cleanPaths(iterable $paths): mixed
     {
         $p = [];
 

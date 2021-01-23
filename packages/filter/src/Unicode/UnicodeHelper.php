@@ -28,7 +28,7 @@ abstract class UnicodeHelper
      *
      * @return  mixed
      */
-    public static function latinToAscii($string, $case = 0)
+    public static function latinToAscii($string, $case = 0): mixed
     {
         static $UTF8_LOWER_ACCENTS = null;
         static $UTF8_UPPER_ACCENTS = null;
@@ -269,7 +269,7 @@ abstract class UnicodeHelper
      *
      * @return  string
      */
-    public static function strtolower($str)
+    public static function strtolower($str): bool|string
     {
         if (function_exists('mb_strtolower')) {
             return mb_strtolower($str);
@@ -287,7 +287,7 @@ abstract class UnicodeHelper
      *
      * @return  string
      */
-    public static function utf8strtolower($string)
+    public static function utf8strtolower($string): bool|string
     {
         static $UTF8_UPPER_TO_LOWER = null;
 
@@ -535,7 +535,7 @@ abstract class UnicodeHelper
      *
      * @return  bool|string
      */
-    public static function fromUnicode($arr)
+    public static function fromUnicode($arr): bool|string
     {
         ob_start();
 
@@ -609,7 +609,7 @@ abstract class UnicodeHelper
      *
      * @return  bool
      */
-    public static function toUnicode($str)
+    public static function toUnicode($str): bool
     {
         $mState = 0; // cached expected number of octets after the current octet
         // until the beginning of the next UTF8 character sequence

@@ -152,7 +152,7 @@ class CompositeListenerProvider implements SubscribableListenerProviderInterface
      *
      * @throws \ReflectionException
      */
-    public function remove($listenerOrSubscriber)
+    public function remove(mixed $listenerOrSubscriber): static
     {
         if ($this->isSubscriber($listenerOrSubscriber)) {
             foreach ($this->getQueues() as $queue) {
@@ -171,12 +171,12 @@ class CompositeListenerProvider implements SubscribableListenerProviderInterface
      * offEvent
      *
      * @param  string|EventInterface  $event
-     * @param  callable|object        $listenerOrSubscriber
+     * @param  callable|object|null   $listenerOrSubscriber
      *
      * @return  static
      * @throws \ReflectionException
      */
-    public function off($event, $listenerOrSubscriber = null)
+    public function off(string|EventInterface $event, callable|object|null $listenerOrSubscriber = null): static
     {
         $event = Event::wrap($event);
 
@@ -239,7 +239,7 @@ class CompositeListenerProvider implements SubscribableListenerProviderInterface
      *
      * @return  bool
      */
-    private function isSubscriber($listener): bool
+    private function isSubscriber(mixed $listener): bool
     {
         return !is_array($listener)
             && !is_string($listener)

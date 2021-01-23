@@ -33,7 +33,7 @@ class QueryStartEvent extends AbstractEvent
      *
      * @return  static  Return self to support chaining.
      */
-    public function setParams(?array $params)
+    public function setParams(?array $params): static
     {
         $this->params = $params;
 

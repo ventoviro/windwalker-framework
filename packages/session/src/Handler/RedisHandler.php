@@ -53,7 +53,7 @@ class RedisHandler extends AbstractHandler
         $this->driver = $driver;
     }
 
-    public function getKey(string $id)
+    public function getKey(string $id): string
     {
         $key = $id;
 
@@ -99,7 +99,7 @@ class RedisHandler extends AbstractHandler
      *
      * @return  bool
      */
-    public function destroy($id)
+    public function destroy($id): bool
     {
         $this->getDriver()->del($this->getKey($id));
 
@@ -113,7 +113,7 @@ class RedisHandler extends AbstractHandler
      *
      * @return  bool
      */
-    public function gc($maxlifetime)
+    public function gc($maxlifetime): bool
     {
         return true;
     }
@@ -126,7 +126,7 @@ class RedisHandler extends AbstractHandler
      *
      * @return  bool
      */
-    public function write($id, $data)
+    public function write($id, $data): bool
     {
         $result = $this->getDriver()
             ->setEx(
@@ -146,7 +146,7 @@ class RedisHandler extends AbstractHandler
      *
      * @return  bool
      */
-    public function updateTimestamp($id, $data)
+    public function updateTimestamp($id, $data): bool
     {
         return (bool) $this->getDriver()
             ->expire(
@@ -159,7 +159,7 @@ class RedisHandler extends AbstractHandler
     /**
      * @return \Predis\ClientInterface|\Redis|\RedisArray
      */
-    public function getDriver()
+    public function getDriver(): \Predis\ClientInterface|RedisCaster|\Redis|\RedisArray
     {
         return $this->driver;
     }

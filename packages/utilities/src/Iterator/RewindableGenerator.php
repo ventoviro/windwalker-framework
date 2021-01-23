@@ -83,7 +83,7 @@ class RewindableGenerator implements \OuterIterator
     /**
      * @inheritDoc
      */
-    public function key()
+    public function key(): float|bool|int|string|null
     {
         return $this->getGenerator()->key();
     }
@@ -91,7 +91,7 @@ class RewindableGenerator implements \OuterIterator
     /**
      * @inheritDoc
      */
-    public function valid()
+    public function valid(): bool
     {
         return $this->getGenerator()->valid();
     }
@@ -107,7 +107,7 @@ class RewindableGenerator implements \OuterIterator
     /**
      * @inheritDoc
      */
-    public function getInnerIterator()
+    public function getInnerIterator(): \Iterator|\Generator
     {
         return $this->getGenerator();
     }

@@ -73,7 +73,7 @@ class IniFormat implements FormatInterface
      *
      * @return array|false Data array.
      */
-    public function parse(string $string, array $options = [])
+    public function parse(string $string, array $options = []): bool|array
     {
         try {
             return parse_ini_string(
@@ -102,7 +102,7 @@ class IniFormat implements FormatInterface
      *
      * @return  string  The value in INI format.
      */
-    protected static function getValueAsINI($value)
+    protected static function getValueAsINI($value): string
     {
         $string = '';
 

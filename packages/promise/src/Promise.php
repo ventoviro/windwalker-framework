@@ -51,7 +51,7 @@ class Promise implements ExtendedPromiseInterface
      *
      * @return static
      */
-    public static function create(?callable $resolver = null)
+    public static function create(?callable $resolver = null): static
     {
         $cb       = $resolver;
         $resolver = null;
@@ -146,7 +146,7 @@ class Promise implements ExtendedPromiseInterface
     /**
      * @inheritDoc
      */
-    public function done(?callable $onFulfilled = null)
+    public function done(?callable $onFulfilled = null): static
     {
         return $this->then($onFulfilled);
     }
@@ -154,7 +154,7 @@ class Promise implements ExtendedPromiseInterface
     /**
      * @inheritDoc
      */
-    public function catch(?callable $onRejected)
+    public function catch(?callable $onRejected): static
     {
         return $this->then(null, $onRejected);
     }
@@ -162,7 +162,7 @@ class Promise implements ExtendedPromiseInterface
     /**
      * @inheritDoc
      */
-    public function finally(?callable $onFulfilledOrRejected)
+    public function finally(?callable $onFulfilledOrRejected): static
     {
         return $this->then(
             function () use ($onFulfilledOrRejected) {
@@ -181,7 +181,7 @@ class Promise implements ExtendedPromiseInterface
     /**
      * @inheritDoc
      */
-    public function then($onFulfilled = null, $onRejected = null)
+    public function then($onFulfilled = null, $onRejected = null): static
     {
         $onFulfilled = is_callable($onFulfilled)
             ? $onFulfilled
@@ -297,7 +297,7 @@ class Promise implements ExtendedPromiseInterface
      *
      * @throws \Throwable
      */
-    public function wait()
+    public function wait(): mixed
     {
         if ($this->getState() === static::PENDING) {
             $this->scheduleWait();

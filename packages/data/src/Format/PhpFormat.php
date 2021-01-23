@@ -74,7 +74,7 @@ class PhpFormat implements FormatInterface
      *
      * @return void Data array.
      */
-    public function parse(string $string, array $options = [])
+    public function parse(string $string, array $options = []): mixed
     {
         throw new \LogicException('Currently does not support parse php array.');
     }

@@ -56,7 +56,7 @@ abstract class Arr
      *
      * @since 4.0
      */
-    public static function has($source, $key, string $delimiter = '.'): bool
+    public static function has(object|array $source, int|string $key, string $delimiter = '.'): bool
     {
         $nodes = static::getPathNodes((string) $key, $delimiter);
 
@@ -94,10 +94,9 @@ abstract class Arr
      *
      * @return  array|object
      * @throws InvalidArgumentException
-     *
      * @since 4.0
      */
-    public static function def($array, string $key, $value, string $delimiter = '.')
+    public static function def(object|array $array, string $key, mixed $value, string $delimiter = '.'): object|array
     {
         if (static::has($array, $key, $delimiter)) {
             return $array;
@@ -114,7 +113,7 @@ abstract class Arr
      *
      * @return  array
      */
-    private static function getPathNodes(string $path, string $delimiter = '.'): array
+    private static function getPathNodes(string|array $path, string $delimiter = '.'): array
     {
         if ($delimiter === '') {
             return [$path];
@@ -124,7 +123,7 @@ abstract class Arr
             return $path;
         }
 
-        if ($path && strpos((string) $path, $delimiter) === false) {
+        if ($path && !str_contains((string) $path, $delimiter)) {
             return [$path];
         }
 
@@ -157,7 +156,7 @@ abstract class Arr
      *
      * @since   2.0
      */
-    public static function &get(&$data, $key, string $delimiter = '.')
+    public static function &get(mixed &$data, int|string $key, string $delimiter = '.'): mixed
     {
         $nodes = static::getPathNodes((string) $key, $delimiter);
         $null  = null;
@@ -194,10 +193,10 @@ abstract class Arr
      *
      * @return  array|object
      * @throws InvalidArgumentException
-     *
      * @since   2.0
      */
-    public static function set($data, string $key, $value, string $delimiter = '.', string $storeType = 'array')
+    public static function set(mixed $data, string $key, mixed $value, string $delimiter = '.', string $storeType = 'array'
+    ): object|array
     {
         $nodes = static::getPathNodes((string) $key, $delimiter);
 
@@ -214,7 +213,7 @@ abstract class Arr
          *
          * @throws InvalidArgumentException
          */
-        $createStore = static function ($type) {
+        $createStore = static function (string $type) {
             if (strtolower($type) === 'array') {
                 return [];
             }
@@ -265,7 +264,7 @@ abstract class Arr
      *
      * @return  array|object
      */
-    public static function remove($data, $key, $delimiter = '.')
+    public static function remove(object|array $data, int|string $key, $delimiter = '.'): object|array
     {
         $nodes = static::getPathNodes((string) $key, $delimiter);
 
@@ -339,11 +338,11 @@ abstract class Arr
      * @param  array|object  $array      The array or object to convert.
      * @param  string        $delimiter  The key path delimiter.
      * @param  int           $depth      Only flatten limited depth, 0 means on limit.
-     * @param  string        $prefix     Last level key prefix.
+     * @param  string|null   $prefix     Last level key prefix.
      *
      * @return array
      */
-    public static function flatten($array, string $delimiter = '.', int $depth = 0, ?string $prefix = null): array
+    public static function flatten(object|array $array, string $delimiter = '.', int $depth = 0, ?string $prefix = null): array
     {
         $temp = [];
 
@@ -375,7 +374,7 @@ abstract class Arr
      * @return  array|object
      * @throws InvalidArgumentException
      */
-    public static function only($data, array $fields)
+    public static function only(object|array $data, array $fields): object|array
     {
         if (is_array($data)) {
             return array_intersect_key($data, array_flip($fields));
@@ -406,7 +405,7 @@ abstract class Arr
      *
      * @since  __DEPLOY_VERSION__
      */
-    public static function except($data, array $fields)
+    public static function except(object|array $data, array $fields): object|array
     {
         if (is_array($data)) {
             return array_diff_key($data, array_flip($fields));
@@ -484,7 +483,7 @@ abstract class Arr
      *
      * @return  mixed
      */
-    public static function findFirst(array $data, callable $callback = null)
+    public static function findFirst(array $data, callable $callback = null): mixed
     {
         $results = static::find($data, $callback, false, 0, 1);
 
@@ -525,7 +524,7 @@ abstract class Arr
      *
      * @return  mixed
      */
-    public static function takeout(&$data, $key, $default = null, string $delimiter = '.')
+    public static function takeout(object|array &$data, int|string $key, $default = null, string $delimiter = '.'): mixed
     {
         if (!static::has($data, $key, $delimiter)) {
             return $default;
@@ -550,7 +549,8 @@ abstract class Arr
      *
      * @since   4.0
      */
-    public static function sort(array $data, $condition, bool $descending = false, int $options = SORT_REGULAR): array
+    public static function sort(array $data, callable|string $condition, bool $descending = false, int $options = SORT_REGULAR
+    ): array
     {
         $results = [];
 
@@ -652,7 +652,7 @@ abstract class Arr
      *
      * @since  4.0
      */
-    public static function isAccessible($array): bool
+    public static function isAccessible(mixed $array): bool
     {
         return is_array($array) || $array instanceof ArrayAccess;
     }
@@ -686,7 +686,7 @@ abstract class Arr
      *
      * @since  __DEPLOY_VERSION__
      */
-    public static function flatMap($array, callable $callback): array
+    public static function flatMap(object|array $array, callable $callback): array
     {
         $mapped = [];
 
@@ -779,7 +779,7 @@ abstract class Arr
      *
      * @since   2.0
      */
-    public static function dump($data, int $depth = 5): string
+    public static function dump(mixed $data, int $depth = 5): string
     {
         static $innerLevel = 1;
         static $tabLevel = 1;
@@ -883,8 +883,8 @@ abstract class Arr
      * @since  3.5.1
      */
     public static function where(
-        $array,
-        $field,
+        mixed $array,
+        array|string $field,
         ?string $operator = null,
         $value = null,
         bool $strict = false,
@@ -906,20 +906,20 @@ abstract class Arr
     /**
      * Query a two-dimensional array values to get second level array.
      *
-     * @param  array|object    $array         An array to query.
-     * @param  array|callable  $queries       Query strings or callback, may contain Comparison Operators: '>', '>=',
+     * @param  array|object  $array           An array to query.
+     * @param  array         $queries         Query strings or callback, may contain Comparison Operators: '>', '>=',
      *                                        '<', '<='. Example: array(
      *                                        'id'          => 6,   // Get all elements where id=6
      *                                        'published >' => 0    // Get all elements where published>0
      *                                        );
-     * @param  boolean         $strict        Use strict to compare equals.
-     * @param  boolean         $keepKey       Keep origin array keys.
+     * @param  boolean       $strict          Use strict to compare equals.
+     * @param  boolean       $keepKey         Keep origin array keys.
      *
      * @return  array|object  An new two-dimensional array queried.
      *
      * @since   2.0
      */
-    public static function query($array, $queries = [], bool $strict = false, bool $keepKey = false)
+    public static function query(object|array $array, $queries = [], bool $strict = false, bool $keepKey = false): object|array
     {
         $array   = TypeCast::toArray($array, false);
         $results = [];
@@ -951,19 +951,19 @@ abstract class Arr
     /**
      * Query a two-dimensional array values to get second level array, return only first.
      *
-     * @param  array|object    $array         An array to query.
-     * @param  array|callable  $queries       Query strings or callback, may contain Comparison Operators: '>', '>=',
+     * @param  array|object  $array           An array to query.
+     * @param  array         $queries         Query strings or callback, may contain Comparison Operators: '>', '>=',
      *                                        '<', '<='. Example: array(
      *                                        'id'          => 6,   // Get all elements where id=6
      *                                        'published >' => 0    // Get all elements where published>0
      *                                        );
-     * @param  boolean         $strict        Use strict to compare equals.
+     * @param  boolean       $strict          Use strict to compare equals.
      *
-     * @return  mixed|null
+     * @return mixed
      *
      * @since  __DEPLOY_VERSION__
      */
-    public static function queryFirst($array, $queries = [], bool $strict = false)
+    public static function queryFirst(object|array $array, $queries = [], bool $strict = false): mixed
     {
         $result = static::query($array, $queries, $strict, false);
 
@@ -979,7 +979,7 @@ abstract class Arr
      *
      * @return  bool
      */
-    public static function match($array, array $queries, bool $strict = false): bool
+    public static function match(array $array, array $queries, bool $strict = false): bool
     {
         $results = [];
 
@@ -1029,7 +1029,7 @@ abstract class Arr
      *
      * @return  array
      */
-    public static function filterRecursive($array, callable $callback): array
+    public static function filterRecursive(array $array, callable $callback): array
     {
         foreach ($array as $key => & $value) { // mind the reference
             if (is_array($value)) {

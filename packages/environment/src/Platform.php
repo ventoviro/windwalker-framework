@@ -138,7 +138,7 @@ class Platform
      *
      * @return  static  Return self to support chaining.
      */
-    public function setOS(?string $os)
+    public function setOS(?string $os): static
     {
         $this->os = $os;
 
@@ -162,7 +162,7 @@ class Platform
      *
      * @return  static  Return self to support chaining.
      */
-    public function setUname(string $uname)
+    public function setUname(string $uname): static
     {
         $this->uname = $uname;
 
@@ -283,7 +283,7 @@ class Platform
      *
      * @return  mixed
      */
-    protected function getServerParam(string $key, $default = null)
+    protected function getServerParam(string $key, $default = null): mixed
     {
         return $this->server[$key] ?? $default;
     }

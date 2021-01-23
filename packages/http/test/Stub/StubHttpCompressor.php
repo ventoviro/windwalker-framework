@@ -25,7 +25,7 @@ class StubHttpCompressor extends HttpCompressor
      *
      * @return  bool
      */
-    public function checkConnectionAlive()
+    public function checkConnectionAlive(): bool
     {
         return true;
     }
@@ -35,7 +35,7 @@ class StubHttpCompressor extends HttpCompressor
      *
      * @return  bool
      */
-    public function checkHeadersSent()
+    public function checkHeadersSent(): bool
     {
         return false;
     }

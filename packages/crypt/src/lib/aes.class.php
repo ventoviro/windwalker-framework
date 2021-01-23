@@ -22,7 +22,7 @@ class Aes
      *
      * @return      ciphertext as byte-array (16 bytes)
      */
-    public static function cipher($input, $w)
+    public static function cipher($input, $w): array|ciphertext
     {    // main cipher function [§5.1]
         $Nb = 4;                 // block size (in words): no of columns in state (fixed at 4 for AES)
         $Nr = count($w) / $Nb - 1; // no of rounds: 10/12/14 for 128/192/256-bit keys
@@ -118,7 +118,7 @@ class Aes
      *
      * @return    key schedule as 2D byte-array (Nr+1 x Nb bytes)
      */
-    public static function keyExpansion($key)
+    public static function keyExpansion($key): key|array
     {  // generate Index Schedule from Cipher Index [§5.2]
         $Nb = 4;              // block size (in words): no of columns in state (fixed at 4 for AES)
         $Nk = count($key) / 4;  // key length (in words): 4/6/8 for 128/192/256-bit keys
@@ -475,7 +475,7 @@ class AesCtr extends Aes
      *
      * @return          encrypted text
      */
-    public static function encrypt($plaintext, $password, $nBits)
+    public static function encrypt($plaintext, $password, $nBits): encrypted|string
     {
         $blockSize = 16;  // block size fixed at 16 bytes / 128 bits (Nb=4) for AES
         if (!($nBits == 128 || $nBits == 192 || $nBits == 256)) {
@@ -563,7 +563,7 @@ class AesCtr extends Aes
      *
      * @return           decrypted text
      */
-    public static function decrypt($ciphertext, $password, $nBits)
+    public static function decrypt($ciphertext, $password, $nBits): decrypted|string
     {
         $blockSize = 16;  // block size fixed at 16 bytes / 128 bits (Nb=4) for AES
         if (!($nBits == 128 || $nBits == 192 || $nBits == 256)) {
@@ -634,7 +634,7 @@ class AesCtr extends Aes
      * @param b  number of bits to shift a to the right (0..31)
      * @return   a right-shifted and zero-filled by b bits
      */
-    private static function urs($a, $b)
+    private static function urs($a, $b): int
     {
         $a &= 0xffffffff;
         $b &= 0x1f;  // (bounds check)

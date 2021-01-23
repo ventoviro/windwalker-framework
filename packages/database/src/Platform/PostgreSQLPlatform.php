@@ -449,7 +449,7 @@ class PostgreSQLPlatform extends AbstractPlatform
      *
      * @return  static
      */
-    public function transactionStart()
+    public function transactionStart(): static
     {
         if (!$this->depth) {
             parent::transactionStart();
@@ -468,7 +468,7 @@ class PostgreSQLPlatform extends AbstractPlatform
      *
      * @return  static
      */
-    public function transactionRollback()
+    public function transactionRollback(): static
     {
         if ($this->depth <= 1) {
             parent::transactionRollback();

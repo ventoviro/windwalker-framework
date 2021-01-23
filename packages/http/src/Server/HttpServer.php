@@ -80,7 +80,7 @@ class HttpServer extends AdaptableServer
      *
      * @return  static  Return self to support chaining.
      */
-    public function setHandler(\Closure $handler)
+    public function setHandler(\Closure $handler): static
     {
         $this->handler = $handler;
 
