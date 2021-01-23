@@ -11,8 +11,11 @@ declare(strict_types=1);
 
 namespace Windwalker\Http\Response;
 
+use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 use Windwalker\Stream\NullStream;
+use Windwalker\Stream\Stream;
+use Windwalker\Stream\StringStream;
 
 /**
  * The RedirectResponse class.
@@ -24,17 +27,13 @@ class RedirectResponse extends Response
     /**
      * Constructor.
      *
-     * @param  string|UriInterface $uri     The redirect uri.
+     * @param  string|\Stringable $uri     The redirect uri.
      * @param  int                 $status  The status code.
      * @param  array               $headers The custom headers.
      */
-    public function __construct($uri, $status = 303, array $headers = [])
+    public function __construct(string|\Stringable $uri, $status = 303, array $headers = [])
     {
-        if ($uri instanceof UriInterface) {
-            $uri = (string) $uri;
-        }
-
-        if (!is_string($uri)) {
+        if (!is_stringable($uri)) {
             throw new \InvalidArgumentException(
                 sprintf(
                     'Invalid URI type, string or UriInterface required, %s provided.',
@@ -43,8 +42,24 @@ class RedirectResponse extends Response
             );
         }
 
-        $headers['location'] = [$uri];
+        $headers['location'] = [(string) $uri];
 
         parent::__construct(new NullStream(), $status, $headers);
+    }
+
+    /**
+     * Gets the body of the message.
+     *
+     * @return StreamInterface Returns the body as a stream.
+     */
+    public function getBody(): StreamInterface
+    {
+        if (headers_sent()) {
+            $url = $this->getHeaderLine('location');
+            $html = "<script>document.location.href='$url';</script>\n";
+            return Stream::fromString($html);
+        }
+
+        return $this->stream;
     }
 }

@@ -31,7 +31,7 @@ class IPV4 extends AbstractRegexFilter
      *
      * @see https://stackoverflow.com/a/36760050
      */
-    public function test($value, bool $strict = false): bool
+    public function test(mixed $value, bool $strict = false): bool
     {
         return (bool) preg_match('/^((25[0-5]|(2[0-4]|1[0-9]|[1-9]|)[0-9])(\.(?!$)|$)){4}$/', (string) $value);
     }

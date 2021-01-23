@@ -79,6 +79,8 @@ class ServerRequestFactory
                 parse_str($body->__toString(), $decodedBody);
             } elseif (str_contains($type, 'multipart/form-data')) {
                 [$decodedBody, $decodedFiles] = array_values(ServerHelper::parseFormData($body->__toString()));
+            } elseif (str_contains($type, 'application/json')) {
+                $decodedBody = json_decode($body->__toString(), true, 512, JSON_THROW_ON_ERROR);
             }
         }
 

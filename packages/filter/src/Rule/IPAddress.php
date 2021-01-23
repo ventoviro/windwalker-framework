@@ -29,7 +29,7 @@ class IPAddress extends AbstractRegexFilter
     /**
      * @inheritDoc
      */
-    public function test($value, bool $strict = false): bool
+    public function test(mixed $value, bool $strict = false): bool
     {
         return (bool) filter_var(
             $value,

@@ -131,7 +131,7 @@ abstract class ServerHelper
      *
      * @link  http://stackoverflow.com/questions/5483851/manually-parse-raw-http-data-with-php/5488449#5488449
      */
-    public static function parseFormData($input)
+    public static function parseFormData(string $input): array
     {
         $boundary = substr($input, 0, strpos($input, "\r\n"));
 
@@ -142,7 +142,7 @@ abstract class ServerHelper
 
         foreach ($parts as $part) {
             // If this is the last part, break
-            if (strpos($part, '--') === 0) {
+            if (str_starts_with($part, '--')) {
                 break;
             }
 

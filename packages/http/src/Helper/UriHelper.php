@@ -253,43 +253,6 @@ class UriHelper
     }
 
     /**
-     * Resolves //, ../ and ./ from a path and returns
-     * the result. Eg:
-     *
-     * /foo/bar/../boo.php    => /foo/boo.php
-     * /foo/bar/../../boo.php => /boo.php
-     * /foo/bar/.././/boo.php => /foo/boo.php
-     *
-     * @param   string $path The URI path to clean.
-     *
-     * @return  string  Cleaned and resolved URI path.
-     *
-     * @since   2.0
-     */
-    public static function cleanPath(string $path): string
-    {
-        $paths = explode('/', preg_replace('#(/+)#', '/', $path));
-
-        for ($i = 0, $n = count($paths); $i < $n; $i++) {
-            if ($paths[$i] === '.' || $paths[$i] === '..') {
-                if (($paths[$i] === '.') || ($paths[$i] === '..' && $i == 1 && $paths[0] === '')) {
-                    unset($paths[$i]);
-                    $paths = array_values($paths);
-                    $i--;
-                    $n--;
-                } elseif ($paths[$i] === '..' && ($i > 1 || ($i == 1 && $paths[0] !== ''))) {
-                    unset($paths[$i], $paths[$i - 1]);
-                    $paths = array_values($paths);
-                    $i -= 2;
-                    $n -= 2;
-                }
-            }
-        }
-
-        return implode('/', $paths);
-    }
-
-    /**
      * decode
      *
      * @param  array|string  $string

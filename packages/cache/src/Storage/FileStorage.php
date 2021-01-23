@@ -73,7 +73,7 @@ class FileStorage implements StorageInterface
 
         sscanf($data, $this->getOption('expiration_format'), $expiration, $value);
 
-        if ((int) $expiration === 0 || $expiration > time()) {
+        if (!static::isExpired((int) $expiration)) {
             return true;
         }
 
@@ -291,5 +291,20 @@ class FileStorage implements StorageInterface
     public function getRoot(): string
     {
         return $this->root;
+    }
+
+    /**
+     * isExpired
+     *
+     * @param  int       $expiration
+     * @param  int|null  $time
+     *
+     * @return  bool
+     */
+    public static function isExpired(int $expiration, ?int $time = null): bool
+    {
+        $time ??= time();
+
+        return $expiration !== 0 && $expiration <= $time;
     }
 }

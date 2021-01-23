@@ -17,6 +17,7 @@ use Windwalker\Filesystem\Path;
 use Windwalker\Utilities\Arr;
 use Windwalker\Utilities\Assert\LogicAssert;
 use Windwalker\Utilities\Cache\InstanceCacheTrait;
+use Windwalker\Utilities\Classes\ObjectBuilderAwareTrait;
 use Windwalker\Utilities\Iterator\PriorityQueue;
 use Windwalker\Utilities\Options\OptionAccessTrait;
 use Windwalker\Utilities\Str;
@@ -26,12 +27,17 @@ use Windwalker\Utilities\Str;
  *
  * @since 2.0
  */
-class CompositeRenderer implements RendererInterface, TemplateFactoryInterface
+class CompositeRenderer implements RendererInterface, TemplateFactoryInterface, ExtendableRendererInterface
 {
+    use ObjectBuilderAwareTrait;
     use InstanceCacheTrait;
     use OptionAccessTrait;
 
     protected array $factories = [
+        'edge' => [
+            EdgeRenderer::class,
+            ['edge.php']
+        ],
         'blade' => [
             BladeRenderer::class,
             ['blade.php']
@@ -39,10 +45,6 @@ class CompositeRenderer implements RendererInterface, TemplateFactoryInterface
         'plates' => [
             PlatesRenderer::class,
             ['php']
-        ],
-        'edge' => [
-            EdgeRenderer::class,
-            ['edge.php']
         ],
         'mustache' => [
             MustacheRenderer::class,
@@ -69,7 +71,7 @@ class CompositeRenderer implements RendererInterface, TemplateFactoryInterface
      * @param  string|array|SplPriorityQueue  $paths
      * @param  array                   $options
      */
-    public function __construct(SplPriorityQueue|string|array $paths, array $options = [])
+    public function __construct(SplPriorityQueue|string|array $paths = [], array $options = [])
     {
         $this->setPaths($paths);
 
@@ -86,19 +88,24 @@ class CompositeRenderer implements RendererInterface, TemplateFactoryInterface
     {
         $options = Arr::mergeRecursive($this->getOptions(), $options);
 
-        $file = $this->findFile($layout);
+        if (is_file($layout)) {
+            $path = dirname($layout);
+            $filename = Path::getFilename($layout);
+        } else {
+            $file = $this->findFile($layout);
 
-        if (!$file) {
-            throw new LayoutNotFoundException(
-                sprintf(
-                    'Layout: %s not found in paths: %s',
-                    $layout,
-                    implode("\n| ", $this->dumpPaths())
-                )
-            );
+            if (!$file) {
+                throw new LayoutNotFoundException(
+                    sprintf(
+                        'Layout: %s not found in paths: %s',
+                        $layout,
+                        implode("\n| ", $this->dumpPaths())
+                    )
+                );
+            }
+
+            [$fullPath, $path, $filename] = $file;
         }
-
-        [$fullPath, $path, $filename] = $file;
 
         [$type, , $extension] = $this->matchExtension($filename);
         $renderer = $this->getRenderer($type);
@@ -210,7 +217,7 @@ class CompositeRenderer implements RendererInterface, TemplateFactoryInterface
             $priority = new PriorityQueue();
 
             foreach ((array) $paths as $i => $path) {
-                $priority->insert($path, 100 - ($i * 10));
+                $priority->insert(Path::normalize($path), 100 - ($i * 10));
             }
 
             $paths = $priority;
@@ -271,7 +278,7 @@ class CompositeRenderer implements RendererInterface, TemplateFactoryInterface
         return $this->once('renderer.' . $type, function () use ($options, $type) {
             [$factory, $exts] = $this->getFactory($type);
 
-            return new $factory($options);
+            return $this->getObjectBuilder()->createObject($factory, $options);
         });
     }
 
@@ -292,7 +299,7 @@ class CompositeRenderer implements RendererInterface, TemplateFactoryInterface
     public function addFileExtensions(string $type, array|string $extensions): void
     {
         LogicAssert::assert(
-            $this->getFactory($type),
+            (bool) $this->getFactory($type),
             sprintf(
                 'Factory %s not registered.',
                 $type
@@ -344,11 +351,11 @@ class CompositeRenderer implements RendererInterface, TemplateFactoryInterface
      * getFoundFileInfo
      *
      * @param  string  $filePath
-     * @param          $path
+     * @param  string  $path
      *
      * @return  array
      */
-    protected function getFoundFileInfo(string $filePath, $path): array
+    protected function getFoundFileInfo(string $filePath, string $path): array
     {
         $filename = Str::removeLeft(
             $filePath = Path::normalize($filePath),
@@ -402,6 +409,28 @@ class CompositeRenderer implements RendererInterface, TemplateFactoryInterface
     public function setAliases(array $aliases)
     {
         $this->aliases = $aliases;
+
+        return $this;
+    }
+
+    /**
+     * Extends engine after created, this is similar a decorator.
+     *
+     * @param  callable  $callable
+     *
+     * @return  static  Retrun self to support chaining.
+     */
+    public function extend(callable $callable): static
+    {
+        $builder = $this->getObjectBuilder();
+
+        $handler = $builder->getBuilder();
+
+        $handler = static function (array $options) use ($callable, $handler) {
+            return $callable($handler($options), $options);
+        };
+
+        $builder->setBuilder($handler);
 
         return $this;
     }

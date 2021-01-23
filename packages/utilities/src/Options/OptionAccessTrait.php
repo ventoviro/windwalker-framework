@@ -38,12 +38,12 @@ trait OptionAccessTrait
         $this->options = Arr::mergeRecursive(TypeCast::toArray($this->options), $defaults, $options);
     }
 
-    public function getOption(string $name, $default = null)
+    public function getOption(string $name, mixed $default = null): mixed
     {
         return $this->options[$name] ?? $default;
     }
 
-    public function setOption(string $name, $value): static
+    public function setOption(string $name, mixed $value): static
     {
         $this->options[$name] = $value;
 
@@ -55,7 +55,7 @@ trait OptionAccessTrait
         return $this->options;
     }
 
-    public function setOptions(array|ArrayAccess|AccessibleInterface $options)
+    public function setOptions(array|ArrayAccess|AccessibleInterface $options): static
     {
         $this->options = $options;
 

@@ -23,13 +23,13 @@ trait ServiceAwareTrait
     /**
      * make
      *
-     * @param  mixed  $class
+     * @param  string  $class
      * @param  array  $args
      * @param  int    $options
      *
      * @return  object
      */
-    public function make($class, array $args = [], int $options = 0): object
+    public function make(string $class, array $args = [], int $options = 0): object
     {
         return $this->getContainer()->newInstance($class, $args, $options);
     }
@@ -68,7 +68,7 @@ trait ServiceAwareTrait
      *
      * @throws ReflectionException
      */
-    public function call(callable $callable, array $args, ?object $context, int $options = 0)
+    public function call(callable $callable, array $args = [], ?object $context = null, int $options = 0): mixed
     {
         return $this->getContainer()->call($callable, $args, $context, $options);
     }
@@ -84,7 +84,7 @@ trait ServiceAwareTrait
      *
      * @throws Exception\DefinitionException
      */
-    public function bind(string $id, $value, int $options = 0)
+    public function bind(string $id, mixed $value, int $options = 0): static
     {
         $this->getContainer()->bind($id, $value, $options);
 
@@ -94,15 +94,16 @@ trait ServiceAwareTrait
     /**
      * resolve
      *
-     * @param  mixed $source
-     * @param  bool  $forceNew
+     * @param  mixed  $source
+     * @param  array  $args
+     * @param  int    $options
      *
-     * @return  mixed|object|string
+     * @return  mixed
      *
      * @throws ReflectionException
      */
-    public function resolve($source, bool $forceNew = false)
+    public function resolve(mixed $source, array $args = [], int $options = 0): mixed
     {
-        return $this->getContainer()->resolve($source);
+        return $this->getContainer()->resolve($source, $args, $options);
     }
 }

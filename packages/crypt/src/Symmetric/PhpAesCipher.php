@@ -74,4 +74,17 @@ class PhpAesCipher implements CipherInterface
 
         return base64_encode(\AesCtr::encrypt($str->get(), $key->get(), $this->keyLength));
     }
+
+    /**
+     * Generate Key.
+     *
+     * @param  int|null  $length
+     *
+     * @return  Key
+     * @throws \Exception
+     */
+    public static function generateKey(?int $length = 32): Key
+    {
+        return new Key(random_bytes($length));
+    }
 }

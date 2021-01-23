@@ -177,12 +177,14 @@ class SodiumCipher implements CipherInterface
     /**
      * generateKey
      *
+     * @param  int|null  $length
+     *
      * @return  Key
      *
      * @throws \Exception
      */
-    public static function generateKey(): Key
+    public static function generateKey(?int $length = \SODIUM_CRYPTO_STREAM_KEYBYTES): Key
     {
-        return new Key(\random_bytes(\SODIUM_CRYPTO_STREAM_KEYBYTES));
+        return new Key(\random_bytes($length));
     }
 }

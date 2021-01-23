@@ -37,7 +37,7 @@ class Range extends AbstractFilter
     /**
      * @inheritDoc
      */
-    public function filter($value)
+    public function filter(mixed $value): mixed
     {
         if ($this->min !== null && $value < $this->min) {
             $value = $this->min;

@@ -363,7 +363,7 @@ class UriTest extends TestCase
     {
         self::assertEquals(
             'http://www.example.com',
-            $this->instance->toString(Uri::SCHEMA | Uri::HOST)
+            $this->instance->toString(Uri::SCHEME | Uri::HOST)
         );
         self::assertEquals(
             'someuser:somepass@www.example.com/path/file.html?var=value',

@@ -36,7 +36,7 @@ class DefaultValue extends AbstractFilter
     /**
      * @inheritDoc
      */
-    public function filter($value)
+    public function filter(mixed $value): mixed
     {
         return $value === '' || $value === null ? $this->default : $value;
     }

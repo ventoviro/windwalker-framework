@@ -29,7 +29,7 @@ class Negative extends AbstractCallbackFilter
     /**
      * @inheritDoc
      */
-    public function test($value, bool $strict = false): bool
+    public function test(mixed $value, bool $strict = false): bool
     {
         return $value < 0;
     }

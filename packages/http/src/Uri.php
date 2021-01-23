@@ -26,7 +26,7 @@ use Windwalker\Utilities\Assert\ArgumentsAssert;
  */
 class Uri implements UriInterface
 {
-    public const SCHEMA = 1 << 0;
+    public const SCHEME = 1 << 0;
     public const USER = 1 << 1;
     public const PASSWORD = 1 << 2;
     public const HOST = 1 << 3;
@@ -36,7 +36,7 @@ class Uri implements UriInterface
     public const FRAGMENT = 1 << 7;
 
     public const USER_INFO = self::USER | self::PASSWORD;
-    public const FULL_HOST = self::SCHEMA | self::USER_INFO | self::HOST | self::PORT;
+    public const FULL_HOST = self::SCHEME | self::USER_INFO | self::HOST | self::PORT;
     public const URI = self::PATH | self::QUERY;
     public const ALL = (1 << 8) - 1;
 
@@ -76,8 +76,12 @@ class Uri implements UriInterface
      *
      * @return  static
      */
-    public static function wrap(UriInterface|string|null $uri)
+    public static function wrap(UriInterface|string|null $uri): static
     {
+        if ($uri instanceof static) {
+            return $uri;
+        }
+
         if ($uri instanceof UriInterface) {
             return new static((string) $uri);
         }
@@ -427,7 +431,7 @@ class Uri implements UriInterface
             throw new \InvalidArgumentException('Path should not contain `?` and `#` symbols.');
         }
 
-        $path = UriHelper::cleanPath($path);
+        $path = UriNormalize::normalizePath($path);
         $path = UriHelper::filterPath($path);
 
         $new = clone $this;
@@ -586,7 +590,7 @@ class Uri implements UriInterface
         $query = $this->getQuery();
 
         $uri = '';
-        $uri .= ($parts & static::SCHEMA) ? (!empty($this->scheme) ? $this->scheme . '://' : '') : '';
+        $uri .= ($parts & static::SCHEME) ? (!empty($this->scheme) ? $this->scheme . '://' : '') : '';
         $uri .= ($parts & static::USER) ? $this->user : '';
         $uri .= ($parts & static::PASSWORD)
             ? (!empty($this->pass) ? ':' : '') . $this->pass . (!empty($this->user) ? '@' : '')

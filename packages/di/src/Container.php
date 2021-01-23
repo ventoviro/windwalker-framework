@@ -15,6 +15,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use Windwalker\DI\Attributes\AttributesResolver;
+use Windwalker\DI\Concern\ConfigRegisterTrait;
 use Windwalker\DI\Definition\DefinitionFactory;
 use Windwalker\DI\Definition\DefinitionInterface;
 use Windwalker\DI\Definition\ObjectBuilderDefinition;
@@ -22,7 +23,9 @@ use Windwalker\DI\Definition\StoreDefinitionInterface;
 use Windwalker\DI\Exception\DefinitionException;
 use Windwalker\DI\Exception\DefinitionNotFoundException;
 use Windwalker\Utilities\Assert\ArgumentsAssert;
+use Windwalker\Utilities\Assert\TypeAssert;
 use Windwalker\Utilities\Contract\ArrayAccessibleInterface;
+use Windwalker\Utilities\Wrapper\RawWrapper;
 use Windwalker\Utilities\Wrapper\ValueReference;
 
 /**
@@ -30,12 +33,16 @@ use Windwalker\Utilities\Wrapper\ValueReference;
  */
 class Container implements ContainerInterface, \IteratorAggregate, \Countable, ArrayAccessibleInterface
 {
+    use ConfigRegisterTrait;
+
     public const SHARED = 1 << 0;
     public const PROTECTED = 1 << 1;
     public const AUTO_WIRE = 1 << 2;
     public const IGNORE_ATTRIBUTES = 1 << 3;
 
     protected int $options = 0;
+
+    protected int $level = 1;
 
     /**
      * Holds the key aliases.
@@ -214,12 +221,16 @@ class Container implements ContainerInterface, \IteratorAggregate, \Countable, A
      *
      * @throws \ReflectionException
      */
-    public function resolve($source, array $args = [], int $options = 0)
+    public function resolve(mixed $source, array $args = [], int $options = 0)
     {
         ArgumentsAssert::assert(
             $source !== null,
             '{caller} Argument #1 (source) can not be NULL'
         );
+
+        if ($source instanceof RawWrapper) {
+            return $source;
+        }
 
         if ($source instanceof ValueReference) {
             $source = $source($this->getParameters(), $source->getDelimiter() ?? '.');
@@ -455,17 +466,37 @@ class Container implements ContainerInterface, \IteratorAggregate, \Countable, A
      * @throws  \InvalidArgumentException
      * @since   2.0
      */
-    public function extend(string $id, \Closure $closure)
+    public function extend(string $id, \Closure $closure): static
     {
         $definition = $this->getDefinition($id);
 
         if ($definition === null) {
             throw new \UnexpectedValueException(
-                sprintf('The requested id %s does not exist to extend.', $id)
+                sprintf('The requested id "%s" does not exist to extend.', $id)
             );
         }
 
         $definition->extend($closure);
+
+        return $this;
+    }
+
+    public function modify(string $id, \Closure $closure): static
+    {
+        $definition = $this->getDefinition($id);
+
+        if ($definition === null) {
+            throw new \UnexpectedValueException(
+                sprintf('The requested id "%s" does not exist to modify.', $id)
+            );
+        }
+
+        $target = $definition->resolve($this);
+
+        $target = $closure($target, $this);
+
+        $definition->set(fn() => $target);
+        $definition->reset();
 
         return $this;
     }
@@ -646,8 +677,11 @@ class Container implements ContainerInterface, \IteratorAggregate, \Countable, A
     public function createChild()
     {
         $child = new static($this);
+        $child->level = $this->level + 1;
         $params = clone $this->getParameters();
         $child->setParameters($params->reset());
+
+        $child->setAttributesResolver(clone $this->getAttributesResolver());
         return $child;
     }
 
@@ -709,7 +743,7 @@ class Container implements ContainerInterface, \IteratorAggregate, \Countable, A
         return $value;
     }
 
-    public function loadParameters($source, ?string $format = null, array $options = []): Parameters
+    public function loadParameters(mixed $source, ?string $format = null, array $options = []): Parameters
     {
         $this->parameters = $this->parameters->load($source, $format, $options);
 
@@ -852,6 +886,7 @@ class Container implements ContainerInterface, \IteratorAggregate, \Countable, A
      */
     public function setAttributesResolver(AttributesResolver $attributesResolver)
     {
+        $attributesResolver->setContainer($this);
         $this->attributesResolver = $attributesResolver;
 
         return $this;

@@ -81,7 +81,7 @@ class LegacyOpensslCipher extends OpensslCipher
      */
     public function encrypt(HiddenString $str, Key $key, string $encoder = SafeEncoder::BASE64): string
     {
-        $salt = $this->randomPseudoBytes(static::PBKDF2_SALT_BYTE_SIZE);
+        $salt = OpensslCipher::randomPseudoBytes(static::PBKDF2_SALT_BYTE_SIZE);
 
         [, $hmacKey] = $this->derivateSecureKeys($key->get(), $salt);
 

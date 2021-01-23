@@ -16,8 +16,6 @@ use Windwalker\Filter\FilterFactory;
 
 use Windwalker\Test\Traits\BaseAssertionTrait;
 
-use function PHPUnit\Framework\assertEquals;
-
 /**
  * The FilterFactoryTest class.
  */

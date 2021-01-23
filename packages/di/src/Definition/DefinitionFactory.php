@@ -16,7 +16,7 @@ namespace Windwalker\DI\Definition;
  */
 class DefinitionFactory
 {
-    public static function create($value, int $options = 0): StoreDefinitionInterface
+    public static function create(mixed $value, int $options = 0): StoreDefinitionInterface
     {
         if ($value instanceof StoreDefinitionInterface) {
             return $value;
@@ -33,7 +33,7 @@ class DefinitionFactory
         return new StoreDefinition($value, $options);
     }
 
-    public static function wrap($value)
+    public static function wrap(mixed $value): DefinitionInterface
     {
         if ($value instanceof DefinitionInterface) {
             return $value;

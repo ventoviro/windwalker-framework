@@ -43,4 +43,13 @@ interface CipherInterface
      * @return  string
      */
     public function encrypt(HiddenString $str, Key $key, string $encoder = SafeEncoder::BASE64URLSAFE): string;
+
+    /**
+     * Generate Key.
+     *
+     * @param  int|null  $length
+     *
+     * @return  Key
+     */
+    public static function generateKey(?int $length = null): Key;
 }
