@@ -59,24 +59,25 @@ class FilterFactory
         }
     }
 
-    public function createNested(array $map): NestedFilter
+    public function createNested(array $map, array $options = []): NestedFilter
     {
-        return new NestedFilter($this->createMap($map));
+        return new NestedFilter($this->createMap($map, $options));
     }
 
-    public function createMap(array $map): array
+    public function createMap(array $map, array $options = []): array
     {
-        return Arr::mapRecursive($map, fn ($syntax) => $this->createChainFromSyntax($syntax));
+        return Arr::mapRecursive($map, fn ($syntax) => $this->createChainFromSyntax($syntax, $options));
     }
 
     /**
      * createChainFromSyntax
      *
-     * @param string|callable|FilterInterface|ValidatorInterface|array $syntax
+     * @param  string|callable|FilterInterface|ValidatorInterface|array  $syntax
+     * @param  array                                                     $options
      *
      * @return  FilterInterface|ValidatorInterface
      */
-    public function createChainFromSyntax($syntax): FilterInterface|ValidatorInterface
+    public function createChainFromSyntax(mixed $syntax, array $options = []): FilterInterface|ValidatorInterface
     {
         if (is_string($syntax)) {
             $clauses = Arr::explodeAndClear(';', $syntax);
@@ -90,7 +91,7 @@ class FilterFactory
 
         foreach ($clauses as $clause) {
             if (is_string($clause)) {
-                $filter = $this->createFromSyntax($clause);
+                $filter = $this->createFromSyntax($clause, $options);
             } else {
                 $filter = $this->create($clause);
             }

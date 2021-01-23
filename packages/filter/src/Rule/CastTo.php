@@ -45,6 +45,14 @@ class CastTo extends AbstractFilter
     }
 
     /**
+     * @inheritDoc
+     */
+    public function test(mixed $value, ?bool $strict = null): bool
+    {
+        return parent::test($value, $strict ?? $this->strict);
+    }
+
+    /**
      * @return string
      */
     public function getType(): string

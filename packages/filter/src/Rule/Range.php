@@ -25,8 +25,8 @@ class Range extends AbstractFilter
     /**
      * RangeFilter constructor.
      *
-     * @param float $min
-     * @param float $max
+     * @param  int|float|null  $min
+     * @param  int|float|null  $max
      */
     public function __construct(int|float|null $min = null, int|float|null $max = null)
     {

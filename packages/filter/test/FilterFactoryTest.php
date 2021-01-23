@@ -14,7 +14,9 @@ namespace Windwalker\Filter\Test;
 use PHPUnit\Framework\TestCase;
 use Windwalker\Filter\FilterFactory;
 
+use Windwalker\Filter\Rule\CastTo;
 use Windwalker\Test\Traits\BaseAssertionTrait;
+use Windwalker\Utilities\Reflection\ReflectAccessor;
 
 /**
  * The FilterFactoryTest class.
@@ -88,7 +90,7 @@ class FilterFactoryTest extends TestCase
 
     public function testValidateMap()
     {
-        $this->expectExceptionMessage('Field "id" not match - Validator: Windwalker\Filter\Rule\Range returns false, value is: string');
+        $this->expectExceptionMessage('Field "id" not match - Validator: Windwalker\Filter\Rule\Range min: 1, max: 100 returns false, value is: string(3) "600"');
 
         $map = $this->instance->createNested(
             [

@@ -92,4 +92,9 @@ class NestedFilter extends AbstractFilter
 
         return true;
     }
+
+    public function get(string $name): FilterInterface|ValidatorInterface|null
+    {
+        return $this->map[$name] ?? null;
+    }
 }
