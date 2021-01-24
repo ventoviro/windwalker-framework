@@ -13,7 +13,7 @@ namespace Windwalker\Filesystem;
 
 use FilesystemIterator;
 use Psr\Http\Message\StreamInterface;
-use Windwalker\Filesystem\Iterator\GlobIterator;
+use Webmozart\Glob\Iterator\GlobIterator;
 use Windwalker\Filesystem\Exception\FilesystemException;
 use Windwalker\Filesystem\Iterator\FilesIterator;
 use Windwalker\Promise\Promise;

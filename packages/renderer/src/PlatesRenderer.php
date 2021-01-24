@@ -28,10 +28,19 @@ class PlatesRenderer extends AbstractEngineRenderer implements LayoutConverterIn
      */
     public function getDefaultBuilder(): Closure
     {
-        return fn(array $options = []) => Plates::create(
+        return fn(array $options = []) => $this->createPlates(
             $options['base_dir'] ?? $options['paths'][0] ?? '',
             $options['file_extensions'][0] ?? 'phtml'
         );
+    }
+
+    protected function createPlates($directory = null, $fileExtension = 'php'): Plates
+    {
+        if (method_exists(Plates::class, 'create')) {
+            return Plates::create($directory, $fileExtension);
+        }
+
+        return new Plates($directory, $fileExtension);
     }
 
     /**
