@@ -230,9 +230,9 @@ class Build extends Console
      * @param  array   $arguments
      * @param  array   $options
      *
-     * @return  string
+     * @return  static
      */
-    protected function exec($command, $arguments = [], $options = []): string
+    protected function exec($command, $arguments = [], $options = []): static
     {
         $arguments = implode(' ', (array) $arguments);
         $options   = implode(' ', (array) $options);
@@ -242,12 +242,14 @@ class Build extends Console
         $this->out('>> ' . $command);
 
         if ($this->getOption('dry-run')) {
-            return '';
+            return $this;
         }
 
         $return = exec(trim($command), $this->lastOutput, $this->lastReturn);
 
         $this->out($return);
+
+        return $this;
     }
 
     /**
