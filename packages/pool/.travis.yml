@@ -1,0 +1,19 @@
+language: php
+
+php:
+  - 8.0
+  - nightly
+
+matrix:
+  allow_failures:
+    - php: 8.0
+
+# services:
+
+#before_install:
+
+before_script:
+  - composer update --ignore-platform-reqs --prefer-stable
+
+script:
+  - php vendor/bin/phpunit --configuration phpunit.travis.xml

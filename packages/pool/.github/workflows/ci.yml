@@ -1,0 +1,32 @@
+name: PHP Composer
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        php-versions: [ '8.0' ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      # PHP
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-versions }}
+#          extensions: mbstring
+      - name: Get composer cache directory
+        id: composercache
+        run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+      - name: Cache composer dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composercache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.json') }}
+          restore-keys: ${{ runner.os }}-composer-
+      - name: Install dependencies
+        run: composer update --prefer-dist --prefer-stable   --no-progress --no-suggest --ignore-platform-reqs
+
+      - name: Run test suite
+        run: php vendor/bin/phpunit --configuration phpunit.ci.xml

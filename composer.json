@@ -63,7 +63,8 @@
         "mustache/mustache": "^2.0",
         "league/plates": "dev-master",
         "league/flysystem": "^2.0",
-        "symfony/options-resolver": "^5.0"
+        "symfony/options-resolver": "^5.0",
+        "webmozart/glob": "^4.1"
     },
     "suggest": {
         "symfony/yaml": "Install ~4.0 if you require YAML support.",
@@ -100,6 +101,7 @@
             "Windwalker\\Html\\": "packages/html/src",
             "Windwalker\\Http\\": "packages/http/src",
             "Windwalker\\Language\\": "packages/language/src",
+            "Windwalker\\Pool\\": "packages/pool/src",
             "Windwalker\\Promise\\": "packages/promise/src",
             "Windwalker\\Query\\": "packages/query/src",
             "Windwalker\\Queue\\": "packages/queue/src",
@@ -131,6 +133,7 @@
             "packages/html/src/bootstrap.php",
             "packages/http/src/bootstrap.php",
             "packages/language/src/bootstrap.php",
+            "packages/pool/src/bootstrap.php",
             "packages/promise/src/bootstrap.php",
             "packages/query/src/bootstrap.php",
             "packages/queue/src/bootstrap.php",
@@ -163,6 +166,7 @@
             "Windwalker\\Html\\Test\\": "packages/html/test",
             "Windwalker\\Http\\Test\\": "packages/http/test",
             "Windwalker\\Language\\Test\\": "packages/language/test",
+            "Windwalker\\Pool\\Test\\": "packages/pool/test",
             "Windwalker\\Promise\\Test\\": "packages/promise/test",
             "Windwalker\\Query\\Test\\": "packages/query/test",
             "Windwalker\\Queue\\Test\\": "packages/queue/test",
@@ -208,6 +212,7 @@
         "windwalker/html": "self.version",
         "windwalker/http": "self.version",
         "windwalker/language": "self.version",
+        "windwalker/pool": "self.version",
         "windwalker/promise": "self.version",
         "windwalker/query": "self.version",
         "windwalker/queue": "self.version",

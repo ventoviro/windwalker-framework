@@ -220,7 +220,7 @@ class Console
      *
      * @return  static
      */
-    public function setArgument($offset, $value): \static
+    public function setArgument($offset, $value): static
     {
         $this->args[$offset] = $value;
 
@@ -256,7 +256,7 @@ class Console
      *
      * @return  static
      */
-    public function setOption($name, $value): \static
+    public function setOption($name, $value): static
     {
         $name = (array) $name;
 
@@ -275,7 +275,7 @@ class Console
      *
      * @return  static
      */
-    public function out($text = null, $nl = true): \static
+    public function out($text = null, $nl = true): static
     {
         fwrite(STDOUT, $text . ($nl ? "\n" : ''));
 
@@ -290,7 +290,7 @@ class Console
      *
      * @return  static
      */
-    public function err($text = null, $nl = true): \static
+    public function err($text = null, $nl = true): static
     {
         fwrite(STDERR, $text . ($nl ? "\n" : ''));
 
@@ -349,7 +349,7 @@ class Console
      *
      * @return  static
      */
-    protected function exec($command): \static
+    protected function exec($command): static
     {
         $this->out('>> ' . $command);
 

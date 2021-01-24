@@ -99,11 +99,11 @@ class PathCollection
      *
      * @param  int  $key  The key of path you want to get.
      *
-     * @return  FileObject
+     * @return FileObject|null
      *
      * @since  2.0
      */
-    public function getPath(int $key): FileObject
+    public function getPath(int $key): ?FileObject
     {
         return $this->paths[$key] ?? null;
     }

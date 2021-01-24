@@ -1,0 +1,46 @@
+{
+    "name": "windwalker/pool",
+    "type": "windwalker-package",
+    "description": "Windwalker Pool package",
+    "keywords": [
+        "windwalker",
+        "framework",
+        "connection pool"
+    ],
+    "homepage": "https://github.com/ventoviro/windwalker-pool",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.0.0",
+        "windwalker/utilities": "4.x-dev"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.0||^9.0",
+        "windwalker/test": "4.x-dev"
+    },
+    "suggest": {
+    },
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "Windwalker\\Pool\\": "src/"
+        },
+        "files": [
+            "src/bootstrap.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Windwalker\\Pool\\Test\\": "test/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-4": "4.x-dev"
+        }
+    },
+    "config": {
+        "platpool": {
+            "php": "8.0.0"
+        }
+    }
+}
