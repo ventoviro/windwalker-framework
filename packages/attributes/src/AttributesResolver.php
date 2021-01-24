@@ -48,7 +48,7 @@ class AttributesResolver extends ObjectBuilder
      */
     public function createObject(string $class, ...$args): object
     {
-        $ref = new \ReflectionClass($class);
+        $ref         = new \ReflectionClass($class);
         $constructor = $ref->getConstructor();
 
         if ($constructor) {
@@ -73,8 +73,8 @@ class AttributesResolver extends ObjectBuilder
         $ref = new \ReflectionClass($class);
 
         $builder = $builder ?? function (...$args) use ($class) {
-            return $this->getBuilder()($class, ...$args);
-        };
+                return $this->getBuilder()($class, ...$args);
+            };
 
         $handler = $this->createHandler($builder, $ref);
 
@@ -110,7 +110,7 @@ class AttributesResolver extends ObjectBuilder
     {
         $ref = new \ReflectionObject($object);
 
-        $builder = $this->createHandler(fn () => $object, $ref);
+        $builder = $this->createHandler(fn() => $object, $ref);
 
         foreach ($ref->getAttributes() as $attribute) {
             if ($this->hasAttribute($attribute, \Attribute::TARGET_CLASS)) {
@@ -139,7 +139,7 @@ class AttributesResolver extends ObjectBuilder
 
     public function resolveCallable(callable $callable, ?object $context = null): AttributeHandler
     {
-        $ref = new ReflectionCallable($callable);
+        $ref     = new ReflectionCallable($callable);
         $funcRef = $ref->getReflector();
 
         $closure = $ref->getClosure();
@@ -163,11 +163,11 @@ class AttributesResolver extends ObjectBuilder
     {
         if (!$ref instanceof \ReflectionFunctionAbstract) {
             $callableRef = new ReflectionCallable($ref);
-            $ref = $callableRef->getReflector();
+            $ref         = $callableRef->getReflector();
         }
 
         $parameters = $ref->getParameters();
-        $newArgs = [];
+        $newArgs    = [];
 
         foreach ($parameters as $i => $parameter) {
             $key = $parameter->getName();
@@ -188,7 +188,7 @@ class AttributesResolver extends ObjectBuilder
 
     public function &resolveParameter(&$value, \ReflectionParameter $ref): mixed
     {
-        $func = fn () => $value;
+        $func = fn() => $value;
 
         $handler = $this->createHandler($func, $ref);
 
@@ -212,7 +212,7 @@ class AttributesResolver extends ObjectBuilder
                 $property->setAccessible(true);
             }
 
-            $getter = fn () => $property->getValue($instance);
+            $getter = fn() => $property->getValue($instance);
 
             foreach ($property->getAttributes() as $attribute) {
                 if ($this->hasAttribute($attribute, \Attribute::TARGET_PROPERTY)) {
@@ -235,7 +235,7 @@ class AttributesResolver extends ObjectBuilder
         $ref = new \ReflectionObject($instance);
 
         foreach ($ref->getMethods() as $method) {
-            $getter = fn (): array => [$instance, $method->getName()];
+            $getter = fn(): array => [$instance, $method->getName()];
 
             foreach ($method->getAttributes() as $attribute) {
                 if ($this->hasAttribute($attribute, \Attribute::TARGET_METHOD)) {
@@ -255,11 +255,11 @@ class AttributesResolver extends ObjectBuilder
 
         /** @var \ReflectionClassConstant $constant */
         foreach ($ref->getReflectionConstants() as $constant) {
-            $getter = fn (): mixed => [$instance, $constant];
+            $getter = fn(): array => [$instance, $constant];
 
             foreach ($constant->getAttributes() as $attribute) {
                 if ($this->hasAttribute($attribute, \Attribute::TARGET_METHOD)) {
-                    $getter =$this->runAttribute($attribute, $this->createHandler($getter, $constant, $instance));
+                    $getter = $this->runAttribute($attribute, $this->createHandler($getter, $constant, $instance));
                 }
             }
 
@@ -273,11 +273,14 @@ class AttributesResolver extends ObjectBuilder
     {
         $instance = $this->resolveConstants($instance);
         $instance = $this->resolveMethods($instance);
+
         return $this->resolveProperties($instance);
     }
 
-    public function hasAttribute(string|\ReflectionAttribute $attributeClass, int $target = \Attribute::TARGET_ALL): bool
-    {
+    public function hasAttribute(
+        string|\ReflectionAttribute $attributeClass,
+        int $target = \Attribute::TARGET_ALL
+    ): bool {
         if ($attributeClass instanceof \ReflectionAttribute) {
             $attributeClass = $attributeClass->getName();
         }
@@ -303,7 +306,7 @@ class AttributesResolver extends ObjectBuilder
     {
         $this->registry[strtolower($attributeClass)] ??= [
             strtolower($attributeClass),
-            $target
+            $target,
         ];
 
         $this->registry[strtolower($attributeClass)][1] |= $target;

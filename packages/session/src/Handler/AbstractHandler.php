@@ -95,8 +95,10 @@ abstract class AbstractHandler implements HandlerInterface, \SessionUpdateTimest
      * @link https://php.net/manual/en/sessionidinterface.create-sid.php
      * @return string
      */
+    // phpcs:disable
     public function create_sid(): string
     {
+        // phpcs:enable
         return session_create_id();
     }
 }

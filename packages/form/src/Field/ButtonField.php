@@ -12,8 +12,6 @@ declare(strict_types=1);
 namespace Windwalker\Form\Field;
 
 use Windwalker\DOM\DOMElement;
-use Windwalker\Dom\HtmlElement;
-
 use Windwalker\DOM\HTMLFactory;
 
 use function Windwalker\DOM\h;
@@ -37,10 +35,13 @@ use function Windwalker\DOM\h;
 class ButtonField extends AbstractField
 {
     public const ELEMENT_BUTTON = 'button';
+
     public const ELEMENT_LINK = 'link';
 
     public const TYPE_BUTTON = 'button';
+
     public const TYPE_CLEAR = 'clear';
+
     public const TYPE_SUBMIT = 'submit';
 
     /**

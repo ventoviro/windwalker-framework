@@ -89,7 +89,8 @@ class Assert
                     'caller' => $this->caller,
                     'value' => $value
                 ],
-                '.', ['{', '}']
+                '.',
+                ['{', '}']
             );
         }
 

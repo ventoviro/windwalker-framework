@@ -195,9 +195,13 @@ abstract class Arr
      * @throws InvalidArgumentException
      * @since   2.0
      */
-    public static function set(mixed $data, string $key, mixed $value, string $delimiter = '.', string $storeType = 'array'
-    ): object|array
-    {
+    public static function set(
+        mixed $data,
+        string $key,
+        mixed $value,
+        string $delimiter = '.',
+        string $storeType = 'array'
+    ): object|array {
         $nodes = static::getPathNodes((string) $key, $delimiter);
 
         if (empty($nodes)) {
@@ -342,8 +346,12 @@ abstract class Arr
      *
      * @return array
      */
-    public static function flatten(object|array $array, string $delimiter = '.', int $depth = 0, ?string $prefix = null): array
-    {
+    public static function flatten(
+        object|array $array,
+        string $delimiter = '.',
+        int $depth = 0,
+        ?string $prefix = null
+    ): array {
         $temp = [];
 
         foreach (TypeCast::toArray($array, false) as $k => $v) {
@@ -524,8 +532,12 @@ abstract class Arr
      *
      * @return  mixed
      */
-    public static function takeout(object|array &$data, int|string $key, $default = null, string $delimiter = '.'): mixed
-    {
+    public static function takeout(
+        object|array &$data,
+        int|string $key,
+        $default = null,
+        string $delimiter = '.'
+    ): mixed {
         if (!static::has($data, $key, $delimiter)) {
             return $default;
         }
@@ -549,9 +561,12 @@ abstract class Arr
      *
      * @since   4.0
      */
-    public static function sort(array $data, callable|string $condition, bool $descending = false, int $options = SORT_REGULAR
-    ): array
-    {
+    public static function sort(
+        array $data,
+        callable|string $condition,
+        bool $descending = false,
+        int $options = SORT_REGULAR
+    ): array {
         $results = [];
 
         // If condition is string, we just use this as key name to get sort data from items.
@@ -919,8 +934,12 @@ abstract class Arr
      *
      * @since   2.0
      */
-    public static function query(object|array $array, $queries = [], bool $strict = false, bool $keepKey = false): object|array
-    {
+    public static function query(
+        object|array $array,
+        $queries = [],
+        bool $strict = false,
+        bool $keepKey = false
+    ): object|array {
         $array   = TypeCast::toArray($array, false);
         $results = [];
 

@@ -19,7 +19,7 @@ trait CompileEchoTrait
     /**
      * Compile Blade echos into valid PHP.
      *
-     * @param  string $value
+     * @param  string  $value
      *
      * @return string
      */
@@ -35,7 +35,7 @@ trait CompileEchoTrait
     /**
      * Compile the "raw" echo statements.
      *
-     * @param  string $value
+     * @param  string  $value
      *
      * @return string
      */
@@ -58,7 +58,7 @@ trait CompileEchoTrait
     /**
      * Compile the "regular" echo statements.
      *
-     * @param  string $value
+     * @param  string  $value
      *
      * @return string
      */
@@ -80,7 +80,7 @@ trait CompileEchoTrait
     /**
      * Compile the escaped echo statements.
      *
-     * @param  string $value
+     * @param  string  $value
      *
      * @return string
      */
@@ -91,7 +91,9 @@ trait CompileEchoTrait
         $callback = function ($matches) {
             $whitespace = empty($matches[3]) ? '' : $matches[3] . $matches[3];
 
-            return $matches[1] ? $matches[0] : '<?php echo e(' . $this->compileEchoDefaults(
+            return $matches[1]
+                ? $matches[0]
+                : '<?php echo e(' . $this->compileEchoDefaults(
                     $matches[2]
                 ) . '); ?>' . $whitespace;
         };
@@ -102,7 +104,7 @@ trait CompileEchoTrait
     /**
      * Compile the default values for the echo statement.
      *
-     * @param  string $value
+     * @param  string  $value
      *
      * @return string
      */

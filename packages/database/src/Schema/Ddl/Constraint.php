@@ -22,17 +22,27 @@ class Constraint
     use OptionAccessTrait;
 
     public const TYPE_PRIMARY_KEY = 'PRIMARY KEY';
+
     public const TYPE_UNIQUE = 'UNIQUE';
+
     public const TYPE_FOREIGN_KEY = 'FOREIGN KEY';
+
     public const TYPE_CHECK = 'CHECK';
 
     public ?string $constraintName = null;
+
     public ?string $constraintType = null;
+
     public ?string $tableName = null;
+
     public ?string $referencedTableSchema = null;
+
     public ?string $referencedTableName = null;
+
     public ?string $matchOption = null;
+
     public ?string $updateRule = null;
+
     public ?string $deleteRule = null;
 
     /**
@@ -45,8 +55,11 @@ class Constraint
      */
     public array $referencedColumns = [];
 
-    public function __construct(?string $constraintType = null, ?string $constraintName = null, ?string $tableName = null)
-    {
+    public function __construct(
+        ?string $constraintType = null,
+        ?string $constraintName = null,
+        ?string $tableName = null
+    ) {
         $this->constraintName = $constraintName;
         $this->tableName      = $tableName;
         $this->constraintType = $constraintType;

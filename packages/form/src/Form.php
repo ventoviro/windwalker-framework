@@ -63,7 +63,7 @@ class Form implements \IteratorAggregate
     {
         $this->setNamespace($namespace);
 
-        $this->renderer  = $renderer ?? new SimpleRenderer();
+        $this->renderer = $renderer ?? new SimpleRenderer();
 
         $this->prepareOptions(
             [],
@@ -397,7 +397,10 @@ class Form implements \IteratorAggregate
             ]
         );
 
-        $this->attributeResolver->registerAttribute(Fieldset::class, \Attribute::TARGET_METHOD | \Attribute::TARGET_FUNCTION);
+        $this->attributeResolver->registerAttribute(
+            Fieldset::class,
+            \Attribute::TARGET_METHOD | \Attribute::TARGET_FUNCTION
+        );
     }
 
     /**

@@ -80,7 +80,8 @@ class ChainFilter implements FilterInterface, ValidatorInterface
             if (!$filter->test($value, $strict)) {
                 throw ValidateException::create(
                     $filter,
-                    'Validator: ' . TypeCast::forceString($filter) . ' returns false, value is: ' . Assert::describeValue($value)
+                    'Validator: ' . TypeCast::forceString($filter) . ' returns false, value is: '
+                    . Assert::describeValue($value)
                 );
             }
         }

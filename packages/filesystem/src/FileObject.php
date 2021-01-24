@@ -94,7 +94,7 @@ class FileObject extends \SplFileInfo
      *
      * @return  static|null
      */
-    public static function wrapIfNotNull(\SplFileInfo|string|null $file, ?string $root = null): ?static
+    public static function wrapIfNotNull(\SplFileInfo|string|null $file, ?string $root = null): static|null
     {
         if ($file === null) {
             return null;

@@ -251,7 +251,8 @@ ON DUPLICATE KEY UPDATE %n = VALUES(%n), %n = VALUES(%n)",
                     $columns['time']
                 );
 
-            case AbstractPlatform::SQLSERVER === $platformName && version_compare(
+            case AbstractPlatform::SQLSERVER === $platformName
+                && version_compare(
                     $this->db->getDriver()->getVersion(),
                     '10',
                     '>='

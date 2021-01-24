@@ -19,7 +19,6 @@ use Windwalker\Database\Schema\Ddl\Column;
 use Windwalker\Database\Schema\Ddl\Constraint;
 use Windwalker\Database\Schema\Ddl\Index;
 use Windwalker\Database\Schema\Schema;
-use Windwalker\Query\Clause\AlterClause;
 use Windwalker\Query\Clause\Clause;
 use Windwalker\Query\Grammar\AbstractGrammar;
 use Windwalker\Query\Query;
@@ -32,8 +31,11 @@ use function Windwalker\Query\clause;
 abstract class AbstractPlatform
 {
     public const MYSQL = 'MySQL';
+
     public const POSTGRESQL = 'PostgreSQL';
+
     public const SQLSERVER = 'SQLServer';
+
     public const SQLITE = 'SQLite';
 
     /**
@@ -310,7 +312,11 @@ abstract class AbstractPlatform
         );
     }
 
-    abstract public function createTable(Schema $schema, bool $ifNotExists = false, array $options = []): StatementInterface;
+    abstract public function createTable(
+        Schema $schema,
+        bool $ifNotExists = false,
+        array $options = []
+    ): StatementInterface;
 
     public function getColumnExpression(Column $column): Clause
     {
@@ -401,7 +407,12 @@ abstract class AbstractPlatform
         );
     }
 
-    abstract public function renameColumn(string $table, string $from, string $to, ?string $schema = null): StatementInterface;
+    abstract public function renameColumn(
+        string $table,
+        string $from,
+        string $to,
+        ?string $schema = null
+    ): StatementInterface;
 
     public function addIndex(string $table, Index $index, ?string $schema = null): StatementInterface
     {
@@ -458,7 +469,7 @@ abstract class AbstractPlatform
 
     protected function prepareKeyColumns(array $columns): array
     {
-        return array_map(fn (Column $col) => $this->getKeyColumnExpression($col), $columns);
+        return array_map(fn(Column $col) => $this->getKeyColumnExpression($col), $columns);
     }
 
     protected function getKeyColumnExpression(Column $column): Clause
@@ -501,7 +512,7 @@ abstract class AbstractPlatform
     /**
      * prepareDefaultValue
      *
-     * @param Column $column
+     * @param  Column  $column
      *
      * @return  Column
      */

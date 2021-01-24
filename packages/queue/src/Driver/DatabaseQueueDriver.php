@@ -38,15 +38,19 @@ class DatabaseQueueDriver implements QueueDriverInterface
     /**
      * DatabaseQueueDriver constructor.
      *
-     * @param DatabaseAdapter $db
-     * @param string                 $channel
-     * @param string                 $table
-     * @param int                    $timeout
+     * @param  DatabaseAdapter  $db
+     * @param  string           $channel
+     * @param  string           $table
+     * @param  int              $timeout
      */
-    public function __construct(DatabaseAdapter $db, string $channel = 'default', string $table = 'queue_jobs', int $timeout = 60)
-    {
-        $this->db = $db;
-        $this->table = $table;
+    public function __construct(
+        DatabaseAdapter $db,
+        string $channel = 'default',
+        string $table = 'queue_jobs',
+        int $timeout = 60
+    ) {
+        $this->db      = $db;
+        $this->table   = $table;
         $this->channel = $channel;
         $this->timeout = $timeout;
     }
@@ -105,21 +109,23 @@ class DatabaseQueueDriver implements QueueDriverInterface
             )
             ->forUpdate();
 
-        $data = $this->db->transaction(function () use ($now, $query) {
-            $data = $this->db->prepare($query)->get();
+        $data = $this->db->transaction(
+            function () use ($now, $query) {
+                $data = $this->db->prepare($query)->get();
 
-            if (!$data) {
-                return null;
+                if (!$data) {
+                    return null;
+                }
+
+                $data['attempts']++;
+
+                $values = ['reserved' => $now, 'attempts' => $data['attempts']];
+
+                $this->db->getWriter()->updateBatch($this->table, $values, ['id' => $data['id']]);
+
+                return $data;
             }
-
-            $data['attempts']++;
-
-            $values = ['reserved' => $now, 'attempts' => $data['attempts']];
-
-            $this->db->getWriter()->updateBatch($this->table, $values, ['id' => $data['id']]);
-
-            return $data;
-        });
+        );
 
         if ($data === null) {
             return null;
@@ -158,7 +164,7 @@ class DatabaseQueueDriver implements QueueDriverInterface
     /**
      * release
      *
-     * @param QueueMessage|string $message
+     * @param  QueueMessage|string  $message
      *
      * @return static
      * @throws \Exception
@@ -200,7 +206,7 @@ class DatabaseQueueDriver implements QueueDriverInterface
     /**
      * Method to set property table
      *
-     * @param   mixed $table
+     * @param  mixed  $table
      *
      * @return  static  Return self to support chaining.
      */
@@ -224,7 +230,7 @@ class DatabaseQueueDriver implements QueueDriverInterface
     /**
      * Method to set property db
      *
-     * @param   DatabaseAdapter $db
+     * @param  DatabaseAdapter  $db
      *
      * @return  static  Return self to support chaining.
      */

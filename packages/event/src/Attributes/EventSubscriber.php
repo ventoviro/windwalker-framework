@@ -25,5 +25,6 @@ class EventSubscriber implements AttributeInterface
      */
     public function __invoke(AttributeHandler $handler): callable
     {
+        //
     }
 }

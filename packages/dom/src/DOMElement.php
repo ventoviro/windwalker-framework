@@ -23,6 +23,7 @@ use Masterminds\HTML5;
 use Symfony\Component\DomCrawler\Crawler;
 use Twig\Node\TextNode;
 use Windwalker\Utilities\Str;
+
 use function Windwalker\value;
 
 /**
@@ -45,9 +46,9 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
     /**
      * create
      *
-     * @param string $name
-     * @param array  $attributes
-     * @param mixed  $content
+     * @param  string  $name
+     * @param  array   $attributes
+     * @param  mixed   $content
      *
      * @return  DOMElement
      */
@@ -78,7 +79,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
     /**
      * valueToString
      *
-     * @param mixed $value
+     * @param  mixed  $value
      *
      * @return  string
      */
@@ -100,8 +101,8 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
     /**
      * insertContentTo
      *
-     * @param mixed   $content
-     * @param DOMNode $node
+     * @param  mixed    $content
+     * @param  DOMNode  $node
      *
      * @return  DOMNode
      */
@@ -131,7 +132,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
     /**
      * Adds new child at the end of the children.
      *
-     * @param DOMNode|array|string $newnode The appended child.
+     * @param  DOMNode|array|string  $newnode  The appended child.
      *
      * @return DOMNode The node added.
      */
@@ -156,8 +157,8 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
     /**
      * render
      *
-     * @param string|null $type
-     * @param bool        $format
+     * @param  string|null  $type
+     * @param  bool         $format
      *
      * @return  string
      */
@@ -194,7 +195,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
     /**
      * getAttributes
      *
-     * @param bool $toString
+     * @param  bool  $toString
      *
      * @return  string[]|DOMAttr[]
      */
@@ -221,7 +222,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
     /**
      * Set all attributes.
      *
-     * @param array $attribs All attributes.
+     * @param  array  $attribs  All attributes.
      *
      * @return  static  Return self to support chaining.
      */
@@ -253,7 +254,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
     /**
      * querySelectorAll
      *
-     * @param string $selector
+     * @param  string  $selector
      *
      * @return  Crawler|static[]
      */
@@ -265,7 +266,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
     /**
      * querySelector
      *
-     * @param string $selector
+     * @param  string  $selector
      *
      * @return  Crawler
      */
@@ -301,7 +302,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
     /**
      * Whether a offset exists
      *
-     * @param mixed $offset An offset to check for.
+     * @param  mixed  $offset  An offset to check for.
      *
      * @return boolean True on success or false on failure.
      *                 The return value will be casted to boolean if non-boolean was returned.
@@ -314,7 +315,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
     /**
      * Offset to retrieve
      *
-     * @param mixed $offset The offset to retrieve.
+     * @param  mixed  $offset  The offset to retrieve.
      *
      * @return mixed Can return all value types.
      */
@@ -326,8 +327,8 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
     /**
      * Offset to set
      *
-     * @param mixed $offset The offset to assign the value to.
-     * @param mixed $value  The value to set.
+     * @param  mixed  $offset  The offset to assign the value to.
+     * @param  mixed  $value   The value to set.
      *
      * @return void
      */
@@ -339,7 +340,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
     /**
      * Offset to unset
      *
-     * @param mixed $offset The offset to unset.
+     * @param  mixed  $offset  The offset to unset.
      *
      * @return void
      */
@@ -351,8 +352,8 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
     /**
      * Use another root document.
      *
-     * @param DOMNode $node
-     * @param bool    $deep
+     * @param  DOMNode  $node
+     * @param  bool     $deep
      *
      * @return  static|NativeDOMElement
      */
@@ -370,9 +371,9 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
     /**
      * createChild
      *
-     * @param string $name
-     * @param array  $attributes
-     * @param mixed  $content
+     * @param  string  $name
+     * @param  array   $attributes
+     * @param  mixed   $content
      *
      * @return  static
      */
@@ -386,8 +387,8 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
     /**
      * buildAttributes
      *
-     * @param array       $attributes
-     * @param string|null $type
+     * @param  array        $attributes
+     * @param  string|null  $type
      *
      * @return  string
      */
@@ -401,7 +402,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
     /**
      * addClass
      *
-     * @param string|callable $class
+     * @param  string|callable  $class
      *
      * @return  static
      *
@@ -419,7 +420,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
     /**
      * removeClass
      *
-     * @param string|callable $class
+     * @param  string|callable  $class
      *
      * @return  static
      *
@@ -437,8 +438,8 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
     /**
      * toggleClass
      *
-     * @param string    $class
-     * @param bool|null $force
+     * @param  string     $class
+     * @param  bool|null  $force
      *
      * @return  static
      *
@@ -454,7 +455,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
     /**
      * hasClass
      *
-     * @param string $class
+     * @param  string  $class
      *
      * @return  static
      *
@@ -470,8 +471,8 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
     /**
      * data
      *
-     * @param string $name
-     * @param mixed  $value
+     * @param  string  $name
+     * @param  mixed   $value
      *
      * @return  string|static
      *
@@ -513,7 +514,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
     /**
      * __get
      *
-     * @param string $name
+     * @param  string  $name
      *
      * @return  mixed
      *
@@ -557,8 +558,9 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
     }
 
     #[ArrayShape(['name' => "mixed|string", 'id' => "null|string", 'class' => "null|string"])]
-    public static function splitCSSSelector(string $name): array
-    {
+    public static function splitCSSSelector(
+        string $name
+    ): array {
         $tokens = preg_split(
             '/([\.#]?[^\s#.]+)/',
             $name,
@@ -590,7 +592,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
         return [
             'name' => $name,
             'id' => $id,
-            'class' => $class ? implode(' ', $class) : null
+            'class' => $class ? implode(' ', $class) : null,
         ];
     }
 }
