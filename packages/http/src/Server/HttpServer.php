@@ -32,7 +32,8 @@ class HttpServer extends AdaptableServer
      * @param  ServerInterface|null  $adapter
      * @param  callable|null         $handler
      */
-    public function __construct(array $options = [], ?ServerInterface $adapter = null, callable $handler = null) {
+    public function __construct(array $options = [], ?ServerInterface $adapter = null, callable $handler = null)
+    {
         $this->prepareOptions(
             [],
             $options

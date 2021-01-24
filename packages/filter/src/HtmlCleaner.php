@@ -21,11 +21,11 @@ namespace Windwalker\Filter;
  */
 class HtmlCleaner
 {
-    const USE_WHITE_LIST = 0;
+    public const USE_WHITE_LIST = 0;
 
-    const USE_BLACK_LIST = 1;
+    public const USE_BLACK_LIST = 1;
 
-    const ONLY_ESSENTIAL = 0;
+    public const ONLY_ESSENTIAL = 0;
 
     /**
      * The array of permitted tags (white list).
@@ -33,7 +33,7 @@ class HtmlCleaner
      * @var    array
      * @since  2.0
      */
-    public $tagsArray = [];
+    public array $tagsArray = [];
 
     /**
      * The array of permitted tag attributes (white list).
@@ -41,7 +41,7 @@ class HtmlCleaner
      * @var    array
      * @since  2.0
      */
-    public $attrArray = [];
+    public array $attrArray = [];
 
     /**
      * The method for sanitising tags: WhiteList method = 0 (default), BlackList method = 1
@@ -49,7 +49,7 @@ class HtmlCleaner
      * @var    integer
      * @since  2.0
      */
-    public $tagsMethod = self::USE_WHITE_LIST;
+    public int $tagsMethod = self::USE_WHITE_LIST;
 
     /**
      * The method for sanitising attributes: WhiteList method = 0 (default), BlackList method = 1
@@ -57,7 +57,7 @@ class HtmlCleaner
      * @var    integer
      * @since  2.0
      */
-    public $attrMethod = self::USE_WHITE_LIST;
+    public int $attrMethod = self::USE_WHITE_LIST;
 
     /**
      * A flag for XSS checks. Only auto clean essentials = 0, Allow clean blacklisted tags/attr = 1
@@ -65,7 +65,7 @@ class HtmlCleaner
      * @var    integer
      * @since  2.0
      */
-    public $xssAuto;
+    public int $xssAuto;
 
     /**
      * The list of the default blacklisted tags.
@@ -73,7 +73,7 @@ class HtmlCleaner
      * @var    array
      * @since  2.0
      */
-    public $tagBlacklist = [
+    public array $tagBlacklist = [
         'applet',
         'body',
         'bgsound',
@@ -104,7 +104,7 @@ class HtmlCleaner
      * @var    array
      * @since   2.0
      */
-    public $attrBlacklist = [
+    public array $attrBlacklist = [
         'action',
         'background',
         'codebase',
@@ -115,37 +115,37 @@ class HtmlCleaner
     /**
      * Constructor for inputFilter class. Only first parameter is required.
      *
-     * @param   array   $tagsArray  List of user-defined tags
-     * @param   array   $attrArray  List of user-defined attributes
-     * @param   integer $tagsMethod WhiteList method = 0, BlackList method = 1
-     * @param   integer $attrMethod WhiteList method = 0, BlackList method = 1
-     * @param   integer $xssAuto    Only auto clean essentials = 0, Allow clean blacklisted tags/attr = 1
+     * @param  array    $tagsArray   List of user-defined tags
+     * @param  array    $attrArray   List of user-defined attributes
+     * @param  integer  $tagsMethod  WhiteList method = 0, BlackList method = 1
+     * @param  integer  $attrMethod  WhiteList method = 0, BlackList method = 1
+     * @param  integer  $xssAuto     Only auto clean essentials = 0, Allow clean blacklisted tags/attr = 1
      *
      * @since   2.0
      */
     public function __construct(
-        $tagsArray = [],
-        $attrArray = [],
-        $tagsMethod = self::USE_BLACK_LIST,
-        $attrMethod = self::USE_BLACK_LIST,
-        $xssAuto = 1
+        array $tagsArray = [],
+        array $attrArray = [],
+        int $tagsMethod = self::USE_BLACK_LIST,
+        int $attrMethod = self::USE_BLACK_LIST,
+        int $xssAuto = 1
     ) {
         // Make sure user defined arrays are in lowercase
         $tagsArray = array_map('strtolower', (array) $tagsArray);
         $attrArray = array_map('strtolower', (array) $attrArray);
 
         // Assign member variables
-        $this->tagsArray = $tagsArray;
-        $this->attrArray = $attrArray;
+        $this->tagsArray  = $tagsArray;
+        $this->attrArray  = $attrArray;
         $this->tagsMethod = $tagsMethod;
         $this->attrMethod = $attrMethod;
-        $this->xssAuto = $xssAuto;
+        $this->xssAuto    = $xssAuto;
     }
 
     /**
      * Function to determine if contents of an attribute are safe
      *
-     * @param   array $attrSubSet A 2 element array for attribute's name, value
+     * @param  array  $attrSubSet  A 2 element array for attribute's name, value
      *
      * @return  boolean  True if bad code is detected
      *
@@ -169,7 +169,7 @@ class HtmlCleaner
     /**
      * Internal method to iteratively remove all unwanted tags and attributes
      *
-     * @param   string $source Input string to be 'cleaned'
+     * @param  string  $source  Input string to be 'cleaned'
      *
      * @return  string  'Cleaned' version of input parameter
      *
@@ -191,7 +191,7 @@ class HtmlCleaner
     /**
      * Internal method to strip a string of certain tags
      *
-     * @param   string $source Input string to be 'cleaned'
+     * @param  string  $source  Input string to be 'cleaned'
      *
      * @return  string  'Cleaned' version of input parameter
      *
@@ -203,8 +203,8 @@ class HtmlCleaner
         $source = $this->escapeAttributeValues($source);
 
         // In the beginning we don't really have a tag, so everything is postTag
-        $preTag = null;
-        $postTag = $source;
+        $preTag       = null;
+        $postTag      = $source;
         $currentSpace = false;
 
         // Setting to null to deal with undefined variables
@@ -215,8 +215,8 @@ class HtmlCleaner
 
         while ($tagOpen_start !== false) {
             // Get some information about the tag we are processing
-            $preTag .= substr($postTag, 0, $tagOpen_start);
-            $postTag = substr($postTag, $tagOpen_start);
+            $preTag      .= substr($postTag, 0, $tagOpen_start);
+            $postTag     = substr($postTag, $tagOpen_start);
             $fromTagOpen = substr($postTag, 1);
             $tagOpen_end = strpos($fromTagOpen, '>');
 
@@ -225,14 +225,14 @@ class HtmlCleaner
 
             if (($nextOpenTag !== false) && ($nextOpenTag < $tagOpen_end)) {
                 // At this point we have a mal-formed tag -- remove the offending open
-                $postTag = substr($postTag, 0, $tagOpen_start) . substr($postTag, $tagOpen_start + 1);
+                $postTag       = substr($postTag, 0, $tagOpen_start) . substr($postTag, $tagOpen_start + 1);
                 $tagOpen_start = strpos($postTag, '<');
                 continue;
             }
 
             // Let's catch any non-terminated tags and skip over them
             if ($tagOpen_end === false) {
-                $postTag = substr($postTag, $tagOpen_start + 1);
+                $postTag       = substr($postTag, $tagOpen_start + 1);
                 $tagOpen_start = strpos($postTag, '<');
                 continue;
             }
@@ -241,19 +241,19 @@ class HtmlCleaner
             $tagOpen_nested = strpos($fromTagOpen, '<');
 
             if (($tagOpen_nested !== false) && ($tagOpen_nested < $tagOpen_end)) {
-                $preTag .= substr($postTag, 0, ($tagOpen_nested + 1));
-                $postTag = substr($postTag, ($tagOpen_nested + 1));
+                $preTag        .= substr($postTag, 0, ($tagOpen_nested + 1));
+                $postTag       = substr($postTag, ($tagOpen_nested + 1));
                 $tagOpen_start = strpos($postTag, '<');
                 continue;
             }
 
             // Let's get some information about our tag and setup attribute pairs
             $tagOpen_nested = (strpos($fromTagOpen, '<') + $tagOpen_start + 1);
-            $currentTag = substr($fromTagOpen, 0, $tagOpen_end);
-            $tagLength = strlen($currentTag);
-            $tagLeft = $currentTag;
-            $attrSet = [];
-            $currentSpace = strpos($tagLeft, ' ');
+            $currentTag     = substr($fromTagOpen, 0, $tagOpen_end);
+            $tagLength      = strlen($currentTag);
+            $tagLeft        = $currentTag;
+            $attrSet        = [];
+            $currentSpace   = strpos($tagLeft, ' ');
 
             // Are we an open tag or a close tag?
             if (substr($currentTag, 0, 1) === '/') {
@@ -272,9 +272,11 @@ class HtmlCleaner
              * OR no tagname
              * OR remove if xssauto is on and tag is blacklisted
              */
-            if (!preg_match('/^[a-z][a-z0-9]*$/i', $tagName) || !$tagName
-                || (\in_array(strtolower($tagName), $this->tagBlacklist, true) && $this->xssAuto)) {
-                $postTag = substr($postTag, $tagLength + 2);
+            if (
+                !preg_match('/^[a-z][a-z0-9]*$/i', $tagName) || !$tagName
+                || (\in_array(strtolower($tagName), $this->tagBlacklist, true) && $this->xssAuto)
+            ) {
+                $postTag       = substr($postTag, $tagLength + 2);
                 $tagOpen_start = strpos($postTag, '<');
 
                 // Strip tag
@@ -286,27 +288,27 @@ class HtmlCleaner
              * case attributes have spaces in the values.
              */
             while ($currentSpace !== false) {
-                $attr = '';
-                $fromSpace = substr($tagLeft, ($currentSpace + 1));
-                $nextEqual = strpos($fromSpace, '=');
-                $nextSpace = strpos($fromSpace, ' ');
-                $openQuotes = strpos($fromSpace, '"');
+                $attr        = '';
+                $fromSpace   = substr($tagLeft, ($currentSpace + 1));
+                $nextEqual   = strpos($fromSpace, '=');
+                $nextSpace   = strpos($fromSpace, ' ');
+                $openQuotes  = strpos($fromSpace, '"');
                 $closeQuotes = strpos(substr($fromSpace, ($openQuotes + 1)), '"') + $openQuotes + 1;
 
-                $startAtt = '';
+                $startAtt         = '';
                 $startAttPosition = 0;
 
                 // Find position of equal and open quotes ignoring
                 if (preg_match('#\s*=\s*\"#', $fromSpace, $matches, PREG_OFFSET_CAPTURE)) {
-                    $startAtt = $matches[0][0];
+                    $startAtt         = $matches[0][0];
                     $startAttPosition = $matches[0][1];
-                    $closeQuotes = strpos(
-                        substr($fromSpace, ($startAttPosition + strlen($startAtt))),
-                        '"'
-                    ) + $startAttPosition + strlen($startAtt);
-                    $nextEqual = $startAttPosition + strpos($startAtt, '=');
-                    $openQuotes = $startAttPosition + strpos($startAtt, '"');
-                    $nextSpace = strpos(substr($fromSpace, $closeQuotes), ' ') + $closeQuotes;
+                    $closeQuotes      = strpos(
+                            substr($fromSpace, ($startAttPosition + strlen($startAtt))),
+                            '"'
+                        ) + $startAttPosition + strlen($startAtt);
+                    $nextEqual        = $startAttPosition + strpos($startAtt, '=');
+                    $openQuotes       = $startAttPosition + strpos($startAtt, '"');
+                    $nextSpace        = strpos(substr($fromSpace, $closeQuotes), ' ') + $closeQuotes;
                 }
 
                 // Do we have an attribute to process? [check for equal sign]
@@ -347,7 +349,7 @@ class HtmlCleaner
                 $attrSet[] = $attr;
 
                 // Move search point and continue iteration
-                $tagLeft = substr($fromSpace, strlen($attr));
+                $tagLeft      = substr($fromSpace, strlen($attr));
                 $currentSpace = strpos($tagLeft, ' ');
             }
 
@@ -360,7 +362,7 @@ class HtmlCleaner
                 if (!$isCloseTag) {
                     // Open or single tag
                     $attrSet = $this->cleanAttributes($attrSet);
-                    $preTag .= '<' . $tagName;
+                    $preTag  .= '<' . $tagName;
 
                     for ($i = 0, $count = count($attrSet); $i < $count; $i++) {
                         $preTag .= ' ' . $attrSet[$i];
@@ -379,7 +381,7 @@ class HtmlCleaner
             }
 
             // Find next tag's start and continue iteration
-            $postTag = substr($postTag, ($tagLength + 2));
+            $postTag       = substr($postTag, ($tagLength + 2));
             $tagOpen_start = strpos($postTag, '<');
         }
 
@@ -394,13 +396,13 @@ class HtmlCleaner
     /**
      * Internal method to strip a tag of certain attributes
      *
-     * @param   array $attrSet Array of attribute pairs to filter
+     * @param  array  $attrSet  Array of attribute pairs to filter
      *
      * @return  array  Filtered array of attribute pairs
      *
      * @since   2.0
      */
-    protected function cleanAttributes(array $attrSet):array
+    protected function cleanAttributes(array $attrSet): array
     {
         $newSet = [];
 
@@ -417,14 +419,19 @@ class HtmlCleaner
             $attrSubSet = explode('=', trim($attrSet[$i]), 2);
 
             // Take the last attribute in case there is an attribute with no value
-            $attrSubSet_0 = explode(' ', trim($attrSubSet[0]));
-            $attrSubSet[0] = array_pop($attrSubSet_0);
+            $attrSubSet0  = explode(' ', trim($attrSubSet[0]));
+            $attrSubSet[0] = array_pop($attrSubSet0);
 
             // Remove all "non-regular" attribute names
             // AND blacklisted attributes
-            if ((!preg_match('/[a-z]*$/i', $attrSubSet[0]))
-                || ($this->xssAuto && (in_array(strtolower($attrSubSet[0]), $this->attrBlacklist, true)
-                        || (strpos($attrSubSet[0], 'on') === 0)))) {
+            if (
+                (!preg_match('/[a-z]*$/i', $attrSubSet[0]))
+                || (
+                    $this->xssAuto
+                    && (in_array(strtolower($attrSubSet[0]), $this->attrBlacklist, true)
+                        || (str_starts_with($attrSubSet[0], 'on')))
+                )
+            ) {
                 continue;
             }
 
@@ -444,8 +451,10 @@ class HtmlCleaner
 
                 // Convert single quotes from either side to doubles
                 // (Single quotes shouldn't be used to pad attr values)
-                if ((strpos($attrSubSet[1], "'") === 0)
-                    && (substr($attrSubSet[1], strlen($attrSubSet[1]) - 1, 1) === "'")) {
+                if (
+                    (str_starts_with($attrSubSet[1], "'"))
+                    && (substr($attrSubSet[1], strlen($attrSubSet[1]) - 1, 1) === "'")
+                ) {
                     $attrSubSet[1] = substr($attrSubSet[1], 1, -1);
                 }
 
@@ -487,13 +496,13 @@ class HtmlCleaner
      *
      * @note    This method will be removed once support for PHP 5.3 is discontinued.
      *
-     * @param   string $source The source string.
+     * @param  string  $source  The source string.
      *
      * @return  string  Plaintext string
      *
      * @since   2.0
      */
-    public function decode(string $source):string
+    public function decode(string $source): string
     {
         return html_entity_decode($source, ENT_QUOTES, 'UTF-8');
     }
@@ -501,29 +510,29 @@ class HtmlCleaner
     /**
      * Escape < > and " inside attribute values
      *
-     * @param   string $source The source string.
+     * @param  string  $source  The source string.
      *
      * @return  string  Filtered string
      *
      * @since   2.0
      */
-    protected function escapeAttributeValues(string $source):string
+    protected function escapeAttributeValues(string $source): string
     {
         $alreadyFiltered = '';
-        $remainder = $source;
-        $badChars = ['<', '"', '>'];
-        $escapedChars = ['&lt;', '&quot;', '&gt;'];
+        $remainder       = $source;
+        $badChars        = ['<', '"', '>'];
+        $escapedChars    = ['&lt;', '&quot;', '&gt;'];
 
         // Process each portion based on presence of =" and "<space>, "/>, or ">
         // See if there are any more attributes to process
         while (preg_match('#<[^>]*?=\s*?(\"|\')#s', (string) $remainder, $matches, PREG_OFFSET_CAPTURE)) {
             // Get the portion before the attribute value
             $quotePosition = $matches[0][1];
-            $nextBefore = $quotePosition + strlen($matches[0][0]);
+            $nextBefore    = $quotePosition + strlen($matches[0][0]);
 
             // Figure out if we have a single or double quote and look for the matching closing quote
             // Closing quote should be "/>, ">, "<space>, or " at the end of the string
-            $quote = substr($matches[0][0], -1);
+            $quote     = substr($matches[0][0], -1);
             $pregMatch = ($quote === '"') ? '#(\"\s*/\s*>|\"\s*>|\"\s+|\"$)#' : "#(\'\s*/\s*>|\'\s*>|\'\s+|\'$)#";
 
             // Get the portion after attribute value
@@ -539,10 +548,10 @@ class HtmlCleaner
             $attributeValue = substr($remainder, $nextBefore, $nextAfter - $nextBefore);
 
             // Escape bad chars
-            $attributeValue = str_replace($badChars, $escapedChars, $attributeValue);
-            $attributeValue = $this->stripCssExpressions($attributeValue);
+            $attributeValue  = str_replace($badChars, $escapedChars, $attributeValue);
+            $attributeValue  = $this->stripCssExpressions($attributeValue);
             $alreadyFiltered .= substr($remainder, 0, $nextBefore) . $attributeValue . $quote;
-            $remainder = substr($remainder, $nextAfter + 1);
+            $remainder       = substr($remainder, $nextAfter + 1);
         }
 
         // At this point, we just have to return the $alreadyFiltered and the $remainder
@@ -552,13 +561,13 @@ class HtmlCleaner
     /**
      * Remove CSS Expressions in the form of <property>:expression(...)
      *
-     * @param   string $source The source string.
+     * @param  string  $source  The source string.
      *
      * @return  string  Filtered string
      *
      * @since   2.0
      */
-    protected function stripCssExpressions(string $source):string
+    protected function stripCssExpressions(string $source): string
     {
         // Strip any comments out (in the form of /*...*/)
         $test = preg_replace('#\/\*.*\*\/#U', '', $source);
@@ -572,7 +581,7 @@ class HtmlCleaner
             // Test stripped string for :expression followed by a '('
             if (preg_match_all('#:expression\s*\(#', $test, $matches)) {
                 // If found, remove :expression
-                $test = str_ireplace(':expression', '', $test);
+                $test   = str_ireplace(':expression', '', $test);
                 $return = $test;
             }
         }
@@ -585,7 +594,7 @@ class HtmlCleaner
      *
      * @return  int
      */
-    public function getTagsMethod():int
+    public function getTagsMethod(): int
     {
         return $this->tagsMethod;
     }
@@ -593,11 +602,11 @@ class HtmlCleaner
     /**
      * setTagsMethod
      *
-     * @param   int $tagsMethod
+     * @param  int  $tagsMethod
      *
      * @return  HtmlCleaner  Return self to support chaining.
      */
-    public function setTagsMethod(int $tagsMethod):static
+    public function setTagsMethod(int $tagsMethod): static
     {
         $this->tagsMethod = $tagsMethod;
 
@@ -609,7 +618,7 @@ class HtmlCleaner
      *
      * @return  int
      */
-    public function getAttrMethod():int
+    public function getAttrMethod(): int
     {
         return $this->attrMethod;
     }
@@ -617,11 +626,11 @@ class HtmlCleaner
     /**
      * setAttrMethod
      *
-     * @param   int $attrMethod
+     * @param  int  $attrMethod
      *
      * @return  HtmlCleaner  Return self to support chaining.
      */
-    public function setAttrMethod(int $attrMethod):static
+    public function setAttrMethod(int $attrMethod): static
     {
         $this->attrMethod = $attrMethod;
 
@@ -633,7 +642,7 @@ class HtmlCleaner
      *
      * @return  int
      */
-    public function getXssMethod():int
+    public function getXssMethod(): int
     {
         return $this->xssAuto;
     }
@@ -641,11 +650,11 @@ class HtmlCleaner
     /**
      * setXssAuto
      *
-     * @param   int $xssAuto
+     * @param  int  $xssAuto
      *
      * @return  HtmlCleaner  Return self to support chaining.
      */
-    public function setXssMethod(int $xssAuto):static
+    public function setXssMethod(int $xssAuto): static
     {
         $this->xssAuto = $xssAuto;
 

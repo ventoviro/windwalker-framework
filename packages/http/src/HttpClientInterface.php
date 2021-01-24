@@ -37,7 +37,8 @@ interface HttpClientInterface extends ClientInterface
      */
     public function request(
         string $method,
-        \Stringable|string $url, $body = null,
+        \Stringable|string $url,
+        $body = null,
         array $options = []
     ): ResponseInterface;
 }
