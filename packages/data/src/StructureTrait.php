@@ -9,6 +9,7 @@
 
 namespace Windwalker\Data;
 
+use SplFileInfo;
 use Windwalker\Data\Format\FormatRegistry;
 use Windwalker\Utilities\Arr;
 use Windwalker\Utilities\TypeCast;
@@ -108,7 +109,7 @@ trait StructureTrait
      */
     protected function loadData(mixed $data, ?string $format = null, array $options = []): array
     {
-        if ($data instanceof \SplFileInfo) {
+        if ($data instanceof SplFileInfo) {
             $data = $data->getPathname();
         }
 
@@ -117,7 +118,10 @@ trait StructureTrait
         } else {
             $registry = $this->getFormatRegistry();
 
-            $storage = TypeCast::toArray($registry->load((string) $data, $format, $options), $options['to_array'] ?? false);
+            $storage = TypeCast::toArray(
+                $registry->load((string) $data, $format, $options),
+                $options['to_array'] ?? false
+            );
         }
 
         return $storage;

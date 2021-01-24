@@ -12,9 +12,11 @@ declare(strict_types=1);
 namespace Windwalker\Http\Transport;
 
 use Composer\CaBundle\CaBundle;
+use InvalidArgumentException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
+use UnexpectedValueException;
 use Windwalker\Http\Exception\HttpRequestException;
 use Windwalker\Http\Helper\HeaderHelper;
 use Windwalker\Http\HttpClientInterface;
@@ -79,7 +81,7 @@ class CurlTransport extends AbstractTransport
      *
      * @return  Response
      *
-     * @throws  \UnexpectedValueException
+     * @throws  UnexpectedValueException
      * @since   2.0
      */
     public function getResponse(mixed $content, mixed $info): Response|ResponseInterface
@@ -276,7 +278,7 @@ class CurlTransport extends AbstractTransport
         array $options = []
     ): ResponseInterface {
         if (!$dest) {
-            throw new \InvalidArgumentException('Target file path is empty.');
+            throw new InvalidArgumentException('Target file path is empty.');
         }
 
         $response = $this->request($request);
@@ -293,7 +295,7 @@ class CurlTransport extends AbstractTransport
     /**
      * Method to check if HTTP transport layer available for using
      *
-     * @return  boolean  True if available else false
+     * @return  bool  True if available else false
      *
      * @since   2.1
      */

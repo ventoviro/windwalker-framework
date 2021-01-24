@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Edge\Cache;
 
+use RuntimeException;
+
 /**
  * The FileCacheHandler class.
  *
@@ -28,7 +30,7 @@ class EdgeFileCache implements EdgeCacheInterface
     /**
      * FileCacheHandler constructor.
      *
-     * @param string $path
+     * @param  string  $path
      */
     public function __construct(string $path)
     {
@@ -68,7 +70,7 @@ class EdgeFileCache implements EdgeCacheInterface
     /**
      * getCacheFile
      *
-     * @param   string $key
+     * @param  string  $key
      *
      * @return  string
      */
@@ -105,7 +107,7 @@ class EdgeFileCache implements EdgeCacheInterface
 
         if (!is_dir(dirname($file))) {
             if (!mkdir($concurrentDirectory = dirname($file), 0755, true) && !is_dir($concurrentDirectory)) {
-                throw new \RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
+                throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
             }
         }
 

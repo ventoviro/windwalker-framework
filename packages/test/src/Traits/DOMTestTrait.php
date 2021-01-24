@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Test\Traits;
 
+use Exception;
 use Windwalker\DOM\Format\DOMFormatter;
 use Windwalker\DOM\Format\HTMLFormatter;
 
@@ -26,9 +27,9 @@ trait DOMTestTrait
     /**
      * Asserts that two variables are equal.
      *
-     * @param mixed  $expected
-     * @param mixed  $actual
-     * @param string $message
+     * @param  mixed   $expected
+     * @param  mixed   $actual
+     * @param  string  $message
      */
     public static function assertDomStringEqualsDomString(
         $expected,
@@ -45,9 +46,9 @@ trait DOMTestTrait
     /**
      * Asserts that two variables are equal.
      *
-     * @param mixed  $expected
-     * @param mixed  $actual
-     * @param string $message
+     * @param  mixed   $expected
+     * @param  mixed   $actual
+     * @param  string  $message
      */
     public static function assertDomFormatEquals(
         $expected,
@@ -64,11 +65,11 @@ trait DOMTestTrait
     /**
      * Asserts that two variables are equal.
      *
-     * @param mixed  $expected
-     * @param mixed  $actual
-     * @param string $message
+     * @param  mixed   $expected
+     * @param  mixed   $actual
+     * @param  string  $message
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public static function assertHtmlFormatEquals(
         $expected,

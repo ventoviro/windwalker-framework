@@ -11,6 +11,10 @@ declare(strict_types=1);
 
 namespace Windwalker\Http\Response;
 
+use DOMDocument;
+use InvalidArgumentException;
+use SimpleXMLElement;
+
 /**
  * The XmlResponse class.
  *
@@ -28,9 +32,9 @@ class XmlResponse extends TextResponse
     /**
      * Constructor.
      *
-     * @param  string $xml     The XML body data.
-     * @param  int    $status  The status code.
-     * @param  array  $headers The custom headers.
+     * @param  string  $xml      The XML body data.
+     * @param  int     $status   The status code.
+     * @param  array   $headers  The custom headers.
      */
     public function __construct($xml = '', $status = 200, array $headers = [])
     {
@@ -44,17 +48,17 @@ class XmlResponse extends TextResponse
     /**
      * Convert XML object to string.
      *
-     * @param   \SimpleXMLElement|\DOMDocument|string $data XML object or data.
+     * @param  SimpleXMLElement|DOMDocument|string  $data  XML object or data.
      *
      * @return  string  Converted XML string.
      */
     protected function toString(mixed $data): string
     {
-        if ($data instanceof \SimpleXMLElement) {
+        if ($data instanceof SimpleXMLElement) {
             return $data->asXML();
         }
 
-        if ($data instanceof \DOMDocument) {
+        if ($data instanceof DOMDocument) {
             return $data->saveXML();
         }
 
@@ -62,7 +66,7 @@ class XmlResponse extends TextResponse
             return $data;
         }
 
-        throw new \InvalidArgumentException(
+        throw new InvalidArgumentException(
             sprintf(
                 'Invalid XML content type, %s provided.',
                 gettype($data)

@@ -9,7 +9,7 @@
 {{-- Comment --}}
 
 @foreach($a as $k => $v)
-    <li>{{ $v }}</li>
+<li>{{ $v }}</li>
 @endforeach
 </body>
 </html>

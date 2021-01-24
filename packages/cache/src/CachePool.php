@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Cache;
 
+use DateInterval;
+use Generator;
 use Psr\Cache\CacheItemInterface;
 use Psr\Cache\CacheItemPoolInterface;
 use Psr\Log\LoggerAwareInterface;
@@ -18,6 +20,8 @@ use Psr\Log\LoggerAwareTrait;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Psr\SimpleCache\CacheInterface;
+use Throwable;
+use Traversable;
 use Windwalker\Cache\Exception\InvalidArgumentException;
 use Windwalker\Cache\Exception\RuntimeException;
 use Windwalker\Cache\Serializer\RawSerializer;
@@ -89,9 +93,9 @@ class CachePool implements CacheItemPoolInterface, CacheInterface, LoggerAwareIn
     /**
      * @inheritDoc
      *
-     * @return \Traversable|CacheItemInterface[]
+     * @return Traversable|CacheItemInterface[]
      */
-    public function getItems(iterable $keys = []): \Traversable|array|\Generator
+    public function getItems(iterable $keys = []): Traversable|array|Generator
     {
         foreach ($keys as $key) {
             yield $key => $this->getItem($key);
@@ -329,9 +333,9 @@ class CachePool implements CacheItemPoolInterface, CacheInterface, LoggerAwareIn
     /**
      * call
      *
-     * @param  string                  $key
-     * @param  callable                $handler
-     * @param  null|int|\DateInterval  $ttl
+     * @param  string                 $key
+     * @param  callable               $handler
+     * @param  null|int|DateInterval  $ttl
      *
      * @return  mixed
      *
@@ -357,12 +361,12 @@ class CachePool implements CacheItemPoolInterface, CacheInterface, LoggerAwareIn
      * logException
      *
      * @param  string                   $message
-     * @param  \Throwable               $e
+     * @param  Throwable               $e
      * @param  CacheItemInterface|null  $item
      *
      * @return  void
      */
-    protected function logException(string $message, \Throwable $e, ?CacheItemInterface $item = null): void
+    protected function logException(string $message, Throwable $e, ?CacheItemInterface $item = null): void
     {
         $this->logger->critical(
             $message,

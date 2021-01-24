@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Edge\Concern;
 
+use InvalidArgumentException;
+
 /**
  * Trait ManageStackTrait
  *
@@ -35,8 +37,8 @@ trait ManageStackTrait
     /**
      * Start injecting content into a push section.
      *
-     * @param  string $section
-     * @param  string $content
+     * @param  string  $section
+     * @param  string  $content
      *
      * @return void
      */
@@ -55,12 +57,12 @@ trait ManageStackTrait
      * Stop injecting content into a push section.
      *
      * @return string
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function stopPush(): string
     {
         if (empty($this->pushStack)) {
-            throw new \InvalidArgumentException('Cannot end a section without first starting one.');
+            throw new InvalidArgumentException('Cannot end a section without first starting one.');
         }
 
         $last = array_pop($this->pushStack);

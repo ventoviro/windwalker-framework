@@ -14,6 +14,7 @@ namespace Windwalker\Edge\Test;
 use PHPUnit\Framework\TestCase;
 use Windwalker\Edge\Cache\EdgeFileCache;
 use Windwalker\Edge\Edge;
+use Windwalker\Edge\Exception\EdgeException;
 use Windwalker\Edge\Loader\EdgeFileLoader;
 use Windwalker\Test\Traits\DOMTestTrait;
 
@@ -50,7 +51,7 @@ class EdgeTest extends TestCase
         );
 
         // Clear tmp
-        $files = glob( __DIR__ . '/../tmp/~*');
+        $files = glob(__DIR__ . '/../tmp/~*');
 
         foreach ($files as $file) {
             unlink($file);
@@ -72,7 +73,7 @@ class EdgeTest extends TestCase
      *
      * @return void
      *
-     * @throws \Windwalker\Edge\Exception\EdgeException
+     * @throws EdgeException
      * @covers \Windwalker\Edge\Edge::render
      */
     public function testRender()
@@ -105,7 +106,7 @@ HTML;
                 'test' => '<TEST>',
                 'escape' => '<TEST>',
                 'yoo' => '<TEST>',
-                'a' => array_fill(0, 3, 'Hello')
+                'a' => array_fill(0, 3, 'Hello'),
             ]
         );
 
@@ -120,9 +121,9 @@ HTML;
 &lt;TEST&gt;
 
 
-    <li>Hello</li>
-    <li>Hello</li>
-    <li>Hello</li>
+<li>Hello</li>
+<li>Hello</li>
+<li>Hello</li>
 </body>
 </html>
 HTML,
@@ -146,7 +147,7 @@ HTML,
         $result = $edge->renderWithContext(
             'context-cached',
             [
-                'foo' => 'bar'
+                'foo' => 'bar',
             ],
             $this
         );

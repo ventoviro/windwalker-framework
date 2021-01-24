@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Data\Format;
 
+use ErrorException;
+use Throwable;
 use Windwalker\Utilities\Arr;
 
 /**
@@ -81,10 +83,10 @@ class IniFormat implements FormatInterface
                 $options['process_section'] ?? true,
                 $options['mode'] ?? INI_SCANNER_NORMAL
             );
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             preg_match('/on line (\d+)/', $e->getMessage(), $match);
 
-            throw new \ErrorException(
+            throw new ErrorException(
                 $e->getMessage(),
                 $e->getCode(),
                 E_ERROR,

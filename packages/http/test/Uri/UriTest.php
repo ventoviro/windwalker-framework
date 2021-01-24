@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Http\Test\Uri;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 use Windwalker\Http\Uri;
 use Windwalker\Test\Traits\BaseAssertionTrait;
@@ -150,12 +151,12 @@ class UriTest extends TestCase
         self::assertEquals('http://example.com/foo/bar', $new->__toString());
 
         // Encoded
-        $uri = $uri->withPath('/foo^bar');
+        $uri      = $uri->withPath('/foo^bar');
         $expected = '/foo%5Ebar';
         self::assertEquals($expected, $uri->getPath());
 
         // Not double encoded
-        $uri = $uri->withPath('/foo%5Ebar');
+        $uri      = $uri->withPath('/foo%5Ebar');
         $expected = '/foo%5Ebar';
         self::assertEquals($expected, $uri->getPath());
     }
@@ -217,8 +218,8 @@ class UriTest extends TestCase
      *
      * @dataProvider authorityProvider
      *
-     * @param string $url
-     * @param string $expected
+     * @param  string  $url
+     * @param  string  $expected
      */
     public function testAuthority($url, $expected)
     {
@@ -240,8 +241,8 @@ class UriTest extends TestCase
     /**
      * @dataProvider queryStringsForEncoding
      *
-     * @param string $query
-     * @param string $expected
+     * @param  string  $query
+     * @param  string  $expected
      */
     public function testQueryEncoded($query, $expected)
     {
@@ -261,14 +262,14 @@ class UriTest extends TestCase
      */
     public function testFragmentEncoded()
     {
-        $uri = new Uri();
-        $uri = $uri->withFragment('/p^th?key^=`bar#b@z');
+        $uri      = new Uri();
+        $uri      = $uri->withFragment('/p^th?key^=`bar#b@z');
         $expected = '/p%5Eth?key%5E=%60bar%23b@z';
         self::assertEquals($expected, $uri->getFragment());
 
         // No double encoded
         $expected = '/p%5Eth?key%5E=%60bar%23b@z';
-        $uri = $uri->withFragment($expected);
+        $uri      = $uri->withFragment($expected);
         self::assertEquals($expected, $uri->getFragment());
     }
 
@@ -330,7 +331,7 @@ class UriTest extends TestCase
                 $uri = new Uri('https://example.com/');
                 $uri->$method($value);
             },
-            \InvalidArgumentException::class
+            InvalidArgumentException::class
         );
     }
 

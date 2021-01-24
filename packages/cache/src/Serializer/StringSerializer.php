@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Cache\Serializer;
 
+use InvalidArgumentException;
+
 /**
  * Class RawHandler
  *
@@ -24,12 +26,12 @@ class StringSerializer implements SerializerInterface
      * @param  mixed  $data
      *
      * @return string|null
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function serialize(mixed $data): ?string
     {
         if (!is_stringable($data)) {
-            throw new \InvalidArgumentException(__CLASS__ . ' can not handle an array or non-stringable object.');
+            throw new InvalidArgumentException(__CLASS__ . ' can not handle an array or non-stringable object.');
         }
 
         return (string) $data;

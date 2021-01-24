@@ -24,7 +24,7 @@ if (!is_file($autoload)) {
 include $autoload;
 
 $server = new HttpServer();
-$server->setHandler(fn (PhpServer $server) => $server->handle(ServerRequestFactory::createFromGlobals()));
+$server->setHandler(fn(PhpServer $server) => $server->handle(ServerRequestFactory::createFromGlobals()));
 $server->on(
     'request',
     static function (RequestEvent $event) {

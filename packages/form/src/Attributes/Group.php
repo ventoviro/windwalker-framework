@@ -25,7 +25,7 @@ class Group implements AttributeInterface
     /**
      * Fieldset constructor.
      *
-     * @param  string       $name
+     * @param  string  $name
      */
     public function __construct(string $name)
     {

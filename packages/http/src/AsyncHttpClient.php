@@ -11,8 +11,11 @@ declare(strict_types=1);
 
 namespace Windwalker\Http;
 
+use InvalidArgumentException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use RangeException;
+use RuntimeException;
 use Windwalker\Http\Promise\PromiseResponse as Promise;
 use Windwalker\Http\Response\Response;
 use Windwalker\Http\Transport\CurlTransport;
@@ -52,7 +55,7 @@ class AsyncHttpClient extends HttpClient
     /**
      * Property errors.
      *
-     * @var  \RuntimeException[]
+     * @var  RuntimeException[]
      */
     protected $errors = [];
 
@@ -66,8 +69,8 @@ class AsyncHttpClient extends HttpClient
     /**
      * Class init.
      *
-     * @param  array         $options   The options of this client object.
-     * @param  CurlTransport $transport The Transport handler, default is CurlTransport.
+     * @param  array          $options    The options of this client object.
+     * @param  CurlTransport  $transport  The Transport handler, default is CurlTransport.
      */
     public function __construct($options = [], CurlTransport $transport = null)
     {
@@ -103,7 +106,7 @@ class AsyncHttpClient extends HttpClient
 
         curl_multi_close($this->mh);
 
-        $this->mh = null;
+        $this->mh    = null;
         $this->tasks = [];
 
         return $this;
@@ -112,10 +115,10 @@ class AsyncHttpClient extends HttpClient
     /**
      * Send a request to remote.
      *
-     * @param   RequestInterface $request The Psr Request object.
+     * @param  RequestInterface  $request  The Psr Request object.
      *
      * @return  Promise
-     * @throws \RangeException
+     * @throws RangeException
      */
     public function senRequest(RequestInterface $request): ResponseInterface
     {
@@ -124,7 +127,7 @@ class AsyncHttpClient extends HttpClient
 
         $this->tasks[] = [
             'handle' => $handle = $transport->createHandle($request),
-            'promise' => $promise = new Promise()
+            'promise' => $promise = new Promise(),
         ];
 
         curl_multi_add_handle($this->getMainHandle(), $handle);
@@ -135,15 +138,15 @@ class AsyncHttpClient extends HttpClient
     /**
      * resolve
      *
-     * @param callable $callback
+     * @param  callable  $callback
      *
      * @return  Response[]
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public function resolve(callable $callback = null): array
     {
         $active = null;
-        $mh = $this->getMainHandle();
+        $mh     = $this->getMainHandle();
 
         do {
             $mrc = curl_multi_exec($mh, $active);
@@ -160,17 +163,17 @@ class AsyncHttpClient extends HttpClient
         }
 
         if ($mrc !== CURLM_OK) {
-            throw new \RuntimeException("Curl multi read error $mrc\n", E_USER_WARNING);
+            throw new RuntimeException("Curl multi read error $mrc\n", E_USER_WARNING);
         }
 
         /** @var CurlTransport $transport */
         $responses = [];
-        $errors = [];
+        $errors    = [];
         $transport = $this->getTransport();
 
         foreach ($this->tasks as $task) {
             /** @var Promise $promise */
-            $handle = $task['handle'];
+            $handle  = $task['handle'];
             $promise = $task['promise'];
 
             $error = curl_error($handle);
@@ -179,7 +182,7 @@ class AsyncHttpClient extends HttpClient
                 $responses[] = $res = $transport->getResponse(curl_multi_getcontent($handle), curl_getinfo($handle));
                 $promise->resolve($res);
             } else {
-                $errors[] = $e = new \RuntimeException($error, curl_errno($handle));
+                $errors[] = $e = new RuntimeException($error, curl_errno($handle));
                 $promise->reject($e);
             }
         }
@@ -198,15 +201,15 @@ class AsyncHttpClient extends HttpClient
     /**
      * Method to set property transport
      *
-     * @param   TransportInterface $transport
+     * @param  TransportInterface  $transport
      *
      * @return  static  Return self to support chaining.
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function setTransport(TransportInterface $transport): static
     {
         if (!$transport instanceof CurlTransport) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 sprintf(
                     '%s only supports %s',
                     get_called_class(),
@@ -223,7 +226,7 @@ class AsyncHttpClient extends HttpClient
     /**
      * Method to get property Errors
      *
-     * @return  \RuntimeException[]
+     * @return  RuntimeException[]
      */
     public function getErrors(): array
     {
@@ -233,7 +236,7 @@ class AsyncHttpClient extends HttpClient
     /**
      * Method to get property Handles
      *
-     * @return  \resource[]
+     * @return  resource[]
      */
     public function getHandles(): array
     {

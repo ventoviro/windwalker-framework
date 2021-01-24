@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Data\Format;
 
+use LogicException;
+
 /**
  * PHP class format handler for Data
  *
@@ -76,7 +78,7 @@ class PhpFormat implements FormatInterface
      */
     public function parse(string $string, array $options = []): mixed
     {
-        throw new \LogicException('Currently does not support parse php array.');
+        throw new LogicException('Currently does not support parse php array.');
     }
 
     /**

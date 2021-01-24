@@ -27,7 +27,7 @@ abstract class AbstractTransport implements TransportInterface
     /**
      * Constructor.
      *
-     * @param   array$options Client options object.
+     * @param  array  $options  Client options object.
      *
      * @since   2.1
      */

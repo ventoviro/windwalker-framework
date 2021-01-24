@@ -13,8 +13,8 @@ namespace Windwalker\Queue;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use Windwalker\Event\EventListenableInterface;
 use Windwalker\Event\EventAwareTrait;
+use Windwalker\Event\EventListenableInterface;
 use Windwalker\Queue\Event\AfterJobRunEvent;
 use Windwalker\Queue\Event\BeforeJobRunEvent;
 use Windwalker\Queue\Event\JobFailureEvent;
@@ -83,8 +83,8 @@ class Worker implements EventListenableInterface
     /**
      * Worker constructor.
      *
-     * @param Queue            $queue
-     * @param LoggerInterface  $logger
+     * @param  Queue            $queue
+     * @param  LoggerInterface  $logger
      */
     public function __construct(Queue $queue, ?LoggerInterface $logger = null)
     {
@@ -95,8 +95,8 @@ class Worker implements EventListenableInterface
     /**
      * loop
      *
-     * @param string|array  $channel
-     * @param array         $options
+     * @param  string|array  $channel
+     * @param  array         $options
      *
      * @return  void
      * @throws \Exception
@@ -119,7 +119,7 @@ class Worker implements EventListenableInterface
             $this->gc();
 
             $worker = $this;
-            $queue = $this->queue;
+            $queue  = $this->queue;
 
             // @loop start
             $this->emit(LoopStartEvent::class, compact('worker', 'queue'));
@@ -151,8 +151,8 @@ class Worker implements EventListenableInterface
     /**
      * runNextJob
      *
-     * @param string|array  $channel
-     * @param array         $options
+     * @param  string|array  $channel
+     * @param  array         $options
      *
      * @return  void
      */
@@ -170,8 +170,8 @@ class Worker implements EventListenableInterface
     /**
      * process
      *
-     * @param QueueMessage $message
-     * @param array    $options
+     * @param  QueueMessage  $message
+     * @param  array         $options
      *
      * @return  void
      */
@@ -251,7 +251,7 @@ class Worker implements EventListenableInterface
     /**
      * registerTimeoutHandler
      *
-     * @param array $options
+     * @param  array  $options
      *
      * @return  void
      */
@@ -263,7 +263,7 @@ class Worker implements EventListenableInterface
             return;
         }
 
-        declare (ticks=1);
+        declare(ticks=1);
 
         if ($timeout !== 0) {
             pcntl_signal(
@@ -326,7 +326,7 @@ class Worker implements EventListenableInterface
             $this->getState(),
             [
                 static::STATE_EXITING,
-                static::STATE_STOP
+                static::STATE_STOP,
             ],
             true
         );
@@ -392,7 +392,7 @@ class Worker implements EventListenableInterface
     /**
      * getNextMessage
      *
-     * @param string|array  $channel
+     * @param  string|array  $channel
      *
      * @return  null|QueueMessage
      */
@@ -412,7 +412,7 @@ class Worker implements EventListenableInterface
     /**
      * sleep
      *
-     * @param float $seconds
+     * @param  float  $seconds
      *
      * @return  void
      */
@@ -459,7 +459,7 @@ class Worker implements EventListenableInterface
     /**
      * setState
      *
-     * @param string $state
+     * @param  string  $state
      *
      * @return  void
      */
@@ -471,7 +471,7 @@ class Worker implements EventListenableInterface
     /**
      * stopIfNecessary
      *
-     * @param array $options
+     * @param  array  $options
      *
      * @return  void
      */

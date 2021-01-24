@@ -37,7 +37,7 @@ class SimpleAsyncTransport implements AsyncTransportInterface
      */
     public function sendRequest(RequestInterface $request, array $options = [])
     {
-        return async(fn () => $this->getTransport()->request($request, $options));
+        return async(fn() => $this->getTransport()->request($request, $options));
     }
 
     /**

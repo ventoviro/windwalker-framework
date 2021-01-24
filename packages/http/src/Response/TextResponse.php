@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Http\Response;
 
+use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 use Windwalker\Stream\Stream;
 
@@ -39,7 +40,7 @@ class TextResponse extends AbstractContentTypeResponse
         }
 
         if (!$body instanceof StreamInterface) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 sprintf(
                     'Invalid body content type %s, please provide string or StreamInterface',
                     gettype($body)

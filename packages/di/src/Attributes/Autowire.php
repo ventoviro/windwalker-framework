@@ -11,12 +11,14 @@ declare(strict_types=1);
 
 namespace Windwalker\DI\Attributes;
 
+use Attribute;
+use ReflectionParameter;
 use Windwalker\DI\Container;
 
 /**
  * The Autowire class.
  */
-#[\Attribute]
+#[Attribute]
 class Autowire implements ContainerAttributeInterface
 {
     public function __invoke(AttributeHandler $handler): callable
@@ -24,7 +26,7 @@ class Autowire implements ContainerAttributeInterface
         $container = $handler->getContainer();
         $reflector = $handler->getReflector();
 
-        if ($reflector instanceof \ReflectionParameter && $reflector->getType()) {
+        if ($reflector instanceof ReflectionParameter && $reflector->getType()) {
             return function (...$args) use ($handler, $reflector, $container) {
                 $value = $handler(...$args);
 

@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Http\Test\Response;
 
+use PHPUnit\Framework\TestCase;
 use Windwalker\Http\Response\Response;
 use Windwalker\Stream\Stream;
 
@@ -19,7 +20,7 @@ use Windwalker\Stream\Stream;
  *
  * @since 2.1
  */
-class ResponseTest extends \PHPUnit\Framework\TestCase
+class ResponseTest extends TestCase
 {
     /**
      * Test instance.
@@ -60,7 +61,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
         self::assertEquals([], $res->getHeaders());
 
         // Test with params
-        $body = fopen($tmpfile = tempnam(sys_get_temp_dir(), 'windwalker'), 'wb+');
+        $body    = fopen($tmpfile = tempnam(sys_get_temp_dir(), 'windwalker'), 'wb+');
         $headers = [
             'X-Foo' => ['Flower', 'Sakura'],
             'Content-Type' => 'application/json',
@@ -77,7 +78,7 @@ class ResponseTest extends \PHPUnit\Framework\TestCase
 
         // Test with object params
         $body = new Stream();
-        $res = new Response($body);
+        $res  = new Response($body);
 
         self::assertSame($body, $res->getBody());
     }

@@ -271,8 +271,12 @@ class WriterManager
      * @return array|\Traversable
      * @throws \JsonException
      */
-    public function saveMultiple(string $table, iterable $items, array|string|null $key, array $options = []): \Traversable|array
-    {
+    public function saveMultiple(
+        string $table,
+        iterable $items,
+        array|string|null $key,
+        array $options = []
+    ): \Traversable|array {
         $result = [];
 
         foreach ($items as $k => $item) {

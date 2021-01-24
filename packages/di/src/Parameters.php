@@ -35,11 +35,14 @@ class Parameters extends Collection
      */
     public function extract(?string $path = null, bool $reference = false): static
     {
-        return tap(parent::extract($path, $reference), function ($new) use ($reference) {
-            if ($reference) {
-                $new->parent = $this;
+        return tap(
+            parent::extract($path, $reference),
+            function ($new) use ($reference) {
+                if ($reference) {
+                    $new->parent = $this;
+                }
             }
-        });
+        );
     }
 
     /**

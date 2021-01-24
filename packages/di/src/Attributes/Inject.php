@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\DI\Attributes;
 
 use Attribute;
+use JetBrains\PhpStorm\Pure;
 use ReflectionProperty;
 use ReflectionUnionType;
 use Windwalker\DI\Container;
@@ -47,9 +48,8 @@ class Inject implements ContainerAttributeInterface
      * @param  AttributeHandler  $handler
      *
      * @return mixed
-     *
-     * @throws DependencyResolutionException
      */
+    #[Pure]
     public function __invoke(AttributeHandler $handler): callable
     {
         $reflector = $handler->getReflector();

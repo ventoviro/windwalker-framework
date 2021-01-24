@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace Windwalker\Html\Grid;
 
+use InvalidArgumentException;
+use Traversable;
+
 /**
  * The KeyValueGrid class.
  *
@@ -27,7 +30,7 @@ class KeyValueGrid extends Grid
     /**
      * create
      *
-     * @param array  $attrs
+     * @param  array  $attrs
      *
      * @return static
      */
@@ -39,7 +42,7 @@ class KeyValueGrid extends Grid
     /**
      * Class init.
      *
-     * @param array  $attrs
+     * @param  array  $attrs
      */
     public function __construct(array $attrs = [])
     {
@@ -51,9 +54,9 @@ class KeyValueGrid extends Grid
     /**
      * addHeader
      *
-     * @param string  $keyTitle
-     * @param string  $valueTitle
-     * @param array   $attrs
+     * @param  string  $keyTitle
+     * @param  string  $valueTitle
+     * @param  array   $attrs
      *
      * @return  static
      */
@@ -69,9 +72,9 @@ class KeyValueGrid extends Grid
     /**
      * addItem
      *
-     * @param string  $key
-     * @param string  $value
-     * @param array   $attrs
+     * @param  string  $key
+     * @param  string  $value
+     * @param  array   $attrs
      *
      * @return static
      */
@@ -94,8 +97,8 @@ class KeyValueGrid extends Grid
     /**
      * addItems
      *
-     * @param array  $items
-     * @param array   $attrs
+     * @param  array  $items
+     * @param  array  $attrs
      *
      * @return  static
      */
@@ -114,8 +117,8 @@ class KeyValueGrid extends Grid
     /**
      * addTitle
      *
-     * @param string  $name
-     * @param array   $attrs
+     * @param  string  $name
+     * @param  array   $attrs
      *
      * @return  static
      */
@@ -131,19 +134,19 @@ class KeyValueGrid extends Grid
     /**
      * configureRows
      *
-     * @param   array    $items
-     * @param   callable $handler
+     * @param  array     $items
+     * @param  callable  $handler
      *
      * @return  static
      */
     public function configure(array $items, callable $handler): static
     {
         if (!is_callable($handler)) {
-            throw new \InvalidArgumentException(__METHOD__ . ' Handler should be callable.');
+            throw new InvalidArgumentException(__METHOD__ . ' Handler should be callable.');
         }
 
-        if (!$items instanceof \Traversable && !is_array($items)) {
-            throw new \InvalidArgumentException(__METHOD__ . ' items should be array or iterator.');
+        if (!$items instanceof Traversable && !is_array($items)) {
+            throw new InvalidArgumentException(__METHOD__ . ' items should be array or iterator.');
         }
 
         foreach ($items as $key => $item) {
@@ -156,9 +159,9 @@ class KeyValueGrid extends Grid
     /**
      * getValue
      *
-     * @param array  $options
-     * @param string $name
-     * @param mixed  $default
+     * @param  array   $options
+     * @param  string  $name
+     * @param  mixed   $default
      *
      * @return  mixed
      */

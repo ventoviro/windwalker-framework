@@ -23,7 +23,7 @@ class HttpHelper
     /**
      * getIp
      *
-     * @see https://www.phpini.com/php/php-get-real-ip
+     * @see    https://www.phpini.com/php/php-get-real-ip
      *
      * @param  array  $server
      *
@@ -56,8 +56,9 @@ class HttpHelper
      * @since  3.5.15
      */
     #[Pure]
-    public static function isIPv6(string $ip): bool
-    {
+    public static function isIPv6(
+        string $ip
+    ): bool {
         return str_contains($ip, ':');
     }
 }

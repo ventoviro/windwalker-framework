@@ -13,14 +13,13 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Windwalker\Http\HttpFactory;
 use Windwalker\Stream\Stream;
-use Windwalker\Stream\StringStream;
 
 return new class {
     public ServerRequestInterface $req;
 
     public function __invoke(ServerRequestInterface $req): ResponseInterface
     {
-        $uri  = $req->getUri();
+        $uri = $req->getUri();
 
         $path = trim($uri->getPath(), '/') ?: 'index';
 

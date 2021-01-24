@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace Windwalker\DI\Definition;
 
+use BadMethodCallException;
+use Closure;
+use ReflectionException;
 use Windwalker\DI\Container;
 use Windwalker\DI\Exception\DependencyResolutionException;
 
@@ -76,7 +79,7 @@ class ObjectBuilderDefinition implements DefinitionInterface
     public function __construct(callable|string $class, ?Container $container = null)
     {
         $this->container = $container;
-        $this->class = $class;
+        $this->class     = $class;
     }
 
     /**
@@ -85,7 +88,7 @@ class ObjectBuilderDefinition implements DefinitionInterface
      * @param  Container  $container  The Container object.
      *
      * @return object
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function resolve(Container $container): object
     {
@@ -116,12 +119,12 @@ class ObjectBuilderDefinition implements DefinitionInterface
     /**
      * Method to get property Argument
      *
-     * @param  string $name
-     * @param  mixed  $default
+     * @param  string  $name
+     * @param  mixed   $default
      *
      * @return array
      * @throws DependencyResolutionException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function getArgument(string $name, $default = null): array
     {
@@ -135,14 +138,14 @@ class ObjectBuilderDefinition implements DefinitionInterface
     /**
      * Method to set property argument
      *
-     * @param   string $name
-     * @param   mixed  $value
+     * @param  string  $name
+     * @param  mixed   $value
      *
      * @return  static Return self to support chaining.
      */
     public function setArgument(string $name, mixed $value): static
     {
-        if (!$value instanceof \Closure) {
+        if (!$value instanceof Closure) {
             $value = fn() => $value;
         }
 
@@ -155,7 +158,7 @@ class ObjectBuilderDefinition implements DefinitionInterface
     /**
      * hasArgument
      *
-     * @param string $name
+     * @param  string  $name
      *
      * @return  bool
      *
@@ -169,7 +172,7 @@ class ObjectBuilderDefinition implements DefinitionInterface
     /**
      * removeArgument
      *
-     * @param   string $name
+     * @param  string  $name
      *
      * @return  static
      */
@@ -185,7 +188,7 @@ class ObjectBuilderDefinition implements DefinitionInterface
      *
      * @return  array
      * @throws DependencyResolutionException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function getArguments(): array
     {
@@ -201,7 +204,7 @@ class ObjectBuilderDefinition implements DefinitionInterface
     /**
      * Method to set property arguments
      *
-     * @param   array $arguments
+     * @param  array  $arguments
      *
      * @return  static  Return self to support chaining.
      */
@@ -222,8 +225,8 @@ class ObjectBuilderDefinition implements DefinitionInterface
     public function reset(): static
     {
         $this->arguments = [];
-        $this->caches = [];
-        $this->extends = [];
+        $this->caches    = [];
+        $this->extends   = [];
 
         return $this;
     }
@@ -231,7 +234,7 @@ class ObjectBuilderDefinition implements DefinitionInterface
     /**
      * extend
      *
-     * @param callable $handler
+     * @param  callable  $handler
      *
      * @return  $this
      *
@@ -261,12 +264,12 @@ class ObjectBuilderDefinition implements DefinitionInterface
     /**
      * __call
      *
-     * @param   string $name
-     * @param   array  $args
+     * @param  string  $name
+     * @param  array   $args
      *
      * @return  mixed
      * @throws DependencyResolutionException
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function __call(string $name, array $args): mixed
     {
@@ -297,7 +300,7 @@ class ObjectBuilderDefinition implements DefinitionInterface
             return $object;
         }
 
-        throw new \BadMethodCallException(__METHOD__ . '::' . $name . '() not found.');
+        throw new BadMethodCallException(__METHOD__ . '::' . $name . '() not found.');
     }
 
     /**
@@ -315,7 +318,7 @@ class ObjectBuilderDefinition implements DefinitionInterface
     /**
      * Method to set property container
      *
-     * @param   Container $container
+     * @param  Container  $container
      *
      * @return  static  Return self to support chaining.
      *

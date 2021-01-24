@@ -6,9 +6,9 @@
     convertWarningsToExceptions="true"
 >
     <php>
-        <ini name="error_reporting" value="-1" />
+        <ini name="error_reporting" value="-1"/>
 
-        <const name="WINDWALKER_TEST_HTTP_URL" value="http://localhost:8100" />
+        <const name="WINDWALKER_TEST_HTTP_URL" value="http://localhost:8100"/>
     </php>
 
     <testsuites>

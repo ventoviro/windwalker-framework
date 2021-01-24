@@ -153,7 +153,6 @@ class RedisHandler extends AbstractHandler
                 $this->getKey($id),
                 (int) ($this->ttl ?? $this->getOption('gc_maxlifetime') ?? ini_get('session.gc_maxlifetime'))
             );
-
     }
 
     /**

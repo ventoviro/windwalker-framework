@@ -11,11 +11,14 @@ declare(strict_types=1);
 
 namespace Windwalker\Crypt\Symmetric;
 
+use SodiumException;
 use Windwalker\Crypt\CryptHelper;
 use Windwalker\Crypt\Exception\CryptException;
 use Windwalker\Crypt\HiddenString;
 use Windwalker\Crypt\Key;
 use Windwalker\Crypt\SafeEncoder;
+
+use function sodium_memzero;
 
 /**
  * The Openssl Cipher class.
@@ -67,7 +70,7 @@ class OpensslCipher implements CipherInterface
 
         $this->options = array_merge(
             [
-                'pbkdf2_iteration' => 12000
+                'pbkdf2_iteration' => 12000,
             ],
             $options
         );
@@ -114,14 +117,14 @@ class OpensslCipher implements CipherInterface
 
         if (function_exists('sodium_memzero')) {
             try {
-                \sodium_memzero($message);
-                \sodium_memzero($calc);
-                \sodium_memzero($salt);
-                \sodium_memzero($iv);
-                \sodium_memzero($hmacKey);
-                \sodium_memzero($encrypted);
-                \sodium_memzero($encKey);
-            } catch (\SodiumException $e) {
+                sodium_memzero($message);
+                sodium_memzero($calc);
+                sodium_memzero($salt);
+                sodium_memzero($iv);
+                sodium_memzero($hmacKey);
+                sodium_memzero($encrypted);
+                sodium_memzero($encKey);
+            } catch (SodiumException $e) {
                 // No actions
             }
         }
@@ -156,13 +159,13 @@ class OpensslCipher implements CipherInterface
 
         if (function_exists('sodium_memzero')) {
             try {
-                \sodium_memzero($encKey);
-                \sodium_memzero($hmacKey);
-                \sodium_memzero($iv);
-                \sodium_memzero($salt);
-                \sodium_memzero($encrypted);
-                \sodium_memzero($hmac);
-            } catch (\SodiumException $e) {
+                sodium_memzero($encKey);
+                sodium_memzero($hmacKey);
+                sodium_memzero($iv);
+                sodium_memzero($salt);
+                sodium_memzero($encrypted);
+                sodium_memzero($hmac);
+            } catch (SodiumException $e) {
                 // No actions
             }
         }
@@ -176,7 +179,7 @@ class OpensslCipher implements CipherInterface
     /**
      * getIVSize
      *
-     * @return  integer
+     * @return  int
      */
     public function getIVSize(): int
     {

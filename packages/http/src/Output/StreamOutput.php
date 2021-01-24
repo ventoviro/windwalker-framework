@@ -128,7 +128,7 @@ class StreamOutput extends Output
      *
      * @see  http://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.16
      *
-     * @param   string $header
+     * @param  string  $header
      *
      * @return  false|array  An array with [unit, first, last, length] elements;
      */
@@ -137,9 +137,9 @@ class StreamOutput extends Output
         if (preg_match('/(?P<unit>[\w]+)\s+(?P<first>\d+)-(?P<last>\d+)\/(?P<length>\d+|\*)/', $header, $matches)) {
             $return = [];
 
-            $return['unit'] = $matches['unit'];
-            $return['first'] = (int) $matches['first'];
-            $return['last'] = (int) $matches['last'];
+            $return['unit']   = $matches['unit'];
+            $return['first']  = (int) $matches['first'];
+            $return['last']   = (int) $matches['last'];
             $return['length'] = is_numeric($matches['length']) ? (int) $matches['length'] : '*';
 
             return $return;
@@ -161,7 +161,7 @@ class StreamOutput extends Output
     /**
      * Method to set property maxBufferLength
      *
-     * @param   int $maxBufferLength
+     * @param  int  $maxBufferLength
      *
      * @return  static  Return self to support chaining.
      */

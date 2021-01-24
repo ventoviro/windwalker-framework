@@ -21,7 +21,7 @@ trait CompileComponentTrait
     /**
      * Compile the component statements into valid PHP.
      *
-     * @param  string $expression
+     * @param  string  $expression
      *
      * @return string
      */
@@ -43,7 +43,7 @@ trait CompileComponentTrait
     /**
      * Compile the slot statements into valid PHP.
      *
-     * @param  string $expression
+     * @param  string  $expression
      *
      * @return string
      */

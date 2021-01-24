@@ -49,18 +49,18 @@ trait ManageComponentTrait
     /**
      * Start a component rendering process.
      *
-     * @param  string $name
-     * @param  array  $data
-     * @param  array  $more
+     * @param  string  $name
+     * @param  array   $data
+     * @param  array   $more
      *
      * @return void
      */
     public function startComponent(string $name, array $data = [], array $more = [])
     {
         if (ob_start()) {
-            $this->componentStack[] = $name;
+            $this->componentStack[]                         = $name;
             $this->componentData[$this->currentComponent()] = array_merge($more, $data);
-            $this->slots[$this->currentComponent()] = [];
+            $this->slots[$this->currentComponent()]         = [];
         }
     }
 
@@ -106,7 +106,7 @@ trait ManageComponentTrait
             $this->slots[$this->currentComponent()][$name] = $content;
         } elseif (ob_start()) {
             $this->slots[$this->currentComponent()][$name] = '';
-            $this->slotStack[$this->currentComponent()][] = $name;
+            $this->slotStack[$this->currentComponent()][]  = $name;
         }
     }
 
@@ -118,7 +118,7 @@ trait ManageComponentTrait
     public function endSlot(): void
     {
         end($this->componentStack);
-        $currentSlot = array_pop(
+        $currentSlot                                          = array_pop(
             $this->slotStack[$this->currentComponent()]
         );
         $this->slots[$this->currentComponent()][$currentSlot] = trim(ob_get_clean());

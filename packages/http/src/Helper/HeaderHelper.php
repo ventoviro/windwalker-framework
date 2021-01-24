@@ -11,8 +11,10 @@ declare(strict_types=1);
 
 namespace Windwalker\Http\Helper;
 
+use InvalidArgumentException;
 use JetBrains\PhpStorm\Pure;
 use Psr\Http\Message\ResponseInterface;
+use Traversable;
 
 /**
  * The HeaderHelper class.
@@ -28,18 +30,21 @@ abstract class HeaderHelper
      *
      * The key will be lower case to search header value and implode array to string by comma.
      *
-     * @param  array  $headers The headers wqe want to search.
-     * @param  string $name    The name to search.
-     * @param  mixed  $default The default value if not found.
+     * @param  array   $headers  The headers wqe want to search.
+     * @param  string  $name     The name to search.
+     * @param  mixed   $default  The default value if not found.
      *
      * @return string  Found header value.
      *
      * @since  3.0
      */
     #[Pure]
-    public static function getValue(array $headers, string $name, mixed $default = null): mixed
-    {
-        $name = strtolower($name);
+    public static function getValue(
+        array $headers,
+        string $name,
+        mixed $default = null
+    ): mixed {
+        $name    = strtolower($name);
         $headers = array_change_key_case($headers, CASE_LOWER);
 
         if (array_key_exists($name, $headers)) {
@@ -54,9 +59,9 @@ abstract class HeaderHelper
      *
      * This method based on phly/http
      *
-     * @param   mixed $name The header to validate.
+     * @param  mixed  $name  The header to validate.
      *
-     * @return  boolean  Valid or not.
+     * @return  bool  Valid or not.
      *
      * @see http://tools.ietf.org/html/rfc7230#section-3.2
      */
@@ -75,13 +80,13 @@ abstract class HeaderHelper
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
      * @see https://tools.ietf.org/html/rfc7230
      *
-     * @param   string $value The value to filter.
+     * @param  string  $value  The value to filter.
      *
      * @return  string  Filtered value.
      */
     public static function filter(mixed $value): string
     {
-        $value = (string) $value;
+        $value  = (string) $value;
         $length = strlen($value);
         $string = '';
 
@@ -125,7 +130,7 @@ abstract class HeaderHelper
      *
      * @param  mixed  $value
      *
-     * @return  boolean  Valid or not.
+     * @return  bool  Valid or not.
      *
      * @see http://en.wikipedia.org/wiki/HTTP_response_splitting
      * @see https://tools.ietf.org/html/rfc7230
@@ -167,9 +172,9 @@ abstract class HeaderHelper
      *
      * Only allow 1.0, 1.1 and 2.
      *
-     * @param   string $version Version string to validate.
+     * @param  string  $version  Version string to validate.
      *
-     * @return  boolean  Valid or not.
+     * @return  bool  Valid or not.
      */
     public static function isValidProtocolVersion(mixed $version): bool
     {
@@ -183,13 +188,13 @@ abstract class HeaderHelper
     /**
      * Convert values to array.
      *
-     * @param   mixed $value Value to convert to array.
+     * @param  mixed  $value  Value to convert to array.
      *
      * @return  array  Converted array.
      */
     public static function allToArray(mixed $value): array
     {
-        if ($value instanceof \Traversable) {
+        if ($value instanceof Traversable) {
             $value = iterator_to_array($value);
         }
 
@@ -201,7 +206,7 @@ abstract class HeaderHelper
 
         foreach ($value as $k => $v) {
             if (!static::isValidValue($v)) {
-                throw new \InvalidArgumentException('Value :' . print_r($value, true) . ' is invalid.');
+                throw new InvalidArgumentException('Value :' . print_r($value, true) . ' is invalid.');
             }
         }
 
@@ -211,9 +216,9 @@ abstract class HeaderHelper
     /**
      * Validate is an array only contains string.
      *
-     * @param   array $array An array to validate.
+     * @param  array  $array  An array to validate.
      *
-     * @return  boolean  valid or not.
+     * @return  bool  valid or not.
      */
     public static function arrayOnlyContainsString(array $array): bool
     {
@@ -229,8 +234,8 @@ abstract class HeaderHelper
     /**
      * Convert every header values to one line and merge multiple values with comma.
      *
-     * @param array $headers  Headers to convert,
-     * @param bool  $toString If true, will implode all header lines with line break.
+     * @param  array  $headers   Headers to convert,
+     * @param  bool   $toString  If true, will implode all header lines with line break.
      *
      * @return  array|string  Converted headers.
      *
@@ -256,7 +261,7 @@ abstract class HeaderHelper
     /**
      * Filter a header name to lowercase.
      *
-     * @param   string $header Header name to normalize.
+     * @param  string  $header  Header name to normalize.
      *
      * @return  string  Normalized name.
      *
@@ -350,7 +355,7 @@ abstract class HeaderHelper
     /**
      * makeUtf8Safe
      *
-     * @param string $file
+     * @param  string  $file
      *
      * @return  false|string
      *

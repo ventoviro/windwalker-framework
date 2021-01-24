@@ -11,9 +11,11 @@ declare(strict_types=1);
 
 namespace Windwalker\Http\Transport;
 
+use InvalidArgumentException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
+use UnexpectedValueException;
 use Windwalker\Http\Exception\HttpRequestException;
 use Windwalker\Http\Helper\HeaderHelper;
 use Windwalker\Http\Response\Response;
@@ -152,13 +154,13 @@ class StreamTransport extends AbstractTransport
     /**
      * Method to get a response object from a server response.
      *
-     * @param   array  $headers The response headers as an array.
-     * @param   string $body    The response body as a string.
+     * @param  array   $headers  The response headers as an array.
+     * @param  string  $body     The response body as a string.
      *
      * @return  Response
      *
+     * @throws  UnexpectedValueException
      * @since   2.1
-     * @throws  \UnexpectedValueException
      */
     protected function getResponse(array $headers, string $body): Response
     {
@@ -178,7 +180,7 @@ class StreamTransport extends AbstractTransport
             $return = $return->withStatus($code);
         } elseif (!$this->getOption('allow_empty_status_code', false)) {
             // No valid response code was detected.
-            throw new \UnexpectedValueException('No HTTP response code found.');
+            throw new UnexpectedValueException('No HTTP response code found.');
         }
         // Add the response headers to the response object.
         foreach ($headers as $header) {
@@ -201,10 +203,13 @@ class StreamTransport extends AbstractTransport
      * @return  ResponseInterface
      * @since   2.1
      */
-    public function download(RequestInterface $request, string|StreamInterface $dest, array $options = []): ResponseInterface
-    {
+    public function download(
+        RequestInterface $request,
+        string|StreamInterface $dest,
+        array $options = []
+    ): ResponseInterface {
         if (!$dest) {
-            throw new \InvalidArgumentException('Target file path is emptty.');
+            throw new InvalidArgumentException('Target file path is emptty.');
         }
 
         if (!$dest instanceof StreamInterface) {
@@ -223,7 +228,7 @@ class StreamTransport extends AbstractTransport
     /**
      * Method to check if HTTP transport layer available for using
      *
-     * @return  boolean  True if available else false
+     * @return  bool  True if available else false
      *
      * @since   2.0
      */

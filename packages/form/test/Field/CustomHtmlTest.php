@@ -11,11 +11,10 @@ declare(strict_types=1);
 
 namespace Windwalker\Form\Test\Field;
 
+use Exception;
 use PHPUnit\Framework\TestCase;
-use Windwalker\Dom\HtmlElement;
 use Windwalker\Dom\Test\AbstractDomTestCase;
 use Windwalker\Form\Field\CustomHtmlField;
-use Windwalker\Form\Field\TextField;
 use Windwalker\Test\Traits\DOMTestTrait;
 
 use function Windwalker\DOM\h;
@@ -61,7 +60,7 @@ class CustomHtmlTest extends TestCase
      * Method to test prepareAttributes().
      *
      * @return void
-     * @throws \Exception
+     * @throws Exception
      */
     public function testRender()
     {

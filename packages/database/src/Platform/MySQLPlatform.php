@@ -192,12 +192,12 @@ class MySQLPlatform extends AbstractPlatform
                 $permittedValues = $matches[1];
 
                 if (
-                preg_match_all(
-                    "/\\s*'((?:[^']++|'')*+)'\\s*(?:,|\$)/",
-                    $permittedValues,
-                    $matches,
-                    PREG_PATTERN_ORDER
-                )
+                    preg_match_all(
+                        "/\\s*'((?:[^']++|'')*+)'\\s*(?:,|\$)/",
+                        $permittedValues,
+                        $matches,
+                        PREG_PATTERN_ORDER
+                    )
                 ) {
                     $permittedValues = str_replace("''", "'", $matches[1]);
                 } else {

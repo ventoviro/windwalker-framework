@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Form\Field;
 
+use DateTimeZone;
+
 /**
  * The TimezoneField class.
  *
@@ -27,15 +29,15 @@ class TimezoneField extends ListField
     {
         $zones = [];
 
-        foreach (\DateTimeZone::listIdentifiers() as $zone) {
+        foreach (DateTimeZone::listIdentifiers() as $zone) {
             $pos = explode('/', $zone);
 
             if (count($pos) === 2) {
                 $state = $pos[0];
-                $city = $pos[1];
+                $city  = $pos[1];
             } else {
                 $state = $pos[0];
-                $city = $pos[0];
+                $city  = $pos[0];
             }
 
             if (!isset($zones[$state])) {

@@ -24,8 +24,8 @@ trait ServiceAwareTrait
      * make
      *
      * @param  string  $class
-     * @param  array  $args
-     * @param  int    $options
+     * @param  array   $args
+     * @param  int     $options
      *
      * @return  object
      */

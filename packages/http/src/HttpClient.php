@@ -13,6 +13,8 @@ namespace Windwalker\Http;
 
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use RangeException;
+use ReflectionMethod;
 use Stringable;
 use Windwalker\Http\Request\Request;
 use Windwalker\Http\Stream\RequestBodyStream;
@@ -89,7 +91,7 @@ class HttpClient implements HttpClientInterface, AsyncHttpClientInterface
     /**
      * Download file to target path.
      *
-     * @param  Stringable|string   $url      The URL to request, may be string or Uri object.
+     * @param  Stringable|string    $url      The URL to request, may be string or Uri object.
      * @param  string|              $dest     The dest file path can be a StreamInterface.
      * @param  mixed                $body     The request body data, can be an array of POST data.
      * @param  array                $options  The options array.
@@ -107,7 +109,7 @@ class HttpClient implements HttpClientInterface, AsyncHttpClientInterface
         $transport = $this->getTransport();
 
         if (!$transport::isSupported()) {
-            throw new \RangeException(get_class($transport) . ' driver not supported.');
+            throw new RangeException(get_class($transport) . ' driver not supported.');
         }
 
         return $transport->download($request, $dest);
@@ -125,7 +127,7 @@ class HttpClient implements HttpClientInterface, AsyncHttpClientInterface
         $transport = $this->getTransport();
 
         if (!$transport::isSupported()) {
-            throw new \RangeException(get_class($transport) . ' driver not supported.');
+            throw new RangeException(get_class($transport) . ' driver not supported.');
         }
 
         return $transport->request($request);
@@ -135,7 +137,7 @@ class HttpClient implements HttpClientInterface, AsyncHttpClientInterface
      * Method to send the OPTIONS command to the server.
      *
      * @param  Stringable|string  $url      Path to the resource.
-     * @param  array               $options  An array of name-value pairs to include in the header of the request.
+     * @param  array              $options  An array of name-value pairs to include in the header of the request.
      *
      * @return  ResponseInterface
      *
@@ -150,7 +152,7 @@ class HttpClient implements HttpClientInterface, AsyncHttpClientInterface
      * Method to send the HEAD command to the server.
      *
      * @param  Stringable|string  $url      Path to the resource.
-     * @param  array               $options  An array of name-value pairs to include in the header of the request.
+     * @param  array              $options  An array of name-value pairs to include in the header of the request.
      *
      * @return  ResponseInterface
      *
@@ -165,7 +167,7 @@ class HttpClient implements HttpClientInterface, AsyncHttpClientInterface
      * Method to send the GET command to the server.
      *
      * @param  Stringable|string  $url      Path to the resource.
-     * @param  array               $options  An array of name-value pairs to include in the header of the request.
+     * @param  array              $options  An array of name-value pairs to include in the header of the request.
      *
      * @return  ResponseInterface
      *
@@ -180,8 +182,8 @@ class HttpClient implements HttpClientInterface, AsyncHttpClientInterface
      * Method to send the POST command to the server.
      *
      * @param  Stringable|string  $url      Path to the resource.
-     * @param  mixed               $body     Either an associative array or a string to be sent with the request.
-     * @param  array               $options  An array of name-value pairs to include in the header of the request
+     * @param  mixed              $body     Either an associative array or a string to be sent with the request.
+     * @param  array              $options  An array of name-value pairs to include in the header of the request
      *
      * @return  ResponseInterface
      *
@@ -196,8 +198,8 @@ class HttpClient implements HttpClientInterface, AsyncHttpClientInterface
      * Method to send the PUT command to the server.
      *
      * @param  Stringable|string  $url      Path to the resource.
-     * @param  mixed               $body     Either an associative array or a string to be sent with the request.
-     * @param  array               $options  An array of name-value pairs to include in the header of the request.
+     * @param  mixed              $body     Either an associative array or a string to be sent with the request.
+     * @param  array              $options  An array of name-value pairs to include in the header of the request.
      *
      * @return  ResponseInterface
      *
@@ -212,8 +214,8 @@ class HttpClient implements HttpClientInterface, AsyncHttpClientInterface
      * Method to send the DELETE command to the server.
      *
      * @param  Stringable|string  $url      Path to the resource.
-     * @param  mixed               $body     Either an associative array or a string to be sent with the request.
-     * @param  array               $options  An array of name-value pairs to include in the header of the request.
+     * @param  mixed              $body     Either an associative array or a string to be sent with the request.
+     * @param  array              $options  An array of name-value pairs to include in the header of the request.
      *
      * @return  ResponseInterface
      *
@@ -228,7 +230,7 @@ class HttpClient implements HttpClientInterface, AsyncHttpClientInterface
      * Method to send the TRACE command to the server.
      *
      * @param  Stringable|string  $url      Path to the resource.
-     * @param  array               $options  An array of name-value pairs to include in the header of the request.
+     * @param  array              $options  An array of name-value pairs to include in the header of the request.
      *
      * @return  ResponseInterface
      *
@@ -243,8 +245,8 @@ class HttpClient implements HttpClientInterface, AsyncHttpClientInterface
      * Method to send the PATCH command to the server.
      *
      * @param  Stringable|string  $url      Path to the resource.
-     * @param  mixed               $body     Either an associative array or a string to be sent with the request.
-     * @param  array               $options  An array of name-value pairs to include in the header of the request.
+     * @param  mixed              $body     Either an associative array or a string to be sent with the request.
+     * @param  array              $options  An array of name-value pairs to include in the header of the request.
      *
      * @return  ResponseInterface
      *
@@ -282,10 +284,10 @@ class HttpClient implements HttpClientInterface, AsyncHttpClientInterface
     /**
      * Create Request object.
      *
-     * @param  string              $method   The method type.
+     * @param  string             $method   The method type.
      * @param  Stringable|string  $url      The URL to request, may be string or Uri object.
-     * @param  mixed               $body     The request body data, can be an array of POST data.
-     * @param  array               $options  The options array.
+     * @param  mixed              $body     The request body data, can be an array of POST data.
+     * @param  array              $options  The options array.
      *
      * @return  RequestInterface
      *
@@ -303,11 +305,11 @@ class HttpClient implements HttpClientInterface, AsyncHttpClientInterface
     /**
      * Prepare Request object.
      *
-     * @param  RequestInterface    $request  The Psr Request object.
-     * @param  string              $method   The method type.
+     * @param  RequestInterface   $request  The Psr Request object.
+     * @param  string             $method   The method type.
      * @param  Stringable|string  $url      The URL to request, may be string or Uri object.
-     * @param  mixed               $body     The request body data, can be an array of POST data.
-     * @param  array               $options  The options array.
+     * @param  mixed              $body     The request body data, can be an array of POST data.
+     * @param  array              $options  The options array.
      *
      * @return  RequestInterface
      *
@@ -380,10 +382,10 @@ class HttpClient implements HttpClientInterface, AsyncHttpClientInterface
      *
      * This method will build a Request object and use send() method to send request.
      *
-     * @param  string              $method   The method type.
+     * @param  string             $method   The method type.
      * @param  Stringable|string  $url      The URL to request, may be string or Uri object.
-     * @param  mixed               $body     The request body data, can be an array of POST data.
-     * @param  array               $options  The options array.
+     * @param  mixed              $body     The request body data, can be an array of POST data.
+     * @param  array              $options  The options array.
      *
      * @return  ResponseInterface
      */
@@ -403,10 +405,10 @@ class HttpClient implements HttpClientInterface, AsyncHttpClientInterface
      *
      * This method will build a Request object and use send() method to send request.
      *
-     * @param  string              $method   The method type.
+     * @param  string             $method   The method type.
      * @param  Stringable|string  $url      The URL to request, may be string or Uri object.
-     * @param  mixed               $body     The request body data, can be an array of POST data.
-     * @param  array               $options  The options array.
+     * @param  mixed              $body     The request body data, can be an array of POST data.
+     * @param  array              $options  The options array.
      *
      * @return PromiseInterface|mixed
      */
@@ -427,7 +429,7 @@ class HttpClient implements HttpClientInterface, AsyncHttpClientInterface
             $method = substr($name, 0, -5);
 
             if (method_exists($this, $method)) {
-                $ref = new \ReflectionMethod($this, $method);
+                $ref = new ReflectionMethod($this, $method);
 
                 if (count($ref->getParameters()) >= 3) {
                     $promise = $this->requestAsync($method, ...$args);

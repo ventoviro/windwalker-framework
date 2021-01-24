@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Form\Field\Concern;
 
+use InvalidArgumentException;
 use Windwalker\Filter\ChainFilter;
 use Windwalker\Filter\Exception\ValidateException;
 use Windwalker\Filter\FilterInterface;
@@ -34,7 +35,7 @@ trait ManageFilterTrait
     /**
      * validate
      *
-     * @param mixed $value
+     * @param  mixed  $value
      *
      * @return  ValidateResult
      */
@@ -62,7 +63,7 @@ trait ManageFilterTrait
     /**
      * checkRequired
      *
-     * @param mixed $value
+     * @param  mixed  $value
      *
      * @return  bool
      */
@@ -90,7 +91,7 @@ trait ManageFilterTrait
     /**
      * checkRule
      *
-     * @param mixed $value
+     * @param  mixed  $value
      *
      * @return  bool
      */
@@ -102,7 +103,7 @@ trait ManageFilterTrait
     /**
      * filter
      *
-     * @param mixed $value
+     * @param  mixed  $value
      *
      * @return mixed
      */
@@ -121,7 +122,7 @@ trait ManageFilterTrait
      * @param  ValidatorInterface|callable|string  $validators
      *
      * @return  static
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function addValidator(ValidatorInterface|callable|string ...$validators): static
     {
@@ -157,10 +158,10 @@ trait ManageFilterTrait
     /**
      * addFilter
      *
-     * @param  FilterInterface|callable|string  $filters
+     * @param  FilterInterface|callable|string  ...$filters
      *
      * @return  static
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function addFilter(FilterInterface|callable|string ...$filters): static
     {
@@ -224,10 +225,10 @@ trait ManageFilterTrait
     /**
      * addFilter
      *
-     * @param  FilterInterface|callable|string  $filters
+     * @param  FilterInterface|callable|string  ...$filters
      *
      * @return  static
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function addViewFilter(FilterInterface|callable|string ...$filters): static
     {

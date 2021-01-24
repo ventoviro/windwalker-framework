@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Windwalker\Form\Field;
 
-use Windwalker\DOM\DOMElement;
 use Windwalker\Filter\Rule\Range;
 
 /**
@@ -29,9 +28,9 @@ abstract class AbstractHtml5Field extends TextField
     /**
      * max
      *
-     * @param int  $max
-     * @param bool $addFilter
-     * @param bool $forceInt
+     * @param  int   $max
+     * @param  bool  $addFilter
+     * @param  bool  $forceInt
      *
      * @return  static|mixed
      *
@@ -49,8 +48,8 @@ abstract class AbstractHtml5Field extends TextField
     /**
      * min
      *
-     * @param int  $min
-     * @param bool $addFilter
+     * @param  int   $min
+     * @param  bool  $addFilter
      *
      * @return  mixed|static
      *
@@ -68,10 +67,10 @@ abstract class AbstractHtml5Field extends TextField
     /**
      * range
      *
-     * @param int  $min
-     * @param int  $max
-     * @param bool $addFilter
-     * @param bool $forceInt
+     * @param  int   $min
+     * @param  int   $max
+     * @param  bool  $addFilter
+     * @param  bool  $forceInt
      *
      * @return  $this
      *

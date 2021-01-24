@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Http\Test\Request;
 
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 use Windwalker\Http\Request\ServerRequest;
 use Windwalker\Http\UploadedFile;
 use Windwalker\Http\Uri;
@@ -51,7 +52,7 @@ class ServerRequestTest extends TestCase
      * testConstruct
      *
      * @return  void
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function testConstruct()
     {
@@ -66,8 +67,8 @@ class ServerRequestTest extends TestCase
             'files' => new UploadedFile('php://temp', 0),
         ];
 
-        $uri = new Uri('http://example.com');
-        $method = 'POST';
+        $uri     = new Uri('http://example.com');
+        $method  = 'POST';
         $headers = [
             'Host' => ['example.com'],
         ];
@@ -88,7 +89,7 @@ class ServerRequestTest extends TestCase
         $this->assertEquals($method, $request->getMethod());
         $this->assertEquals($headers, $request->getHeaders());
 
-        $body = $request->getBody();
+        $body   = $request->getBody();
         $stream = ReflectAccessor::getValue($body, 'stream');
 
         $this->assertEquals('php://memory', $stream);

@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Http\Request;
 
+use InvalidArgumentException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
@@ -90,11 +91,11 @@ abstract class AbstractRequest implements RequestInterface
             $value = HeaderHelper::allToArray($value);
 
             if (!HeaderHelper::arrayOnlyContainsString($value)) {
-                throw new \InvalidArgumentException('Header values should ony have string.');
+                throw new InvalidArgumentException('Header values should ony have string.');
             }
 
             if (!HeaderHelper::isValidName($name)) {
-                throw new \InvalidArgumentException('Invalid header name');
+                throw new InvalidArgumentException('Invalid header name');
             }
 
             $normalized                     = strtolower($name);
@@ -164,12 +165,12 @@ abstract class AbstractRequest implements RequestInterface
      * @param  mixed  $requestTarget
      *
      * @return static
-     * @throws \InvalidArgumentException if the request target is invalid.
+     * @throws InvalidArgumentException if the request target is invalid.
      */
     public function withRequestTarget(mixed $requestTarget): AbstractRequest|static
     {
         if (preg_match('/\s/', $requestTarget)) {
-            throw new \InvalidArgumentException('RequestTarget cannot contain whitespace.');
+            throw new InvalidArgumentException('RequestTarget cannot contain whitespace.');
         }
 
         $new                = clone $this;
@@ -202,7 +203,7 @@ abstract class AbstractRequest implements RequestInterface
      * @param  string  $method  Case-sensitive method.
      *
      * @return static
-     * @throws \InvalidArgumentException for invalid HTTP methods.
+     * @throws InvalidArgumentException for invalid HTTP methods.
      */
     public function withMethod($method): AbstractRequest|static
     {
@@ -302,7 +303,7 @@ abstract class AbstractRequest implements RequestInterface
         $method = strtoupper($method);
 
         if (!in_array($method, $this->allowMethods, true)) {
-            throw new \InvalidArgumentException('Invalid HTTP method: ' . $method);
+            throw new InvalidArgumentException('Invalid HTTP method: ' . $method);
         }
 
         return $method;

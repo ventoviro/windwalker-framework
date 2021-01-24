@@ -27,7 +27,7 @@ class CheckboxField extends AbstractInputField
      */
     public function prepareInput(DOMElement $input): DOMElement
     {
-        $input['type'] = $this->getInputType();
+        $input['type']    = $this->getInputType();
         $input['checked'] = $this->getValue() ? 'checked' : null;
 
         return $input;

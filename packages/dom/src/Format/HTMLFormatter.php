@@ -229,8 +229,8 @@ class HTMLFormatter extends DOMFormatter
     }
 
     /**
-     * @param  string   $elementName  Element name, e.g. "b".
-     * @param  integer  $type
+     * @param  string  $elementName  Element name, e.g. "b".
+     * @param  int     $type
      *
      * @return  void
      */

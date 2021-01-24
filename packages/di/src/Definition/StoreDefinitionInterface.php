@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\DI\Definition;
 
+use Closure;
+
 /**
  * Interface StoreDefinitionInterface
  */
@@ -20,7 +22,7 @@ interface StoreDefinitionInterface extends DefinitionInterface
 
     public function isProtected(): bool;
 
-    public function extend(\Closure $closure);
+    public function extend(Closure $closure);
 
     public function reset(): void;
 }

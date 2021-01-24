@@ -19,7 +19,7 @@ trait CompileCommentTrait
     /**
      * Compile Blade comments into valid PHP.
      *
-     * @param  string $value
+     * @param  string  $value
      *
      * @return string
      */

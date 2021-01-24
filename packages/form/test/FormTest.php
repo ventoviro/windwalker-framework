@@ -47,7 +47,7 @@ class FormTest extends TestCase
     /**
      * getByDefine
      *
-     * @param string  $ns
+     * @param  string  $ns
      *
      * @return  Form
      */

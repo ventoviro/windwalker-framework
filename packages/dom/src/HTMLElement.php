@@ -19,9 +19,9 @@ abstract class HTMLElement
     /**
      * create
      *
-     * @param string $name
-     * @param array  $attributes
-     * @param mixed  $content
+     * @param  string  $name
+     * @param  array   $attributes
+     * @param  mixed   $content
      *
      * @return  DOMElement
      */
@@ -33,7 +33,7 @@ abstract class HTMLElement
     /**
      * buildAttributes
      *
-     * @param array $attributes
+     * @param  array  $attributes
      *
      * @return  string
      */

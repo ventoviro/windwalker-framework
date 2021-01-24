@@ -21,7 +21,7 @@ interface BootableProviderInterface
     /**
      * boot
      *
-     * @param Container $container
+     * @param  Container  $container
      *
      * @return  void
      */

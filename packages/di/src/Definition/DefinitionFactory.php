@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\DI\Definition;
 
+use Closure;
+
 /**
  * The DefinitionFactory class.
  */
@@ -23,8 +25,8 @@ class DefinitionFactory
         }
 
         if (!$value instanceof DefinitionInterface) {
-            if (!$value instanceof \Closure) {
-                $value = fn () => $value;
+            if (!$value instanceof Closure) {
+                $value = fn() => $value;
             }
 
             $value = new ClosureDefinition($value);

@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Cache\Storage;
 
+use SplFileInfo;
+
 /**
  * The ModifiedFileStorage class.
  */
@@ -32,14 +34,14 @@ class ModifiedFileStorage extends FileStorage
 
     public function isModified(string $key): bool
     {
-        $uri = $this->fetchStreamUri($key);
+        $uri  = $this->fetchStreamUri($key);
         $time = filemtime($uri);
 
         $lastModified = 0;
 
         foreach ($this->listenFiles as $listenFile) {
             if (is_string($listenFile)) {
-                $listenFile = new \SplFileInfo($listenFile);
+                $listenFile = new SplFileInfo($listenFile);
             }
 
             $mTime = $listenFile->getMTime();

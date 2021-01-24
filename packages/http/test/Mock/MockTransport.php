@@ -68,7 +68,7 @@ class MockTransport extends AbstractTransport
     /**
      * Method to check if HTTP transport layer available for using
      *
-     * @return  boolean  True if available else false
+     * @return  bool  True if available else false
      *
      * @since   2.1
      */
@@ -80,16 +80,19 @@ class MockTransport extends AbstractTransport
     /**
      * Use stream to download file.
      *
-     * @param  RequestInterface        $request  The request object to store request params.
-     * @param  string|StreamInterface  $dest     The dest path to store file.
+     * @param  RequestInterface  $request  The request object to store request params.
+     * @param  string|StreamInterface  $dest  The dest path to store file.
      *
-     * @param  array                   $options
+     * @param  array  $options
      *
      * @return  ResponseInterface
      * @since   2.1
      */
-    public function download(RequestInterface $request, string|StreamInterface $dest, array $options = []): ResponseInterface
-    {
+    public function download(
+        RequestInterface $request,
+        string|StreamInterface $dest,
+        array $options = []
+    ): ResponseInterface {
         $this->setOption('target_file', $dest);
 
         return $this->request($request);

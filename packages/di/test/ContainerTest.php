@@ -11,7 +11,12 @@ declare(strict_types=1);
 
 namespace Windwalker\DI\Test;
 
+use Attribute;
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
+use SplPriorityQueue;
+use SplQueue;
+use SplStack;
 use Windwalker\Data\Collection;
 use Windwalker\DI\Attributes\Inject;
 use Windwalker\DI\Container;
@@ -55,23 +60,23 @@ class ContainerTest extends TestCase
         // Share, not protect
         $container->set(
             'sakura',
-            fn() => new \SplPriorityQueue(),
+            fn() => new SplPriorityQueue(),
             Container::SHARED
         );
 
-        self::assertInstanceOf(\SplPriorityQueue::class, $container->get('sakura'));
+        self::assertInstanceOf(SplPriorityQueue::class, $container->get('sakura'));
 
         self::assertSame($container->get('sakura'), $container->get('sakura'));
 
         // Override it
         $container->set(
             'sakura',
-            fn() => new \SplStack(),
+            fn() => new SplStack(),
             Container::SHARED
         );
 
         // Should be override
-        self::assertInstanceOf(\SplStack::class, $container->get('sakura'));
+        self::assertInstanceOf(SplStack::class, $container->get('sakura'));
     }
 
     public function testSetAsProtect()
@@ -83,20 +88,20 @@ class ContainerTest extends TestCase
         // Share, Protect
         $container->set(
             'olive',
-            fn() => new \SplStack(),
+            fn() => new SplStack(),
             Container::SHARED | Container::PROTECTED
         );
 
-        self::assertInstanceOf(\SplStack::class, $container->get('olive'));
+        self::assertInstanceOf(SplStack::class, $container->get('olive'));
 
         $container->set(
             'olive',
-            fn() => new \SplQueue(),
+            fn() => new SplQueue(),
             Container::SHARED
         );
 
         // Should not be override
-        self::assertInstanceOf(\SplStack::class, $container->get('olive'));
+        self::assertInstanceOf(SplStack::class, $container->get('olive'));
     }
 
     public function testSetAndRemoveAlias()
@@ -138,20 +143,20 @@ class ContainerTest extends TestCase
         // Share, Protect
         $container->protect(
             'olive',
-            fn() => new \SplStack(),
+            fn() => new SplStack(),
             Container::SHARED
         );
 
-        self::assertInstanceOf(\SplStack::class, $container->get('olive'));
+        self::assertInstanceOf(SplStack::class, $container->get('olive'));
 
         $container->set(
             'olive',
-            fn() => new \SplQueue(),
+            fn() => new SplQueue(),
             Container::SHARED
         );
 
         // Should not be override
-        self::assertInstanceOf(\SplStack::class, $container->get('olive'));
+        self::assertInstanceOf(SplStack::class, $container->get('olive'));
     }
 
     /**
@@ -168,22 +173,22 @@ class ContainerTest extends TestCase
         // Share, not protect
         $container->share(
             'sakura',
-            fn() => new \SplPriorityQueue()
+            fn() => new SplPriorityQueue()
         );
 
-        self::assertInstanceOf(\SplPriorityQueue::class, $container->get('sakura'));
+        self::assertInstanceOf(SplPriorityQueue::class, $container->get('sakura'));
 
         self::assertSame($container->get('sakura'), $container->get('sakura'));
 
         // Override it
         $container->set(
             'sakura',
-            fn() => new \SplStack(),
+            fn() => new SplStack(),
             Container::SHARED
         );
 
         // Should be override
-        self::assertInstanceOf(\SplStack::class, $container->get('sakura'));
+        self::assertInstanceOf(SplStack::class, $container->get('sakura'));
     }
 
     /**
@@ -248,8 +253,8 @@ class ContainerTest extends TestCase
 
         self::assertInstanceOf(Foo::class, $foo);
         self::assertInstanceOf(Bar::class, $foo->bar);
-        self::assertInstanceOf(\SplPriorityQueue::class, $foo->bar->queue);
-        self::assertInstanceOf(\SplStack::class, $foo->bar->stack);
+        self::assertInstanceOf(SplPriorityQueue::class, $foo->bar->queue);
+        self::assertInstanceOf(SplStack::class, $foo->bar->stack);
 
         // Bind a sub class
         $container->clear();
@@ -265,7 +270,7 @@ class ContainerTest extends TestCase
 
         $container->set(
             'SplPriorityQueue',
-            fn() => new \SplPriorityQueue()
+            fn() => new SplPriorityQueue()
         );
 
         $queue = $container->get('SplPriorityQueue');
@@ -285,7 +290,7 @@ class ContainerTest extends TestCase
         // Not shared object
         $container->clear();
 
-        $foo = $container->createObject(Foo::class);
+        $foo  = $container->createObject(Foo::class);
         $foo2 = $container->get(Foo::class);
 
         self::assertNotSame($foo, $foo2);
@@ -293,7 +298,7 @@ class ContainerTest extends TestCase
         // Shared object
         $container->clear();
 
-        $foo = $container->createSharedObject(Foo::class);
+        $foo  = $container->createSharedObject(Foo::class);
         $foo2 = $container->get(Foo::class);
 
         self::assertSame($foo, $foo2);
@@ -339,7 +344,7 @@ class ContainerTest extends TestCase
         $container = new Container();
 
         self::assertExpectedException(
-            fn () => $container->newInstance(Foo::class, []),
+            fn() => $container->newInstance(Foo::class, []),
             DependencyResolutionException::class
         );
 
@@ -378,7 +383,7 @@ class ContainerTest extends TestCase
 
         $container->prepareSharedObject(Foo::class, null, Container::AUTO_WIRE);
 
-        $foo = $container->get(Foo::class);
+        $foo  = $container->get(Foo::class);
         $foo2 = $container->get(Foo::class);
 
         self::assertSame($foo, $foo2);
@@ -390,8 +395,8 @@ class ContainerTest extends TestCase
      * @see  https://github.com/ventoviro/windwalker/issues/318
      *
      * @return  void
-     * @throws \ReflectionException
-     * @throws \Windwalker\DI\Exception\DependencyResolutionException
+     * @throws ReflectionException
+     * @throws DependencyResolutionException
      */
     public function testNewInstanceWithNoDefaultValueAvailable()
     {
@@ -407,8 +412,8 @@ class ContainerTest extends TestCase
      *
      * @return  void
      *
-     * @throws \ReflectionException
-     * @throws \Windwalker\DI\Exception\DependencyResolutionException
+     * @throws ReflectionException
+     * @throws DependencyResolutionException
      *
      * @since  3.4.4
      */
@@ -416,12 +421,15 @@ class ContainerTest extends TestCase
     {
         $container = new Container();
         $container->getAttributesResolver()
-            ->registerAttribute(Inject::class, \Attribute::TARGET_PROPERTY);
+            ->registerAttribute(Inject::class, Attribute::TARGET_PROPERTY);
         StubService::$counter = 0;
 
-        $container->share('stub', function () {
-            return new StubService();
-        });
+        $container->share(
+            'stub',
+            function () {
+                return new StubService();
+            }
+        );
 
         /** @var StubInject $obj */
         $obj = $container->newInstance(StubInject::class);

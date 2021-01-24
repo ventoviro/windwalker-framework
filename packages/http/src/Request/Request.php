@@ -63,7 +63,7 @@ class Request extends AbstractRequest
      * If the header does not appear in the message, this method MUST return an
      * empty array.
      *
-     * @param string $name Case-insensitive header field name.
+     * @param  string  $name  Case-insensitive header field name.
      *
      * @return string[] An array of string values as provided for the given
      *    header. If the header does not appear in the message, this method MUST
@@ -87,7 +87,7 @@ class Request extends AbstractRequest
     /**
      * Checks if a header exists by the given case-insensitive name.
      *
-     * @param string $name Case-insensitive header field name.
+     * @param  string  $name  Case-insensitive header field name.
      *
      * @return bool Returns true if any header names match the given header
      *     name using a case-insensitive string comparison. Returns false if
@@ -97,7 +97,7 @@ class Request extends AbstractRequest
     {
         if (strtolower($name) === 'host' && ($this->uri && $this->uri->getHost())) {
             $this->headerNames['host'] = $name;
-            $this->headers[$name] = [$this->getHostFromUri()];
+            $this->headers[$name]      = [$this->getHostFromUri()];
         }
 
         return parent::hasHeader($name);

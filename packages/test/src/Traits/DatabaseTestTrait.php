@@ -12,6 +12,8 @@ declare(strict_types=1);
 namespace Windwalker\Test\Traits;
 
 use Asika\SqlSplitter\SqlSplitter;
+use PDOException;
+use RuntimeException;
 use Windwalker\Database\DatabaseAdapter;
 use Windwalker\Database\Driver\DriverFactory;
 use Windwalker\Database\Driver\Pdo\DsnHelper;
@@ -36,12 +38,12 @@ trait DatabaseTestTrait
 
         $params = $params ?? self::getTestParams($platform);
 
-        $params['driver'] = $driver;
+        $params['driver']    = $driver;
         static::$lastQueries = [];
 
         $db = new DatabaseAdapter(
             [
-                'driver' => $driver
+                'driver' => $driver,
             ]
         );
 
@@ -56,15 +58,18 @@ trait DatabaseTestTrait
         //     self::$logInited = true;
         // }
 
-        $db->on(QueryEndEvent::class, function (QueryEndEvent $event) {
-            static::$lastQueries[] = $event->getSql();
+        $db->on(
+            QueryEndEvent::class,
+            function (QueryEndEvent $event) {
+                static::$lastQueries[] = $event->getSql();
 
-            // $fp = fopen($logFile, 'ab+');
-            //
-            // fwrite($fp, $event->getSql() . ";\n\n");
-            //
-            // fclose($fp);
-        });
+                // $fp = fopen($logFile, 'ab+');
+                //
+                // fwrite($fp, $event->getSql() . ";\n\n");
+                //
+                // fclose($fp);
+            }
+        );
 
         return static::$db = $db;
     }
@@ -107,7 +112,7 @@ trait DatabaseTestTrait
     protected static function importFromFile(string $file): void
     {
         if (!is_file($file)) {
-            throw new \RuntimeException('File not found: ' . $file);
+            throw new RuntimeException('File not found: ' . $file);
         }
 
         self::importIterator(SqlSplitter::splitFromFile($file));
@@ -129,8 +134,8 @@ trait DatabaseTestTrait
 
             try {
                 static::$db->execute($query);
-            } catch (\PDOException $e) {
-                throw new \PDOException(
+            } catch (PDOException $e) {
+                throw new PDOException(
                     $e->getMessage() . ' - SQ: ' . $query,
                     (int) $e->getCode(),
                     $e

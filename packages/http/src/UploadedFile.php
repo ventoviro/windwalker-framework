@@ -11,8 +11,10 @@ declare(strict_types=1);
 
 namespace Windwalker\Http;
 
+use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
+use RuntimeException;
 use Windwalker\Stream\Stream;
 
 /**
@@ -39,7 +41,7 @@ class UploadedFile implements UploadedFileInterface
     /**
      * Property error.
      *
-     * @var  integer
+     * @var  int
      */
     protected $error;
 
@@ -53,14 +55,14 @@ class UploadedFile implements UploadedFileInterface
     /**
      * Property moved.
      *
-     * @var  boolean
+     * @var  bool
      */
     protected $moved = false;
 
     /**
      * Property size.
      *
-     * @var  integer
+     * @var  int
      */
     protected $size;
 
@@ -82,8 +84,8 @@ class UploadedFile implements UploadedFileInterface
      * Class init.
      *
      * @param  string|resource|StreamInterface  $file             The file source.
-     * @param  integer                          $size             The file size.
-     * @param  integer                          $error            The upload error status.
+     * @param  int                              $size             The file size.
+     * @param  int                              $error            The upload error status.
      * @param  string|null                      $clientFilename   The client filename.
      * @param  string|null                      $clientMediaType  The file media type.
      *
@@ -97,7 +99,7 @@ class UploadedFile implements UploadedFileInterface
     ) {
         if ($error === UPLOAD_ERR_OK) {
             if (is_string($file)) {
-                $this->file = $file;
+                $this->file   = $file;
                 $this->stream = new Stream($file, Stream::MODE_READ_WRITE_FROM_BEGIN);
             } elseif (is_resource($file)) {
                 $this->stream = new Stream($file);
@@ -106,29 +108,29 @@ class UploadedFile implements UploadedFileInterface
             }
 
             if (!$this->file && !$this->stream) {
-                throw new \InvalidArgumentException('Invalid stream or file provided for UploadedFile');
+                throw new InvalidArgumentException('Invalid stream or file provided for UploadedFile');
             }
         }
 
         if (!is_int($size)) {
-            throw new \InvalidArgumentException('Size should be integer.');
+            throw new InvalidArgumentException('Size should be integer.');
         }
 
         if (!is_int($error) || 0 > $error || 8 < $error) {
-            throw new \InvalidArgumentException('Error status must be integer or an UPLOAD_ERR_* constant.');
+            throw new InvalidArgumentException('Error status must be integer or an UPLOAD_ERR_* constant.');
         }
 
         if ($clientFilename !== null && !is_string($clientFilename)) {
-            throw new \InvalidArgumentException('Client filename must be null or string');
+            throw new InvalidArgumentException('Client filename must be null or string');
         }
 
         if ($clientMediaType !== null && !is_string($clientMediaType)) {
-            throw new \InvalidArgumentException('Media type must be null or a string');
+            throw new InvalidArgumentException('Media type must be null or a string');
         }
 
-        $this->error = $error;
-        $this->size = $size;
-        $this->clientFilename = $clientFilename;
+        $this->error           = $error;
+        $this->size            = $size;
+        $this->clientFilename  = $clientFilename;
         $this->clientMediaType = $clientMediaType;
 
         $this->sapi = PHP_SAPI;
@@ -148,13 +150,13 @@ class UploadedFile implements UploadedFileInterface
      *
      * @return  StreamInterface  Stream representation of the uploaded file.
      *
-     * @throws \RuntimeException in cases when no stream is available or can be
+     * @throws RuntimeException in cases when no stream is available or can be
      *                           created.
      */
     public function getStream(): Stream|StreamInterface
     {
         if ($this->moved) {
-            throw new \RuntimeException('The file has already moved.');
+            throw new RuntimeException('The file has already moved.');
         }
 
         if ($this->stream instanceof StreamInterface) {
@@ -194,10 +196,10 @@ class UploadedFile implements UploadedFileInterface
      * @see http://php.net/is_uploaded_file
      * @see http://php.net/move_uploaded_file
      *
-     * @param   string $targetPath Path to which to move the uploaded file.
+     * @param  string  $targetPath  Path to which to move the uploaded file.
      *
-     * @throws  \InvalidArgumentException if the $path specified is invalid.
-     * @throws  \RuntimeException         on any error during the move operation, or on
+     * @throws  InvalidArgumentException if the $path specified is invalid.
+     * @throws  RuntimeException         on any error during the move operation, or on
      *                                    the second or subsequent call to the method.
      */
     public function moveTo($targetPath)
@@ -205,11 +207,11 @@ class UploadedFile implements UploadedFileInterface
         $targetPath = (string) $targetPath;
 
         if (empty($targetPath)) {
-            throw new \InvalidArgumentException('Target path must be a non-empty string');
+            throw new InvalidArgumentException('Target path must be a non-empty string');
         }
 
         if ($this->moved) {
-            throw new \RuntimeException('Cannot move file, it has already moved!');
+            throw new RuntimeException('Cannot move file, it has already moved!');
         }
 
         $sapi = $this->getSapi();
@@ -220,7 +222,7 @@ class UploadedFile implements UploadedFileInterface
         } else {
             // If we sent a plain string as file path, use  move_uploaded_file()
             if (move_uploaded_file($this->file, $targetPath) === false) {
-                throw new \RuntimeException('Error moving uploaded file');
+                throw new RuntimeException('Error moving uploaded file');
             }
         }
     }
@@ -298,14 +300,14 @@ class UploadedFile implements UploadedFileInterface
     /**
      * Write internal stream to given path
      *
-     * @param string $path
+     * @param  string  $path
      */
     protected function writeFile(string $path): void
     {
         $handle = fopen($path, Stream::MODE_READ_WRITE_RESET);
 
         if ($handle === false) {
-            throw new \RuntimeException('Unable to write to path: ' . $path);
+            throw new RuntimeException('Unable to write to path: ' . $path);
         }
 
         $this->stream->rewind();
@@ -330,7 +332,7 @@ class UploadedFile implements UploadedFileInterface
     /**
      * Method to set property sapi
      *
-     * @param   string $sapi
+     * @param  string  $sapi
      *
      * @return  static  Return self to support chaining.
      */

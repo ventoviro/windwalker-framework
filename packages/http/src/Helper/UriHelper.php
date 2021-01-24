@@ -39,7 +39,7 @@ class UriHelper
     /**
      * Build a query from a array (reverse of the PHP parse_str()).
      *
-     * @param   array $params The array of key => value pairs to return as a query string.
+     * @param  array  $params  The array of key => value pairs to return as a query string.
      *
      * @return  string  The resulting query string.
      *
@@ -54,7 +54,7 @@ class UriHelper
     /**
      * Does a UTF-8 safe version of PHP parse_url function
      *
-     * @param   string $url URL to parse
+     * @param  string  $url  URL to parse
      *
      * @return  mixed  Associative array or false if badly formed URL.
      *
@@ -66,7 +66,7 @@ class UriHelper
         $result = false;
 
         // Build arrays of values we need to decode before parsing
-        $entities = [
+        $entities     = [
             '%21',
             '%2A',
             '%27',
@@ -112,7 +112,7 @@ class UriHelper
     /**
      * parseQuery
      *
-     * @param   string $query
+     * @param  string  $query
      *
      * @return  mixed
      */
@@ -126,7 +126,7 @@ class UriHelper
     /**
      * filterScheme
      *
-     * @param   string $scheme
+     * @param  string  $scheme
      *
      * @return  string
      */
@@ -147,7 +147,7 @@ class UriHelper
      *
      * Ensures that the values in the query string are properly urlencoded.
      *
-     * @param   string $query
+     * @param  string  $query
      *
      * @return  string
      */
@@ -181,7 +181,7 @@ class UriHelper
     /**
      * Split a query value into a key/value tuple.
      *
-     * @param   string $value
+     * @param  string  $value
      *
      * @return  array  A value with exactly two elements, key and value
      */
@@ -199,7 +199,7 @@ class UriHelper
     /**
      * Filter a query string key or value, or a fragment.
      *
-     * @param   string $value
+     * @param  string  $value
      *
      * @return  string
      */
@@ -217,7 +217,7 @@ class UriHelper
     /**
      * Filter a fragment value to ensure it is properly encoded.
      *
-     * @param   string $fragment
+     * @param  string  $fragment
      *
      * @return  string
      */
@@ -237,7 +237,7 @@ class UriHelper
     /**
      * Filters the path of a URI to ensure it is properly encoded.
      *
-     * @param  string $path
+     * @param  string  $path
      *
      * @return  string
      */

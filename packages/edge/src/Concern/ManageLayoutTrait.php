@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Edge\Concern;
 
+use InvalidArgumentException;
+
 /**
  * Trait ManageLayoutTrait
  */
@@ -91,12 +93,12 @@ trait ManageLayoutTrait
      * @param  bool  $overwrite
      *
      * @return string
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function stopSection(bool $overwrite = false): string
     {
         if (empty($this->sectionStack)) {
-            throw new \InvalidArgumentException('Cannot end a section without first starting one.');
+            throw new InvalidArgumentException('Cannot end a section without first starting one.');
         }
 
         $last = array_pop($this->sectionStack);
@@ -118,12 +120,12 @@ trait ManageLayoutTrait
      * Stop injecting content into a section and append it.
      *
      * @return string
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function appendSection(): string
     {
         if (empty($this->sectionStack)) {
-            throw new \InvalidArgumentException('Cannot end a section without first starting one.');
+            throw new InvalidArgumentException('Cannot end a section without first starting one.');
         }
 
         $last = array_pop($this->sectionStack);

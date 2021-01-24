@@ -13,6 +13,7 @@ namespace Windwalker\Http;
 
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\ResponseInterface;
+use Stringable;
 
 /**
  * Interface HttpClientInterface
@@ -28,16 +29,16 @@ interface HttpClientInterface extends ClientInterface
      *
      * This method will build a Request object and use send() method to send request.
      *
-     * @param  string              $method   The method type.
-     * @param  string|\Stringable  $url      The URL to request, may be string or Uri object.
-     * @param  mixed               $body     The request body data, can be an array of POST data.
-     * @param  array               $options  The options array.
+     * @param  string             $method   The method type.
+     * @param  string|Stringable  $url      The URL to request, may be string or Uri object.
+     * @param  mixed              $body     The request body data, can be an array of POST data.
+     * @param  array              $options  The options array.
      *
      * @return  ResponseInterface
      */
     public function request(
         string $method,
-        \Stringable|string $url,
+        Stringable|string $url,
         $body = null,
         array $options = []
     ): ResponseInterface;

@@ -24,7 +24,7 @@ class StubServiceProvider implements ServiceProviderInterface
     /**
      * Registers the service provider with a DI container.
      *
-     * @param   Container $container The DI container.
+     * @param  Container  $container  The DI container.
      *
      * @return  void
      */

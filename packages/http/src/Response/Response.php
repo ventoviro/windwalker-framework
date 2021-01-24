@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Http\Response;
 
+use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Windwalker\Http\Helper\HeaderHelper;
@@ -44,9 +45,9 @@ class Response implements ResponseInterface
     /**
      * create
      *
-     * @param  int                     $status
+     * @param  int     $status
      * @param  string  $body
-     * @param  array                   $headers
+     * @param  array   $headers
      *
      * @return  static
      */
@@ -92,11 +93,11 @@ class Response implements ResponseInterface
             $value = HeaderHelper::allToArray($value);
 
             if (!HeaderHelper::arrayOnlyContainsString($value)) {
-                throw new \InvalidArgumentException('Header values should ony have string.');
+                throw new InvalidArgumentException('Header values should ony have string.');
             }
 
             if (!HeaderHelper::isValidName($name)) {
-                throw new \InvalidArgumentException('Invalid header name');
+                throw new InvalidArgumentException('Invalid header name');
             }
 
             $normalized                     = strtolower($name);
@@ -141,12 +142,12 @@ class Response implements ResponseInterface
      *                                use the defaults as suggested in the HTTP specification.
      *
      * @return static
-     * @throws \InvalidArgumentException For invalid status code arguments.
+     * @throws InvalidArgumentException For invalid status code arguments.
      */
     public function withStatus($code, $reasonPhrase = ''): Response|static
     {
         if (!ResponseHelper::validateStatus($code)) {
-            throw new \InvalidArgumentException('Invalid status code: ' . $code);
+            throw new InvalidArgumentException('Invalid status code: ' . $code);
         }
 
         $new               = clone $this;

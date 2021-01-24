@@ -9,7 +9,6 @@
 
 namespace Windwalker\Edge\Cache;
 
-use Windwalker\Cache\Storage\RedisStorage;
 use Windwalker\Cache\Storage\StorageInterface;
 
 /**

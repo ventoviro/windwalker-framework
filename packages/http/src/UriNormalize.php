@@ -36,7 +36,7 @@ class UriNormalize
      * /foo/bar/../../boo.php => /boo.php
      * /foo/bar/.././/boo.php => /foo/boo.php
      *
-     * @param   string $path The URI path to clean.
+     * @param  string  $path  The URI path to clean.
      *
      * @return  string  Cleaned and resolved URI path.
      *
@@ -74,11 +74,11 @@ class UriNormalize
 
     public static function ensureRoot(string $path): string
     {
-        return '/' . ltrim(static::cleanPath($path). '/');
+        return '/' . ltrim(static::cleanPath($path) . '/');
     }
 
     public static function ensureDir(string $path): string
     {
-        return rtrim(static::cleanPath($path). '/') . '/';
+        return rtrim(static::cleanPath($path) . '/') . '/';
     }
 }

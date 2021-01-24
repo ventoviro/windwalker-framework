@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Http\Request;
 
+use InvalidArgumentException;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
@@ -111,7 +112,7 @@ class ServerRequest extends AbstractRequest implements ServerRequestInterface
         string $protocol = '1.1'
     ) {
         if (!ServerHelper::validateUploadedFiles($uploadedFiles)) {
-            throw new \InvalidArgumentException('Invalid uploaded files, every file should be an UploadedInterface');
+            throw new InvalidArgumentException('Invalid uploaded files, every file should be an UploadedInterface');
         }
 
         if ($body === 'php://input') {
@@ -260,12 +261,12 @@ class ServerRequest extends AbstractRequest implements ServerRequestInterface
      * @param  array  $uploadedFiles  An array tree of UploadedFileInterface instances.
      *
      * @return static
-     * @throws \InvalidArgumentException if an invalid structure is provided.
+     * @throws InvalidArgumentException if an invalid structure is provided.
      */
     public function withUploadedFiles(array $uploadedFiles): static|ServerRequest
     {
         if (!ServerHelper::validateUploadedFiles($uploadedFiles)) {
-            throw new \InvalidArgumentException('Invalid uploaded files, every file should be an UploadedInterface');
+            throw new InvalidArgumentException('Invalid uploaded files, every file should be an UploadedInterface');
         }
 
         $new = clone $this;
@@ -321,7 +322,7 @@ class ServerRequest extends AbstractRequest implements ServerRequestInterface
      *                                   typically be in an array or object.
      *
      * @return static
-     * @throws \InvalidArgumentException if an unsupported argument type is
+     * @throws InvalidArgumentException if an unsupported argument type is
      *     provided.
      */
     public function withParsedBody($data): static|ServerRequest

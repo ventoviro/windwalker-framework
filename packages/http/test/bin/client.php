@@ -31,15 +31,19 @@ ScheduleRunner::getInstance()->setSchedulers([new EventLoopScheduler($loop)]);
 $http = new HttpClient();
 $http->setAsyncTransport(new SimpleAsyncTransport($http->getTransport()));
 $p1 = $http->getAsync('https://github.com')
-    ->then(function ($res) {
-        show((string) $res->getBody());
-    });
+    ->then(
+        function ($res) {
+            show((string) $res->getBody());
+        }
+    );
 $p2 = $http->getAsync('https://pravatar.cc/')
-    ->then(function ($res) {
-        show((string) $res->getBody());
-    });
+    ->then(
+        function ($res) {
+            show((string) $res->getBody());
+        }
+    );
 
-$p2 = $p2->then(fn () => $loop->stop());
+$p2 = $p2->then(fn() => $loop->stop());
 // $p1->wait();
 $p2->wait();
 

@@ -9,15 +9,8 @@
 
 declare(strict_types=1);
 
-use Psr\Http\Message\ResponseInterface;
-use Windwalker\Http\Event\ErrorEvent;
-use Windwalker\Http\Event\RequestEvent;
-use Windwalker\Http\HttpClient;
-use Windwalker\Http\Request\ServerRequestFactory;
-use Windwalker\Http\Server\HttpServer;
-use Windwalker\Http\Server\PhpServer;
+use Windwalker\Http\Request\Request;
 use Windwalker\Http\Transport\StreamTransport;
-use Windwalker\Promise\Scheduler\ScheduleRunner;
 
 $autoload = __DIR__ . '/../../vendor/autoload.php';
 
@@ -27,52 +20,53 @@ if (!is_file($autoload)) {
 
 include $autoload;
 
-$t1 = new StreamTransport();
+$t1  = new StreamTransport();
 $fp1 = $t1->createConnection(
-    (new \Windwalker\Http\Request\Request())
+    (new Request())
         ->withRequestTarget('https://google.com')
 );
 
-$t2 = new StreamTransport();
+$t2  = new StreamTransport();
 $fp2 = $t1->createConnection(
-    (new \Windwalker\Http\Request\Request())
+    (new Request())
         ->withRequestTarget('https://github.com')
 );
 
-
-
-$master = array();
+$master = [];
 
 $master[] = fopen($fp1);
 $master[] = fopen();
-$read = $master;
+$read     = $master;
 show("Stat: ", fstat($socket));
 while (1) {
-    $read = $master;
-    $_w=$_e=NULL;
-    $mod_fd = stream_select($read, $_w , $_e, 5);
+    $read   = $master;
+    $_w     = $_e = null;
+    $mod_fd = stream_select($read, $_w, $_e, 5);
     show("Stat: ", fstat($socket));
     foreach ($read as $stream) {
         if ($stream === $socket) {
             $conn = stream_socket_accept($socket);
-            fwrite($conn, "Hello! The time is ".date("n/j/Y g:i a")."\n");
+            fwrite($conn, "Hello! The time is " . date("n/j/Y g:i a") . "\n");
             $master[] = $conn;
         } else {
             $sock_data = fread($stream, 1024);
             // var_dump($sock_data);
             if (strlen($sock_data) === 0) { // connection closed
-                $key_to_del = array_search($stream, $master, TRUE);
+                $key_to_del = array_search($stream, $master, true);
                 fclose($stream);
-                unset($master[$key_to_del]);
-            } else if ($sock_data === FALSE) {
-                echo "Something bad happened";
-                $key_to_del = array_search($stream, $master, TRUE);
                 unset($master[$key_to_del]);
             } else {
-                echo "The client has sent :"; var_dump($sock_data);
-                fwrite($stream, "You have sent :[".$sock_data."]\n");
-                fclose($stream);
-                unset($master[array_search($stream, $master)]);
+                if ($sock_data === false) {
+                    echo "Something bad happened";
+                    $key_to_del = array_search($stream, $master, true);
+                    unset($master[$key_to_del]);
+                } else {
+                    echo "The client has sent :";
+                    var_dump($sock_data);
+                    fwrite($stream, "You have sent :[" . $sock_data . "]\n");
+                    fclose($stream);
+                    unset($master[array_search($stream, $master)]);
+                }
             }
         }
     }

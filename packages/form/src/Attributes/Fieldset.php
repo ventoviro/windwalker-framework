@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Form\Attributes;
 
+use Attribute;
 use Windwalker\Attributes\AttributeHandler;
 use Windwalker\Attributes\AttributeInterface;
 use Windwalker\Form\Form;
@@ -18,7 +19,7 @@ use Windwalker\Form\Form;
 /**
  * The Fieldset class.
  */
-#[\Attribute]
+#[Attribute]
 class Fieldset implements AttributeInterface
 {
     public string $name;
@@ -33,7 +34,7 @@ class Fieldset implements AttributeInterface
      */
     public function __construct(string $name, ?string $title = '')
     {
-        $this->name = $name;
+        $this->name  = $name;
         $this->title = $title;
     }
 

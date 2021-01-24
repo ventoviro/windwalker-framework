@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Http\Response;
 
+use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 
 /**
@@ -30,9 +31,9 @@ abstract class AbstractContentTypeResponse extends Response
     /**
      * Constructor.
      *
-     * @param  string $body    The body data.
-     * @param  int    $status  The status code.
-     * @param  array  $headers The custom headers.
+     * @param  string  $body     The body data.
+     * @param  int     $status   The status code.
+     * @param  array   $headers  The custom headers.
      */
     public function __construct($body = '', $status = 200, array $headers = [])
     {
@@ -58,7 +59,7 @@ abstract class AbstractContentTypeResponse extends Response
      * @param  string  $content
      *
      * @return  static
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function withContent(string $content): static
     {

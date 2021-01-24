@@ -28,15 +28,18 @@ abstract class ServerHelper
      *
      * Will also do a case-insensitive search if a case sensitive search fails.
      *
-     * @param   array  $servers Server values to search.
-     * @param   string $name    The name we want to search.
-     * @param   mixed  $default Default value if not found.
+     * @param  array   $servers  Server values to search.
+     * @param  string  $name     The name we want to search.
+     * @param  mixed   $default  Default value if not found.
      *
      * @return  mixed
      */
     #[Pure]
-    public static function getValue(array $servers, string $name, mixed $default = null): mixed
-    {
+    public static function getValue(
+        array $servers,
+        string $name,
+        mixed $default = null
+    ): mixed {
         if (array_key_exists($name, $servers)) {
             return $servers[$name];
         }
@@ -49,9 +52,9 @@ abstract class ServerHelper
      *
      * Every file should be an UploadedFileInterface object.
      *
-     * @param   array $files Files array.
+     * @param  array  $files  Files array.
      *
-     * @return  boolean
+     * @return  bool
      */
     public static function validateUploadedFiles(array $files): bool
     {
@@ -127,7 +130,7 @@ abstract class ServerHelper
     /**
      * parseFormData
      *
-     * @param string $input
+     * @param  string  $input
      *
      * @return array
      *
@@ -139,7 +142,7 @@ abstract class ServerHelper
 
         // Fetch each part
         $parts = array_slice(explode($boundary, $input), 1);
-        $data = [];
+        $data  = [];
         $files = [];
 
         foreach ($parts as $part) {
@@ -157,7 +160,7 @@ abstract class ServerHelper
 
             // Parse the headers list
             $rawHeaders = explode("\r\n", $rawHeaders);
-            $headers = [];
+            $headers    = [];
 
             foreach ($rawHeaders as $header) {
                 [$name, $value] = explode(':', $header, 2);
@@ -175,7 +178,7 @@ abstract class ServerHelper
                     $matches
                 );
 
-                $field = $matches[1];
+                $field    = $matches[1];
                 $fileName = (isset($matches[2]) ? $matches[2] : null);
 
                 $fieldName = str_replace(['[', '][', ']'], ['.', '.', ''], $field);
@@ -216,14 +219,14 @@ abstract class ServerHelper
     /**
      * setByPath
      *
-     * @param mixed  &$data
-     * @param string $path
-     * @param mixed  $value
-     * @param string $separator
+     * @param  mixed  &$data
+     * @param  string  $path
+     * @param  mixed   $value
+     * @param  string  $separator
      *
-     * @return  boolean
+     * @return  bool
      *
-     * @since   2.0
+     * @since      2.0
      *
      * @deprecated Use Arr::set()
      */
@@ -240,9 +243,9 @@ abstract class ServerHelper
         foreach ($nodes as $node) {
             if (is_array($dataTmp)) {
                 if ((string) $node === '') {
-                    $tmp = [];
+                    $tmp       = [];
                     $dataTmp[] = &$tmp;
-                    $dataTmp = &$tmp;
+                    $dataTmp   = &$tmp;
                 } else {
                     if (empty($dataTmp[$node])) {
                         $dataTmp[$node] = [];

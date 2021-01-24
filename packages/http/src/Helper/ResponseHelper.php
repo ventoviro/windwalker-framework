@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Http\Helper;
 
+use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Windwalker\Http\Output\StreamOutput;
@@ -101,7 +102,7 @@ abstract class ResponseHelper
     /**
      * Get status phrase by code.
      *
-     * @param  integer  $code  Status code to get phrase.
+     * @param  int  $code  Status code to get phrase.
      *
      * @return string|null
      */
@@ -115,7 +116,7 @@ abstract class ResponseHelper
      *
      * @param  int|string  $code
      *
-     * @return  boolean  Valid or not.
+     * @return  bool  Valid or not.
      */
     public static function validateStatus(int|string $code): bool
     {
@@ -127,9 +128,9 @@ abstract class ResponseHelper
     /**
      * inRange
      *
-     * @param int      $code
-     * @param int      $start
-     * @param int|null $end
+     * @param  int       $code
+     * @param  int       $start
+     * @param  int|null  $end
      *
      * @return  bool
      *
@@ -142,7 +143,7 @@ abstract class ResponseHelper
         }
 
         if ($end < $start) {
-            throw new \InvalidArgumentException('Range end should larger than start.');
+            throw new InvalidArgumentException('Range end should larger than start.');
         }
 
         return $code >= $start && $code < $end;
@@ -151,7 +152,7 @@ abstract class ResponseHelper
     /**
      * isSuccess
      *
-     * @param int $code
+     * @param  int  $code
      *
      * @return  bool
      *
@@ -165,7 +166,7 @@ abstract class ResponseHelper
     /**
      * isRedirect
      *
-     * @param int $code
+     * @param  int  $code
      *
      * @return  bool
      *
@@ -179,7 +180,7 @@ abstract class ResponseHelper
     /**
      * isClientError
      *
-     * @param int $code
+     * @param  int  $code
      *
      * @return  bool
      *
@@ -193,7 +194,7 @@ abstract class ResponseHelper
     /**
      * isServerError
      *
-     * @param int $code
+     * @param  int  $code
      *
      * @return  bool
      *

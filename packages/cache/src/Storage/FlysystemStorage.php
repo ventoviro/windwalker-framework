@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Cache\Storage;
 
 use League\Flysystem\Filesystem;
-use phpDocumentor\Reflection\Types\True_;
+use RuntimeException;
 
 /**
  * The FlysystemStorage class.
@@ -130,7 +130,7 @@ class FlysystemStorage extends FileStorage
      *
      * @return  string  The full stream URI for the cache entry.
      *
-     * @throws  \RuntimeException if the cache path is invalid.
+     * @throws  RuntimeException if the cache path is invalid.
      * @since   2.0
      */
     public function fetchStreamUri(string $key): string

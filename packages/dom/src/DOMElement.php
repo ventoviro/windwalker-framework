@@ -16,6 +16,7 @@ use DOMAttr;
 use DOMDocument;
 use DOMElement as NativeDOMElement;
 use DOMNode;
+use DOMNodeList;
 use InvalidArgumentException;
 use JetBrains\PhpStorm\ArrayShape;
 use LogicException;
@@ -110,7 +111,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
     {
         $content = value($content);
 
-        if (is_array($content) || $content instanceof \DOMNodeList) {
+        if (is_array($content) || $content instanceof DOMNodeList) {
             $fragment = $node->ownerDocument->createDocumentFragment();
 
             foreach ($content as $key => $c) {
@@ -304,7 +305,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
      *
      * @param  mixed  $offset  An offset to check for.
      *
-     * @return boolean True on success or false on failure.
+     * @return bool True on success or false on failure.
      *                 The return value will be casted to boolean if non-boolean was returned.
      */
     public function offsetExists(mixed $offset): bool

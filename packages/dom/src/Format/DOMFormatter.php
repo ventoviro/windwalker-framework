@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\DOM\Format;
 
+use InvalidArgumentException;
 use RuntimeException;
 use Windwalker\DOM\DOMFactory;
 
@@ -105,7 +106,7 @@ class DOMFormatter
     {
         foreach ($options as $name => $value) {
             if (!array_key_exists($name, $this->options)) {
-                throw new \InvalidArgumentException('Unrecognized option.');
+                throw new InvalidArgumentException('Unrecognized option.');
             }
 
             $this->options[$name] = $value;
@@ -187,7 +188,8 @@ class DOMFormatter
                     $output .= str_repeat(
                         $this->options['indentation_character'],
                         $indentationLevel
-                    ) . $matches[0] . "\n";
+                    );
+                    $output .= $matches[0] . "\n";
 
                     break;
                 }

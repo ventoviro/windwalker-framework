@@ -21,7 +21,7 @@ interface FieldDefinitionInterface
     /**
      * Define the form fields.
      *
-     * @param Form $form The Windwalker form object.
+     * @param  Form  $form  The Windwalker form object.
      *
      * @return  void
      */

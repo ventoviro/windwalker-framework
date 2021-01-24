@@ -11,9 +11,6 @@ declare(strict_types=1);
 
 namespace Windwalker\Http\Server;
 
-use Windwalker\Http\Helper\ServerHelper;
-use Windwalker\Http\Uri;
-
 /**
  * The WebServer class.
  *

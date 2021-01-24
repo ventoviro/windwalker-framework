@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Http\Test\Response;
 
+use PHPUnit\Framework\TestCase;
+use ReflectionException;
 use Windwalker\Http\Test\Stub\StubContentTypeResponse;
 use Windwalker\Test\TestHelper;
 
@@ -19,7 +21,7 @@ use Windwalker\Test\TestHelper;
  *
  * @since 3.0
  */
-class AbstractContentTypeResponseTest extends \PHPUnit\Framework\TestCase
+class AbstractContentTypeResponseTest extends TestCase
 {
     /**
      * Test instance.
@@ -85,7 +87,7 @@ class AbstractContentTypeResponseTest extends \PHPUnit\Framework\TestCase
      *
      * @return  void
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @covers \Windwalker\Http\Response\AbstractContentTypeResponse::normalizeContentType
      */
     public function testNormalizeContentType()

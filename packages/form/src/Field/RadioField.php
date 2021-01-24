@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Windwalker\Form\Field;
 
-use Windwalker\Data\Collection;
 use Windwalker\DOM\DOMElement;
 use Windwalker\Form\FormNormalizer;
 
@@ -32,10 +31,10 @@ class RadioField extends ListField
         $input = h('div', $attrs);
 
         foreach ($this->getOptions() as $option) {
-            $option = clone $option;
-            $option['type'] = 'radio';
-            $option['name'] = $this->getInputName();
-            $option['id']   = $this->getId('-' . FormNormalizer::clearAttribute($option['value']));
+            $option                          = clone $option;
+            $option['type']                  = 'radio';
+            $option['name']                  = $this->getInputName();
+            $option['id']                    = $this->getId('-' . FormNormalizer::clearAttribute($option['value']));
             $option['data-radio-item-input'] = true;
 
             if ((string) $option['value'] === (string) $this->getValue()) {
@@ -59,7 +58,7 @@ class RadioField extends ListField
                             [
                                 'for' => $option['id'],
                                 'id' => $option['id'] . '-label',
-                                'data-radio-item-label' => true
+                                'data-radio-item-label' => true,
                             ],
                             $option->childNodes
                         ),

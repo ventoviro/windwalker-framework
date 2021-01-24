@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\DI\Attributes;
 
+use ReflectionObject;
+use Reflector;
 use Windwalker\Attributes\AttributesResolver as GlobalAttributesResolver;
 use Windwalker\DI\Container;
 use Windwalker\Utilities\Reflection\ReflectAccessor;
@@ -57,7 +59,7 @@ class AttributesResolver extends GlobalAttributesResolver
 
     protected function prepareAttribute(object $attribute): void
     {
-        $ref = new \ReflectionObject($attribute);
+        $ref = new ReflectionObject($attribute);
 
         foreach ($ref->getProperties() as $property) {
             $attrs = $property->getAttributes(Inject::class);
@@ -71,7 +73,7 @@ class AttributesResolver extends GlobalAttributesResolver
     /**
      * @inheritDoc
      */
-    protected function createHandler(callable $getter, \Reflector $reflector, ?object $object = null): AttributeHandler
+    protected function createHandler(callable $getter, Reflector $reflector, ?object $object = null): AttributeHandler
     {
         return new AttributeHandler($getter, $reflector, $object, $this, $this->container);
     }

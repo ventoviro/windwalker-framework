@@ -45,14 +45,14 @@ class EdgeCompiler implements EdgeCompilerInterface
     /**
      * All custom "directive" handlers.
      *
-     * @var  \callable[]
+     * @var  callable[]
      */
     protected array $directives = [];
 
     /**
      * Property parsers.
      *
-     * @var  \callable[]
+     * @var  callable[]
      */
     protected array $parsers = [];
 
@@ -173,7 +173,7 @@ class EdgeCompiler implements EdgeCompilerInterface
     /**
      * Store the verbatim blocks and replace them with a temporary placeholder.
      *
-     * @param  string $value
+     * @param  string  $value
      *
      * @return string
      */
@@ -193,7 +193,7 @@ class EdgeCompiler implements EdgeCompilerInterface
     /**
      * Replace the raw placeholders with the original code stored in the raw blocks.
      *
-     * @param  string $result
+     * @param  string  $result
      *
      * @return string
      */
@@ -215,7 +215,7 @@ class EdgeCompiler implements EdgeCompilerInterface
     /**
      * Parse the tokens from the template.
      *
-     * @param  array $token
+     * @param  array  $token
      *
      * @return string
      */
@@ -235,7 +235,7 @@ class EdgeCompiler implements EdgeCompilerInterface
     /**
      * compileParsers
      *
-     * @param   string $value
+     * @param  string  $value
      *
      * @return  string
      */
@@ -251,7 +251,7 @@ class EdgeCompiler implements EdgeCompilerInterface
     /**
      * Compile Blade statements that start with "@".
      *
-     * @param  string $value
+     * @param  string  $value
      *
      * @return mixed
      */
@@ -267,7 +267,7 @@ class EdgeCompiler implements EdgeCompilerInterface
     /**
      * compileStatement
      *
-     * @param array $match
+     * @param  array  $match
      *
      * @return  string
      */
@@ -287,7 +287,7 @@ class EdgeCompiler implements EdgeCompilerInterface
     /**
      * Strip the parentheses from the given expression.
      *
-     * @param  string $expression
+     * @param  string  $expression
      *
      * @return string
      */
@@ -328,7 +328,7 @@ class EdgeCompiler implements EdgeCompilerInterface
     /**
      * Method to set property directives
      *
-     * @param   callable[] $directives
+     * @param  callable[]  $directives
      *
      * @return  static  Return self to support chaining.
      */
@@ -356,7 +356,7 @@ class EdgeCompiler implements EdgeCompilerInterface
     /**
      * Method to set property parsers
      *
-     * @param   \callable[] $parsers
+     * @param  callable[]  $parsers
      *
      * @return  static  Return self to support chaining.
      */
@@ -370,7 +370,7 @@ class EdgeCompiler implements EdgeCompilerInterface
     /**
      * getParsers
      *
-     * @return  \callable[]
+     * @return  callable[]
      */
     public function getParsers(): array
     {
@@ -390,8 +390,8 @@ class EdgeCompiler implements EdgeCompilerInterface
     /**
      * Sets the raw tags used for the compiler.
      *
-     * @param  string $openTag
-     * @param  string $closeTag
+     * @param  string  $openTag
+     * @param  string  $closeTag
      *
      * @return void
      */
@@ -403,9 +403,9 @@ class EdgeCompiler implements EdgeCompilerInterface
     /**
      * Sets the content tags used for the compiler.
      *
-     * @param  string $openTag
-     * @param  string $closeTag
-     * @param  bool   $escaped
+     * @param  string  $openTag
+     * @param  string  $closeTag
+     * @param  bool    $escaped
      *
      * @return void
      */
@@ -419,8 +419,8 @@ class EdgeCompiler implements EdgeCompilerInterface
     /**
      * Sets the escaped content tags used for the compiler.
      *
-     * @param  string $openTag
-     * @param  string $closeTag
+     * @param  string  $openTag
+     * @param  string  $closeTag
      *
      * @return void
      */
@@ -452,7 +452,7 @@ class EdgeCompiler implements EdgeCompilerInterface
     /**
      * Gets the tags used for the compiler.
      *
-     * @param  bool $escaped
+     * @param  bool  $escaped
      *
      * @return array
      */
@@ -466,7 +466,7 @@ class EdgeCompiler implements EdgeCompilerInterface
     /**
      * Set the echo format to be used by the compiler.
      *
-     * @param  string $format
+     * @param  string  $format
      *
      * @return void
      */

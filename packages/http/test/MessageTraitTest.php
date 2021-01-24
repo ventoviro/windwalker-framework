@@ -11,11 +11,12 @@ declare(strict_types=1);
 
 namespace Windwalker\Http\Test;
 
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use Psr\Http\Message\StreamInterface;
 use Windwalker\Http\Test\Stub\StubMessage;
 use Windwalker\Stream\Stream;
 use Windwalker\Test\Traits\BaseAssertionTrait;
-use Psr\Http\Message\StreamInterface;
 
 /**
  * Test class of AbstractMessage
@@ -68,7 +69,7 @@ class MessageTraitTest extends TestCase
             function () use ($message) {
                 $message->withProtocolVersion(1.0);
             },
-            \InvalidArgumentException::class
+            InvalidArgumentException::class
         );
     }
 

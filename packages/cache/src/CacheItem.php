@@ -11,10 +11,13 @@ declare(strict_types=1);
 
 namespace Windwalker\Cache;
 
+use DateInterval;
+use DateTime;
 use DateTimeInterface;
 use Psr\Cache\CacheItemInterface;
 use Psr\Log\LoggerAwareTrait;
 use Psr\Log\NullLogger;
+use Throwable;
 use Windwalker\Cache\Exception\InvalidArgumentException;
 
 /**
@@ -118,19 +121,19 @@ class CacheItem implements CacheItemInterface
     /**
      * This boolean value tells us if our cache item is currently in the cache or not.
      *
-     * @return  boolean
+     * @return  bool
      *
      * @since   2.0
      */
     public function isHit(): bool
     {
         try {
-            if (new \DateTime() > $this->expiration) {
+            if (new DateTime() > $this->expiration) {
                 $this->hit = false;
             }
 
             return $this->hit;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->logException(
                 'CacheItem::isHit() caused an error',
                 $e
@@ -158,11 +161,11 @@ class CacheItem implements CacheItemInterface
             if ($expiration instanceof DateTimeInterface) {
                 $this->expiration = $expiration;
             } elseif ($expiration === null) {
-                $this->expiration = new \DateTime($this->defaultExpiration);
+                $this->expiration = new DateTime($this->defaultExpiration);
             } else {
                 throw new \InvalidArgumentException('Invalid DateTime format.');
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->logException(
                 'CacheItem::expiresAt() causes an error',
                 $e
@@ -175,7 +178,7 @@ class CacheItem implements CacheItemInterface
     /**
      * Sets the expiration time for this cache item.
      *
-     * @param  int|\DateInterval  $time
+     * @param  int|DateInterval  $time
      *   The period of time from the present after which the item MUST be considered
      *   expired. An integer parameter is understood to be the time in seconds until
      *   expiration. If null is passed explicitly, a default value MAY be used.
@@ -188,18 +191,18 @@ class CacheItem implements CacheItemInterface
     public function expiresAfter($time): static
     {
         try {
-            if ($time instanceof \DateInterval) {
-                $this->expiration = new \DateTime();
+            if ($time instanceof DateInterval) {
+                $this->expiration = new DateTime();
                 $this->expiration->add($time);
             } elseif (is_numeric($time)) {
-                $this->expiration = new \DateTime();
-                $this->expiration->add(new \DateInterval('PT' . $time . 'S'));
+                $this->expiration = new DateTime();
+                $this->expiration->add(new DateInterval('PT' . $time . 'S'));
             } elseif ($time === null) {
-                $this->expiration = new \DateTime($this->defaultExpiration);
+                $this->expiration = new DateTime($this->defaultExpiration);
             } else {
                 throw new InvalidArgumentException('Invalid DateTime format.');
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->logException(
                 'CacheItem::expiresAfter() caused an error.',
                 $e
@@ -255,11 +258,11 @@ class CacheItem implements CacheItemInterface
      * logException
      *
      * @param  string      $message
-     * @param  \Throwable  $e
+     * @param  Throwable  $e
      *
      * @return  void
      */
-    protected function logException(string $message, \Throwable $e): void
+    protected function logException(string $message, Throwable $e): void
     {
         $this->logger->critical(
             $message,

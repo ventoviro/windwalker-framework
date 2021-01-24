@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\DI\Definition;
 
+use Closure;
 use Windwalker\DI\Container;
 use Windwalker\DI\Exception\DefinitionException;
 
@@ -90,11 +91,11 @@ class StoreDefinition extends DelegateDefinition implements StoreDefinitionInter
     /**
      * extend
      *
-     * @param  \Closure  $closure
+     * @param  Closure  $closure
      *
      * @return  $this
      */
-    public function extend(\Closure $closure): static
+    public function extend(Closure $closure): static
     {
         $this->definition = new DelegateDefinition(
             $this->definition,

@@ -56,7 +56,7 @@ class TextField extends AbstractInputField
                         'datalist',
                         [],
                         $this->options
-                    )
+                    ),
                 ]
             );
         }
@@ -69,9 +69,9 @@ class TextField extends AbstractInputField
      */
     public function prepareInput(DOMElement $input): DOMElement
     {
-        $input['type'] = $this->getInputType();
+        $input['type']  = $this->getInputType();
         $input['value'] = $this->escape($this->getValue());
-        $input['list'] = $this->getAttribute('list') ?? $this->buildListId();
+        $input['list']  = $this->getAttribute('list') ?? $this->buildListId();
 
         return $input;
     }
@@ -84,7 +84,7 @@ class TextField extends AbstractInputField
     /**
      * addOption
      *
-     * @param DOMElement $option
+     * @param  DOMElement  $option
      *
      * @return  static
      */
@@ -98,8 +98,8 @@ class TextField extends AbstractInputField
     /**
      * option
      *
-     * @param string  $value
-     * @param array   $attrs
+     * @param  string  $value
+     * @param  array   $attrs
      *
      * @return static
      */
@@ -115,7 +115,7 @@ class TextField extends AbstractInputField
     /**
      * setOptions
      *
-     * @param array|Option[] $options
+     * @param  array|Option[]  $options
      *
      * @return  static
      */
@@ -137,9 +137,9 @@ class TextField extends AbstractInputField
     /**
      * max
      *
-     * @param ?int  $length
-     * @param bool $addFilter
-     * @param bool $utf8
+     * @param ?int   $length
+     * @param  bool  $addFilter
+     * @param  bool  $utf8
      *
      * @return  static|mixed
      *

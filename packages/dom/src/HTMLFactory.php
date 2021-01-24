@@ -13,6 +13,7 @@ namespace Windwalker\DOM;
 
 use DOMDocument;
 use DOMImplementation;
+use DOMNode;
 
 /**
  * The HtmlFactory class.
@@ -25,14 +26,16 @@ use DOMImplementation;
 class HTMLFactory extends DOMFactory
 {
     public const TEXT_SPAN = 1 << 0;
+
     public const TEXT_PARAGRAPH = 1 << 2;
+
     public const HTML_NODES = 1 << 3;
 
     /**
      * element
      *
-     * @param string $name
-     * @param mixed  $value
+     * @param  string  $name
+     * @param  mixed   $value
      *
      * @return  DOMElement
      */
@@ -44,7 +47,7 @@ class HTMLFactory extends DOMFactory
     /**
      * create
      *
-     * @param array $options
+     * @param  array  $options
      *
      * @return  DOMDocument
      */
@@ -62,7 +65,7 @@ class HTMLFactory extends DOMFactory
         return $dom;
     }
 
-    public static function parse(string $text, int $options = self::TEXT_SPAN): ?\DOMNode
+    public static function parse(string $text, int $options = self::TEXT_SPAN): ?DOMNode
     {
         if ($options & static::TEXT_SPAN) {
             $text = "<span>$text</span>";

@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace Windwalker\Http\Response;
 
+use InvalidArgumentException;
+use UnexpectedValueException;
+
 /**
  * The HtmlResponse class.
  *
@@ -28,10 +31,10 @@ class JsonResponse extends TextResponse
     /**
      * Constructor.
      *
-     * @param  string $json    The JSON body data.
-     * @param  int    $status  The status code.
-     * @param  array  $headers The custom headers.
-     * @param  int    $options Json encode options.
+     * @param  string  $json     The JSON body data.
+     * @param  int     $status   The status code.
+     * @param  array   $headers  The custom headers.
+     * @param  int     $options  Json encode options.
      */
     public function __construct($json = '', $status = 200, array $headers = [], $options = 0)
     {
@@ -45,8 +48,8 @@ class JsonResponse extends TextResponse
     /**
      * Encode json.
      *
-     * @param   mixed $data    The dat to convert.
-     * @param   int   $options The json_encode() options flag.
+     * @param  mixed  $data     The dat to convert.
+     * @param  int    $options  The json_encode() options flag.
      *
      * @return  string  Encoded json.
      */
@@ -67,7 +70,7 @@ class JsonResponse extends TextResponse
         $json = json_encode($data, $options);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new \UnexpectedValueException(sprintf('JSON encode failure: %s', json_last_error_msg()));
+            throw new UnexpectedValueException(sprintf('JSON encode failure: %s', json_last_error_msg()));
         }
 
         return $json;
@@ -79,7 +82,7 @@ class JsonResponse extends TextResponse
      * @param  mixed  $content
      *
      * @return  static
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function withContent(string $content): static
     {

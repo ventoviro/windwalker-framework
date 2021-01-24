@@ -11,7 +11,9 @@ declare(strict_types=1);
 
 namespace Windwalker\Http\Test\Response;
 
+use DOMDocument;
 use PHPUnit\Framework\TestCase;
+use SimpleXMLElement;
 use Windwalker\Http\Response\EmptyResponse;
 use Windwalker\Http\Response\HtmlResponse;
 use Windwalker\Http\Response\JsonResponse;
@@ -98,8 +100,8 @@ class ContentTypeResponseTest extends TestCase
      */
     public function testXmlOutput()
     {
-        $xml = new \SimpleXMLElement('<root />');
-        $child = $xml->addChild('foo', 'bar');
+        $xml             = new SimpleXMLElement('<root />');
+        $child           = $xml->addChild('foo', 'bar');
         $child['flower'] = 'sakura';
 
         $response = new XmlResponse($xml);
@@ -110,7 +112,7 @@ class ContentTypeResponseTest extends TestCase
         $this->assertXmlStringEqualsXmlString($expected, $response->getBody()->__toString());
         $this->assertEquals(['application/xml; charset=utf-8'], $response->getHeader('Content-Type'));
 
-        $xml = new \DOMDocument();
+        $xml = new DOMDocument();
         $xml->loadXML("<root />");
 
         $child = $xml->createElement('foo', 'bar');

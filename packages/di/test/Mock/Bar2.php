@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace Windwalker\DI\Test\Mock;
 
+use SplPriorityQueue;
+use SplStack;
+
 /**
  * The Bar class.
  *
@@ -21,24 +24,24 @@ class Bar2
     /**
      * Property queue.
      *
-     * @var  \SplPriorityQueue
+     * @var  SplPriorityQueue
      */
     public $queue = null;
 
     /**
      * Property stack.
      *
-     * @var  \SplStack
+     * @var  SplStack
      */
     public $stack = null;
 
     /**
      * Class init.
      *
-     * @param \SplPriorityQueue $queue
-     * @param \SplStack         $stack
+     * @param  SplPriorityQueue  $queue
+     * @param  SplStack          $stack
      */
-    public function __construct(\SplPriorityQueue $queue, \SplStack $stack)
+    public function __construct(SplPriorityQueue $queue, SplStack $stack)
     {
         $this->queue = $queue;
         $this->stack = $stack;

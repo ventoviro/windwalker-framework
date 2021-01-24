@@ -31,7 +31,7 @@ class StubOutput extends Output
     /**
      * Property status.
      *
-     * @var  integer
+     * @var  int
      */
     public $status;
 
@@ -53,9 +53,9 @@ class StubOutput extends Output
     /**
      * header
      *
-     * @param string  $string
-     * @param bool    $replace
-     * @param integer $code
+     * @param  string  $string
+     * @param  bool    $replace
+     * @param  int     $code
      *
      * @return  static
      */

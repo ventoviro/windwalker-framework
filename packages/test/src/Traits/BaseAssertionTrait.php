@@ -139,6 +139,7 @@ trait BaseAssertionTrait
         }
 
         echo $export;
+
         return null;
     }
 }

@@ -19,7 +19,7 @@ trait CompileLoopTrait
     /**
      * Compile the for statements into valid PHP.
      *
-     * @param  string $expression
+     * @param  string  $expression
      *
      * @return string
      */
@@ -31,7 +31,7 @@ trait CompileLoopTrait
     /**
      * Compile the foreach statements into valid PHP.
      *
-     * @param  string $expression
+     * @param  string  $expression
      *
      * @return string
      */
@@ -43,7 +43,7 @@ trait CompileLoopTrait
     /**
      * Compile the break statements into valid PHP.
      *
-     * @param  string $expression
+     * @param  string  $expression
      *
      * @return string
      */
@@ -55,7 +55,7 @@ trait CompileLoopTrait
     /**
      * Compile the continue statements into valid PHP.
      *
-     * @param  string $expression
+     * @param  string  $expression
      *
      * @return string
      */
@@ -67,7 +67,7 @@ trait CompileLoopTrait
     /**
      * Compile the forelse statements into valid PHP.
      *
-     * @param  string $expression
+     * @param  string  $expression
      *
      * @return string
      */
@@ -81,7 +81,7 @@ trait CompileLoopTrait
     /**
      * Compile the while statements into valid PHP.
      *
-     * @param  string $expression
+     * @param  string  $expression
      *
      * @return string
      */
@@ -93,7 +93,7 @@ trait CompileLoopTrait
     /**
      * Compile the end-while statements into valid PHP.
      *
-     * @param  string $expression
+     * @param  string  $expression
      *
      * @return string
      */
@@ -105,7 +105,7 @@ trait CompileLoopTrait
     /**
      * Compile the end-for statements into valid PHP.
      *
-     * @param  string $expression
+     * @param  string  $expression
      *
      * @return string
      */
@@ -117,7 +117,7 @@ trait CompileLoopTrait
     /**
      * Compile the end-for-each statements into valid PHP.
      *
-     * @param  string $expression
+     * @param  string  $expression
      *
      * @return string
      */
@@ -129,7 +129,7 @@ trait CompileLoopTrait
     /**
      * Compile the end-for-else statements into valid PHP.
      *
-     * @param  string $expression
+     * @param  string  $expression
      *
      * @return string
      */

@@ -30,7 +30,7 @@ class DOMStringMap
     /**
      * ClassList constructor.
      *
-     * @param DOMElement $element
+     * @param  DOMElement  $element
      */
     public function __construct(DOMElement $element)
     {
@@ -80,7 +80,7 @@ class DOMStringMap
     /**
      * __get
      *
-     * @param string $name
+     * @param  string  $name
      *
      * @return  string
      *
@@ -94,8 +94,8 @@ class DOMStringMap
     /**
      * __set
      *
-     * @param string $name
-     * @param string $value
+     * @param  string  $name
+     * @param  string  $value
      *
      * @return  void
      *
@@ -109,7 +109,7 @@ class DOMStringMap
     /**
      * __isset
      *
-     * @param string $name
+     * @param  string  $name
      *
      * @return  bool
      *
@@ -123,7 +123,7 @@ class DOMStringMap
     /**
      * __unset
      *
-     * @param string $name
+     * @param  string  $name
      *
      * @return  void
      *
@@ -137,7 +137,7 @@ class DOMStringMap
     /**
      * toDataKey
      *
-     * @param string $name
+     * @param  string  $name
      *
      * @return  string
      *

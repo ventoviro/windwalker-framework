@@ -11,7 +11,11 @@ declare(strict_types=1);
 
 namespace Windwalker\Cache\Storage;
 
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use RegexIterator;
 use RuntimeException;
+use Throwable;
 use Windwalker\Utilities\Options\OptionAccessTrait;
 
 /**
@@ -90,16 +94,16 @@ class FileStorage implements StorageInterface
         $filePath = $this->getRoot();
         $this->checkFilePath($filePath);
 
-        $iterator = new \RegexIterator(
-            new \RecursiveIteratorIterator(
-                new \RecursiveDirectoryIterator($filePath)
+        $iterator = new RegexIterator(
+            new RecursiveIteratorIterator(
+                new RecursiveDirectoryIterator($filePath)
             ),
             '/' . preg_quote($this->getOption('extension')) . '$/i'
         );
 
         $results = true;
 
-        /* @var  \RecursiveDirectoryIterator $file */
+        /* @var  RecursiveDirectoryIterator $file */
         foreach ($iterator as $file) {
             if ($file->isFile()) {
                 $results = unlink($file->getRealPath()) && $results;
@@ -138,7 +142,7 @@ class FileStorage implements StorageInterface
      *
      * @param  string  $filePath  A file path.
      *
-     * @return  boolean  The method will always return true, if it returns.
+     * @return  bool  The method will always return true, if it returns.
      *
      * @throws  RuntimeException if the file path is invalid.
      * @since   2.0
@@ -148,7 +152,7 @@ class FileStorage implements StorageInterface
         if (!is_dir($filePath)) {
             try {
                 mkdir($filePath, 0755, true);
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 throw new RuntimeException(
                     sprintf('Directory "%s" was not created with error: %s', $filePath, $e->getMessage()),
                     $e->getCode(),
@@ -170,7 +174,7 @@ class FileStorage implements StorageInterface
      * @param  string  $key
      * @param  string  $value
      *
-     * @return  boolean
+     * @return  bool
      */
     protected function write(string $key, string $value): bool
     {
@@ -251,7 +255,7 @@ class FileStorage implements StorageInterface
      *
      * @return  string  The full stream URI for the cache entry.
      *
-     * @throws  \RuntimeException if the cache path is invalid.
+     * @throws  RuntimeException if the cache path is invalid.
      * @since   2.0
      */
     public function fetchStreamUri(string $key): string

@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\DI\Definition;
 
+use Closure;
 use Windwalker\DI\Container;
 
 /**
@@ -20,18 +21,18 @@ class DelegateDefinition implements DefinitionInterface
 {
     protected DefinitionInterface $definition;
 
-    protected ?\Closure $handler = null;
+    protected ?Closure $handler = null;
 
     /**
      * DecoratorDefinition constructor.
      *
      * @param  DefinitionInterface  $definition
-     * @param  \Closure|null        $handler
+     * @param  Closure|null         $handler
      */
-    public function __construct(DefinitionInterface $definition, ?\Closure $handler = null)
+    public function __construct(DefinitionInterface $definition, ?Closure $handler = null)
     {
         $this->definition = $definition;
-        $this->handler = $handler;
+        $this->handler    = $handler;
     }
 
     /**
@@ -43,7 +44,7 @@ class DelegateDefinition implements DefinitionInterface
      */
     public function resolve(Container $container): mixed
     {
-        $handler = $this->handler ?? fn ($value, Container $container) => $value;
+        $handler = $this->handler ?? fn($value, Container $container) => $value;
 
         return $handler($this->definition->resolve($container), $container);
     }

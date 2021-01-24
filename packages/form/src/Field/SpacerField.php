@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Windwalker\Form\Field;
 
 use Windwalker\DOM\DOMElement;
-use Windwalker\Dom\HtmlElement;
 
 use function Windwalker\DOM\h;
 

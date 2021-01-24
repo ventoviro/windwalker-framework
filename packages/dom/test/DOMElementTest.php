@@ -47,7 +47,7 @@ class DOMElementTest extends TestCase
                     'enabled' => true,
                 ],
                 'data-empty' => '',
-                'data-true' => true
+                'data-true' => true,
             ]
         );
 
@@ -84,9 +84,9 @@ class DOMElementTest extends TestCase
     /**
      * testCreateWithCSSExpr
      *
-     * @param string $selector
-     * @param array  $attributes
-     * @param string $result
+     * @param  string  $selector
+     * @param  array   $attributes
+     * @param  string  $result
      *
      * @return  void
      *
@@ -105,35 +105,35 @@ class DOMElementTest extends TestCase
             [
                 'img#foo',
                 [],
-                '<img id="foo"/>'
+                '<img id="foo"/>',
             ],
             [
                 'img.foo',
                 [],
-                '<img class="foo"/>'
+                '<img class="foo"/>',
             ],
             [
                 '#foo.bar',
                 [],
-                '<div id="foo" class="bar"/>'
+                '<div id="foo" class="bar"/>',
             ],
             [
                 'img#foo.bar.yoo',
                 [],
-                '<img id="foo" class="bar yoo"/>'
+                '<img id="foo" class="bar yoo"/>',
             ],
             [
                 'div#foo#foo2.bar.yoo',
                 [],
-                '<div id="foo2" class="bar yoo"/>'
+                '<div id="foo2" class="bar yoo"/>',
             ],
             [
                 'div#foo.bar',
                 [
                     'id' => 'hoo',
-                    'class' => 'yoo'
+                    'class' => 'yoo',
                 ],
-                '<div id="foo" class="yoo bar"/>'
+                '<div id="foo" class="yoo bar"/>',
             ],
         ];
     }

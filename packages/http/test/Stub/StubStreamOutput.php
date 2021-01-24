@@ -32,7 +32,7 @@ class StubStreamOutput extends StreamOutput
     /**
      * Property status.
      *
-     * @var  integer
+     * @var  int
      */
     public $status;
 
@@ -68,9 +68,9 @@ class StubStreamOutput extends StreamOutput
     /**
      * header
      *
-     * @param string  $string
-     * @param bool    $replace
-     * @param integer $code
+     * @param  string  $string
+     * @param  bool    $replace
+     * @param  int     $code
      *
      * @return  static
      */
@@ -100,7 +100,7 @@ class StubStreamOutput extends StreamOutput
      *
      * @return  void
      */
-    public function sendBody(ResponseInterface $response):void
+    public function sendBody(ResponseInterface $response): void
     {
         ob_start();
 
@@ -112,8 +112,8 @@ class StubStreamOutput extends StreamOutput
     /**
      * checkHeaderSent
      *
-     * @param string $filename
-     * @param int    $linenum
+     * @param  string  $filename
+     * @param  int     $linenum
      *
      * @return bool
      */

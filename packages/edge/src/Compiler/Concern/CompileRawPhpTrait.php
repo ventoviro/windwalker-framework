@@ -19,7 +19,7 @@ trait CompileRawPhpTrait
     /**
      * Compile the raw PHP statements into valid PHP.
      *
-     * @param  string $expression
+     * @param  string  $expression
      *
      * @return string
      */
@@ -31,7 +31,7 @@ trait CompileRawPhpTrait
     /**
      * Compile end-php statement into valid PHP.
      *
-     * @param  string $expression
+     * @param  string  $expression
      *
      * @return string
      */
@@ -43,7 +43,7 @@ trait CompileRawPhpTrait
     /**
      * Compile the unset statements into valid PHP.
      *
-     * @param  string $expression
+     * @param  string  $expression
      *
      * @return string
      */

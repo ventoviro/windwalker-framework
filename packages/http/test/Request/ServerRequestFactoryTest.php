@@ -187,9 +187,9 @@ class ServerRequestFactoryTest extends TestCase
     /**
      * Method to test prepareUri().
      *
-     * @param array  $servers
-     * @param array  $headers
-     * @param string $expected
+     * @param  array   $servers
+     * @param  array   $headers
+     * @param  string  $expected
      *
      * @covers       \Windwalker\Http\Request\ServerRequestFactory::prepareUri
      *

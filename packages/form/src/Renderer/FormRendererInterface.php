@@ -24,9 +24,9 @@ interface FormRendererInterface
     /**
      * renderField
      *
-     * @param AbstractField  $field
-     * @param array          $wrapper
-     * @param array          $options
+     * @param  AbstractField  $field
+     * @param  array          $wrapper
+     * @param  array          $options
      *
      * @return string
      */
@@ -35,9 +35,9 @@ interface FormRendererInterface
     /**
      * renderLabel
      *
-     * @param AbstractField  $field
-     * @param DOMElement     $label
-     * @param array          $options
+     * @param  AbstractField  $field
+     * @param  DOMElement     $label
+     * @param  array          $options
      *
      * @return string
      */
@@ -46,9 +46,9 @@ interface FormRendererInterface
     /**
      * renderInput
      *
-     * @param AbstractField  $field
-     * @param DOMElement     $input
-     * @param array          $options
+     * @param  AbstractField  $field
+     * @param  DOMElement     $input
+     * @param  array          $options
      *
      * @return string
      */

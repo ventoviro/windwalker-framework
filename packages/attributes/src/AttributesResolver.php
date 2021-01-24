@@ -72,9 +72,7 @@ class AttributesResolver extends ObjectBuilder
     {
         $ref = new \ReflectionClass($class);
 
-        $builder = $builder ?? function (...$args) use ($class) {
-                return $this->getBuilder()($class, ...$args);
-            };
+        $builder = $builder ?? fn(...$args) => $this->getBuilder()($class, ...$args);
 
         $handler = $this->createHandler($builder, $ref);
 

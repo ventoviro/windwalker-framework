@@ -50,15 +50,15 @@ class ValidateResult
      */
     public function __construct(int $result, AbstractField $field, ?ValidatorInterface $validator = null)
     {
-        $this->field = $field;
-        $this->result = $result;
+        $this->field     = $field;
+        $this->result    = $result;
         $this->validator = $validator;
     }
 
     /**
      * isSuccess
      *
-     * @return  boolean
+     * @return  bool
      */
     public function isSuccess(): bool
     {
@@ -68,7 +68,7 @@ class ValidateResult
     /**
      * isFailure
      *
-     * @return  boolean
+     * @return  bool
      */
     public function isFailure(): bool
     {

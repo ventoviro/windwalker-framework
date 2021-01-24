@@ -28,7 +28,7 @@ trait CompileConditional
     /**
      * Compile the if statements into valid PHP.
      *
-     * @param  string $expression
+     * @param  string  $expression
      *
      * @return string
      */
@@ -40,7 +40,7 @@ trait CompileConditional
     /**
      * Compile the else-if statements into valid PHP.
      *
-     * @param  string $expression
+     * @param  string  $expression
      *
      * @return string
      */
@@ -52,7 +52,7 @@ trait CompileConditional
     /**
      * Compile the forelse statements into valid PHP.
      *
-     * @param  string $expression
+     * @param  string  $expression
      *
      * @return string
      */
@@ -66,7 +66,7 @@ trait CompileConditional
     /**
      * Compile the unless statements into valid PHP.
      *
-     * @param  string $expression
+     * @param  string  $expression
      *
      * @return string
      */
@@ -78,7 +78,7 @@ trait CompileConditional
     /**
      * Compile the end unless statements into valid PHP.
      *
-     * @param  string $expression
+     * @param  string  $expression
      *
      * @return string
      */
@@ -90,7 +90,7 @@ trait CompileConditional
     /**
      * Compile the else statements into valid PHP.
      *
-     * @param  string $expression
+     * @param  string  $expression
      *
      * @return string
      */
@@ -102,7 +102,7 @@ trait CompileConditional
     /**
      * Compile the end-if statements into valid PHP.
      *
-     * @param  string $expression
+     * @param  string  $expression
      *
      * @return string
      */
@@ -114,7 +114,7 @@ trait CompileConditional
     /**
      * Compile the switch statements into valid PHP.
      *
-     * @param string $expression
+     * @param  string  $expression
      *
      * @return string
      */
@@ -128,7 +128,7 @@ trait CompileConditional
     /**
      * Compile the case statements into valid PHP.
      *
-     * @param string $expression
+     * @param  string  $expression
      *
      * @return string
      */

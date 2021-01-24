@@ -21,7 +21,7 @@ interface BootableDeferredProviderInterface
     /**
      * boot
      *
-     * @param Container $container
+     * @param  Container  $container
      *
      * @return  void
      */

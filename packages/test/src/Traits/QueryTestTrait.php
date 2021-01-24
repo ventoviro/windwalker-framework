@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Test\Traits;
 
+use SqlFormatter;
 use Windwalker\Query\Bounded\BoundedHelper;
 use Windwalker\Query\Query;
 use Windwalker\Test\Helper\TestStringHelper;
@@ -62,18 +63,18 @@ trait QueryTestTrait
     /**
      * format
      *
-     * @param   string $sql
+     * @param  string  $sql
      *
      * @return  String
      */
     protected static function format(string $sql): string
     {
-        return \SqlFormatter::format((string) $sql, false);
+        return SqlFormatter::format((string) $sql, false);
     }
 
     protected static function compress(string $sql): string
     {
-        return \SqlFormatter::compress((string) $sql);
+        return SqlFormatter::compress((string) $sql);
     }
 
     public static function assertSqlFormatEquals($sql1, $sql2): void

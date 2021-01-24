@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Windwalker\Form\Test\Field;
 
 use PHPUnit\Framework\TestCase;
-use Windwalker\DOM\Format\HTMLFormatter;
 use Windwalker\Dom\Test\AbstractDomTestCase;
 use Windwalker\Form\Field\CheckboxesField;
 use Windwalker\Html\Option;

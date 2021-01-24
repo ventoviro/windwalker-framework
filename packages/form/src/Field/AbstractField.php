@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Form\Field;
 
+use BadMethodCallException;
+use InvalidArgumentException;
 use Windwalker\DOM\DOMElement;
 use Windwalker\Form\Field\Concern\{ManageFilterTrait,
     ManageInputTrait,
@@ -115,16 +117,16 @@ abstract class AbstractField
      * @param  string  $label
      * @param  array   $attributes
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __construct(string $name = '', string $label = '', array $attributes = [])
     {
         $this->setName($name);
 
-        $this->input = $this->createInputElement($attributes);
-        $this->label = h('label', [], $label);
+        $this->input   = $this->createInputElement($attributes);
+        $this->label   = h('label', [], $label);
         $this->wrapper = h('div', [], '');
-        $this->form = FormFactory::form();
+        $this->form    = FormFactory::form();
 
         $this->resetValidators();
         $this->resetFilters();
@@ -156,7 +158,7 @@ abstract class AbstractField
     /**
      * render
      *
-     * @param array $options
+     * @param  array  $options
      *
      * @return string
      */
@@ -267,7 +269,7 @@ abstract class AbstractField
             [
                 FormNormalizer::clearNamespace($this->getForm()->getNamespace()),
                 FormNormalizer::clearNamespace($this->getNamespace()),
-                FormNormalizer::clearNamespace($name ?? $this->getName())
+                FormNormalizer::clearNamespace($name ?? $this->getName()),
             ],
             'strlen'
         );
@@ -506,7 +508,7 @@ abstract class AbstractField
     {
         return [
             'help',
-            'description'
+            'description',
         ];
     }
 
@@ -518,7 +520,7 @@ abstract class AbstractField
      *
      * @return  mixed
      *
-     * @throws \BadMethodCallException
+     * @throws BadMethodCallException
      */
     public function __call(string $method, array $args): mixed
     {
@@ -557,7 +559,6 @@ abstract class AbstractField
         }
 
         return $this->setAttribute($method, $args[0]);
-
         // throw ExceptionFactory::badMethodCall($method, static::class);
     }
 

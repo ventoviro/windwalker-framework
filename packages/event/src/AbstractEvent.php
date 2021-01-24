@@ -47,7 +47,7 @@ abstract class AbstractEvent implements EventInterface
     public static function wrap(
         string|EventInterface $event,
         array $args = []
-    ): static {
+    ): EventInterface {
         ArgumentsAssert::assert(
             is_string($event) || $event instanceof EventInterface,
             '{caller} argument 1 should be string or EventInterface, %s given.',

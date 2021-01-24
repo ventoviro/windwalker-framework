@@ -30,7 +30,7 @@ interface DefinitionInterface
     /**
      * Set new value or factory callback to this definition.
      *
-     * @param mixed $value  Value or callable.
+     * @param  mixed  $value  Value or callable.
      *
      * @return  void
      */

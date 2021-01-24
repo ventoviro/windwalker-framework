@@ -24,7 +24,7 @@ trait ManageInputTrait
     /**
      * getInput
      *
-     * @param array $options
+     * @param  array  $options
      *
      * @return  string
      */
@@ -58,7 +58,7 @@ trait ManageInputTrait
     /**
      * prepareRenderInput
      *
-     * @param DOMElement  $input
+     * @param  DOMElement  $input
      *
      * @return  DOMElement
      */

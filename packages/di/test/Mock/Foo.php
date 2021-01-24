@@ -28,7 +28,7 @@ class Foo
     /**
      * Class init.
      *
-     * @param Bar $bar
+     * @param  Bar  $bar
      */
     public function __construct(Bar $bar)
     {

@@ -163,8 +163,12 @@ class Str
         return static::match('.*[[:upper:]]', $string, 'msr', $encoding);
     }
 
-    public static function match(string $pattern, string $string, string $option = 'msr', ?string $encoding = null): bool
-    {
+    public static function match(
+        string $pattern,
+        string $string,
+        string $option = 'msr',
+        ?string $encoding = null
+    ): bool {
         $encoding ??= mb_internal_encoding();
 
         $encodingBackup = mb_regex_encoding();
@@ -372,7 +376,7 @@ class Str
         string $substring = ' ',
         ?string $encoding = null
     ): string {
-        $encoding ??= mb_internal_encoding();;
+        $encoding ??= mb_internal_encoding();
 
         return static::doPad($string, 0, $length - Utf8String::strlen($string, $encoding), $substring, $encoding);
     }
@@ -421,13 +425,13 @@ class Str
      */
     public static function removeChar(string $string, int $offset, int $length = null, ?string $encoding = null): string
     {
-        $encoding ??= mb_internal_encoding();;
+        $encoding ??= mb_internal_encoding();
 
         if (Utf8String::strlen($string, $encoding) < abs($offset)) {
             return $string;
         }
 
-        $length = $length === null ? 1 : $length;
+        $length = $length ?? 1;
 
         return Utf8String::substrReplace($string, '', $offset, $length, $encoding);
     }
@@ -451,7 +455,7 @@ class Str
             return $string;
         }
 
-        $encoding ??= mb_internal_encoding();;
+        $encoding ??= mb_internal_encoding();
 
         if (!static::startsWith($string, $search, true, $encoding)) {
             return $string;
@@ -479,7 +483,7 @@ class Str
             return $string;
         }
 
-        $encoding ??= mb_internal_encoding();;
+        $encoding ??= mb_internal_encoding();
 
         if (!static::endsWith($string, $search, true, $encoding)) {
             return $string;
@@ -500,7 +504,7 @@ class Str
      */
     public static function slice(string $string, int $start, int $end = null, ?string $encoding = null): string
     {
-        $encoding ??= mb_internal_encoding();;
+        $encoding ??= mb_internal_encoding();
 
         if ($end === null) {
             $length = Utf8String::strlen($string, $encoding);
@@ -527,7 +531,7 @@ class Str
      */
     public static function substring(string $string, int $start, int $end = null, ?string $encoding = null): string
     {
-        $encoding ??= mb_internal_encoding();;
+        $encoding ??= mb_internal_encoding();
 
         if ($end === null) {
             $length = Utf8String::strlen($string, $encoding);
@@ -572,7 +576,7 @@ class Str
      */
     public static function toggleCase(string $string, ?string $encoding = null): string
     {
-        $encoding ??= mb_internal_encoding();;
+        $encoding ??= mb_internal_encoding();
 
         return preg_replace_callback(
             '/[\S]/u',
@@ -605,7 +609,7 @@ class Str
         bool $wordBreak = true,
         ?string $encoding = null
     ): string {
-        $encoding ??= mb_internal_encoding();;
+        $encoding ??= mb_internal_encoding();
 
         if ($length >= Utf8String::strlen($string, $encoding)) {
             return $string;

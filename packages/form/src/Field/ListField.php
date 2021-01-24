@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Form\Field;
 
+use DOMNode;
 use Windwalker\Data\Collection;
 use Windwalker\DOM\DOMElement;
 use Windwalker\DOM\HTMLFactory;
@@ -256,7 +257,7 @@ class ListField extends AbstractField
      * @return static
      */
     public function option(
-        \DOMNode|string|null $text = null,
+        DOMNode|string|null $text = null,
         ?string $value = null,
         array $attrs = [],
         ?string $group = null
@@ -269,7 +270,7 @@ class ListField extends AbstractField
     }
 
     public static function createOption(
-        \DOMNode|string|null $text = null,
+        DOMNode|string|null $text = null,
         ?string $value = null,
         array $attrs = []
     ): DOMElement {

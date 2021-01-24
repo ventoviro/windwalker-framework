@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\DI\Test\Mock;
 
+use ArrayIterator;
+use NonExistsClass;
 use Windwalker\Scalars\ArrayObject;
 
 /**
@@ -21,7 +23,7 @@ class UnionTypeStub
     /**
      * UnionTypeStub constructor.
      */
-    public function __construct(public \NonExistsClass|ArrayObject|\ArrayIterator $iter)
+    public function __construct(public NonExistsClass|ArrayObject|ArrayIterator $iter)
     {
     }
 }

@@ -11,6 +11,13 @@ declare(strict_types=1);
 
 namespace Windwalker\Form;
 
+use Attribute;
+use Closure;
+use Generator;
+use InvalidArgumentException;
+use IteratorAggregate;
+use OutOfBoundsException;
+use ReflectionException;
 use Windwalker\Attributes\AttributesResolver;
 use Windwalker\Form\Attributes\Fieldset;
 use Windwalker\Form\Field\AbstractField;
@@ -23,7 +30,7 @@ use Windwalker\Utilities\Options\OptionAccessTrait;
 /**
  * The Form class.
  */
-class Form implements \IteratorAggregate
+class Form implements IteratorAggregate
 {
     use ObjectBuilderAwareTrait;
     use OptionAccessTrait;
@@ -80,7 +87,7 @@ class Form implements \IteratorAggregate
      *
      * @return  $this
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function defineFormFields(FieldDefinitionInterface|string $define): static
     {
@@ -106,7 +113,7 @@ class Form implements \IteratorAggregate
         }
 
         if (!$field instanceof AbstractField) {
-            throw new \InvalidArgumentException(__METHOD__ . ' argument 2 should be sub class of AbstractField.');
+            throw new InvalidArgumentException(__METHOD__ . ' argument 2 should be sub class of AbstractField.');
         }
 
         $field->setName($name);
@@ -219,9 +226,9 @@ class Form implements \IteratorAggregate
      * @param  string|null  $fieldset
      * @param  string       $namespace
      *
-     * @return  \Generator|AbstractField[]
+     * @return  Generator|AbstractField[]
      */
-    public function getFields(?string $fieldset = null, string $namespace = ''): \Generator
+    public function getFields(?string $fieldset = null, string $namespace = ''): Generator
     {
         foreach ($this->fields as $k => $field) {
             if ($fieldset !== null && $field->getFieldset() !== $fieldset) {
@@ -281,7 +288,7 @@ class Form implements \IteratorAggregate
         return $this;
     }
 
-    public function register(\Closure $handler): static
+    public function register(Closure $handler): static
     {
         $this->attributeResolver->resolveCallable($handler)($this);
 
@@ -350,7 +357,7 @@ class Form implements \IteratorAggregate
         $field = $this->getField($namespace);
 
         if (!$field) {
-            throw new \OutOfBoundsException("Field $namespace not found.");
+            throw new OutOfBoundsException("Field $namespace not found.");
         }
 
         return $field->render($options);
@@ -379,7 +386,7 @@ class Form implements \IteratorAggregate
     /**
      * @inheritDoc
      */
-    public function getIterator(): \Generator
+    public function getIterator(): Generator
     {
         return $this->getFields();
     }
@@ -399,7 +406,7 @@ class Form implements \IteratorAggregate
 
         $this->attributeResolver->registerAttribute(
             Fieldset::class,
-            \Attribute::TARGET_METHOD | \Attribute::TARGET_FUNCTION
+            Attribute::TARGET_METHOD | Attribute::TARGET_FUNCTION
         );
     }
 

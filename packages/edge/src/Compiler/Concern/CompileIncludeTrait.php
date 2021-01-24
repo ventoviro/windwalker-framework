@@ -19,7 +19,7 @@ trait CompileIncludeTrait
     /**
      * Compile the each statements into valid PHP.
      *
-     * @param  string $expression
+     * @param  string  $expression
      *
      * @return string
      */
@@ -31,7 +31,7 @@ trait CompileIncludeTrait
     /**
      * Compile the include statements into valid PHP.
      *
-     * @param  string $expression
+     * @param  string  $expression
      *
      * @return string
      */
@@ -47,7 +47,7 @@ trait CompileIncludeTrait
     /**
      * Compile the include statements into valid PHP.
      *
-     * @param  string $expression
+     * @param  string  $expression
      *
      * @return string
      */

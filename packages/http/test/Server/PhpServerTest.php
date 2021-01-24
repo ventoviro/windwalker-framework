@@ -34,20 +34,23 @@ class PhpServerTest extends TestCase
     public function testListen(): void
     {
         $this->instance->setHandler(
-            fn (PhpServer $server) => $server->handle(
+            fn(PhpServer $server) => $server->handle(
                 ServerRequestFactory::createFromUri(
                     'https://domain.com/hello?foo=bar'
                 )
             )
         );
 
-        $this->instance->on('request', function (RequestEvent $event) {
-            $res = $event->getRequest();
+        $this->instance->on(
+            'request',
+            function (RequestEvent $event) {
+                $res = $event->getRequest();
 
-            $event->setResponse(
-                Response::fromString('Hello: ' . $res->getUri())
-            );
-        });
+                $event->setResponse(
+                    Response::fromString('Hello: ' . $res->getUri())
+                );
+            }
+        );
 
         $this->instance->listen();
 

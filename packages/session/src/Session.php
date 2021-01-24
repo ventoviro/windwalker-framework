@@ -137,7 +137,6 @@ class Session implements SessionInterface, ArrayAccessibleInterface
 
         return tap(
             $this->bridge->start(),
-
             // Send Cookies after started
             fn() => $this->cookies->set(
                 $this->bridge->getSessionName(),

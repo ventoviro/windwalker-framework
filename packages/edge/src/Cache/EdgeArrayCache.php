@@ -105,7 +105,7 @@ class EdgeArrayCache implements EdgeCacheInterface
     /**
      * Method to set property data
      *
-     * @param   array $data
+     * @param  array  $data
      *
      * @return  static  Return self to support chaining.
      */

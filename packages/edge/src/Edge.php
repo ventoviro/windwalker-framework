@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Windwalker\Edge;
 
 use Closure;
-use Exception;
 use Throwable;
 use Windwalker\Edge\Cache\EdgeArrayCache;
 use Windwalker\Edge\Cache\EdgeCacheInterface;
@@ -105,9 +104,9 @@ class Edge
         EdgeCacheInterface $cache = null,
         EdgeCompilerInterface $compiler = null
     ) {
-        $this->loader = $loader ?: new EdgeStringLoader();
+        $this->loader   = $loader ?: new EdgeStringLoader();
         $this->compiler = $compiler ?: new EdgeCompiler();
-        $this->cache = $cache ?: new EdgeArrayCache();
+        $this->cache    = $cache ?: new EdgeArrayCache();
     }
 
     /**
@@ -217,7 +216,7 @@ class Edge
      *
      * @throws EdgeException
      */
-    protected function wrapException(\Throwable $e, string $path, string $layout): void
+    protected function wrapException(Throwable $e, string $path, string $layout): void
     {
         $msg = $e->getMessage();
 
@@ -257,7 +256,7 @@ class Edge
     /**
      * Normalize a view name.
      *
-     * @param  string $name
+     * @param  string  $name
      *
      * @return string
      */
@@ -271,7 +270,7 @@ class Edge
     /**
      * escape
      *
-     * @param  mixed $string
+     * @param  mixed  $string
      *
      * @return  string
      */
@@ -379,8 +378,8 @@ class Edge
     /**
      * arrayExcept
      *
-     * @param array $array
-     * @param array $fields
+     * @param  array  $array
+     * @param  array  $fields
      *
      * @return  array
      */
@@ -392,7 +391,7 @@ class Edge
     /**
      * Method to get property Globals
      *
-     * @param bool $withExtensions
+     * @param  bool  $withExtensions
      *
      * @return array
      */
@@ -458,7 +457,7 @@ class Edge
     /**
      * Method to set property globals
      *
-     * @param   array $globals
+     * @param  array  $globals
      *
      * @return  static  Return self to support chaining.
      */
@@ -482,7 +481,7 @@ class Edge
     /**
      * Method to set property compiler
      *
-     * @param   EdgeCompilerInterface $compiler
+     * @param  EdgeCompilerInterface  $compiler
      *
      * @return  static  Return self to support chaining.
      */
@@ -506,7 +505,7 @@ class Edge
     /**
      * Method to set property loader
      *
-     * @param   EdgeLoaderInterface $loader
+     * @param  EdgeLoaderInterface  $loader
      *
      * @return  static  Return self to support chaining.
      */
@@ -539,7 +538,7 @@ class Edge
     /**
      * removeExtension
      *
-     * @param   string $name
+     * @param  string  $name
      *
      * @return  static
      */
@@ -555,7 +554,7 @@ class Edge
     /**
      * hasExtension
      *
-     * @param   string $name
+     * @param  string  $name
      *
      * @return  bool
      */
@@ -567,7 +566,7 @@ class Edge
     /**
      * getExtension
      *
-     * @param   string $name
+     * @param  string  $name
      *
      * @return  EdgeExtensionInterface
      */
@@ -593,7 +592,7 @@ class Edge
     /**
      * Method to set property extensions
      *
-     * @param   Extension\EdgeExtensionInterface[] $extensions
+     * @param  Extension\EdgeExtensionInterface[]  $extensions
      *
      * @return  static  Return self to support chaining.
      */
@@ -617,7 +616,7 @@ class Edge
     /**
      * Method to set property cache
      *
-     * @param   EdgeCacheInterface $cache
+     * @param  EdgeCacheInterface  $cache
      *
      * @return  static  Return self to support chaining.
      */

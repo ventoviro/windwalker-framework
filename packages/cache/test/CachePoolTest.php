@@ -11,8 +11,10 @@ declare(strict_types=1);
 
 namespace Windwalker\Cache\Test;
 
+use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\TestCase;
+use Psr\Cache\InvalidArgumentException;
 use Windwalker\Cache\CacheItem;
 use Windwalker\Cache\CachePool;
 use Windwalker\Cache\Exception\RuntimeException;
@@ -39,7 +41,7 @@ class CachePoolTest extends TestCase
      *
      * @return  void
      *
-     * @throws \Psr\Cache\InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function testBasicUsage(): void
     {
@@ -77,7 +79,7 @@ class CachePoolTest extends TestCase
         $item->set('Flower');
         $item->expiresAfter(30);
 
-        $storageMock = \Mockery::mock(StorageInterface::class)
+        $storageMock = Mockery::mock(StorageInterface::class)
             ->shouldReceive('save')
             ->with('foo', 'Flower', time() + 30)
             ->getMock();
@@ -103,7 +105,7 @@ class CachePoolTest extends TestCase
      */
     public function testGetItem(): void
     {
-        $storageMock = \Mockery::mock(StorageInterface::class);
+        $storageMock = Mockery::mock(StorageInterface::class);
         $storageMock->shouldReceive('get')
             ->with('flower')
             ->andReturn('Sakura');
@@ -125,7 +127,7 @@ class CachePoolTest extends TestCase
      */
     public function testDeleteItem(): void
     {
-        $storageMock = \Mockery::mock(StorageInterface::class);
+        $storageMock = Mockery::mock(StorageInterface::class);
         $storageMock->shouldReceive('remove')
             ->with('hello')
             ->andReturn(true);
@@ -134,7 +136,7 @@ class CachePoolTest extends TestCase
 
         $this->instance->deleteItem('hello');
 
-        $storageMock = \Mockery::mock(StorageInterface::class);
+        $storageMock = Mockery::mock(StorageInterface::class);
         $storageMock->shouldReceive('remove')
             ->with('hello')
             ->andThrow(RuntimeException::class);

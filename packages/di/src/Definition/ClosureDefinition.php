@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\DI\Definition;
 
+use Closure;
 use Windwalker\DI\Container;
 
 /**
@@ -18,14 +19,14 @@ use Windwalker\DI\Container;
  */
 class ClosureDefinition implements DefinitionInterface
 {
-    protected \Closure $handler;
+    protected Closure $handler;
 
     /**
      * CallbackDefinition constructor.
      *
-     * @param  \Closure  $handler
+     * @param  Closure  $handler
      */
-    public function __construct(\Closure $handler)
+    public function __construct(Closure $handler)
     {
         $this->handler = $handler;
     }

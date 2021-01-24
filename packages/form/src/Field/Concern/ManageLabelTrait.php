@@ -13,7 +13,6 @@ namespace Windwalker\Form\Field\Concern;
 
 use Windwalker\DOM\DOMElement;
 use Windwalker\Form\FormNormalizer;
-use Windwalker\Form\Renderer\FormRendererInterface;
 
 /**
  * Trait ManageLabelTrait
@@ -39,7 +38,7 @@ trait ManageLabelTrait
     /**
      * getLabel
      *
-     * @param array $options
+     * @param  array  $options
      *
      * @return  string
      */

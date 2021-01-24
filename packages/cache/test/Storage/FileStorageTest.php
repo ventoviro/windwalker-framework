@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Cache\Test\Storage;
 
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Windwalker\Cache\Storage\FileStorage;
 
 /**
@@ -67,7 +68,7 @@ class FileStorageTest extends TestCase
      */
     public function testConstruct(): void
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
 
         new FileStorage(__FILE__);
     }

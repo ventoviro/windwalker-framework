@@ -11,10 +11,24 @@ declare(strict_types=1);
 
 namespace Windwalker\Crypt\Symmetric;
 
+use Exception;
+use SodiumException;
+use UnexpectedValueException;
 use Windwalker\Crypt\CryptHelper;
 use Windwalker\Crypt\HiddenString;
 use Windwalker\Crypt\Key;
 use Windwalker\Crypt\SafeEncoder;
+
+use function hash_equals;
+use function random_bytes;
+use function sodium_crypto_generichash;
+use function sodium_crypto_stream_xor;
+use function sodium_memzero;
+
+use const SODIUM_CRYPTO_AUTH_KEYBYTES;
+use const SODIUM_CRYPTO_SECRETBOX_KEYBYTES;
+use const SODIUM_CRYPTO_SECRETBOX_NONCEBYTES;
+use const SODIUM_CRYPTO_STREAM_KEYBYTES;
 
 /**
  * A cipher to encrypt/decrypt data by libsodium.
@@ -32,7 +46,7 @@ class SodiumCipher implements CipherInterface
 
     /**
      * @inheritDoc
-     * @throws \SodiumException
+     * @throws SodiumException
      */
     public function decrypt(string $str, Key $key, string $encoder = SafeEncoder::BASE64URLSAFE): HiddenString
     {
@@ -54,41 +68,41 @@ class SodiumCipher implements CipherInterface
             $length - static::HMAC_SIZE
         );
 
-        \sodium_memzero($message);
+        sodium_memzero($message);
 
         [$encKey, $hmacKey] = static::derivateSecureKeys($key, $salt);
 
         $calc = static::hmac($salt . $nonce . $encrypted, $hmacKey);
 
-        if (!\hash_equals($hmac, $calc)) {
-            throw new \UnexpectedValueException('Invalid message authentication code');
+        if (!hash_equals($hmac, $calc)) {
+            throw new UnexpectedValueException('Invalid message authentication code');
         }
 
-        $plaintext = \sodium_crypto_stream_xor(
+        $plaintext = sodium_crypto_stream_xor(
             $encrypted,
             $nonce,
             $encKey
         );
 
-        \sodium_memzero($calc);
-        \sodium_memzero($salt);
-        \sodium_memzero($hmacKey);
-        \sodium_memzero($encrypted);
-        \sodium_memzero($nonce);
-        \sodium_memzero($encKey);
+        sodium_memzero($calc);
+        sodium_memzero($salt);
+        sodium_memzero($hmacKey);
+        sodium_memzero($encrypted);
+        sodium_memzero($nonce);
+        sodium_memzero($encKey);
 
         return new HiddenString($plaintext);
     }
 
     /**
      * @inheritDoc
-     * @throws \SodiumException
-     * @throws \Exception
+     * @throws SodiumException
+     * @throws Exception
      */
     public function encrypt(HiddenString $str, Key $key, string $encoder = SafeEncoder::BASE64URLSAFE): string
     {
-        $nonce = \random_bytes(\SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
-        $salt  = \random_bytes(static::HKDF_SALT_LEN);
+        $nonce = random_bytes(SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
+        $salt  = random_bytes(static::HKDF_SALT_LEN);
 
         /*
         Split our key into two keys: One for encryption, the other for
@@ -100,7 +114,7 @@ class SodiumCipher implements CipherInterface
         */
         [$encKey, $hmacKey] = static::derivateSecureKeys($key, $salt);
 
-        $encrypted = \sodium_crypto_stream_xor(
+        $encrypted = sodium_crypto_stream_xor(
             $str->get(),
             $nonce,
             $encKey
@@ -111,12 +125,12 @@ class SodiumCipher implements CipherInterface
         $message = $salt . $nonce . $encrypted . $hmac;
 
         // Wipe every superfluous piece of data from memory
-        \sodium_memzero($encKey);
-        \sodium_memzero($hmacKey);
-        \sodium_memzero($nonce);
-        \sodium_memzero($salt);
-        \sodium_memzero($encrypted);
-        \sodium_memzero($hmac);
+        sodium_memzero($encKey);
+        sodium_memzero($hmacKey);
+        sodium_memzero($nonce);
+        sodium_memzero($salt);
+        sodium_memzero($encrypted);
+        sodium_memzero($hmac);
 
         return SafeEncoder::encode($encoder, $message);
     }
@@ -131,7 +145,7 @@ class SodiumCipher implements CipherInterface
      *
      * @return  array
      *
-     * @throws \SodiumException
+     * @throws SodiumException
      */
     public static function derivateSecureKeys(
         Key $key,
@@ -142,13 +156,13 @@ class SodiumCipher implements CipherInterface
         return [
             CryptHelper::hkdfBlake2b(
                 $binary,
-                \SODIUM_CRYPTO_SECRETBOX_KEYBYTES,
+                SODIUM_CRYPTO_SECRETBOX_KEYBYTES,
                 'Windwalker|EncryptionKey',
                 $salt
             ),
             CryptHelper::hkdfBlake2b(
                 $binary,
-                \SODIUM_CRYPTO_AUTH_KEYBYTES,
+                SODIUM_CRYPTO_AUTH_KEYBYTES,
                 'AuthenticationKeyFor_|Windwalker',
                 $salt
             ),
@@ -163,11 +177,11 @@ class SodiumCipher implements CipherInterface
      *
      * @return  string
      *
-     * @throws \SodiumException
+     * @throws SodiumException
      */
     public static function hmac(string $message, string $hmacKey): string
     {
-        return \sodium_crypto_generichash(
+        return sodium_crypto_generichash(
             $message,
             $hmacKey,
             static::HMAC_SIZE
@@ -181,10 +195,10 @@ class SodiumCipher implements CipherInterface
      *
      * @return  Key
      *
-     * @throws \Exception
+     * @throws Exception
      */
-    public static function generateKey(?int $length = \SODIUM_CRYPTO_STREAM_KEYBYTES): Key
+    public static function generateKey(?int $length = SODIUM_CRYPTO_STREAM_KEYBYTES): Key
     {
-        return new Key(\random_bytes($length));
+        return new Key(random_bytes($length));
     }
 }

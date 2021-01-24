@@ -11,7 +11,9 @@ declare(strict_types=1);
 
 namespace Windwalker\Http\Response;
 
+use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
+use RuntimeException;
 use Windwalker\Http\Helper\HeaderHelper;
 use Windwalker\Stream\Stream;
 
@@ -25,9 +27,9 @@ class AttachmentResponse extends Response
     /**
      * Constructor.
      *
-     * @param  string $body    The body data.
-     * @param  int    $status  The status code.
-     * @param  array  $headers The custom headers.
+     * @param  string  $body     The body data.
+     * @param  int     $status   The status code.
+     * @param  array   $headers  The custom headers.
      */
     public function __construct($body = 'php://temp', $status = 200, array $headers = [])
     {
@@ -45,15 +47,15 @@ class AttachmentResponse extends Response
     /**
      * withFile
      *
-     * @param string $file
+     * @param  string  $file
      *
      * @return  static
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function withFile(string $file): static
     {
         if (!is_file($file)) {
-            throw new \InvalidArgumentException('File: ' . $file . ' not exists.');
+            throw new InvalidArgumentException('File: ' . $file . ' not exists.');
         }
 
         return $this->withFileStream(new Stream($file));
@@ -62,11 +64,11 @@ class AttachmentResponse extends Response
     /**
      * withFileData
      *
-     * @param string $data
+     * @param  string  $data
      *
      * @return  static
-     * @throws \InvalidArgumentException
-     * @throws \RuntimeException
+     * @throws InvalidArgumentException
+     * @throws RuntimeException
      */
     public function withFileData(string $data): static
     {
@@ -81,10 +83,10 @@ class AttachmentResponse extends Response
     /**
      * withFileStream
      *
-     * @param StreamInterface $stream
+     * @param  StreamInterface  $stream
      *
      * @return  static
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     protected function withFileStream(StreamInterface $stream): static
     {
@@ -94,10 +96,10 @@ class AttachmentResponse extends Response
     /**
      * withFilename
      *
-     * @param string $filename
+     * @param  string  $filename
      *
      * @return  static
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function withFilename(string $filename): static
     {

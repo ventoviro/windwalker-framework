@@ -14,6 +14,7 @@ namespace Windwalker\Http\Test\Transport;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamInterface;
+use RuntimeException;
 use Windwalker\Http\Exception\HttpRequestException;
 use Windwalker\Http\Helper\UriHelper;
 use Windwalker\Http\Request\Request;
@@ -76,7 +77,7 @@ abstract class AbstractTransportTest extends TestCase
     /**
      * createRequest
      *
-     * @param StreamInterface $stream
+     * @param  StreamInterface  $stream
      *
      * @return Request
      */
@@ -120,7 +121,7 @@ abstract class AbstractTransportTest extends TestCase
      */
     public function testBadDomainGet()
     {
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
 
         $request = $this->createRequest();
 
@@ -250,7 +251,7 @@ abstract class AbstractTransportTest extends TestCase
             'root',
             0755,
             [
-                'download' => []
+                'download' => [],
             ]
         );
 

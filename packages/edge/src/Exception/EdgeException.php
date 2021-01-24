@@ -18,7 +18,7 @@ use Exception;
  *
  * @since  3.1.3
  */
-class EdgeException extends \Exception
+class EdgeException extends Exception
 {
     /**
      * Construct the exception. Note: The message is NOT binary safe.

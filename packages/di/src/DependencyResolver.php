@@ -15,6 +15,10 @@ use InvalidArgumentException;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionFunctionAbstract;
+use ReflectionMethod;
+use ReflectionParameter;
+use ReflectionUnionType;
+use TypeError;
 use Windwalker\DI\Definition\DefinitionInterface;
 use Windwalker\DI\Definition\ObjectBuilderDefinition;
 use Windwalker\DI\Exception\DependencyResolutionException;
@@ -48,7 +52,7 @@ class DependencyResolver
         $options |= $this->container->getOptions();
 
         if (is_string($class)) {
-            $builder = fn (array $args, int $options) => $this->newInstanceByClassName($class, $args, $options);
+            $builder = fn(array $args, int $options) => $this->newInstanceByClassName($class, $args, $options);
 
             if (!($options & Container::IGNORE_ATTRIBUTES)) {
                 $builder = $this->container->getAttributesResolver()
@@ -110,7 +114,7 @@ class DependencyResolver
         try {
             // Create a callable for the dataStore
             return $reflection->newInstanceArgs($args);
-        } catch (\TypeError $e) {
+        } catch (TypeError $e) {
             throw new DependencyResolutionException($e->getMessage(), $e->getCode(), $e);
         }
     }
@@ -193,7 +197,7 @@ class DependencyResolver
                     'Cannot resolve argument %s: $%s for %s%s()',
                     $i + 1,
                     $dependencyVarName,
-                    $method instanceof \ReflectionMethod ? $method->getDeclaringClass()->getName() . '::' : '',
+                    $method instanceof ReflectionMethod ? $method->getDeclaringClass()->getName() . '::' : '',
                     $method->getShortName()
                 )
             );
@@ -204,21 +208,21 @@ class DependencyResolver
         return $methodArgs;
     }
 
-    public function &resolveParameterDependency(\ReflectionParameter $param, array $args = [], int $options = 0)
+    public function &resolveParameterDependency(ReflectionParameter $param, array $args = [], int $options = 0)
     {
-        $nope = null;
+        $nope    = null;
         $options |= $this->container->getOptions();
 
         $autowire = $options & Container::AUTO_WIRE;
 
-        $type = $param->getType();
+        $type              = $param->getType();
         $dependencyVarName = $param->getName();
 
         if (!$type) {
             return $nope;
         }
 
-        if ($type instanceof \ReflectionUnionType) {
+        if ($type instanceof ReflectionUnionType) {
             $dependencies = $type->getTypes();
         } else {
             $dependencies = [$type];
@@ -270,15 +274,15 @@ class DependencyResolver
     /**
      * resolveArgumentValue
      *
-     * @param  mixed                 $value
-     * @param  \ReflectionParameter  $param
-     * @param  int                   $options
+     * @param  mixed                $value
+     * @param  ReflectionParameter  $param
+     * @param  int                  $options
      *
      * @return mixed
      *
      * @since  3.5.1
      */
-    public function &resolveParameterValue(mixed &$value, \ReflectionParameter $param, int $options = 0): mixed
+    public function &resolveParameterValue(mixed &$value, ReflectionParameter $param, int $options = 0): mixed
     {
         if ($value instanceof ObjectBuilderDefinition) {
             $value = $this->container->resolve($value);

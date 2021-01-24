@@ -185,8 +185,8 @@ class Collection extends ArrayObject
     /**
      * hasDeep
      *
-     * @param string      $path
-     * @param string|null $delimiter
+     * @param  string       $path
+     * @param  string|null  $delimiter
      *
      * @return  bool
      *
@@ -200,8 +200,8 @@ class Collection extends ArrayObject
     /**
      * removeDeep
      *
-     * @param string      $path
-     * @param string|null $delimiter
+     * @param  string       $path
+     * @param  string|null  $delimiter
      *
      * @return  static
      *
@@ -217,8 +217,8 @@ class Collection extends ArrayObject
     /**
      * withRemoveDeep
      *
-     * @param string      $path
-     * @param string|null $delimiter
+     * @param  string       $path
+     * @param  string|null  $delimiter
      *
      * @return  static
      *

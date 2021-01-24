@@ -27,7 +27,7 @@ class EdgeFileLoader implements EdgeLoaderInterface
      */
     protected array $extensions = [
         'edge.php',
-        'blade.php'
+        'blade.php',
     ];
 
     /**
@@ -127,7 +127,7 @@ class EdgeFileLoader implements EdgeLoaderInterface
     /**
      * normalize
      *
-     * @param   string $path
+     * @param  string  $path
      *
      * @return  string
      */
@@ -149,7 +149,7 @@ class EdgeFileLoader implements EdgeLoaderInterface
     /**
      * Method to set property paths
      *
-     * @param   array $paths
+     * @param  array  $paths
      *
      * @return  static  Return self to support chaining.
      */
@@ -163,7 +163,7 @@ class EdgeFileLoader implements EdgeLoaderInterface
     /**
      * addExtension
      *
-     * @param   string $name
+     * @param  string  $name
      *
      * @return  static
      */
@@ -187,7 +187,7 @@ class EdgeFileLoader implements EdgeLoaderInterface
     /**
      * Method to set property extensions
      *
-     * @param   array $extensions
+     * @param  array  $extensions
      *
      * @return  static  Return self to support chaining.
      */

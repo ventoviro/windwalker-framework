@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Http\Promise;
 
+use Exception;
+use Throwable;
 use Windwalker\Http\Response\Response;
 
 /**
@@ -37,7 +39,7 @@ class PromiseResponse extends Response
     /**
      * then
      *
-     * @param callable $callback
+     * @param  callable  $callback
      *
      * @return  static
      *
@@ -53,7 +55,7 @@ class PromiseResponse extends Response
     /**
      * reject
      *
-     * @param callable $callback
+     * @param  callable  $callback
      *
      * @return  static
      *
@@ -69,7 +71,7 @@ class PromiseResponse extends Response
     /**
      * resolve
      *
-     * @param mixed $value
+     * @param  mixed  $value
      *
      * @return  mixed
      *
@@ -81,7 +83,7 @@ class PromiseResponse extends Response
             foreach ($this->thenCallables as $then) {
                 $value = $then($value);
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             foreach ($this->rejectCallables as $reject) {
                 $e = $reject($e);
             }
@@ -93,7 +95,7 @@ class PromiseResponse extends Response
     /**
      * reject
      *
-     * @param \Exception|\Throwable $e
+     * @param  Exception|Throwable  $e
      *
      * @return  mixed
      *

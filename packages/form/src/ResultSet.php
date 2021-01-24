@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Form;
 
+use Generator;
+
 /**
  * The ResultSet class.
  */
@@ -72,7 +74,7 @@ class ResultSet
     /**
      * @inheritDoc
      */
-    public function getIterator(): \Generator
+    public function getIterator(): Generator
     {
         foreach ($this->results as $k => $result) {
             yield $k => $result;

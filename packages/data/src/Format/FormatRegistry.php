@@ -111,9 +111,9 @@ class FormatRegistry
     /**
      * registerFormat
      *
-     * @param  string  $format
+     * @param  string                    $format
      * @param  FormatInterface|callable  $handlerOrParser
-     * @param  callable|null  $dumper
+     * @param  callable|null             $dumper
      *
      * @return  $this
      *

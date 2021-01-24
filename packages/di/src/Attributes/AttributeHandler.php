@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\DI\Attributes;
 
+use Reflector;
 use Windwalker\DI\Container;
 
 /**
@@ -23,7 +24,7 @@ class AttributeHandler extends \Windwalker\Attributes\AttributeHandler
      */
     public function __construct(
         callable $handler,
-        \Reflector $reflector,
+        Reflector $reflector,
         ?object $object,
         AttributesResolver $resolver,
         protected Container $container

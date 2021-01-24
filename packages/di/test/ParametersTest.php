@@ -117,10 +117,10 @@ class ParametersTest extends TestCase
             [
                 'foo' => [
                     'bar' => [
-                        'yoo' => 'Hello'
-                    ]
+                        'yoo' => 'Hello',
+                    ],
                 ],
-                'ref' => ref('foo.bar.yoo')
+                'ref' => ref('foo.bar.yoo'),
             ]
         );
     }

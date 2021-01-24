@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Http;
 
+use InvalidArgumentException;
 use Psr\Http\Message\UriInterface;
 use Windwalker\Http\Helper\UriHelper;
 use Windwalker\Utilities\Assert\ArgumentsAssert;
@@ -27,17 +28,27 @@ use Windwalker\Utilities\Assert\ArgumentsAssert;
 class Uri implements UriInterface
 {
     public const SCHEME = 1 << 0;
+
     public const USER = 1 << 1;
+
     public const PASSWORD = 1 << 2;
+
     public const HOST = 1 << 3;
+
     public const PORT = 1 << 4;
+
     public const PATH = 1 << 5;
+
     public const QUERY = 1 << 6;
+
     public const FRAGMENT = 1 << 7;
 
     public const USER_INFO = self::USER | self::PASSWORD;
+
     public const FULL_HOST = self::SCHEME | self::USER_INFO | self::HOST | self::PORT;
+
     public const URI = self::PATH | self::QUERY;
+
     public const ALL = (1 << 8) - 1;
 
     public const SCHEME_HTTP = 'http';
@@ -93,7 +104,7 @@ class Uri implements UriInterface
      * Constructor.
      * You can pass a URI string to the constructor to initialise a specific URI.
      *
-     * @param   string $uri The optional URI string
+     * @param  string  $uri  The optional URI string
      *
      * @since   2.0
      */
@@ -105,9 +116,9 @@ class Uri implements UriInterface
     /**
      * Parse a given URI and populate the class fields.
      *
-     * @param   string $uri The URI string to parse.
+     * @param  string  $uri  The URI string to parse.
      *
-     * @return  boolean  True on success.
+     * @return  bool  True on success.
      *
      * @since   2.0
      */
@@ -130,13 +141,13 @@ class Uri implements UriInterface
             $parts['query'] = str_replace('&amp;', '&', $parts['query']);
         }
 
-        $this->scheme = $parts['scheme'] ?? null;
-        $this->user = $parts['user'] ?? null;
-        $this->pass = $parts['pass'] ?? null;
-        $this->host = $parts['host'] ?? null;
-        $this->port = $parts['port'] ?? null;
-        $this->path = $parts['path'] ?? null;
-        $this->query = $parts['query'] ?? null;
+        $this->scheme   = $parts['scheme'] ?? null;
+        $this->user     = $parts['user'] ?? null;
+        $this->pass     = $parts['pass'] ?? null;
+        $this->host     = $parts['host'] ?? null;
+        $this->port     = $parts['port'] ?? null;
+        $this->path     = $parts['path'] ?? null;
+        $this->query    = $parts['query'] ?? null;
         $this->fragment = $parts['fragment'] ?? null;
 
         // Parse the query
@@ -222,7 +233,7 @@ class Uri implements UriInterface
      * @param  string|null  $host
      * @param  int|null     $port
      *
-     * @return  boolean
+     * @return  bool
      */
     protected function isStandardPort(?string $scheme, ?string $host, ?int $port): bool
     {
@@ -248,21 +259,21 @@ class Uri implements UriInterface
      *
      * An empty scheme is equivalent to removing the scheme.
      *
-     * @param   string $scheme The scheme to use with the new instance.
+     * @param  string  $scheme  The scheme to use with the new instance.
      *
      * @return  static  A new instance with the specified scheme.
      *
-     * @throws  \InvalidArgumentException for invalid or unsupported schemes.
+     * @throws  InvalidArgumentException for invalid or unsupported schemes.
      */
     public function withScheme($scheme): Uri|static
     {
         if (!is_string($scheme)) {
-            throw new \InvalidArgumentException('URI Scheme should be a string.');
+            throw new InvalidArgumentException('URI Scheme should be a string.');
         }
 
         $scheme = UriHelper::filterScheme($scheme);
 
-        $new = clone $this;
+        $new         = clone $this;
         $new->scheme = $scheme;
 
         return $new;
@@ -278,8 +289,8 @@ class Uri implements UriInterface
      * user; an empty string for the user is equivalent to removing user
      * information.
      *
-     * @param  string $user     The user name to use for authority.
-     * @param  string $password The password associated with $user.
+     * @param  string  $user      The user name to use for authority.
+     * @param  string  $password  The password associated with $user.
      *
      * @return  static  A new instance with the specified user information.
      */
@@ -295,7 +306,7 @@ class Uri implements UriInterface
             'URI Password should be a string or NULL, %s given.'
         );
 
-        $new = clone $this;
+        $new       = clone $this;
         $new->user = $user;
         $new->pass = $password;
 
@@ -311,7 +322,7 @@ class Uri implements UriInterface
      */
     public function withUser(?string $user): Uri|static
     {
-        $new = clone $this;
+        $new       = clone $this;
         $new->user = $user;
 
         return $new;
@@ -326,7 +337,7 @@ class Uri implements UriInterface
      */
     public function withPassword(?string $password): Uri|static
     {
-        $new = clone $this;
+        $new       = clone $this;
         $new->pass = $password;
 
         return $new;
@@ -340,19 +351,19 @@ class Uri implements UriInterface
      *
      * An empty host value is equivalent to removing the host.
      *
-     * @param   string $host The hostname to use with the new instance.
+     * @param  string  $host  The hostname to use with the new instance.
      *
      * @return  static  A new instance with the specified host.
      *
-     * @throws  \InvalidArgumentException for invalid hostnames.
+     * @throws  InvalidArgumentException for invalid hostnames.
      */
     public function withHost($host): Uri|static
     {
         if (!is_string($host)) {
-            throw new \InvalidArgumentException('URI Host should be a string.');
+            throw new InvalidArgumentException('URI Host should be a string.');
         }
 
-        $new = clone $this;
+        $new       = clone $this;
         $new->host = $host;
 
         return $new;
@@ -370,27 +381,27 @@ class Uri implements UriInterface
      * A null value provided for the port is equivalent to removing the port
      * information.
      *
-     * @param   int $port   The port to use with the new instance; a null value
+     * @param  int  $port   The port to use with the new instance; a null value
      *                      removes the port information.
      *
      * @return  static  A new instance with the specified port.
-     * @throws  \InvalidArgumentException for invalid ports.
+     * @throws  InvalidArgumentException for invalid ports.
      */
     public function withPort($port): Uri|static
     {
         if (is_array($port) || is_object($port)) {
-            throw new \InvalidArgumentException('Invalid port type.');
+            throw new InvalidArgumentException('Invalid port type.');
         }
 
         if ($port !== null) {
             $port = (int) $port;
 
             if ($port < 1 || $port > 65535) {
-                throw new \InvalidArgumentException(sprintf('Number of "%d" is not a valid TCP/UDP port', $port));
+                throw new InvalidArgumentException(sprintf('Number of "%d" is not a valid TCP/UDP port', $port));
             }
         }
 
-        $new = clone $this;
+        $new       = clone $this;
         $new->port = $port;
 
         return $new;
@@ -414,27 +425,27 @@ class Uri implements UriInterface
      * Users can provide both encoded and decoded path characters.
      * Implementations ensure the correct encoding as outlined in getPath().
      *
-     * @param   string $path The path to use with the new instance.
+     * @param  string  $path  The path to use with the new instance.
      *
      * @return  static  A new instance with the specified path.
-     * @throws  \InvalidArgumentException for invalid paths.
+     * @throws  InvalidArgumentException for invalid paths.
      */
     public function withPath($path): Uri|static
     {
         if (!is_string($path)) {
-            throw new \InvalidArgumentException('URI Path should be a string.');
+            throw new InvalidArgumentException('URI Path should be a string.');
         }
 
         $path = (string) $path;
 
         if (str_contains($path, '?') || str_contains($path, '#')) {
-            throw new \InvalidArgumentException('Path should not contain `?` and `#` symbols.');
+            throw new InvalidArgumentException('Path should not contain `?` and `#` symbols.');
         }
 
         $path = UriNormalize::normalizePath($path);
         $path = UriHelper::filterPath($path);
 
-        $new = clone $this;
+        $new       = clone $this;
         $new->path = $path;
 
         return $new;
@@ -443,7 +454,7 @@ class Uri implements UriInterface
     /**
      * withQueryParams
      *
-     * @param array|string $query
+     * @param  array|string  $query
      *
      * @return  static
      *
@@ -469,21 +480,21 @@ class Uri implements UriInterface
      *
      * An empty query string value is equivalent to removing the query string.
      *
-     * @param  string $query The query string to use with the new instance.
+     * @param  string  $query  The query string to use with the new instance.
      *
      * @return  static  A new instance with the specified query string.
-     * @throws  \InvalidArgumentException for invalid query strings.
+     * @throws  InvalidArgumentException for invalid query strings.
      */
     public function withQuery($query): Uri|static
     {
         if (!is_string($query)) {
-            throw new \InvalidArgumentException('URI Query should be a string.');
+            throw new InvalidArgumentException('URI Query should be a string.');
         }
 
         $query = UriHelper::filterQuery($query);
 
-        $new = clone $this;
-        $new->vars = UriHelper::parseQuery($query);
+        $new        = clone $this;
+        $new->vars  = UriHelper::parseQuery($query);
         $new->query = $query;
 
         return $new;
@@ -492,8 +503,8 @@ class Uri implements UriInterface
     /**
      * withVar
      *
-     * @param string       $name
-     * @param array|string $value
+     * @param  string        $name
+     * @param  array|string  $value
      *
      * @return  static
      *
@@ -503,12 +514,12 @@ class Uri implements UriInterface
     {
         $new = clone $this;
 
-        $query = $new->vars;
+        $query        = $new->vars;
         $query[$name] = $value;
 
         $query = UriHelper::filterQuery(UriHelper::buildQuery($query));
 
-        $new->vars = UriHelper::parseQuery($query);
+        $new->vars  = UriHelper::parseQuery($query);
         $new->query = $query;
 
         return $new;
@@ -517,7 +528,7 @@ class Uri implements UriInterface
     /**
      * delVar
      *
-     * @param string $name
+     * @param  string  $name
      *
      * @return  static
      *
@@ -545,19 +556,19 @@ class Uri implements UriInterface
      *
      * An empty fragment value is equivalent to removing the fragment.
      *
-     * @param   string $fragment The fragment to use with the new instance.
+     * @param  string  $fragment  The fragment to use with the new instance.
      *
      * @return  static  A new instance with the specified fragment.
      */
     public function withFragment($fragment): Uri|static
     {
         if (!is_string($fragment)) {
-            throw new \InvalidArgumentException('URI Fragment should be a string.');
+            throw new InvalidArgumentException('URI Fragment should be a string.');
         }
 
         $fragment = UriHelper::filterFragment($fragment);
 
-        $new = clone $this;
+        $new           = clone $this;
         $new->fragment = $fragment;
 
         return $new;
@@ -578,7 +589,7 @@ class Uri implements UriInterface
     /**
      * Returns full uri string.
      *
-     * @param   array $parts An array specifying the parts to render.
+     * @param  array  $parts  An array specifying the parts to render.
      *
      * @return  string  The rendered URI string.
      *
@@ -629,9 +640,9 @@ class Uri implements UriInterface
     /**
      * Checks if variable exists.
      *
-     * @param   string $name Name of the query variable to check.
+     * @param  string  $name  Name of the query variable to check.
      *
-     * @return  boolean  True if the variable exists.
+     * @return  bool  True if the variable exists.
      *
      * @since   2.0
      */
@@ -643,8 +654,8 @@ class Uri implements UriInterface
     /**
      * Returns a query variable by name.
      *
-     * @param   string $name    Name of the query variable to get.
-     * @param   string $default Default value to return if the variable is not set.
+     * @param  string  $name     Name of the query variable to get.
+     * @param  string  $default  Default value to return if the variable is not set.
      *
      * @return  mixed   Query variables.
      *
@@ -735,7 +746,7 @@ class Uri implements UriInterface
     /**
      * Checks whether the current URI is using HTTPS.
      *
-     * @return  boolean  True if using SSL via HTTPS.
+     * @return  bool  True if using SSL via HTTPS.
      *
      * @since   2.0
      */

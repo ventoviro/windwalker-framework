@@ -462,7 +462,11 @@ class SQLitePlatform extends AbstractPlatform
         $constraints = $schema->getConstraints();
 
         if ($primaries) {
-            $constraints[] = (new Constraint(Constraint::TYPE_PRIMARY_KEY, 'pk_' . $table->getName(), $table->getName()))
+            $constraints[] = (new Constraint(
+                Constraint::TYPE_PRIMARY_KEY,
+                'pk_' . $table->getName(),
+                $table->getName()
+            ))
                 ->columns($primaries);
         }
 
