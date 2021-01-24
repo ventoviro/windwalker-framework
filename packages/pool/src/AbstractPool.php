@@ -11,10 +11,13 @@ declare(strict_types=1);
 
 namespace Windwalker\Pool;
 
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Windwalker\Pool\Driver\DriverInterface;
-use Windwalker\Pool\Driver\SingleDriver;
-use Windwalker\Pool\Driver\SwooleDriver;
+use Windwalker\Pool\Exception\ConnectionPoolException;
+use Windwalker\Pool\Stack\SingleStack;
+use Windwalker\Pool\Stack\StackInterface;
+use Windwalker\Pool\Stack\SwooleStack;
 use Windwalker\Utilities\Options\OptionsResolverTrait;
 
 use function Windwalker\swoole_in_coroutine;
@@ -22,37 +25,60 @@ use function Windwalker\swoole_in_coroutine;
 /**
  * The AbstractPool class.
  */
-class AbstractPool implements PoolInterface
+abstract class AbstractPool implements PoolInterface, \Countable
 {
     use OptionsResolverTrait;
 
-    protected ?DriverInterface $driver = null;
+    protected ?StackInterface $stack = null;
 
     protected bool $init = false;
+
+    /**
+     * @var LoggerInterface
+     */
+    protected LoggerInterface $logger;
 
     /**
      * AbstractPool constructor.
      *
      * @param  int                   $maxSize
      * @param  array                 $options
-     * @param  DriverInterface|null  $driver
+     * @param  StackInterface|null   $stack
+     * @param  LoggerInterface|null  $logger
      */
-    public function __construct(int $maxSize = 1, array $options = [], ?DriverInterface $driver = null)
-    {
+    public function __construct(
+        int $maxSize = 1,
+        array $options = [],
+        ?StackInterface $stack = null,
+        ?LoggerInterface $logger = null
+    ) {
         $options['max_size'] = $maxSize;
 
         $this->resolveOptions($options, [$this, 'configureOptions']);
 
-        $this->driver = $driver ?? $this->createDriver();
+        $this->stack = $stack ?? $this->createStack();
+        $this->logger = $logger ?? new NullLogger();
     }
 
-    protected function createDriver(): DriverInterface
+    protected function createStack(): StackInterface
     {
         if (swoole_in_coroutine()) {
-            return new SwooleDriver($this->getOption('max_size'));
+            return new SwooleStack($this->getOption('max_size'));
         }
 
-        return new SingleDriver();
+        return new SingleStack();
+    }
+
+    /**
+     * @param  LoggerInterface  $logger
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setLogger(LoggerInterface $logger): static
+    {
+        $this->logger = $logger;
+
+        return $this;
     }
 
     protected function configureOptions(OptionsResolver $resolver): void
@@ -61,6 +87,7 @@ class AbstractPool implements PoolInterface
             [
                 'max_size' => 1,
                 'min_size' => 1,
+                'max_active' => 1,
                 'min_active' => 1,
                 'max_wait' => 0,
                 'max_wait_time' => 0,
@@ -70,6 +97,7 @@ class AbstractPool implements PoolInterface
         )
             ->setAllowedTypes('max_size', 'int')
             ->setAllowedTypes('min_size', 'int')
+            ->setAllowedTypes('max_active', 'int')
             ->setAllowedTypes('min_active', 'int')
             ->setAllowedTypes('max_wait', 'int')
             ->setAllowedTypes('max_wait_time', 'int')
@@ -87,7 +115,7 @@ class AbstractPool implements PoolInterface
         }
 
         for ($i = 0; $i < $this->getOption('min_active'); $i++) {
-
+            $this->createConnection();
         }
     }
 
@@ -98,11 +126,49 @@ class AbstractPool implements PoolInterface
     {
     }
 
+    abstract public function create();
+
     /**
      * @inheritDoc
      */
     public function getConnection(): ConnectionInterface
     {
+        // Less than min active
+        if ($this->count() < $this->getOption('min_active')) {
+            return $this->createConnection();
+        }
+
+        // Pop connections
+        $connection = null;
+
+        if ($this->stack->count() !== 0) {
+            $connection = $this->popFromStack();
+        }
+
+        // Found a connection, return it.
+        if ($connection !== null) {
+            $connection->updateLastTime();
+            return $connection;
+        }
+
+        // If no connections found, stack is empty
+        // and if not reach max active number, create a new one.
+        if ($this->count() < $this->getOption('max_active')) {
+            return $this->createConnection();
+        }
+
+        $maxWait = $this->getOption('max_wait');
+        if ($maxWait > 0 && $this->stack->waitingCount() >= $maxWait) {
+            throw new ConnectionPoolException(
+                sprintf(
+                    'Waiting Consumer is full. max_wait=%d count=%d',
+                    $maxWait,
+                    $this->stack->count()
+                )
+            );
+        }
+
+
     }
 
     /**
@@ -131,5 +197,34 @@ class AbstractPool implements PoolInterface
      */
     public function close(): int
     {
+    }
+
+    protected function popFromStack(): ?ConnectionInterface
+    {
+        $time = time();
+
+        while ($this->stack->count() !== 0) {
+            $connection = $this->stack->pop();
+
+            $lastTime = $connection->getLastTime();
+
+            // If out of max idle time, drop this connection.
+            if (($time - $lastTime) > $this->getOption('max_idle_time')) {
+                $connection->disconnect();
+                continue;
+            }
+
+            return $connection;
+        }
+
+        return null;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function count(): int
+    {
+        return $this->stack->count();
     }
 }

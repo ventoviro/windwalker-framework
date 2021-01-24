@@ -9,14 +9,15 @@
 
 declare(strict_types=1);
 
-namespace Windwalker\Pool\Driver;
+namespace Windwalker\Pool\Stack;
 
 use Swoole\Coroutine\Channel;
+use Windwalker\Pool\ConnectionInterface;
 
 /**
  * The SwooleDriver class.
  */
-class SwooleDriver implements DriverInterface
+class SwooleStack implements StackInterface
 {
     protected int $maxSize = 1;
 
@@ -30,27 +31,43 @@ class SwooleDriver implements DriverInterface
     public function __construct(int $maxSize)
     {
         $this->maxSize = $maxSize;
+
+        $this->channel ??= new Channel($this->maxSize);
     }
 
     /**
      * @inheritDoc
      */
-    public function push(mixed $connection): void
+    public function push(ConnectionInterface $connection): void
     {
-        $this->channel ??= new Channel($this->maxSize);
-
         $this->channel->push($connection);
     }
 
     /**
      * @inheritDoc
      */
-    public function pop(): mixed
+    public function pop(?int $timeout = null): ConnectionInterface
     {
         if (!$this->channel) {
             throw new \LogicException('Channel not exists in ' . static::class);
         }
 
-        return $this->channel->pop();
+        return $this->channel->pop($timeout ?? -1);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function count(): int
+    {
+        return $this->channel->length();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function waitingCount(): int
+    {
+        return $this->channel->stats()['consumer_num'] ?? 0;
     }
 }
