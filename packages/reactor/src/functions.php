@@ -11,19 +11,52 @@ declare(strict_types=1);
 
 namespace Windwalker;
 
-/**
- * go
- *
- * @param  callable    $handler
- * @param  array|null  $params
- *
- * @return  mixed
- */
-function go(callable $handler, $params = null): mixed
-{
-    if (function_exists('\go')) {
-        return \go($handler, $params);
-    }
+use JetBrains\PhpStorm\Pure;
+use Swoole\Coroutine;
 
-    return $handler();
+if (!function_exists('Windwalker\go')) {
+    /**
+     * go
+     *
+     * @param  callable    $handler
+     * @param  array|null  $params
+     *
+     * @return  mixed
+     */
+    function go(callable $handler, $params = null): mixed
+    {
+        if (swoole_installed()) {
+            return \go($handler, $params);
+        }
+
+        return $handler();
+    }
+}
+
+if (!function_exists('Windwalker\swoole_in_coroutine')) {
+    function swoole_in_coroutine(): bool
+    {
+        if (swoole_installed()) {
+            return false;
+        }
+
+        if (Coroutine::getPcid() === false) {
+            return false;
+        }
+
+        return true;
+    }
+}
+
+if (!function_exists('Windwalker\swoole_installed')) {
+    /**
+     * swoole_installed
+     *
+     * @return  bool
+     */
+    #[Pure]
+    function swoole_installed(): bool
+    {
+        return function_exists('\go');
+    }
 }

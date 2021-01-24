@@ -47,7 +47,8 @@ trait OptionsResolverTrait
     {
         $this->options[$name] = $value;
 
-        return $this;
+        // Re-check values
+        return $this->setOptions($this->options);
     }
 
     public function getOptions(): array

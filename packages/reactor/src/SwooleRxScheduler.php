@@ -45,7 +45,7 @@ final class SwooleRxScheduler
      */
     public static function createScheduler(): EventLoopScheduler
     {
-        return new EventLoopScheduler(static::createLoop());
+        return new EventLoopScheduler(self::createLoop());
     }
 
     /**
@@ -56,7 +56,7 @@ final class SwooleRxScheduler
     public static function factory(): callable
     {
         return static function () {
-            return static::createScheduler();
+            return self::createScheduler();
         };
     }
 }

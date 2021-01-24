@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Part of Windwalker project.
  *
@@ -78,6 +79,7 @@ class Build extends Console
         'http' => 'Http',
         'promise' => 'Promise',
         'language' => 'Language',
+        'pool' => 'Pool',
         'query' => 'Query',
         'queue' => 'Queue',
         'reactor' => 'Reactor',
@@ -165,8 +167,8 @@ class Build extends Console
     /**
      * Split Git subTree.
      *
-     * @param string $subtree
-     * @param string $namespace
+     * @param  string  $subtree
+     * @param  string  $namespace
      *
      * @return  void
      */
@@ -184,7 +186,9 @@ class Build extends Console
 
         // Add remote repo
         $repo = sprintf(
-            'git@github.com:%s/windwalker-%s.git', $this->organization, $subtree
+            'git@github.com:%s/windwalker-%s.git',
+            $this->organization,
+            $subtree
         );
 
         $force = $this->getOption('f') ?: $this->getOption('force', false);
@@ -222,9 +226,9 @@ class Build extends Console
     /**
      * Exec a command.
      *
-     * @param string $command
-     * @param array  $arguments
-     * @param array  $options
+     * @param  string  $command
+     * @param  array   $arguments
+     * @param  array   $options
      *
      * @return  string
      */
@@ -276,7 +280,7 @@ HELP;
     /**
      * stop
      *
-     * @param string $msg
+     * @param  string  $msg
      *
      * @return  void
      */

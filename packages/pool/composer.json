@@ -11,6 +11,7 @@
     "license": "MIT",
     "require": {
         "php": ">=8.0.0",
+        "symfony/options-resolver": "^5.0",
         "windwalker/utilities": "4.x-dev"
     },
     "require-dev": {
