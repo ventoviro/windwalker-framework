@@ -38,7 +38,7 @@ class PdoHandler extends AbstractHandler
     /**
      * Class init.
      *
-     * @param  \PDO    $db
+     * @param  \PDO   $db
      * @param  array  $options
      */
     public function __construct(\PDO $db, array $options = [])
@@ -155,6 +155,7 @@ class PdoHandler extends AbstractHandler
             $stmt = $this->db->prepare($query->forPDO($params));
             $stmt->execute($params);
             $this->db->commit();
+
             return true;
         } catch (\Throwable $e) {
             $this->db->rollBack();
@@ -247,7 +248,7 @@ class PdoHandler extends AbstractHandler
         $platformName = $this->getPlatformName();
 
         $columns = $this->getOption('columns');
-        $table = $this->getOption('table');
+        $table   = $this->getOption('table');
 
         $query = $this->createQuery();
 
@@ -281,7 +282,8 @@ ON DUPLICATE KEY UPDATE %n = VALUES(%n), %n = VALUES(%n)",
                     $columns['time']
                 );
 
-            case AbstractPlatform::SQLSERVER === $platformName && version_compare(
+            case AbstractPlatform::SQLSERVER === $platformName
+                && version_compare(
                     $this->db->getDriver()->getVersion(),
                     '10',
                     '>='

@@ -55,9 +55,9 @@ class IronmqQueueDriver implements QueueDriverInterface
      *
      * @param  QueueMessage  $message
      *
-     * @return int|string
+     * @return string
      */
-    public function push(QueueMessage $message): int|string
+    public function push(QueueMessage $message): string
     {
         $channel = $message->getChannel() ?: $this->channel;
 
@@ -65,7 +65,7 @@ class IronmqQueueDriver implements QueueDriverInterface
 
         $options['delay'] = $message->getDelay();
 
-        return $this->client->postMessage($channel, json_encode($message), $options)->id;
+        return (string) $this->client->postMessage($channel, json_encode($message), $options)->id;
     }
 
     /**

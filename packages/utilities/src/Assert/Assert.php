@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Utilities\Assert;
 
+use Throwable;
 use Windwalker\Utilities\SimpleTemplate;
 use Windwalker\Utilities\Str;
 
@@ -29,8 +30,8 @@ class Assert
     /**
      * Assert constructor.
      *
-     * @param  callable $exceptionHandler
-     * @param  ?string  $caller
+     * @param  callable  $exceptionHandler
+     * @param  ?string   $caller
      */
     public function __construct(callable $exceptionHandler, ?string $caller = null)
     {
@@ -47,7 +48,7 @@ class Assert
      *
      * @return  void
      *
-     * @throws \Throwable
+     * @throws Throwable
      *
      * @since  __DEPLOY_VERSION__
      */
@@ -87,7 +88,7 @@ class Assert
                 $message,
                 [
                     'caller' => $this->caller,
-                    'value' => $value
+                    'value' => $value,
                 ],
                 '.',
                 ['{', '}']

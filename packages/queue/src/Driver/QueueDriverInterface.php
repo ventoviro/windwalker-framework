@@ -25,9 +25,9 @@ interface QueueDriverInterface
      *
      * @param  QueueMessage  $message
      *
-     * @return int|string
+     * @return string
      */
-    public function push(QueueMessage $message): int|string;
+    public function push(QueueMessage $message): string;
 
     /**
      * pop

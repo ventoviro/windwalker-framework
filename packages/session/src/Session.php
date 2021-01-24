@@ -38,9 +38,9 @@ class Session implements SessionInterface, ArrayAccessibleInterface
     /**
      * Session constructor.
      *
-     * @param  array                 $options
-     * @param  BridgeInterface|null  $bridge
-     * @param  CookiesInterface|null          $cookies
+     * @param  array                  $options
+     * @param  BridgeInterface|null   $bridge
+     * @param  CookiesInterface|null  $cookies
      */
     public function __construct(array $options = [], ?BridgeInterface $bridge = null, ?CookiesInterface $cookies = null)
     {
@@ -49,17 +49,17 @@ class Session implements SessionInterface, ArrayAccessibleInterface
                 static::OPTION_AUTO_COMMIT => true,
                 'ini' => [
                     //
-                ]
+                ],
             ],
             $options
         );
 
         $this->bridge  = $bridge ?? new NativeBridge();
         $this->cookies = $cookies ?? Cookies::create()
-            ->httpOnly(true)
-            ->expires('+30days')
-            ->secure(false)
-            ->sameSite(Cookies::SAMESITE_LAX);
+                ->httpOnly(true)
+                ->expires('+30days')
+                ->secure(false)
+                ->sameSite(Cookies::SAMESITE_LAX);
     }
 
     public function registerINI(): void
@@ -126,18 +126,20 @@ class Session implements SessionInterface, ArrayAccessibleInterface
             }
 
             // Must set cookie and update expires after session end.
-            register_shutdown_function(function () {
-                if ($this->getOption('auto_commit')) {
-                    $this->stop(true);
+            register_shutdown_function(
+                function () {
+                    if ($this->getOption('auto_commit')) {
+                        $this->stop(true);
+                    }
                 }
-            });
+            );
         }
 
         return tap(
             $this->bridge->start(),
 
             // Send Cookies after started
-            fn () => $this->cookies->set(
+            fn() => $this->cookies->set(
                 $this->bridge->getSessionName(),
                 $this->bridge->getId()
             )
@@ -239,13 +241,13 @@ class Session implements SessionInterface, ArrayAccessibleInterface
     /**
      * Set session cookie parameters, this method should call before session started.
      *
-     * @param array $options An associative array which may have any of the keys lifetime, path, domain,
-     * secure, httponly and samesite. The values have the same meaning as described
-     * for the parameters with the same name. The value of the samesite element
-     * should be either Lax or Strict. If any of the allowed options are not given,
-     * their default values are the same as the default values of the explicit
-     * parameters. If the samesite element is omitted, no SameSite cookie attribute
-     * is set.
+     * @param  array  $options  An associative array which may have any of the keys lifetime, path, domain,
+     *                          secure, httponly and samesite. The values have the same meaning as described
+     *                          for the parameters with the same name. The value of the samesite element
+     *                          should be either Lax or Strict. If any of the allowed options are not given,
+     *                          their default values are the same as the default values of the explicit
+     *                          parameters. If the samesite element is omitted, no SameSite cookie attribute
+     *                          is set.
      *
      * @since   2.0
      */
@@ -287,7 +289,7 @@ class Session implements SessionInterface, ArrayAccessibleInterface
     public function getFlashBag(): FlashBag
     {
         if ($this->flashBag === null) {
-            $storage = &$this->getStorage();
+            $storage           = &$this->getStorage();
             $storage['_flash'] = [];
 
             $this->flashBag = new FlashBag($storage['_flash']);
@@ -311,8 +313,8 @@ class Session implements SessionInterface, ArrayAccessibleInterface
     /**
      * Add a flash message.
      *
-     * @param array|string  $messages  The message you want to set, can be an array to storage multiple messages.
-     * @param string        $type      The message type, default is `info`.
+     * @param  array|string  $messages  The message you want to set, can be an array to storage multiple messages.
+     * @param  string        $type      The message type, default is `info`.
      *
      * @return  static
      *
@@ -415,8 +417,8 @@ class Session implements SessionInterface, ArrayAccessibleInterface
      */
     public function __clone()
     {
-        $this->bridge = clone $this->bridge;
-        $this->cookies = clone $this->cookies;
+        $this->bridge   = clone $this->bridge;
+        $this->cookies  = clone $this->cookies;
         $this->flashBag = $this->flashBag ? clone $this->flashBag : $this->flashBag;
     }
 

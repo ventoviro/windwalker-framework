@@ -64,9 +64,9 @@ class RabbitmqQueueDriver implements QueueDriverInterface
      *
      * @param  QueueMessage  $message
      *
-     * @return int|string
+     * @return string
      */
-    public function push(QueueMessage $message): int|string
+    public function push(QueueMessage $message): string
     {
         $channel = $message->getChannel() ?: $this->channel;
 
@@ -88,7 +88,7 @@ class RabbitmqQueueDriver implements QueueDriverInterface
 
         $this->channel->basic_publish($msg, '', $channel);
 
-        return 1;
+        return '1';
     }
 
     /**

@@ -300,12 +300,11 @@ class HtmlCleaner
 
                 // Find position of equal and open quotes ignoring
                 if (preg_match('#\s*=\s*\"#', $fromSpace, $matches, PREG_OFFSET_CAPTURE)) {
-                    $startAtt         = $matches[0][0];
-                    $startAttPosition = $matches[0][1];
+                    [$startAtt, $startAttPosition] = $matches[0];
                     $closeQuotes      = strpos(
-                            substr($fromSpace, ($startAttPosition + strlen($startAtt))),
-                            '"'
-                        ) + $startAttPosition + strlen($startAtt);
+                        substr($fromSpace, ($startAttPosition + strlen($startAtt))),
+                        '"'
+                    ) + $startAttPosition + strlen($startAtt);
                     $nextEqual        = $startAttPosition + strpos($startAtt, '=');
                     $openQuotes       = $startAttPosition + strpos($startAtt, '"');
                     $nextSpace        = strpos(substr($fromSpace, $closeQuotes), ' ') + $closeQuotes;

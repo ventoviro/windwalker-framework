@@ -32,7 +32,7 @@ class Queue
     /**
      * QueueManager constructor.
      *
-     * @param QueueDriverInterface $driver
+     * @param  QueueDriverInterface  $driver
      */
     public function __construct(QueueDriverInterface $driver)
     {
@@ -42,10 +42,10 @@ class Queue
     /**
      * push
      *
-     * @param  mixed        $job
-     * @param  int          $delay
+     * @param  mixed  $job
+     * @param  int  $delay
      * @param  string|null  $channel
-     * @param  array        $options
+     * @param  array  $options
      *
      * @return int|string
      */
@@ -70,8 +70,12 @@ class Queue
      * @return  int|string
      * @throws \JsonException
      */
-    public function pushRaw(string|array $body, int $delay = 0, ?string $channel = null, array $options = []): int|string
-    {
+    public function pushRaw(
+        string|array $body,
+        int $delay = 0,
+        ?string $channel = null,
+        array $options = []
+    ): int|string {
         if (is_string($body)) {
             json_decode($body, true, 512, JSON_THROW_ON_ERROR);
         }
@@ -100,7 +104,7 @@ class Queue
     /**
      * delete
      *
-     * @param QueueMessage|mixed $message
+     * @param  QueueMessage|mixed  $message
      *
      * @return  void
      */
@@ -121,8 +125,8 @@ class Queue
     /**
      * release
      *
-     * @param QueueMessage|mixed $message
-     * @param int                $delay
+     * @param  QueueMessage|mixed  $message
+     * @param  int                 $delay
      *
      * @return  void
      */
@@ -141,8 +145,8 @@ class Queue
     /**
      * getMessage
      *
-     * @param mixed $job
-     * @param array $data
+     * @param  mixed  $job
+     * @param  array  $data
      *
      * @return QueueMessage
      * @throws \InvalidArgumentException
@@ -165,7 +169,7 @@ class Queue
     /**
      * createJobInstance
      *
-     * @param mixed $job
+     * @param  mixed  $job
      *
      * @return  JobInterface
      * @throws \InvalidArgumentException
@@ -212,7 +216,7 @@ class Queue
     /**
      * Method to set property driver
      *
-     * @param   QueueDriverInterface $driver
+     * @param  QueueDriverInterface  $driver
      *
      * @return  static  Return self to support chaining.
      */

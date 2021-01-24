@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\DI\Concern;
 
+use Closure;
 use Windwalker\DI\BootableDeferredProviderInterface;
 use Windwalker\DI\BootableProviderInterface;
 use Windwalker\DI\Exception\DefinitionException;
@@ -49,7 +50,7 @@ trait ConfigRegisterTrait
         $resolver = $this->getAttributesResolver();
 
         foreach ($config as $key => $value) {
-            if ($value instanceof \Closure) {
+            if ($value instanceof Closure) {
                 $value($this);
             } elseif (is_numeric($key)) {
                 $resolver->registerAttribute($value);

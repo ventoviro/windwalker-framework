@@ -983,7 +983,8 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
 
                 ArgumentsAssert::assert(
                     $this->values instanceof static,
-                    'You must set sub query as values to {caller} since current mode is INSERT ... SELECT ..., %s given',
+                    'You must set sub query as values to {caller} since current mode is ' .
+                    'INSERT ... SELECT ..., %s given',
                     $value
                 );
 

@@ -155,7 +155,7 @@ class NestedIterator implements \OuterIterator
                 foreach ($items as $key => $item) {
                     $result = (array) $callback($item, $key);
 
-                    $k = array_key_first($result);
+                    $k     = array_key_first($result);
                     $value = $result[$k];
 
                     yield $k => $value;
@@ -169,7 +169,7 @@ class NestedIterator implements \OuterIterator
         return $this->with(
             static function (\Iterator $iter) use ($preserveKeys, $size) {
                 // @see https://blog.kevingomez.fr/2016/02/26/efficiently-creating-data-chunks-in-php/
-                $closure = static function() use ($preserveKeys, $iter, $size) {
+                $closure = static function () use ($preserveKeys, $iter, $size) {
                     $count = $size;
                     while ($count-- && $iter->valid()) {
                         if ($preserveKeys) {

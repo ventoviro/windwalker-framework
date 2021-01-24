@@ -80,8 +80,13 @@ class PdoStatement extends AbstractStatement
     /**
      * @inheritDoc
      */
-    public function bindParam($key = null, &$value = null, $dataType = null, int $length = 0, $driverOptions = null): static
-    {
+    public function bindParam(
+        $key = null,
+        &$value = null,
+        $dataType = null,
+        int $length = 0,
+        $driverOptions = null
+    ): static {
         if (is_array($key)) {
             foreach ($key as $k => $v) {
                 $this->bindParam($k, $v);

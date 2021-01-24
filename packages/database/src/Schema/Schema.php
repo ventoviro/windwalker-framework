@@ -11,10 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Schema;
 
-use phpDocumentor\Reflection\Types\Array_;
 use Windwalker\Database\Manager\TableManager;
-use Windwalker\Database\Platform\Type\DataType;
-use Windwalker\Database\Schema\Concern\DataTypeTrait;
 use Windwalker\Database\Schema\Ddl\Column;
 use Windwalker\Database\Schema\Ddl\Constraint;
 use Windwalker\Database\Schema\Ddl\Index;
@@ -94,8 +91,8 @@ class Schema
     public function addIndex(array|string|Index $columns, ?string $name = null, ?string $comment = null): Index
     {
         if (!$columns instanceof Index) {
-            $index = new Index('');
-            $index->tableName = $this->table->getName();
+            $index               = new Index('');
+            $index->tableName    = $this->table->getName();
             $index->indexComment = $comment;
 
             if (is_string($columns)) {
@@ -140,8 +137,11 @@ class Schema
             ->columns($columns);
     }
 
-    public function addForeignKey(array|string $columns, ?string $refTable = null, array|string|null $refColumns = null): Constraint
-    {
+    public function addForeignKey(
+        array|string $columns,
+        ?string $refTable = null,
+        array|string|null $refColumns = null
+    ): Constraint {
         $columns = (array) $columns;
 
         $constraint = $this->addConstraint(Constraint::TYPE_PRIMARY_KEY, 'PRIMARY')

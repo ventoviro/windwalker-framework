@@ -22,6 +22,6 @@ class ArgumentsAssert extends TypeAssert
 {
     protected static function exception(): callable
     {
-        return fn (string $msg) => new InvalidArgumentException($msg);
+        return fn(string $msg) => new InvalidArgumentException($msg);
     }
 }

@@ -533,7 +533,7 @@ abstract class Arr
      * @return  mixed
      */
     public static function takeout(
-        object|array &$data,
+        object | array &$data,
         int|string $key,
         $default = null,
         string $delimiter = '.'

@@ -46,15 +46,18 @@ class PhpBridge implements BridgeInterface
      * @param  HandlerInterface|null  $handler
      * @param  FormatInterface|null   $serializer
      */
-    public function __construct(array $options = [], HandlerInterface $handler = null, ?FormatInterface $serializer = null)
-    {
+    public function __construct(
+        array $options = [],
+        HandlerInterface $handler = null,
+        ?FormatInterface $serializer = null
+    ) {
         $this->handler    = $handler ?? new NativeHandler();
         $this->serializer = $serializer;
 
         $this->prepareOptions(
             [
                 static::OPTION_AUTO_COMMIT => false,
-                static::OPTION_WITH_SUPER_GLOBAL => false
+                static::OPTION_WITH_SUPER_GLOBAL => false,
             ],
             $options
         );
@@ -236,7 +239,7 @@ class PhpBridge implements BridgeInterface
     public function gcEnabled(): bool
     {
         $probability = (int) $this->getOptionAndINI('gc_probability');
-        $divisor = (int) $this->getOptionAndINI('gc_divisor');
+        $divisor     = (int) $this->getOptionAndINI('gc_divisor');
 
         if ($probability === 0 || $divisor === 0) {
             return false;

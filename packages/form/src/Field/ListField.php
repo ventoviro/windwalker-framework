@@ -13,7 +13,6 @@ namespace Windwalker\Form\Field;
 
 use Windwalker\Data\Collection;
 use Windwalker\DOM\DOMElement;
-
 use Windwalker\DOM\HTMLFactory;
 
 use function Windwalker\DOM\h;
@@ -89,7 +88,7 @@ class ListField extends AbstractField
         }
 
         $option = clone $option;
-        $value = $this->getValue();
+        $value  = $this->getValue();
 
         if (!$this->isMultiple()) {
             if (value_compare($option['value'], $value, '==')) {
@@ -136,8 +135,8 @@ class ListField extends AbstractField
     /**
      * setOptions
      *
-     * @param array|DOMElement[] $options
-     * @param null|string    $group
+     * @param  array|DOMElement[]  $options
+     * @param  null|string         $group
      *
      * @return  static
      */
@@ -152,8 +151,8 @@ class ListField extends AbstractField
     /**
      * addOptions
      *
-     * @param array|DOMElement[] $options
-     * @param null|string    $group
+     * @param  array|DOMElement[]  $options
+     * @param  null|string         $group
      *
      * @return  $this
      *
@@ -187,7 +186,7 @@ class ListField extends AbstractField
     /**
      * register
      *
-     * @param callable $handler
+     * @param  callable  $handler
      *
      * @return  static
      *
@@ -203,8 +202,8 @@ class ListField extends AbstractField
     /**
      * registerOptions
      *
-     * @param array    $options
-     * @param callable $handler
+     * @param  array     $options
+     * @param  callable  $handler
      *
      * @return  static
      *
@@ -228,8 +227,8 @@ class ListField extends AbstractField
     /**
      * addOption
      *
-     * @param DOMElement $option
-     * @param string $group
+     * @param  DOMElement  $option
+     * @param  string      $group
      *
      * @return  static
      */
@@ -256,8 +255,12 @@ class ListField extends AbstractField
      *
      * @return static
      */
-    public function option(\DOMNode|string|null $text = null, ?string $value = null, array $attrs = [], ?string $group = null): static
-    {
+    public function option(
+        \DOMNode|string|null $text = null,
+        ?string $value = null,
+        array $attrs = [],
+        ?string $group = null
+    ): static {
         $attrs['value'] = $value;
 
         $this->addOption(static::createOption($text, $value, $attrs), $group);
@@ -265,8 +268,11 @@ class ListField extends AbstractField
         return $this;
     }
 
-    public static function createOption(\DOMNode|string|null $text = null, ?string $value = null, array $attrs = []): DOMElement
-    {
+    public static function createOption(
+        \DOMNode|string|null $text = null,
+        ?string $value = null,
+        array $attrs = []
+    ): DOMElement {
         $attrs['value'] = $value;
 
         return HTMLFactory::option($attrs, $text);

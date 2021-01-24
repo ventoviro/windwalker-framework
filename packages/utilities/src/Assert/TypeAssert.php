@@ -32,8 +32,12 @@ class TypeAssert
      *
      * @since  __DEPLOY_VERSION__
      */
-    public static function assert(bool|callable $assertion, string $message, $value = null, ?callable $exception = null): void
-    {
+    public static function assert(
+        bool|callable $assertion,
+        string $message,
+        $value = null,
+        ?callable $exception = null
+    ): void {
         if (is_callable($assertion)) {
             $result = $assertion();
         } else {
@@ -52,7 +56,7 @@ class TypeAssert
 
     protected static function exception(): callable
     {
-        return fn (string $msg) => new TypeError($msg);
+        return fn(string $msg) => new TypeError($msg);
     }
 
     public static function describeValue($value): string

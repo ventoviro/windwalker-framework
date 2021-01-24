@@ -26,9 +26,9 @@ class SyncQueueDriver implements QueueDriverInterface
      *
      * @param  QueueMessage  $message
      *
-     * @return int|string
+     * @return string
      */
-    public function push(QueueMessage $message): int|string
+    public function push(QueueMessage $message): string
     {
         $job = $message->getSerializedJob();
         /** @var JobInterface $job */
@@ -36,7 +36,7 @@ class SyncQueueDriver implements QueueDriverInterface
 
         $this->runJob($job);
 
-        return 0;
+        return '0';
     }
 
     protected function runJob(callable $job)

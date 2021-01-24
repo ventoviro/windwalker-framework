@@ -13,11 +13,8 @@ namespace Windwalker\Database\Schema;
 
 use Windwalker\Database\Manager\AbstractMetaManager;
 use Windwalker\Database\Manager\TableManager;
-
 use Windwalker\Database\Schema\Ddl\Table;
 use Windwalker\Utilities\Cache\InstanceCacheTrait;
-
-use function PHPUnit\Framework\once;
 
 /**
  * The SchemaManager class.
@@ -28,7 +25,7 @@ class SchemaManager extends AbstractMetaManager
 
     public function getTable(string $name, bool $new = false): TableManager
     {
-        return $this->once('table.manager.' . $name, fn () => new TableManager($name, $this->db), $new);
+        return $this->once('table.manager.' . $name, fn() => new TableManager($name, $this->db), $new);
     }
 
     /**
@@ -43,7 +40,7 @@ class SchemaManager extends AbstractMetaManager
 
         $tables = $this->once(
             'tables',
-            fn () => Table::wrapList(
+            fn() => Table::wrapList(
                 $platform->listTables($this->getName())
             ),
             $refresh
@@ -60,7 +57,7 @@ class SchemaManager extends AbstractMetaManager
     {
         return $this->once(
             'views',
-            fn () => Table::wrapList(
+            fn() => Table::wrapList(
                 $this->getPlatform()->listViews($this->getName())
             ),
             $refresh
@@ -80,7 +77,7 @@ class SchemaManager extends AbstractMetaManager
     public function reset(): static
     {
         $this->tables = null;
-        $this->views = null;
+        $this->views  = null;
 
         return $this;
     }

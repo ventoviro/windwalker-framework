@@ -28,7 +28,7 @@ class PluralSelector
 
         $pluralIndex = $this->getPluralIndex(LanguageNormalizer::toISO15897($locale), $number);
 
-        if (count($segments) === 1 || ! isset($segments[$pluralIndex])) {
+        if (count($segments) === 1 || !isset($segments[$pluralIndex])) {
             return $segments[0];
         }
 
@@ -38,7 +38,7 @@ class PluralSelector
     private function extract(array $segments, int $number): ?string
     {
         foreach ($segments as $part) {
-            if (! is_null($line = $this->extractFromString($part, $number))) {
+            if (!is_null($line = $this->extractFromString($part, $number))) {
                 return $line;
             }
         }
@@ -79,6 +79,7 @@ class PluralSelector
      * Strip the inline conditions from each segment, just leaving the text.
      *
      * @param  array  $segments
+     *
      * @return array
      */
     private function stripConditions(array $segments): array
@@ -97,11 +98,13 @@ class PluralSelector
      * Copyright (c) 2005-2010 - Zend Technologies USA Inc. (http://www.zend.com)
      *
      * @param  string  $locale
-     * @param  int  $number
+     * @param  int     $number
+     *
      * @return int
      */
     public function getPluralIndex(string $locale, int $number): int
     {
+        // phpcs:disable
         switch ($locale) {
             case 'az':
             case 'az_AZ':
@@ -401,5 +404,6 @@ class PluralSelector
             default:
                 return 0;
         }
+        //phpcs:enable
     }
 }

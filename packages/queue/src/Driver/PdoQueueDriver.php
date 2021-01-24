@@ -71,10 +71,10 @@ class PdoQueueDriver implements QueueDriverInterface
      *
      * @param  QueueMessage  $message
      *
-     * @return int|string
+     * @return string
      * @throws \Exception
      */
-    public function push(QueueMessage $message): int|string
+    public function push(QueueMessage $message): string
     {
         $time = new \DateTimeImmutable('now');
 
@@ -93,7 +93,7 @@ class PdoQueueDriver implements QueueDriverInterface
 
         $this->pdo->prepare($sql)->execute($data);
 
-        return $this->pdo->lastInsertId();
+        return (string) $this->pdo->lastInsertId();
     }
 
     /**

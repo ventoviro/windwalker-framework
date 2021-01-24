@@ -55,10 +55,10 @@ class SqsQueueDriver implements QueueDriverInterface
      *
      * @param  QueueMessage  $message
      *
-     * @return int|string
+     * @return string
      * @throws \JsonException
      */
-    public function push(QueueMessage $message): int|string
+    public function push(QueueMessage $message): string
     {
         $request = [
             'QueueUrl' => $this->getQueueUrl($message->getChannel()),
@@ -71,7 +71,7 @@ class SqsQueueDriver implements QueueDriverInterface
 
         $request = array_merge($request, $options);
 
-        return $this->client->sendMessage($request)->get('MessageId');
+        return (string) $this->client->sendMessage($request)->get('MessageId');
     }
 
     /**

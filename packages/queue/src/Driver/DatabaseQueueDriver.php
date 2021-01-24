@@ -60,10 +60,10 @@ class DatabaseQueueDriver implements QueueDriverInterface
      *
      * @param  QueueMessage  $message
      *
-     * @return int|string
+     * @return string
      * @throws \Exception
      */
-    public function push(QueueMessage $message): int|string
+    public function push(QueueMessage $message): string
     {
         $time = new \DateTimeImmutable('now');
 
@@ -78,7 +78,7 @@ class DatabaseQueueDriver implements QueueDriverInterface
 
         $data = $this->db->getWriter()->insertOne($this->table, $data, 'id');
 
-        return $data['id'];
+        return (string) $data['id'];
     }
 
     /**

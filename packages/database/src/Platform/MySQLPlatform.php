@@ -24,7 +24,6 @@ use Windwalker\Query\Mysql\MysqlGrammar;
 use Windwalker\Query\Query;
 use Windwalker\Utilities\Str;
 
-use function Windwalker\arr;
 use function Windwalker\raw;
 
 /**
@@ -60,7 +59,7 @@ class MySQLPlatform extends AbstractPlatform
                     'TABLE_TYPE',
                     raw('NULL AS VIEW_DEFINITION'),
                     raw('NULL AS CHECK_OPTION'),
-                    raw('NULL AS IS_UPDATABLE')
+                    raw('NULL AS IS_UPDATABLE'),
                 ]
             )
             ->from('INFORMATION_SCHEMA.TABLES')
@@ -78,15 +77,15 @@ class MySQLPlatform extends AbstractPlatform
     public function listViewsQuery(?string $schema): Query
     {
         $query = $this->db->select(
-                [
-                    'TABLE_NAME',
-                    'TABLE_SCHEMA',
-                    raw('\'VIEW\' AS TABLE_TYPE'),
-                    'VIEW_DEFINITION',
-                    'CHECK_OPTION',
-                    'IS_UPDATABLE'
-                ]
-            )
+            [
+                'TABLE_NAME',
+                'TABLE_SCHEMA',
+                raw('\'VIEW\' AS TABLE_TYPE'),
+                'VIEW_DEFINITION',
+                'CHECK_OPTION',
+                'IS_UPDATABLE',
+            ]
+        )
             ->from('INFORMATION_SCHEMA.VIEWS');
 
         if ($schema !== null) {
@@ -101,21 +100,21 @@ class MySQLPlatform extends AbstractPlatform
     public function listColumnsQuery(string $table, ?string $schema): Query
     {
         $query = $this->db->select(
-                [
-                    'ORDINAL_POSITION',
-                    'COLUMN_DEFAULT',
-                    'IS_NULLABLE',
-                    'DATA_TYPE',
-                    'CHARACTER_MAXIMUM_LENGTH',
-                    'CHARACTER_OCTET_LENGTH',
-                    'NUMERIC_PRECISION',
-                    'NUMERIC_SCALE',
-                    'COLUMN_NAME',
-                    'COLUMN_TYPE',
-                    'COLUMN_COMMENT',
-                    'EXTRA',
-                ]
-            )
+            [
+                'ORDINAL_POSITION',
+                'COLUMN_DEFAULT',
+                'IS_NULLABLE',
+                'DATA_TYPE',
+                'CHARACTER_MAXIMUM_LENGTH',
+                'CHARACTER_OCTET_LENGTH',
+                'NUMERIC_PRECISION',
+                'NUMERIC_SCALE',
+                'COLUMN_NAME',
+                'COLUMN_TYPE',
+                'COLUMN_COMMENT',
+                'EXTRA',
+            ]
+        )
             ->from('INFORMATION_SCHEMA.COLUMNS')
             ->where('TABLE_NAME', $this->db->replacePrefix($table));
 
@@ -131,18 +130,18 @@ class MySQLPlatform extends AbstractPlatform
     public function listIndexesQuery(string $table, ?string $schema): Query
     {
         $query = $this->db->select(
-                [
-                    'TABLE_SCHEMA',
-                    'TABLE_NAME',
-                    'NON_UNIQUE',
-                    'INDEX_NAME',
-                    'COLUMN_NAME',
-                    'COLLATION',
-                    'CARDINALITY',
-                    'SUB_PART',
-                    'INDEX_COMMENT',
-                ]
-            )
+            [
+                'TABLE_SCHEMA',
+                'TABLE_NAME',
+                'NON_UNIQUE',
+                'INDEX_NAME',
+                'COLUMN_NAME',
+                'COLLATION',
+                'CARDINALITY',
+                'SUB_PART',
+                'INDEX_COMMENT',
+            ]
+        )
             ->from('INFORMATION_SCHEMA.STATISTICS')
             ->where('TABLE_NAME', $this->db->replacePrefix($table));
 
@@ -158,12 +157,12 @@ class MySQLPlatform extends AbstractPlatform
     public function listConstraintsQuery(string $table, ?string $schema): Query
     {
         return $this->db->select(
-                [
-                    'TABLE_NAME',
-                    'CONSTRAINT_NAME',
-                    'CONSTRAINT_TYPE',
-                ]
-            )
+            [
+                'TABLE_NAME',
+                'CONSTRAINT_NAME',
+                'CONSTRAINT_TYPE',
+            ]
+        )
             ->from('INFORMATION_SCHEMA.TABLE_CONSTRAINTS')
             ->where('TABLE_NAME', $this->db->replacePrefix($table))
             ->tap(
@@ -193,12 +192,12 @@ class MySQLPlatform extends AbstractPlatform
                 $permittedValues = $matches[1];
 
                 if (
-                    preg_match_all(
-                        "/\\s*'((?:[^']++|'')*+)'\\s*(?:,|\$)/",
-                        $permittedValues,
-                        $matches,
-                        PREG_PATTERN_ORDER
-                    )
+                preg_match_all(
+                    "/\\s*'((?:[^']++|'')*+)'\\s*(?:,|\$)/",
+                    $permittedValues,
+                    $matches,
+                    PREG_PATTERN_ORDER
+                )
                 ) {
                     $permittedValues = str_replace("''", "'", $matches[1]);
                 } else {
@@ -413,12 +412,12 @@ class MySQLPlatform extends AbstractPlatform
             'auto_increment' => 1,
             'engine' => 'InnoDB',
             'charset' => 'utf8mb4',
-            'collate' => 'utf8mb4_unicode_ci'
+            'collate' => 'utf8mb4_unicode_ci',
         ];
 
-        $options = array_merge($defaultOptions, $options);
-        $columns = [];
-        $table   = $schema->getTable();
+        $options   = array_merge($defaultOptions, $options);
+        $columns   = [];
+        $table     = $schema->getTable();
         $tableName = $this->db->quoteName($table->schemaName . '.' . $table->getName());
         $primaries = [];
 
@@ -529,10 +528,12 @@ class MySQLPlatform extends AbstractPlatform
         return $this->db->execute(
             $this->db->createQuery()
                 ->alter('TABLE', $schema . '.' . $table)
-                ->tap(fn(AlterClause $alter) => $alter->addIndex(
-                    $index->indexName,
-                    $this->prepareKeyColumns($index->getColumns())
-                ))
+                ->tap(
+                    fn(AlterClause $alter) => $alter->addIndex(
+                        $index->indexName,
+                        $this->prepareKeyColumns($index->getColumns())
+                    )
+                )
         );
     }
 
@@ -541,7 +542,7 @@ class MySQLPlatform extends AbstractPlatform
         $expr = parent::getKeyColumnExpression($column);
 
         $subParts = $column->getErratas()['sub_parts'] ?? null;
-        $length = $column->getCharacterMaximumLength();
+        $length   = $column->getCharacterMaximumLength();
 
         $types = [
             'varchar',
@@ -572,7 +573,7 @@ class MySQLPlatform extends AbstractPlatform
         $constraint = array_values(
             array_filter(
                 $this->listConstraints($table, $schema),
-                fn ($constraint) => $constraint['constraint_name'] === $name
+                fn($constraint) => $constraint['constraint_name'] === $name
             )
         )[0];
 

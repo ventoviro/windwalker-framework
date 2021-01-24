@@ -76,7 +76,8 @@ class NestedFilter extends AbstractFilter
                     if (!$filter->test(Arr::get($value, $path))) {
                         throw ValidateException::create(
                             $filter,
-                            'Validator: ' . TypeCast::forceString($filter) . ' returns false, value is: ' . Assert::describeValue($value)
+                            'Validator: ' . TypeCast::forceString($filter)
+                            . ' returns false, value is: ' . Assert::describeValue($value)
                         );
                     }
                 }

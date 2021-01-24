@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace Windwalker\DI\Attributes;
 
+use Attribute;
+use ReflectionProperty;
+use ReflectionUnionType;
 use Windwalker\DI\Container;
 use Windwalker\DI\Exception\DependencyResolutionException;
 
@@ -19,7 +22,7 @@ use Windwalker\DI\Exception\DependencyResolutionException;
  *
  * @since  3.4.4
  */
-#[\Attribute]
+#[Attribute]
 class Inject implements ContainerAttributeInterface
 {
     public ?string $id = null;
@@ -51,7 +54,7 @@ class Inject implements ContainerAttributeInterface
     {
         $reflector = $handler->getReflector();
 
-        if (!$reflector instanceof \ReflectionProperty) {
+        if (!$reflector instanceof ReflectionProperty) {
             return $handler;
         }
 
@@ -68,7 +71,7 @@ class Inject implements ContainerAttributeInterface
                 );
             }
 
-            if ($type instanceof \ReflectionUnionType) {
+            if ($type instanceof ReflectionUnionType) {
                 $types = [$type->getTypes()];
             } else {
                 $types = [$type];

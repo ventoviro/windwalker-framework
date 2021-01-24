@@ -49,10 +49,10 @@ class ResqueQueueDriver implements QueueDriverInterface
      *
      * @param  QueueMessage  $message
      *
-     * @return int|string
+     * @return string
      * @throws \DomainException
      */
-    public function push(QueueMessage $message): int|string
+    public function push(QueueMessage $message): string
     {
         $channel = $message->getChannel() ?: $this->channel;
 
@@ -76,7 +76,7 @@ class ResqueQueueDriver implements QueueDriverInterface
             Resque::push($channel, $data);
         }
 
-        return $message->getId();
+        return (string) $message->getId();
     }
 
     /**

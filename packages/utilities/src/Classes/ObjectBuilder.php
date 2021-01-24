@@ -11,12 +11,15 @@ declare(strict_types=1);
 
 namespace Windwalker\Utilities\Classes;
 
+use Closure;
+use ReflectionException;
+
 /**
  * The ObjectResolver class.
  */
 class ObjectBuilder
 {
-    protected ?\Closure $builder = null;
+    protected ?Closure $builder = null;
 
     /**
      * Create object by class and resolve attributes.
@@ -25,7 +28,7 @@ class ObjectBuilder
      * @param  mixed   ...$args
      *
      * @return  object
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function createObject(string $class, ...$args): object
     {
@@ -33,9 +36,9 @@ class ObjectBuilder
     }
 
     /**
-     * @return \Closure
+     * @return Closure
      */
-    public function getBuilder(): \Closure
+    public function getBuilder(): Closure
     {
         return $this->builder ??= function (string $class, ...$args) {
             return new $class(...$args);
@@ -43,11 +46,11 @@ class ObjectBuilder
     }
 
     /**
-     * @param  \Closure  $builder
+     * @param  Closure  $builder
      *
      * @return  static  Return self to support chaining.
      */
-    public function setBuilder(\Closure $builder): static
+    public function setBuilder(Closure $builder): static
     {
         $this->builder = $builder;
 

@@ -64,13 +64,13 @@ class BeanstalkdQueueDriver implements QueueDriverInterface
      *
      * @param  QueueMessage  $message
      *
-     * @return int|string
+     * @return string
      */
-    public function push(QueueMessage $message): int|string
+    public function push(QueueMessage $message): string
     {
         $channel = $message->getChannel() ?: $this->channel;
 
-        return $this->client->useTube($channel)->put(
+        return (string) $this->client->useTube($channel)->put(
             json_encode($message),
             PheanstalkInterface::DEFAULT_PRIORITY,
             $message->getDelay(),

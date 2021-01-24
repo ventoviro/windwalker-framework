@@ -201,6 +201,6 @@ class RequestBodyStream implements StreamInterface
      */
     public function getMetadata($key = null): mixed
     {
-
+        return [];
     }
 }
