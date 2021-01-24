@@ -70,10 +70,10 @@ class ObjectBuilderDefinition implements DefinitionInterface
     /**
      * ClassMeta constructor.
      *
-     * @param string|callable $class
-     * @param Container       $container
+     * @param  string|callable  $class
+     * @param  Container|null   $container
      */
-    public function __construct($class, ?Container $container = null)
+    public function __construct(callable|string $class, ?Container $container = null)
     {
         $this->container = $container;
         $this->class = $class;
@@ -104,11 +104,11 @@ class ObjectBuilderDefinition implements DefinitionInterface
     /**
      * Set new value or factory callback to this definition.
      *
-     * @param  string  $value  Value or callable.
+     * @param  mixed  $value  Value or callable.
      *
      * @return  void
      */
-    public function set($value): void
+    public function set(mixed $value): void
     {
         $this->class = $value;
     }
@@ -123,7 +123,7 @@ class ObjectBuilderDefinition implements DefinitionInterface
      * @throws DependencyResolutionException
      * @throws \ReflectionException
      */
-    public function getArgument($name, $default = null): array
+    public function getArgument(string $name, $default = null): array
     {
         if (!isset($this->arguments[$name])) {
             return $default;
@@ -140,7 +140,7 @@ class ObjectBuilderDefinition implements DefinitionInterface
      *
      * @return  static Return self to support chaining.
      */
-    public function setArgument($name, $value): static
+    public function setArgument(string $name, mixed $value): static
     {
         if (!$value instanceof \Closure) {
             $value = fn() => $value;
@@ -173,7 +173,7 @@ class ObjectBuilderDefinition implements DefinitionInterface
      *
      * @return  static
      */
-    public function removeArgument($name): static
+    public function removeArgument(string $name): static
     {
         unset($this->arguments[$name], $this->caches[$name]);
 
@@ -205,7 +205,7 @@ class ObjectBuilderDefinition implements DefinitionInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setArguments($arguments): static
+    public function setArguments(array $arguments): static
     {
         foreach ($arguments as $name => $argument) {
             $this->setArgument($name, $argument);
@@ -268,7 +268,7 @@ class ObjectBuilderDefinition implements DefinitionInterface
      * @throws DependencyResolutionException
      * @throws \ReflectionException
      */
-    public function __call($name, $args): mixed
+    public function __call(string $name, array $args): mixed
     {
         $allowMethods = [
             'bind',

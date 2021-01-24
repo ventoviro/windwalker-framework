@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Promise;
 
 use Closure;
+use JetBrains\PhpStorm\Pure;
 use Throwable;
 use Windwalker\Promise\Helper\ReturnPromiseInterface;
 
@@ -48,7 +49,8 @@ function reject($promiseOrValue = null): ExtendedPromiseInterface
  *
  * @return  bool
  */
-function is_thenable($value): bool
+#[Pure]
+function is_thenable(mixed $value): bool
 {
     return \is_object($value) && \method_exists($value, 'then');
 }
@@ -60,7 +62,7 @@ function is_thenable($value): bool
  *
  * @return  Closure|ReturnPromiseInterface
  */
-function asyncable(callable $callable): Closure
+function asyncable(callable $callable): Closure|ReturnPromiseInterface
 {
     return static function (...$args) use ($callable): ExtendedPromiseInterface {
         return async(
@@ -168,7 +170,7 @@ function coroutine(callable $callback): ExtendedPromiseInterface
  * @see coroutine()
  *
  */
-function coroutineable(callable $callback): Closure
+function coroutineable(callable $callback): Closure|ReturnPromiseInterface
 {
     return static function (...$args) use ($callback): ExtendedPromiseInterface {
         return coroutine(

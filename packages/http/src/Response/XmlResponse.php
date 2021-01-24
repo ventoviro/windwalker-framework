@@ -48,13 +48,17 @@ class XmlResponse extends TextResponse
      *
      * @return  string  Converted XML string.
      */
-    protected function toString($data): string
+    protected function toString(mixed $data): string
     {
         if ($data instanceof \SimpleXMLElement) {
             return $data->asXML();
-        } elseif ($data instanceof \DOMDocument) {
+        }
+
+        if ($data instanceof \DOMDocument) {
             return $data->saveXML();
-        } elseif (is_string($data)) {
+        }
+
+        if (is_string($data)) {
             return $data;
         }
 

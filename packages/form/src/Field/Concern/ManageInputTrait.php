@@ -89,9 +89,9 @@ trait ManageInputTrait
      *
      * @param  string  $name
      *
-     * @return  mixed
+     * @return string|null
      */
-    public function getAttribute($name): ?string
+    public function getAttribute(string $name): ?string
     {
         $input = $this->getInput();
 
@@ -115,7 +115,7 @@ trait ManageInputTrait
      *
      * @return  static
      */
-    public function setAttribute(string $name, $value): static
+    public function setAttribute(string $name, mixed $value): static
     {
         $this->getInput()->setAttribute($name, $value);
 

@@ -55,14 +55,14 @@ interface PromiseInterface
      *
      * @param  mixed  $value
      */
-    public function resolve($value): void;
+    public function resolve(mixed $value): void;
 
     /**
      * Reject the promise with the given reason.
      *
      * @param  mixed  $reason
      */
-    public function reject($reason): void;
+    public function reject(mixed $reason): void;
 
     /**
      * Waits until the promise completes if possible.

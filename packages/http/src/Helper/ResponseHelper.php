@@ -11,6 +11,12 @@ declare(strict_types=1);
 
 namespace Windwalker\Http\Helper;
 
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\StreamInterface;
+use Windwalker\Http\Output\StreamOutput;
+use Windwalker\Http\Response\Response;
+use Windwalker\Stream\Stream;
+
 /**
  * The ResponseHelper class.
  *
@@ -20,6 +26,8 @@ namespace Windwalker\Http\Helper;
  */
 abstract class ResponseHelper
 {
+    protected static ?StreamOutput $outputObject = null;
+
     /**
      * Status phrases.
      *
@@ -93,27 +101,23 @@ abstract class ResponseHelper
     /**
      * Get status phrase by code.
      *
-     * @param   integer $code Status code to get phrase.
+     * @param  integer  $code  Status code to get phrase.
      *
-     * @return  string
+     * @return string|null
      */
-    public static function getPhrase($code): ?string
+    public static function getPhrase(int $code): ?string
     {
-        if (isset(static::$phrases[$code])) {
-            return static::$phrases[$code];
-        }
-
-        return null;
+        return static::$phrases[$code] ?? null;
     }
 
     /**
      * Validate a status code.
      *
-     * @param   int|string $code
+     * @param  int|string  $code
      *
      * @return  boolean  Valid or not.
      */
-    public static function validateStatus($code): bool
+    public static function validateStatus(int|string $code): bool
     {
         $code = (int) $code;
 
@@ -198,5 +202,49 @@ abstract class ResponseHelper
     public static function isServerError(int $code): bool
     {
         return static::inRange($code, 500);
+    }
+
+    /**
+     * A simple method to quickly send attachment stream download.
+     *
+     * @param  string|resource|StreamInterface  $source    The file source, can be file path or resource.
+     * @param  ResponseInterface|null           $response  A custom Response object to contain your headers.
+     * @param  array                            $options   Options to provide some settings, currently supports
+     *                                                     "delay" and "filename".
+     *
+     * @return  void
+     */
+    public static function sendAttachment(mixed $source, ResponseInterface $response = null, array $options = []): void
+    {
+        $stream = $source;
+
+        if (!$stream instanceof StreamInterface) {
+            $stream = new Stream($stream, 'r');
+        }
+
+        /** @var ResponseInterface $response */
+        $response = $response ?: new Response();
+
+        $filename = null;
+
+        if (is_string($source)) {
+            $filename = pathinfo($source, PATHINFO_BASENAME);
+        }
+
+        if (isset($options['filename'])) {
+            $filename = $options['filename'];
+        }
+
+        $response = HeaderHelper::prepareAttachmentHeaders($response, $filename);
+
+        $response = $response->withBody($stream);
+
+        $output = static::$outputObject ??= new StreamOutput();
+
+        if (isset($options['delay'])) {
+            $output->setDelay($options['delay']);
+        }
+
+        $output->respond($response);
     }
 }

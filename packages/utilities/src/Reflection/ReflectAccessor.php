@@ -53,7 +53,7 @@ class ReflectAccessor
      * @throws ReflectionException
      * @since   2.0
      */
-    public static function setValue(object $object, string $propertyName, $value): void
+    public static function setValue(object $object, string $propertyName, mixed $value): void
     {
         $refl = new ReflectionClass($object);
 

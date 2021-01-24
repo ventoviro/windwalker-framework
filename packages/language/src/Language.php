@@ -395,7 +395,7 @@ class Language implements LanguageInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setFallback($fallback): static
+    public function setFallback(string $fallback): static
     {
         $this->fallback = LanguageNormalizer::toBCP47($fallback);
 

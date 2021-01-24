@@ -134,7 +134,7 @@ class ResqueQueueDriver implements QueueDriverInterface
     /**
      * release
      *
-     * @param QueueMessage|string $message
+     * @param QueueMessage $message
      *
      * @return static
      */
@@ -150,10 +150,8 @@ class ResqueQueueDriver implements QueueDriverInterface
      *
      * Searches for any items that are due to be scheduled in Resque
      * and adds them to the appropriate job channel in Resque.
-     *
-     * @param \DateTime|int $timestamp Search for any items up to this timestamp to schedule.
      */
-    public function rechannelDelayedItems()
+    public function rechannelDelayedItems(): void
     {
         while (($oldestJobTimestamp = \ResqueScheduler::nextDelayedTimestamp()) !== false) {
             $this->enchannelDelayedItemsForTimestamp($oldestJobTimestamp);
@@ -166,9 +164,9 @@ class ResqueQueueDriver implements QueueDriverInterface
      * Searches for all items for a given timestamp, pulls them off the list of
      * delayed jobs and pushes them across to Resque.
      *
-     * @param \DateTime|int $timestamp Search for any items up to this timestamp to schedule.
+     * @param  \DateTime|int  $timestamp  Search for any items up to this timestamp to schedule.
      */
-    public function enchannelDelayedItemsForTimestamp($timestamp)
+    public function enchannelDelayedItemsForTimestamp(\DateTime|int $timestamp)
     {
         $item = null;
 
@@ -209,7 +207,7 @@ class ResqueQueueDriver implements QueueDriverInterface
      * @return  void
      * @throws \DomainException
      */
-    public function connect($host, $port)
+    public function connect(string $host, int $port): void
     {
         if (!class_exists(Resque::class)) {
             throw new \DomainException('Please install chrisboulton/php-resque 1.2 to support Resque driver.');

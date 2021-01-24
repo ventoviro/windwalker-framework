@@ -22,19 +22,19 @@ class ValueClause implements ClauseInterface
     /**
      * @var string|mixed|Query
      */
-    protected $value;
+    protected mixed $value;
 
     /**
      * @var string
      */
-    protected $placeholder;
+    protected string $placeholder;
 
     /**
      * AsClause constructor.
      *
      * @param  string|Query|RawWrapper  $value
      */
-    public function __construct($value)
+    public function __construct(mixed $value)
     {
         $this->value = $value;
     }
@@ -80,7 +80,7 @@ class ValueClause implements ClauseInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function value($value): static
+    public function value(mixed $value): static
     {
         $this->value = $value;
 

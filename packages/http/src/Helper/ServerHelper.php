@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Http\Helper;
 
+use JetBrains\PhpStorm\Pure;
 use Psr\Http\Message\UploadedFileInterface;
 
 /**
@@ -33,7 +34,8 @@ abstract class ServerHelper
      *
      * @return  mixed
      */
-    public static function getValue(array $servers, $name, $default = null): mixed
+    #[Pure]
+    public static function getValue(array $servers, string $name, mixed $default = null): mixed
     {
         if (array_key_exists($name, $servers)) {
             return $servers[$name];
@@ -222,8 +224,10 @@ abstract class ServerHelper
      * @return  boolean
      *
      * @since   2.0
+     *
+     * @deprecated Use Arr::set()
      */
-    public static function setByPath(array &$data, $path, $value, $separator = '.'):bool
+    public static function setByPath(array &$data, string $path, mixed $value, string $separator = '.'): bool
     {
         $nodes = array_values(explode($separator, $path));
 

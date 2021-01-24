@@ -33,7 +33,7 @@ class XmlFormat implements FormatInterface
      *
      * @since   2.0
      */
-    public function dump($data, array $options = []): string
+    public function dump(mixed $data, array $options = []): string
     {
         $rootName = $options['name'] ?? 'Data';
         $nodeName = $options['nodeName'] ?? 'node';
@@ -74,11 +74,11 @@ class XmlFormat implements FormatInterface
     /**
      * Method to get a PHP native value for a SimpleXMLElement object. -- called recursively
      *
-     * @param  object  $node  SimpleXMLElement object for which to get the native value.
+     * @param  SimpleXMLElement  $node  SimpleXMLElement object for which to get the native value.
      *
      * @return  mixed  Native value of the SimpleXMLElement object.
      */
-    protected static function getValueFromNode($node): mixed
+    protected static function getValueFromNode(SimpleXMLElement $node): mixed
     {
         switch ($node['type']) {
             case 'integer':
@@ -129,12 +129,12 @@ class XmlFormat implements FormatInterface
      * Method to build a level of the XML string -- called recursively
      *
      * @param  SimpleXMLElement  $node      SimpleXMLElement object to attach children.
-     * @param  object            $var       Object that represents a node of the XML document.
+     * @param  object|array      $var       Object that represents a node of the XML document.
      * @param  string            $nodeName  The name to use for node elements.
      *
      * @return  void
      */
-    protected static function getXmlChildren(SimpleXMLElement $node, $var, $nodeName)
+    protected static function getXmlChildren(SimpleXMLElement $node, object|array $var, string $nodeName): void
     {
         // Iterate over the object members.
         foreach ((array) $var as $k => $v) {

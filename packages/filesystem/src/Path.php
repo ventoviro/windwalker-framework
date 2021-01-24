@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Filesystem;
 
+use JetBrains\PhpStorm\Pure;
 use Windwalker\Utilities\Str;
 
 /**
@@ -357,7 +358,8 @@ class Path
      *
      * @since  3.4.5
      */
-    public static function makeUtf8Safe($file): bool|string
+    #[Pure]
+    public static function makeUtf8Safe(string $file): bool|string
     {
         $file = mb_ereg_replace("([^\w\s\d\-_~,;\[\]\(\).])", '', $file);
 

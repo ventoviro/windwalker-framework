@@ -376,7 +376,7 @@ class StringStream extends Stream
     /**
      * Method to get property Resource
      *
-     * @return  resource
+     * @return  ?string
      */
     public function getResource(): ?string
     {
@@ -390,7 +390,7 @@ class StringStream extends Stream
      *
      * @return  static  Return self to support chaining.
      */
-    public function seekable($seekable): static
+    public function seekable(bool $seekable): static
     {
         $this->seekable = (bool) $seekable;
 
@@ -404,9 +404,9 @@ class StringStream extends Stream
      *
      * @return  static  Return self to support chaining.
      */
-    public function writable($writable): static
+    public function writable(bool $writable): static
     {
-        $this->writable = (bool) $writable;
+        $this->writable = $writable;
 
         return $this;
     }

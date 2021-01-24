@@ -38,7 +38,7 @@ class VarDumper
      *
      * @since  3.5.6
      */
-    public static function dump($var, int $depth = 5): string
+    public static function dump(mixed $var, int $depth = 5): string
     {
         if (null === self::$handler) {
             $cloner = new VarCloner();

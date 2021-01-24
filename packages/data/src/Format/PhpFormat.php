@@ -27,7 +27,7 @@ class PhpFormat implements FormatInterface
      *
      * @return  string
      */
-    public function dump($data, array $options = []): string
+    public function dump(mixed $data, array $options = []): string
     {
         $header = $options['header'] ?? '';
         $return = $options['return'] ?? false;

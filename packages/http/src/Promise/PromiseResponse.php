@@ -75,7 +75,7 @@ class PromiseResponse extends Response
      *
      * @since  3.4
      */
-    public function resolve($value): mixed
+    public function resolve(mixed $value): mixed
     {
         try {
             foreach ($this->thenCallables as $then) {
@@ -99,7 +99,7 @@ class PromiseResponse extends Response
      *
      * @since  3.4.5
      */
-    public function reject($e): mixed
+    public function reject(mixed $e): mixed
     {
         foreach ($this->rejectCallables as $reject) {
             $e = $reject($e);

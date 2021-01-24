@@ -87,7 +87,7 @@ trait ManageWrapperTrait
      *
      * @return  string
      */
-    public function getWrapperAttribute($name): string
+    public function getWrapperAttribute(string $name): string
     {
         return $this->getWrapper()->getAttribute($name);
     }

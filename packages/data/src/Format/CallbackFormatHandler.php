@@ -50,7 +50,7 @@ class CallbackFormatHandler implements FormatInterface
      *
      * @since   2.0
      */
-    public function dump($data, array $options = []): string
+    public function dump(mixed $data, array $options = []): string
     {
         return ($this->dumper)($data, $options);
     }

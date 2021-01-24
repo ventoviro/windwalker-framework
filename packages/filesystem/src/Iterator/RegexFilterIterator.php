@@ -72,7 +72,7 @@ class RegexFilterIterator extends FilterIterator
      * @param Iterator $innerIterator The filtered iterator.
      * @param int      $mode          A bitwise combination of the mode constants.
      */
-    public function __construct($regExp, $staticPrefix, Iterator $innerIterator, $mode = null)
+    public function __construct(string $regExp, string $staticPrefix, Iterator $innerIterator, $mode = null)
     {
         parent::__construct($innerIterator);
 

@@ -40,7 +40,7 @@ class PrintRDumper extends AbstractDumper
      * @param  string                 $type    The PHP type of the value being dumped
      * @param  string|int|float|bool  $value   The scalar value being dumped
      */
-    public function dumpScalar(Cursor $cursor, $type, $value)
+    public function dumpScalar(Cursor $cursor, string $type, mixed $value)
     {
         $this->dumpKey($cursor);
 

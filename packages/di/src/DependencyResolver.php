@@ -278,7 +278,7 @@ class DependencyResolver
      *
      * @since  3.5.1
      */
-    public function &resolveParameterValue(&$value, \ReflectionParameter $param, int $options = 0): mixed
+    public function &resolveParameterValue(mixed &$value, \ReflectionParameter $param, int $options = 0): mixed
     {
         if ($value instanceof ObjectBuilderDefinition) {
             $value = $this->container->resolve($value);

@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace {
 
+    use JetBrains\PhpStorm\Pure;
     use Windwalker\Utilities\Arr;
 
     if (!function_exists('show')) {
@@ -39,7 +40,8 @@ namespace {
          *
          * @since  3.5
          */
-        function is_stringable($var): bool
+        #[Pure]
+        function is_stringable(mixed $var): bool
         {
             if (is_array($var)) {
                 return false;
@@ -67,7 +69,8 @@ namespace {
          *
          * @since  3.5.8
          */
-        function is_json($string): bool
+        #[Pure]
+        function is_json(mixed $string): bool
         {
             if (!is_string($string)) {
                 return false;
@@ -85,6 +88,7 @@ namespace {
 namespace Windwalker {
 
     use Closure;
+    use JetBrains\PhpStorm\Pure;
     use Traversable;
     use Windwalker\Utilities\Compare\CompareHelper;
     use Windwalker\Utilities\Compare\WhereWrapper;
@@ -100,9 +104,10 @@ namespace Windwalker {
      *
      * @return  Closure
      */
+    #[Pure]
     function nope(): Closure
     {
-        return fn($v) => $v;
+        return static fn($v) => $v;
     }
 
     /**
@@ -115,7 +120,7 @@ namespace Windwalker {
      *
      * @since  3.5.1
      */
-    function tap($value, callable $callable): mixed
+    function tap(mixed $value, callable $callable): mixed
     {
         $callable($value);
 
@@ -132,7 +137,7 @@ namespace Windwalker {
      *
      * @since  3.5.13
      */
-    function count($value, $mode = COUNT_NORMAL): int
+    function count(mixed $value, int $mode = COUNT_NORMAL): int
     {
         return $value !== null ? \count($value, $mode) : 0;
     }
@@ -146,6 +151,7 @@ namespace Windwalker {
      *
      * @since  __DEPLOY_VERSION__
      */
+    #[Pure]
     function iterator_keys(Traversable $iterable): array
     {
         return array_keys(iterator_to_array($iterable));
@@ -163,7 +169,8 @@ namespace Windwalker {
      *
      * @since  __DEPLOY_VERSION__
      */
-    function where($var1, string $operator, $var2, bool $strict = false): WhereWrapper
+    #[Pure]
+    function where(mixed $var1, string $operator, mixed $var2, bool $strict = false): WhereWrapper
     {
         return new WhereWrapper($var1, $operator, $var2, $strict);
     }
@@ -178,7 +185,7 @@ namespace Windwalker {
      *
      * @since  __DEPLOY_VERSION__
      */
-    function value($value, ...$args): mixed
+    function value(mixed $value, mixed ...$args): mixed
     {
         if ($value instanceof \WeakReference) {
             return $value->get();
@@ -201,7 +208,7 @@ namespace Windwalker {
      *
      * @return  mixed
      */
-    function unwrap($value, ...$args): mixed
+    function unwrap(mixed $value, ...$args): mixed
     {
         if ($value instanceof WrapperInterface) {
             return $value(...$args);
@@ -217,7 +224,8 @@ namespace Windwalker {
      *
      * @return  RawWrapper
      */
-    function raw($value): RawWrapper
+    #[Pure]
+    function raw(mixed $value): RawWrapper
     {
         return new RawWrapper($value);
     }
@@ -232,6 +240,7 @@ namespace Windwalker {
      *
      * @since  __DEPLOY_VERSION__
      */
+    #[Pure]
     function ref(string $path, ?string $delimiter = null): ValueReference
     {
         return new ValueReference($path, $delimiter);

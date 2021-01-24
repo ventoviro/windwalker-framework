@@ -201,7 +201,7 @@ class Filesystem
      *
      * @return  void
      */
-    public static function __callStatic(string $name, $args)
+    public static function __callStatic(string $name, array $args)
     {
         $maps = [
             'read',

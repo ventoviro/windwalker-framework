@@ -48,7 +48,7 @@ trait StringModifyTrait
      *
      * @return  static
      */
-    public function replace($search, $replacement, int &$count = null): static
+    public function replace(array|string $search, array|string $replacement, int &$count = null): static
     {
         return $this->cloneInstance(
             function (StringObject $new) use ($search, $replacement, &$count) {
@@ -223,7 +223,7 @@ trait StringModifyTrait
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function append($string): StringObject
+    public function append(StringObject|string $string): StringObject
     {
         return tap(
             clone $this,
@@ -242,7 +242,7 @@ trait StringModifyTrait
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function prepend($string): StringObject
+    public function prepend(StringObject|string $string): StringObject
     {
         return tap(
             clone $this,

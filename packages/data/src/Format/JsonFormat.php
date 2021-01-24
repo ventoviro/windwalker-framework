@@ -26,7 +26,7 @@ class JsonFormat implements FormatInterface
      *
      * @return  string
      */
-    public function dump($data, array $options = []): string
+    public function dump(mixed $data, array $options = []): string
     {
         $depth  = $options['depth'] ?? 512;
         $option = $options['options'] ?? 0;

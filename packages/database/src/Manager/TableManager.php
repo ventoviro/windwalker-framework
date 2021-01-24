@@ -67,7 +67,7 @@ class TableManager extends AbstractMetaManager
      *
      * @todo Move update() logic to Platform class.
      */
-    public function update($schema): static
+    public function update(Schema|callable $schema): static
     {
         $schema = $this->callSchema($schema);
 
@@ -114,7 +114,7 @@ class TableManager extends AbstractMetaManager
      *
      * @return  static
      */
-    public function save($schema, bool $ifNotExists = true, array $options = []): static
+    public function save(Schema|callable $schema, bool $ifNotExists = true, array $options = []): static
     {
         $schema = $this->callSchema($schema);
 

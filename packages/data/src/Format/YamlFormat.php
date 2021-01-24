@@ -31,7 +31,7 @@ class YamlFormat implements FormatInterface
      *
      * @since   2.0
      */
-    public function dump($data, array $options = []): string
+    public function dump(mixed $data, array $options = []): string
     {
         $inline = $options['inline'] ?? 2;
         $indent = $options['indent'] ?? 0;

@@ -22,12 +22,12 @@ class AsClause implements ClauseInterface
     /**
      * @var string|Query
      */
-    protected $value;
+    protected mixed $value;
 
     /**
      * @var string|bool|null
      */
-    protected $alias;
+    protected mixed $alias;
 
     /**
      * AsClause constructor.
@@ -96,13 +96,13 @@ class AsClause implements ClauseInterface
     /**
      * Method to set property column
      *
-     * @param  string  $column
+     * @param  string|Query $column
      *
      * @return  static  Return self to support chaining.
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function value(string $column): static
+    public function value(mixed $column): static
     {
         $this->value = $column;
 

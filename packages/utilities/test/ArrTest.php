@@ -452,10 +452,6 @@ class ArrTest extends TestCase
             (object) ['Lycoris' => 'energetic'],
             Arr::only((object) $array, ['Lycoris'])
         );
-
-        $this->expectException(InvalidArgumentException::class);
-
-        Arr::only('string', ['test']);
     }
 
     public function testExcept(): void
@@ -494,10 +490,6 @@ class ArrTest extends TestCase
             ],
             Arr::except((object) $array, ['Lycoris'])
         );
-
-        $this->expectException(InvalidArgumentException::class);
-
-        Arr::except('string', ['test']);
     }
 
     /**

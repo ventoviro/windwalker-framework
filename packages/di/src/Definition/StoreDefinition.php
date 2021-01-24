@@ -78,7 +78,7 @@ class StoreDefinition extends DelegateDefinition implements StoreDefinitionInter
      * @return  void
      * @throws DefinitionException
      */
-    public function set($value): void
+    public function set(mixed $value): void
     {
         if ($this->options & Container::PROTECTED) {
             throw new DefinitionException('This value / definition is protected.');

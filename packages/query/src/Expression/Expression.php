@@ -67,7 +67,7 @@ class Expression
      *
      * @return  mixed|Clause
      */
-    public function build($name, ...$args): mixed
+    public function build(string $name, ...$args): mixed
     {
         $method = StrNormalise::toCamelCase($name);
 

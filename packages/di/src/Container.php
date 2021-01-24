@@ -159,7 +159,7 @@ class Container implements ContainerInterface, \IteratorAggregate, \Countable, A
      * @return static
      * @throws DefinitionException
      */
-    public function protect(string $id, $value, int $options = 0): static
+    public function protect(string $id, mixed $value, int $options = 0): static
     {
         return $this->set($id, $value, $options | static::PROTECTED);
     }

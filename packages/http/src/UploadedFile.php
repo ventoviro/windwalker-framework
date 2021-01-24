@@ -81,20 +81,19 @@ class UploadedFile implements UploadedFileInterface
     /**
      * Class init.
      *
-     * @param string|resource|StreamInterface $file            The file source.
-     * @param integer                         $size            The file size.
-     * @param integer                         $error           The upload error status.
-     * @param string                          $clientFilename  The client filename.
-     * @param string                          $clientMediaType The file media type.
+     * @param  string|resource|StreamInterface  $file             The file source.
+     * @param  integer                          $size             The file size.
+     * @param  integer                          $error            The upload error status.
+     * @param  string|null                      $clientFilename   The client filename.
+     * @param  string|null                      $clientMediaType  The file media type.
      *
-     * @throws \InvalidArgumentException
      */
     public function __construct(
-        $file,
-        $size = 0,
-        $error = UPLOAD_ERR_OK,
-        $clientFilename = null,
-        $clientMediaType = null
+        mixed $file,
+        int $size = 0,
+        int $error = UPLOAD_ERR_OK,
+        ?string $clientFilename = null,
+        ?string $clientMediaType = null
     ) {
         if ($error === UPLOAD_ERR_OK) {
             if (is_string($file)) {
@@ -301,7 +300,7 @@ class UploadedFile implements UploadedFileInterface
      *
      * @param string $path
      */
-    protected function writeFile($path)
+    protected function writeFile(string $path): void
     {
         $handle = fopen($path, Stream::MODE_READ_WRITE_RESET);
 
@@ -335,7 +334,7 @@ class UploadedFile implements UploadedFileInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setSapi($sapi): static
+    public function setSapi(string $sapi): static
     {
         $this->sapi = $sapi;
 

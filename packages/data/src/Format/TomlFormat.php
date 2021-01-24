@@ -33,7 +33,7 @@ class TomlFormat implements FormatInterface
      *
      * @since   2.0
      */
-    public function dump($data, array $options = []): string
+    public function dump(mixed $data, array $options = []): string
     {
         $tb = new TomlBuilder();
 
@@ -61,7 +61,7 @@ class TomlFormat implements FormatInterface
      *
      * @since  3.5.4
      */
-    protected static function addValues(TomlBuilder $tb, $struct, ?string $prefix = null): void
+    protected static function addValues(TomlBuilder $tb, mixed $struct, ?string $prefix = null): void
     {
         foreach ($struct as $key => $value) {
             if (is_array($value) && Arr::isAssociative($value)) {

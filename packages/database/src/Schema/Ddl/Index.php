@@ -19,7 +19,7 @@ use Windwalker\Utilities\Options\OptionAccessTrait;
  */
 class Index
 {
-    use WrapableTrait;
+    use WrappableTrait;
     use OptionAccessTrait;
 
     public ?string $tableName = null;

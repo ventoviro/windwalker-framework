@@ -30,7 +30,7 @@ class EventLoopScheduler implements SchedulerInterface
      *
      * @param  callable|LoopInterface  $loop
      */
-    public function __construct($loop)
+    public function __construct(callable|LoopInterface $loop)
     {
         $this->timerCallback = $loop instanceof LoopInterface
             ? self::createReactTimer($loop)

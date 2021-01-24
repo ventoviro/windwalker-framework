@@ -114,7 +114,7 @@ class PdoQueueFailer implements QueueFailerInterface
      *
      * @return array|null
      */
-    public function get($conditions): ?array
+    public function get(mixed $conditions): ?array
     {
         $sql = 'SELECT * FROM ' . $this->table .
             ' WHERE id = :id';
@@ -133,7 +133,7 @@ class PdoQueueFailer implements QueueFailerInterface
      *
      * @return  bool
      */
-    public function remove($conditions): bool
+    public function remove(mixed $conditions): bool
     {
         $sql = 'DELETE FROM ' . $this->table .
             ' WHERE id = :id';

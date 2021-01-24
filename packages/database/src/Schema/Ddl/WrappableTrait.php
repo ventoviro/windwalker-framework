@@ -17,7 +17,7 @@ use Windwalker\Utilities\StrNormalise;
 /**
  * Trait WrapableTrait
  */
-trait WrapableTrait
+trait WrappableTrait
 {
     /**
      * bind
@@ -50,7 +50,7 @@ trait WrapableTrait
      *
      * @return  static
      */
-    public static function wrap($data): static
+    public static function wrap(mixed $data): static
     {
         if ($data instanceof static) {
             return $data;

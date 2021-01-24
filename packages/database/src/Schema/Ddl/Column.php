@@ -24,7 +24,7 @@ use function Windwalker\raw;
  */
 class Column
 {
-    use WrapableTrait;
+    use WrappableTrait;
     use OptionAccessTrait;
 
     public string $columnName = '';

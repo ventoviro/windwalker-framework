@@ -16,9 +16,9 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Windwalker\Http\Exception\HttpRequestException;
 use Windwalker\Http\Helper\HeaderHelper;
-use Windwalker\Http\Helper\StreamHelper;
 use Windwalker\Http\Response\Response;
 use Windwalker\Stream\Stream;
+use Windwalker\Stream\StreamHelper;
 
 /**
  * The StreamTransport class.
@@ -160,7 +160,7 @@ class StreamTransport extends AbstractTransport
      * @since   2.1
      * @throws  \UnexpectedValueException
      */
-    protected function getResponse(array $headers, $body): Response
+    protected function getResponse(array $headers, string $body): Response
     {
         // Create the response object.
         $return = new Response();

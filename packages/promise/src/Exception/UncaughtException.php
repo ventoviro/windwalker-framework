@@ -24,7 +24,7 @@ class UncaughtException extends \Exception
      * @param  mixed            $reason
      * @param  \Throwable|null  $previous
      */
-    public function __construct($reason, ?\Throwable $previous = null)
+    public function __construct(mixed $reason, ?\Throwable $previous = null)
     {
         $this->reason = $reason;
 

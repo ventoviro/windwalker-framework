@@ -57,7 +57,7 @@ class ValueReference implements WrapperInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function __invoke($src, ?string $delimiter = null): mixed
+    public function __invoke(mixed $src, ?string $delimiter = null): mixed
     {
         if ($src instanceof Collection) {
             return $src->getDeep($this->path, (string) ($delimiter ?? $this->delimiter));

@@ -60,7 +60,7 @@ function glob_all(
  *
  * @return  FileObject
  */
-function fs($path, ?string $root = null): FileObject
+function fs(\SplFileInfo|string $path, ?string $root = null): FileObject
 {
     return FileObject::wrap($path, $root);
 }

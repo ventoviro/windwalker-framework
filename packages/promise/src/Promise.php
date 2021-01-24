@@ -330,7 +330,7 @@ class Promise implements ExtendedPromiseInterface
      *
      * @return  PromiseInterface
      */
-    private function resolvePromise(PromiseInterface $promise, $value): PromiseInterface
+    private function resolvePromise(PromiseInterface $promise, mixed $value): PromiseInterface
     {
         if ($value === $promise) {
             $promise->reject(new \TypeError('Unable to resolve self.'));
@@ -403,7 +403,7 @@ class Promise implements ExtendedPromiseInterface
      * @throws \Throwable
      * @since  __DEPLOY_VERSION__
      */
-    private function settle(string $state, $value): void
+    private function settle(string $state, mixed $value): void
     {
         $handlers = $this->handlers;
 

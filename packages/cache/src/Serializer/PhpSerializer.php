@@ -25,7 +25,7 @@ class PhpSerializer implements SerializerInterface
      *
      * @return string|null
      */
-    public function serialize($data): ?string
+    public function serialize(mixed $data): ?string
     {
         return serialize($data);
     }

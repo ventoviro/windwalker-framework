@@ -141,7 +141,7 @@ class EventEmitter extends EventDispatcher implements
      *
      * @throws \ReflectionException
      */
-    public function remove($listenerOrSubscriber): static
+    public function remove(callable|object $listenerOrSubscriber): static
     {
         $this->provider->remove($listenerOrSubscriber);
 
@@ -157,7 +157,7 @@ class EventEmitter extends EventDispatcher implements
      * @return  static
      * @throws \ReflectionException
      */
-    public function off($event, $listenerOrSubscriber = null): static
+    public function off(string|EventInterface $event, $listenerOrSubscriber = null): static
     {
         $this->provider->off($event, $listenerOrSubscriber);
 
@@ -171,7 +171,7 @@ class EventEmitter extends EventDispatcher implements
      *
      * @return  callable[]
      */
-    public function getListeners($event): iterable
+    public function getListeners(string|EventInterface $event): iterable
     {
         return $this->provider->getListenersForEvent(Event::wrap($event));
     }

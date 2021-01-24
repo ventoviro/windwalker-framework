@@ -61,26 +61,19 @@ class UniqueIterator extends \FilterIterator
      *
      * @return  mixed
      */
-    protected function formatValue($value): mixed
+    protected function formatValue(mixed $value): mixed
     {
-        switch ($this->flags) {
-            case SORT_NUMERIC:
-                return (float) $value;
-
-            case SORT_STRING:
-            case SORT_LOCALE_STRING:
-                return (string) $value;
-
-            case SORT_REGULAR:
-            default:
-                return $value;
-        }
+        return match ($this->flags) {
+            SORT_NUMERIC => (float) $value,
+            SORT_STRING, SORT_LOCALE_STRING => (string) $value,
+            default => $value,
+        };
     }
 
     /**
      * @inheritDoc
      */
-    public function rewind()
+    public function rewind(): void
     {
         $this->exists = [];
 

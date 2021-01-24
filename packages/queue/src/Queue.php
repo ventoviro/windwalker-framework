@@ -49,7 +49,7 @@ class Queue
      *
      * @return int|string
      */
-    public function push($job, int $delay = 0, ?string $channel = null, array $options = []): int|string
+    public function push(mixed $job, int $delay = 0, ?string $channel = null, array $options = []): int|string
     {
         $message = $this->getMessageByJob($job);
         $message->setDelay($delay);
@@ -104,7 +104,7 @@ class Queue
      *
      * @return  void
      */
-    public function delete($message): void
+    public function delete(mixed $message): void
     {
         if (!$message instanceof QueueMessage) {
             $msg = new QueueMessage();
@@ -126,7 +126,7 @@ class Queue
      *
      * @return  void
      */
-    public function release($message, int $delay = 0): void
+    public function release(mixed $message, int $delay = 0): void
     {
         if (!$message instanceof QueueMessage) {
             $msg = new QueueMessage();
@@ -147,7 +147,7 @@ class Queue
      * @return QueueMessage
      * @throws \InvalidArgumentException
      */
-    public function getMessageByJob($job, array $data = []): QueueMessage
+    public function getMessageByJob(mixed $job, array $data = []): QueueMessage
     {
         $message = new QueueMessage();
 

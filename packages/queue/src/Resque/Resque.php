@@ -28,7 +28,7 @@ class Resque extends PhpResque
      *
      * @return integer number of deleted items
      */
-    public static function dequeue($queue, $items = []): int
+    public static function dequeue(string $queue, array $items = []): int
     {
         if (count($items) > 0) {
             return self::removeItems($queue, $items);
@@ -50,7 +50,7 @@ class Resque extends PhpResque
      *
      * @return integer number of deleted items
      */
-    protected static function removeItems($queue, $items = []): int
+    protected static function removeItems(string $queue, array $items = []): int
     {
         $counter = 0;
         $originalQueue = 'queue:' . $queue;

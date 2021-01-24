@@ -151,18 +151,18 @@ class HtmlCleaner
      *
      * @since   2.0
      */
-    public static function isBadAttribute($attrSubSet): bool
+    public static function isBadAttribute(array $attrSubSet): bool
     {
         $attrSubSet[0] = strtolower($attrSubSet[0]);
         $attrSubSet[1] = strtolower($attrSubSet[1]);
 
         return (
-            ((strpos($attrSubSet[1], 'expression') !== false) && ($attrSubSet[0]) === 'style')
-            || (strpos($attrSubSet[1], 'javascript:') !== false)
-            || (strpos($attrSubSet[1], 'behaviour:') !== false)
-            || (strpos($attrSubSet[1], 'vbscript:') !== false)
-            || (strpos($attrSubSet[1], 'mocha:') !== false)
-            || (strpos($attrSubSet[1], 'livescript:') !== false)
+            ((str_contains($attrSubSet[1], 'expression')) && ($attrSubSet[0]) === 'style')
+            || (str_contains($attrSubSet[1], 'javascript:'))
+            || (str_contains($attrSubSet[1], 'behaviour:'))
+            || (str_contains($attrSubSet[1], 'vbscript:'))
+            || (str_contains($attrSubSet[1], 'mocha:'))
+            || (str_contains($attrSubSet[1], 'livescript:'))
         );
     }
 
@@ -175,7 +175,7 @@ class HtmlCleaner
      *
      * @since   2.0
      */
-    public function remove($source): ?string
+    public function remove(string $source): ?string
     {
         $loopCounter = 0;
 
@@ -197,7 +197,7 @@ class HtmlCleaner
      *
      * @since   2.0
      */
-    protected function cleanTags($source): ?string
+    protected function cleanTags(string $source): ?string
     {
         // First, pre-process this for illegal characters inside attribute values
         $source = $this->escapeAttributeValues($source);
@@ -400,7 +400,7 @@ class HtmlCleaner
      *
      * @since   2.0
      */
-    protected function cleanAttributes($attrSet):array
+    protected function cleanAttributes(array $attrSet):array
     {
         $newSet = [];
 
@@ -493,7 +493,7 @@ class HtmlCleaner
      *
      * @since   2.0
      */
-    public function decode($source):string
+    public function decode(string $source):string
     {
         return html_entity_decode($source, ENT_QUOTES, 'UTF-8');
     }
@@ -507,7 +507,7 @@ class HtmlCleaner
      *
      * @since   2.0
      */
-    protected function escapeAttributeValues($source):string
+    protected function escapeAttributeValues(string $source):string
     {
         $alreadyFiltered = '';
         $remainder = $source;
@@ -558,7 +558,7 @@ class HtmlCleaner
      *
      * @since   2.0
      */
-    protected function stripCssExpressions($source):string
+    protected function stripCssExpressions(string $source):string
     {
         // Strip any comments out (in the form of /*...*/)
         $test = preg_replace('#\/\*.*\*\/#U', '', $source);
@@ -597,7 +597,7 @@ class HtmlCleaner
      *
      * @return  HtmlCleaner  Return self to support chaining.
      */
-    public function setTagsMethod($tagsMethod):static
+    public function setTagsMethod(int $tagsMethod):static
     {
         $this->tagsMethod = $tagsMethod;
 
@@ -621,7 +621,7 @@ class HtmlCleaner
      *
      * @return  HtmlCleaner  Return self to support chaining.
      */
-    public function setAttrMethod($attrMethod):static
+    public function setAttrMethod(int $attrMethod):static
     {
         $this->attrMethod = $attrMethod;
 
@@ -645,7 +645,7 @@ class HtmlCleaner
      *
      * @return  HtmlCleaner  Return self to support chaining.
      */
-    public function setXssMethod($xssAuto):static
+    public function setXssMethod(int $xssAuto):static
     {
         $this->xssAuto = $xssAuto;
 

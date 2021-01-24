@@ -26,7 +26,7 @@ class Parameters extends Collection
      *
      * @var array
      */
-    protected $storage = [];
+    protected mixed $storage = [];
 
     protected ?Parameters $parent = null;
 
@@ -74,7 +74,7 @@ class Parameters extends Collection
      *
      * @return  mixed
      */
-    public function &get($key): mixed
+    public function &get(mixed $key): mixed
     {
         $value = parent::get($key);
 
@@ -94,7 +94,7 @@ class Parameters extends Collection
         return $this->getDeep($path, $delimiter) !== null;
     }
 
-    public function has($key): bool
+    public function has(mixed $key): bool
     {
         return $this->get($key) !== null;
     }

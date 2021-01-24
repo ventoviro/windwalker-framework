@@ -86,7 +86,7 @@ class DOMStringMap
      *
      * @since  3.5.3
      */
-    public function __get($name): string
+    public function __get(string $name): string
     {
         return $this->element->getAttribute($this->toDataKey($name));
     }
@@ -101,7 +101,7 @@ class DOMStringMap
      *
      * @since  3.5.3
      */
-    public function __set($name, $value)
+    public function __set(mixed $name, mixed $value)
     {
         $this->element->setAttribute($this->toDataKey($name), $value);
     }
@@ -115,7 +115,7 @@ class DOMStringMap
      *
      * @since  3.5.3
      */
-    public function __isset($name): bool
+    public function __isset(mixed $name): bool
     {
         return $this->element->hasAttribute($this->toDataKey($name));
     }
@@ -129,7 +129,7 @@ class DOMStringMap
      *
      * @since  3.5.3
      */
-    public function __unset($name)
+    public function __unset(mixed $name)
     {
         $this->element->removeAttribute($this->toDataKey($name));
     }

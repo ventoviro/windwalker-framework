@@ -56,7 +56,7 @@ class JoinClause implements ClauseInterface
      * @param  string           $prefix
      * @param  string|AsClause  $table
      */
-    public function __construct(Query $query, string $prefix, $table)
+    public function __construct(Query $query, string $prefix, AsClause|string $table)
     {
         $this->table = $table;
         $this->query = $query;
@@ -72,7 +72,7 @@ class JoinClause implements ClauseInterface
      *
      * @return  static
      */
-    public function on($column, ...$args): static
+    public function on(mixed $column, ...$args): static
     {
         if ($column instanceof \Closure) {
             $this->handleNestedOn($column, (string) ($args[0] ?? 'AND'));
@@ -148,7 +148,7 @@ class JoinClause implements ClauseInterface
      *
      * @return  array
      */
-    private function handleOperatorAndValue($operator, $value, bool $shortcut = false): array
+    private function handleOperatorAndValue(mixed $operator, mixed $value, bool $shortcut = false): array
     {
         if ($shortcut) {
             [$operator, $value] = ['=', $operator];
@@ -233,7 +233,7 @@ class JoinClause implements ClauseInterface
      *
      * @return  static
      */
-    public function orOn($wheres): static
+    public function orOn(array|\Closure $wheres): static
     {
         if (is_array($wheres)) {
             return $this->orOn(
@@ -262,7 +262,7 @@ class JoinClause implements ClauseInterface
      *
      * @return  static
      */
-    public function onRaw($condition, ...$args): static
+    public function onRaw(Clause|string $condition, ...$args): static
     {
         if (!$this->on) {
             $this->on = $this->query->clause('ON', [], ' AND ');
@@ -300,7 +300,7 @@ class JoinClause implements ClauseInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function join($table): static
+    public function join(AsClause|string $table): static
     {
         $this->table = $table;
 

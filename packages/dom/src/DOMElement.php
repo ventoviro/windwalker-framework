@@ -17,6 +17,7 @@ use DOMDocument;
 use DOMElement as NativeDOMElement;
 use DOMNode;
 use InvalidArgumentException;
+use JetBrains\PhpStorm\ArrayShape;
 use LogicException;
 use Masterminds\HTML5;
 use Symfony\Component\DomCrawler\Crawler;
@@ -81,7 +82,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
      *
      * @return  string
      */
-    protected static function valueToString($value): string
+    protected static function valueToString(mixed $value): string
     {
         $value = value($value);
 
@@ -90,7 +91,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
         }
 
         if (is_array($value) || is_object($value)) {
-            $value = json_encode($value);
+            $value = json_encode($value, JSON_THROW_ON_ERROR);
         }
 
         return $value;
@@ -102,9 +103,9 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
      * @param mixed   $content
      * @param DOMNode $node
      *
-     * @return  void
+     * @return  DOMNode
      */
-    protected static function insertContentTo($content, DOMNode $node): DOMNode
+    protected static function insertContentTo(mixed $content, DOMNode $node): DOMNode
     {
         $content = value($content);
 
@@ -305,7 +306,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
      * @return boolean True on success or false on failure.
      *                 The return value will be casted to boolean if non-boolean was returned.
      */
-    public function offsetExists($offset): bool
+    public function offsetExists(mixed $offset): bool
     {
         return $this->hasAttribute($offset);
     }
@@ -317,7 +318,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
      *
      * @return mixed Can return all value types.
      */
-    public function offsetGet($offset): mixed
+    public function offsetGet(mixed $offset): mixed
     {
         return $this->getAttribute($offset);
     }
@@ -330,7 +331,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
      *
      * @return void
      */
-    public function offsetSet($offset, $value)
+    public function offsetSet(mixed $offset, mixed $value)
     {
         $this->setAttribute($offset, $value);
     }
@@ -342,7 +343,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
      *
      * @return void
      */
-    public function offsetUnset($offset)
+    public function offsetUnset(mixed $offset)
     {
         $this->removeAttribute($offset);
     }
@@ -518,7 +519,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
      *
      * @since  3.5.3
      */
-    public function __get($name): mixed
+    public function __get(string $name): mixed
     {
         if ($name === 'dataset') {
             return new DOMStringMap($this);
@@ -555,6 +556,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
         return $this->$name;
     }
 
+    #[ArrayShape(['name' => "mixed|string", 'id' => "null|string", 'class' => "null|string"])]
     public static function splitCSSSelector(string $name): array
     {
         $tokens = preg_split(

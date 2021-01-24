@@ -76,7 +76,7 @@ class ParamType
      *
      * @return  string
      */
-    public static function guessType($value): string
+    public static function guessType(mixed $value): string
     {
         $dataType = static::STRING;
 

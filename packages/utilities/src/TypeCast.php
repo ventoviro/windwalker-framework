@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Utilities;
 
 use InvalidArgumentException;
+use JetBrains\PhpStorm\Pure;
 use stdClass;
 use Traversable;
 use Windwalker\Utilities\Classes\PreventInitialTrait;
@@ -55,7 +56,7 @@ abstract class TypeCast
      *
      * @return  array  The converted array.
      */
-    public static function toArray($data, bool $recursive = false, bool $onlyDumpable = false): array
+    public static function toArray(mixed $data, bool $recursive = false, bool $onlyDumpable = false): array
     {
         // Ensure the input data is an array.
         if ($data instanceof DumpableInterface) {
@@ -98,7 +99,8 @@ abstract class TypeCast
      *
      * @since  3.5
      */
-    public static function toIterable($iterable): iterable
+    #[Pure]
+    public static function toIterable(mixed $iterable): iterable
     {
         if (is_iterable($iterable)) {
             return $iterable;
@@ -147,7 +149,7 @@ abstract class TypeCast
      *
      * @since  3.5
      */
-    public static function toString($data, bool $dump = false): string
+    public static function toString(mixed $data, bool $dump = false): string
     {
         if (is_callable($data)) {
             return static::toString($data());
@@ -177,7 +179,7 @@ abstract class TypeCast
      *
      * @since  __DEPLOY_VERSION__
      */
-    public static function forceString($data): string
+    public static function forceString(mixed $data): string
     {
         return static::toString($data, true);
     }
@@ -264,7 +266,7 @@ abstract class TypeCast
      *
      * @since  __DEPLOY_VERSION__
      */
-    public static function try($value, string $type, bool $strict = false): mixed
+    public static function try(mixed $value, string $type, bool $strict = false): mixed
     {
         switch (strtolower($type)) {
             case 'int':

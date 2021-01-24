@@ -54,7 +54,7 @@ class RawWrapper implements WrapperInterface, \Stringable
      *
      * @since  3.5.1
      */
-    public function set($value): self
+    public function set(mixed $value): self
     {
         $this->value = $value;
 

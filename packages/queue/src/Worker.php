@@ -335,14 +335,14 @@ class Worker implements EventListenableInterface
     /**
      * handleException
      *
-     * @param JobInterface          $job
-     * @param QueueMessage          $message
-     * @param array             $options
-     * @param \Exception|\Throwable $e
+     * @param  JobInterface  $job
+     * @param  QueueMessage  $message
+     * @param  array         $options
+     * @param  \Throwable    $e
      *
      * @return void
      */
-    protected function handleJobException($job, QueueMessage $message, array $options, $e)
+    protected function handleJobException(mixed $job, QueueMessage $message, array $options, \Throwable $e): void
     {
         if (!$job instanceof JobInterface) {
             $job = new NullJob();

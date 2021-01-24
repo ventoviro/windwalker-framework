@@ -16,7 +16,7 @@ namespace Windwalker\Database\Schema\Ddl;
  */
 class Table
 {
-    use WrapableTrait;
+    use WrappableTrait;
 
     public ?string $tableName = null;
     public ?string $tableSchema = null;

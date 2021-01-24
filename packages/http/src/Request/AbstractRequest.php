@@ -204,7 +204,7 @@ abstract class AbstractRequest implements RequestInterface
      * @return static
      * @throws \InvalidArgumentException for invalid HTTP methods.
      */
-    public function withMethod(string $method): AbstractRequest|static
+    public function withMethod($method): AbstractRequest|static
     {
         $method = $this->validateMethod($method);
 

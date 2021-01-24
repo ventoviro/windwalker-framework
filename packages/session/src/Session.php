@@ -366,7 +366,7 @@ class Session implements SessionInterface, ArrayAccessibleInterface
      *
      * @return  bool
      */
-    public function offsetExists($key): bool
+    public function offsetExists(mixed $key): bool
     {
         return $this->has($key);
     }
@@ -378,7 +378,7 @@ class Session implements SessionInterface, ArrayAccessibleInterface
      *
      * @return  mixed
      */
-    public function &offsetGet($key): mixed
+    public function &offsetGet(mixed $key): mixed
     {
         return $this->get($key);
     }
@@ -391,7 +391,7 @@ class Session implements SessionInterface, ArrayAccessibleInterface
      *
      * @return  void
      */
-    public function offsetSet($key, $value): void
+    public function offsetSet(mixed $key, mixed $value): void
     {
         $this->set($key, $value);
     }
@@ -403,7 +403,7 @@ class Session implements SessionInterface, ArrayAccessibleInterface
      *
      * @return  void
      */
-    public function offsetUnset($key): void
+    public function offsetUnset(mixed $key): void
     {
         $this->remove($key);
     }

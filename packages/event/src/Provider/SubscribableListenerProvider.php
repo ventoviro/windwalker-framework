@@ -140,7 +140,7 @@ class SubscribableListenerProvider implements SubscribableListenerProviderInterf
      *
      * @return  bool
      */
-    private static function isCallable(object $subscriber, $methodName): bool
+    private static function isCallable(object $subscriber, mixed $methodName): bool
     {
         if (is_callable($methodName)) {
             return true;

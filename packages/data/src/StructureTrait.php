@@ -60,15 +60,15 @@ trait StructureTrait
     /**
      * load
      *
-     * @param  mixed   $data
-     * @param  string  $format
-     * @param  array   $options
+     * @param  mixed        $data
+     * @param  string|null  $format
+     * @param  array        $options
      *
      * @return  static
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function load($data, ?string $format = null, array $options = []): static
+    public function load(mixed $data, ?string $format = null, array $options = []): static
     {
         $this->storage = Arr::mergeRecursive($this->storage, $this->loadData($data, $format, $options));
 
@@ -78,15 +78,15 @@ trait StructureTrait
     /**
      * withLoad
      *
-     * @param  mixed   $data
-     * @param  string  $format
-     * @param  array   $options
+     * @param  mixed        $data
+     * @param  string|null  $format
+     * @param  array        $options
      *
      * @return  static
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function withLoad($data, ?string $format = null, array $options = []): StructureTrait|static
+    public function withLoad(mixed $data, ?string $format = null, array $options = []): StructureTrait|static
     {
         $new = clone $this;
 
@@ -98,15 +98,15 @@ trait StructureTrait
     /**
      * loadData
      *
-     * @param  mixed   $data
-     * @param  string  $format
-     * @param  array   $options
+     * @param  mixed        $data
+     * @param  string|null  $format
+     * @param  array        $options
      *
      * @return  array
      *
      * @since  __DEPLOY_VERSION__
      */
-    protected function loadData($data, ?string $format = null, array $options = []): array
+    protected function loadData(mixed $data, ?string $format = null, array $options = []): array
     {
         if ($data instanceof \SplFileInfo) {
             $data = $data->getPathname();

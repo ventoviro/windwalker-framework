@@ -50,7 +50,7 @@ class NullQueueFailer implements QueueFailerInterface
      *
      * @return array|null
      */
-    public function get($conditions): ?array
+    public function get(mixed $conditions): ?array
     {
         return [];
     }
@@ -62,7 +62,7 @@ class NullQueueFailer implements QueueFailerInterface
      *
      * @return  bool
      */
-    public function remove($conditions): bool
+    public function remove(mixed $conditions): bool
     {
         return true;
     }

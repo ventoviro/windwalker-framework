@@ -335,7 +335,7 @@ class ArrayObject implements AccessibleInterface
      *
      * @since  3.5.2
      */
-    public function indexOf($value, bool $strict = false): int
+    public function indexOf(mixed $value, bool $strict = false): int
     {
         $r = $this->search($value, $strict);
 

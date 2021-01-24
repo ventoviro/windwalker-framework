@@ -261,7 +261,7 @@ class Edge
      *
      * @return string
      */
-    protected function normalizeName($name): string
+    protected function normalizeName(string $name): string
     {
         // TODO: Handle namespace
 
@@ -275,7 +275,7 @@ class Edge
      *
      * @return  string
      */
-    public function escape($string): string
+    public function escape(mixed $string): string
     {
         if ($string instanceof RawWrapper) {
             return $string->get();

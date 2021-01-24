@@ -97,14 +97,14 @@ class DatabaseAdapter implements EventListenableInterface
         return $this->getDriver()->disconnect();
     }
 
-    public function prepare($query, array $options = []): StatementInterface
+    public function prepare(mixed $query, array $options = []): StatementInterface
     {
         $this->query = $query;
 
         return $this->getDriver()->prepare($query, $options);
     }
 
-    public function execute($query, ?array $params = null): StatementInterface
+    public function execute(mixed $query, ?array $params = null): StatementInterface
     {
         $this->query = $query;
 

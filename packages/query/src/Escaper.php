@@ -36,9 +36,9 @@ class Escaper
      * Escaper constructor.
      *
      * @param  \PDO|callable|mixed  $connection
-     * @param  Query                $query
+     * @param  Query|null           $query
      */
-    public function __construct($connection, Query $query = null)
+    public function __construct(mixed $connection, ?Query $query = null)
     {
         $this->connection = $connection;
         $this->query      = $query;
@@ -67,7 +67,7 @@ class Escaper
      *
      * @return  string
      */
-    public static function tryEscape($escaper, string|int $value): string
+    public static function tryEscape(mixed $escaper, string|int $value): string
     {
         if (is_callable($escaper)) {
             return $escaper($value, [static::class, 'stripQuote']);
@@ -92,7 +92,7 @@ class Escaper
      *
      * @return  string
      */
-    public static function tryQuote($escaper, string|int $value): string
+    public static function tryQuote(mixed $escaper, string|int $value): string
     {
         // PDO has quote method, directly use it.
         if ($escaper instanceof \PDO) {
@@ -169,7 +169,7 @@ class Escaper
      *
      * @return  static  Return self to support chaining.
      */
-    public function setConnection($connection): static
+    public function setConnection(mixed $connection): static
     {
         if ($connection instanceof DatabaseAdapter) {
             $connection = $connection->getDriver();

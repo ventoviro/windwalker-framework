@@ -50,7 +50,7 @@ class FileObject extends \SplFileInfo
      *
      * @return  string
      */
-    public static function unwrap($file): string
+    public static function unwrap(\SplFileInfo|string $file): string
     {
         if ($file instanceof \SplFileInfo) {
             if ($file->isDir()) {
@@ -71,7 +71,7 @@ class FileObject extends \SplFileInfo
      *
      * @return  static
      */
-    public static function wrap($file, ?string $root = null): static
+    public static function wrap(\SplFileInfo|string $file, ?string $root = null): static
     {
         if ($file instanceof \SplFileInfo) {
             $file = new static($file->getPathname());
@@ -89,12 +89,12 @@ class FileObject extends \SplFileInfo
     /**
      * wrapIfNotNull
      *
-     * @param  string|\SplFileInfo  $file
-     * @param  string|null          $root
+     * @param  \SplFileInfo|string|null  $file
+     * @param  string|null               $root
      *
      * @return  static|null
      */
-    public static function wrapIfNotNull($file, ?string $root = null): ?static
+    public static function wrapIfNotNull(\SplFileInfo|string|null $file, ?string $root = null): ?static
     {
         if ($file === null) {
             return null;
@@ -224,7 +224,7 @@ class FileObject extends \SplFileInfo
      *
      * @return  static
      */
-    public function copyTo($dest, bool $force = false): static
+    public function copyTo(\SplFileInfo|string $dest, bool $force = false): static
     {
         $dest = static::wrap($dest);
 
@@ -335,7 +335,7 @@ class FileObject extends \SplFileInfo
      *
      * @return  static
      */
-    public function moveTo($dest, bool $force = false): static
+    public function moveTo(FileObject|string $dest, bool $force = false): static
     {
         $dest = static::wrap($dest);
 
@@ -435,7 +435,7 @@ class FileObject extends \SplFileInfo
      *
      * @return  static
      */
-    public function write($buffer): static
+    public function write(StreamInterface|string $buffer): static
     {
         ArgumentsAssert::assert(
             is_stringable($buffer),
@@ -462,7 +462,7 @@ class FileObject extends \SplFileInfo
      *
      * @return  static
      */
-    public function writeStream($stream): static
+    public function writeStream(mixed $stream): static
     {
         if (!$stream instanceof StreamInterface) {
             $stream = new Stream($stream, Stream::MODE_READ_ONLY_FROM_BEGIN);
@@ -654,7 +654,7 @@ class FileObject extends \SplFileInfo
      *
      * @return  boolean  Is subdir or not.
      */
-    public function isChildOf($parent): bool
+    public function isChildOf(\SplFileInfo|string $parent): bool
     {
         $self = Path::normalize($this->getPathname());
 

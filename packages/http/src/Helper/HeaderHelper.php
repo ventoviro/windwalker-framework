@@ -187,7 +187,7 @@ abstract class HeaderHelper
      *
      * @return  array  Converted array.
      */
-    public static function allToArray($value): array
+    public static function allToArray(mixed $value): array
     {
         if ($value instanceof \Traversable) {
             $value = iterator_to_array($value);
@@ -236,7 +236,7 @@ abstract class HeaderHelper
      *
      *
      */
-    public static function toHeaderLines($headers, $toString = false): array|string
+    public static function toHeaderLines(array $headers, bool $toString = false): array|string
     {
         $headerArray = [];
 
@@ -262,7 +262,7 @@ abstract class HeaderHelper
      *
      * @since   3.0
      */
-    public static function normalizeHeaderName($header): string
+    public static function normalizeHeaderName(string $header): string
     {
         $filtered = str_replace('-', ' ', $header);
         $filtered = ucwords($filtered);
@@ -273,8 +273,8 @@ abstract class HeaderHelper
     /**
      * Prepare attachment headers to response object.
      *
-     * @param  ResponseInterface $response The response object.
-     * @param  string            $filename Download file name.
+     * @param  ResponseInterface  $response  The response object.
+     * @param  string|null        $filename  Download file name.
      *
      * @return  ResponseInterface
      */

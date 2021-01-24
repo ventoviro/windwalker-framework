@@ -27,5 +27,5 @@ interface PolicyInterface
      *
      * @return  boolean
      */
-    public function authorise($user, $data = null, ...$args): bool;
+    public function authorise(mixed $user, mixed $data = null, mixed ...$args): bool;
 }

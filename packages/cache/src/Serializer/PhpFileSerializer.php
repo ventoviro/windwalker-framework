@@ -25,7 +25,7 @@ class PhpFileSerializer implements SerializerInterface
      *
      * @return string|null
      */
-    public function serialize($data): ?string
+    public function serialize(mixed $data): ?string
     {
         return "<?php \n\nreturn " . var_export($data, true) . ';';
     }
@@ -35,9 +35,9 @@ class PhpFileSerializer implements SerializerInterface
      *
      * @param  string  $data
      *
-     * @return string|null
+     * @return mixed
      */
-    public function unserialize(string $data): ?string
+    public function unserialize(string $data): mixed
     {
         return $data;
     }

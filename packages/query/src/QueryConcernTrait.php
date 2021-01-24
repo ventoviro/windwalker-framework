@@ -26,7 +26,7 @@ trait QueryConcernTrait
      *
      * @return  Query
      */
-    public static function convertAllToWheres(Query $query, $wheres): Query
+    public static function convertAllToWheres(Query $query, mixed $wheres): Query
     {
         if ($wheres === null) {
             return $query;

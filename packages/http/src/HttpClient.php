@@ -187,7 +187,7 @@ class HttpClient implements HttpClientInterface, AsyncHttpClientInterface
      *
      * @since   2.1
      */
-    public function post(Stringable|string $url, $body, array $options = []): ResponseInterface
+    public function post(Stringable|string $url, mixed $body, array $options = []): ResponseInterface
     {
         return $this->request('POST', $url, $body, $options);
     }
@@ -203,7 +203,7 @@ class HttpClient implements HttpClientInterface, AsyncHttpClientInterface
      *
      * @since   2.1
      */
-    public function put(Stringable|string $url, $body, array $options = []): ResponseInterface
+    public function put(Stringable|string $url, mixed $body, array $options = []): ResponseInterface
     {
         return $this->request('PUT', $url, $body, $options);
     }
@@ -219,7 +219,7 @@ class HttpClient implements HttpClientInterface, AsyncHttpClientInterface
      *
      * @since   2.1
      */
-    public function delete(Stringable|string $url, $body = null, array $options = []): ResponseInterface
+    public function delete(Stringable|string $url, mixed $body = null, array $options = []): ResponseInterface
     {
         return $this->request('DELETE', $url, $body, $options);
     }
@@ -250,7 +250,7 @@ class HttpClient implements HttpClientInterface, AsyncHttpClientInterface
      *
      * @since   2.1
      */
-    public function patch(Stringable|string $url, $body, array $options = []): ResponseInterface
+    public function patch(Stringable|string $url, mixed $body, array $options = []): ResponseInterface
     {
         return $this->request('PATCH', $url, $body, $options);
     }
@@ -367,7 +367,7 @@ class HttpClient implements HttpClientInterface, AsyncHttpClientInterface
         RequestInterface $request,
         string $method,
         Stringable|string $url,
-        $body,
+        mixed $body,
         array $options
     ): RequestInterface {
         $options = Arr::mergeRecursive($this->getOptions(), $options);

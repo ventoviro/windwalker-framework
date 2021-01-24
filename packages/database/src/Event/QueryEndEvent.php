@@ -60,7 +60,7 @@ class QueryEndEvent extends AbstractEvent
      *
      * @return  static  Return self to support chaining.
      */
-    public function setQuery($query): static
+    public function setQuery(mixed $query): static
     {
         $this->query = $query;
 

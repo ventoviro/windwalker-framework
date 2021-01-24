@@ -123,7 +123,7 @@ abstract class AbstractDriver implements DriverInterface
     /**
      * @inheritDoc
      */
-    public function prepare($query, array $options = []): StatementInterface
+    public function prepare(mixed $query, array $options = []): StatementInterface
     {
         // Convert query to string and get merged bounded
         $sql = $this->handleQuery($query, $bounded);
@@ -178,7 +178,7 @@ abstract class AbstractDriver implements DriverInterface
     /**
      * @inheritDoc
      */
-    public function execute($query, ?array $params = null): StatementInterface
+    public function execute(mixed $query, ?array $params = null): StatementInterface
     {
         return $this->prepare($query)->execute($params);
     }

@@ -111,16 +111,19 @@ class FormatRegistry
     /**
      * registerFormat
      *
-     * @param  string                    $format
+     * @param  string  $format
      * @param  FormatInterface|callable  $handlerOrParser
-     * @param  callable|null             $dumper
+     * @param  callable|null  $dumper
      *
      * @return  $this
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function registerFormat(string $format, $handlerOrParser, ?callable $dumper = null): static
-    {
+    public function registerFormat(
+        string $format,
+        callable|FormatInterface $handlerOrParser,
+        ?callable $dumper = null
+    ): static {
         if ($handlerOrParser instanceof FormatInterface) {
             $this->handlers[strtolower($format)] = $handlerOrParser;
 

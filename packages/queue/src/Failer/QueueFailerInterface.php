@@ -44,7 +44,7 @@ interface QueueFailerInterface
      *
      * @return array|null
      */
-    public function get($conditions): ?array;
+    public function get(mixed $conditions): ?array;
 
     /**
      * remove
@@ -53,7 +53,7 @@ interface QueueFailerInterface
      *
      * @return  bool
      */
-    public function remove($conditions): bool;
+    public function remove(mixed $conditions): bool;
 
     /**
      * clear

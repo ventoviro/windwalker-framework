@@ -38,7 +38,7 @@ trait ManageFilterTrait
      *
      * @return  ValidateResult
      */
-    public function validate($value): ValidateResult
+    public function validate(mixed $value): ValidateResult
     {
         if ($this->isDisabled()) {
             return new ValidateResult(ValidateResult::STATUS_SUCCESS, $this);
@@ -66,7 +66,7 @@ trait ManageFilterTrait
      *
      * @return  bool
      */
-    public function checkRequired($value): bool
+    public function checkRequired(mixed $value): bool
     {
         return !in_array($value, $this->getEmptyValues(), true);
     }
@@ -94,7 +94,7 @@ trait ManageFilterTrait
      *
      * @return  bool
      */
-    public function testValidator($value): bool
+    public function testValidator(mixed $value): bool
     {
         return $this->getValidator()->test($value);
     }
@@ -106,7 +106,7 @@ trait ManageFilterTrait
      *
      * @return mixed
      */
-    public function filter($value): mixed
+    public function filter(mixed $value): mixed
     {
         if ($value === null || $this->isDisabled()) {
             return $value;

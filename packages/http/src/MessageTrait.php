@@ -340,7 +340,7 @@ trait MessageTrait
      *
      * @return  static
      */
-    protected function createHeader($name): MessageTrait|static
+    protected function createHeader(string $name): MessageTrait|static
     {
         $new = clone $this;
 
@@ -361,7 +361,7 @@ trait MessageTrait
      *
      * @return  string
      */
-    protected function getHeaderName($name): string
+    protected function getHeaderName(string $name): string
     {
         $normalized = strtolower($name);
 

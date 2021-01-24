@@ -202,7 +202,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
      *
      * @return static
      */
-    public function selectAs($column, ?string $alias = null, bool $isColumn = true): static
+    public function selectAs(mixed $column, ?string $alias = null, bool $isColumn = true): static
     {
         $this->selectRaw($this->as($column, $alias, $isColumn));
 
@@ -217,7 +217,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
      *
      * @return  static
      */
-    public function selectRaw($column, ...$args): static
+    public function selectRaw(mixed $column, ...$args): static
     {
         if (is_array($column)) {
             foreach ($column as $col) {
@@ -248,12 +248,12 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
     /**
      * from
      *
-     * @param  string|array  $tables
-     * @param  string|null   $alias
+     * @param  string|array|Query  $tables
+     * @param  string|null         $alias
      *
      * @return  static
      */
-    public function from($tables, ?string $alias = null): static
+    public function from(mixed $tables, ?string $alias = null): static
     {
         if ($this->from === null) {
             $this->from = $this->clause('FROM', [], ', ');
@@ -288,12 +288,12 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
      *
      * @param  string                        $type
      * @param  string|Query|ClauseInterface  $table
-     * @param  string                        $alias
+     * @param  string|null                   $alias
      * @param  array                         $on
      *
      * @return  static
      */
-    public function join(string $type, $table, ?string $alias, ...$on): static
+    public function join(string $type, mixed $table, ?string $alias, ...$on): static
     {
         if (!$this->join) {
             $this->join = $this->clause('', [], ' ');
@@ -342,7 +342,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
      *
      * @return  AsClause
      */
-    public function as($value, $alias = null, bool $isColumn = true): AsClause
+    public function as(mixed $value, mixed $alias = null, bool $isColumn = true): AsClause
     {
         $quoteMethod = $isColumn ? 'quoteName' : 'quote';
         $clause      = new AsClause();
@@ -383,7 +383,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
      *
      * @since   2.0
      */
-    public function union($query, string $type = ''): static
+    public function union(mixed $query, string $type = ''): static
     {
         $this->type = static::TYPE_SELECT;
 
@@ -433,7 +433,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
      *
      * @since   2.0
      */
-    public function unionDistinct($query): mixed
+    public function unionDistinct(mixed $query): mixed
     {
         // Apply the distinct flag to the union.
         return $this->union($query, 'DISTINCT');
@@ -455,7 +455,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
      *
      * @since   2.0
      */
-    public function unionAll($query): mixed
+    public function unionAll(mixed $query): mixed
     {
         // Apply the distinct flag to the union.
         return $this->union($query, 'ALL');
@@ -470,7 +470,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
      *
      * @return  static
      */
-    public function where($column, ...$args): static
+    public function where(mixed $column, mixed ...$args): static
     {
         if ($column instanceof \Closure) {
             $this->handleNestedWheres($column, (string) ($args[0] ?? 'AND'));
@@ -526,7 +526,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
      *
      * @return  array
      */
-    private function handleOperatorAndValue($operator, $value, bool $shortcut = false): array
+    private function handleOperatorAndValue(mixed $operator, mixed $value, bool $shortcut = false): array
     {
         if ($shortcut) {
             [$operator, $value] = ['=', $operator];
@@ -640,7 +640,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
      *
      * @return  static
      */
-    public function whereRaw($string, ...$args): static
+    public function whereRaw(Clause|string $string, ...$args): static
     {
         if (!$this->where) {
             $this->where = $this->clause('WHERE', [], ' AND ');
@@ -662,7 +662,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
      *
      * @return  static
      */
-    public function orWhere($wheres): static
+    public function orWhere(array|\Closure $wheres): static
     {
         if (is_array($wheres)) {
             return $this->orWhere(
@@ -747,7 +747,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
      *
      * @return  static
      */
-    public function orHaving($wheres): static
+    public function orHaving(array|\Closure $wheres): static
     {
         if (is_array($wheres)) {
             return $this->orHaving(
@@ -803,12 +803,12 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
     /**
      * order
      *
-     * @param  array|string  $column
-     * @param  string        $dir
+     * @param  array|string|ClauseInterface  $column
+     * @param  string|null                   $dir
      *
      * @return  static
      */
-    public function order($column, ?string $dir = null): static
+    public function order(mixed $column, ?string $dir = null): static
     {
         if (!$this->order) {
             $this->order = $this->clause('ORDER BY', [], ', ');
@@ -897,7 +897,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
      * insert
      *
      * @param  string  $table
-     * @param  bool  $incrementField
+     * @param  bool    $incrementField
      *
      * @return  static
      */
@@ -1025,7 +1025,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
      *
      * @return  static
      */
-    public function set($column, $value = null): static
+    public function set(iterable|string $column, $value = null): static
     {
         if (!$this->set) {
             $this->set = $this->clause('SET', [], ', ');
@@ -1117,7 +1117,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
      *
      * @return  string|array
      */
-    public function escape($value): array|string
+    public function escape(mixed $value): array|string
     {
         $value = value($value);
 
@@ -1139,7 +1139,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
      *
      * @return \Closure|string
      */
-    public function quote($value): string|\Closure
+    public function quote(mixed $value): string|\Closure
     {
         if ($value instanceof RawWrapper) {
             return value($value);
@@ -1200,7 +1200,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
      *
      * @return  static
      */
-    public function suffix($suffix, ...$args): static
+    public function suffix(array|string $suffix, ...$args): static
     {
         if (is_array($suffix)) {
             foreach ($suffix as $values) {
@@ -1304,11 +1304,11 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
     /**
      * castValue
      *
-     * @param mixed $value
+     * @param  mixed  $value
      *
      * @return  string
      */
-    public function castValue($value): mixed
+    public function castValue(mixed $value): mixed
     {
         if ($value instanceof \DateTimeInterface) {
             return $this->formatDateTime($value);
@@ -1664,7 +1664,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function setEscaper($escaper): static
+    public function setEscaper(mixed $escaper): static
     {
         if ($escaper === null) {
             $escaper = DefaultConnection::getEscaper();
@@ -1781,7 +1781,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
             return $this;
         }
 
-        $props = (new \ReflectionClass($this))->getDefaultProperties();
+        $props          = (new \ReflectionClass($this))->getDefaultProperties();
         $this->$clauses = $props[$clauses] ?? null;
 
         foreach ($handlers[$clauses] ?? [] as $field) {

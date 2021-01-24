@@ -66,7 +66,7 @@ trait ManageLayoutTrait
      *
      * @return void
      */
-    public function inject(string $section, $content): void
+    public function inject(string $section, mixed $content): void
     {
         $this->startSection($section, $content);
     }

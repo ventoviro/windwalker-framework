@@ -381,7 +381,7 @@ class WriterManager
      *
      * @return  StatementInterface
      */
-    public function execute($query): StatementInterface
+    public function execute(Query|string $query): StatementInterface
     {
         return $this->statement = $this->db->execute($query);
     }

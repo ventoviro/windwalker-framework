@@ -143,7 +143,7 @@ class FileStorage implements StorageInterface
      * @throws  RuntimeException if the file path is invalid.
      * @since   2.0
      */
-    protected function checkFilePath($filePath): bool
+    protected function checkFilePath(string $filePath): bool
     {
         if (!is_dir($filePath)) {
             try {

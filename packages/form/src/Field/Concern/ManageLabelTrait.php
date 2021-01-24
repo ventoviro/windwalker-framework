@@ -113,7 +113,7 @@ trait ManageLabelTrait
      *
      * @return  string
      */
-    public function getLabelAttribute($name): string
+    public function getLabelAttribute(string $name): string
     {
         return $this->getLabel()->getAttribute($name);
     }

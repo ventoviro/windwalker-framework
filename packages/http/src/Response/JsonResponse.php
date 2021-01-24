@@ -50,10 +50,10 @@ class JsonResponse extends TextResponse
      *
      * @return  string  Encoded json.
      */
-    protected function encode($data, $options = 0): string
+    protected function encode(mixed $data, $options = 0): string
     {
         // Check is already json string.
-        if (is_string($data) && strlen($data) >= 1) {
+        if (is_string($data) && $data !== '') {
             $firstChar = $data[0];
 
             if (in_array($firstChar, ['[', '{', '"'])) {

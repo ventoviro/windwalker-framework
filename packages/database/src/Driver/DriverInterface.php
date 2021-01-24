@@ -37,12 +37,12 @@ interface DriverInterface
     /**
      * Prepare a statement.
      *
-     * @param  string|Query $query
-     * @param  array  $options
+     * @param  string|Query  $query
+     * @param  array         $options
      *
      * @return  StatementInterface
      */
-    public function prepare($query, array $options = []): StatementInterface;
+    public function prepare(mixed $query, array $options = []): StatementInterface;
 
     /**
      * Execute a query.
@@ -52,14 +52,14 @@ interface DriverInterface
      *
      * @return StatementInterface
      */
-    public function execute($query, ?array $params = null): StatementInterface;
+    public function execute(mixed $query, ?array $params = null): StatementInterface;
 
     /**
      * Method to get last auto-increment ID value.
      *
      * @param  string|null  $sequence
      *
-     * @return  string
+     * @return string|null
      */
     public function lastInsertId(?string $sequence = null): ?string;
 

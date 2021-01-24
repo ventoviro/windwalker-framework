@@ -239,7 +239,7 @@ class StringObject implements Countable, ArrayAccess, IteratorAggregate, \String
      * <p>
      * The return value will be casted to boolean if non-boolean was returned.
      */
-    public function offsetExists($offset): bool
+    public function offsetExists(mixed $offset): bool
     {
         $offset = $offset >= 0 ? $offset : (int) abs($offset) - 1;
 
@@ -263,7 +263,7 @@ class StringObject implements Countable, ArrayAccess, IteratorAggregate, \String
      *
      * @return string|static Can return all value types.
      */
-    public function offsetGet($offset): StringObject|string|static
+    public function offsetGet(mixed $offset): StringObject|string|static
     {
         return $this->getChar($offset);
     }
@@ -278,7 +278,7 @@ class StringObject implements Countable, ArrayAccess, IteratorAggregate, \String
      *
      * @return void
      */
-    public function offsetSet($offset, $string): void
+    public function offsetSet(mixed $offset, mixed $string): void
     {
         $this->string = Utf8String::substrReplace($this->string, $string, $offset, 1, $this->encoding);
     }
@@ -292,7 +292,7 @@ class StringObject implements Countable, ArrayAccess, IteratorAggregate, \String
      *
      * @return void
      */
-    public function offsetUnset($offset): void
+    public function offsetUnset(mixed $offset): void
     {
         if ($this->length() < abs($offset)) {
             return;

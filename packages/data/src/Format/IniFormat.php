@@ -31,7 +31,7 @@ class IniFormat implements FormatInterface
      *
      * @return  string  INI formatted string.
      */
-    public function dump($data, array $options = []): string
+    public function dump(mixed $data, array $options = []): string
     {
         $local  = [];
         $global = [];
@@ -102,26 +102,12 @@ class IniFormat implements FormatInterface
      *
      * @return  string  The value in INI format.
      */
-    protected static function getValueAsINI($value): string
+    protected static function getValueAsINI(mixed $value): string
     {
-        $string = '';
-
-        switch (gettype($value)) {
-            case 'integer':
-            case 'double':
-                $string = $value;
-                break;
-
-            case 'boolean':
-                $string = $value ? 'true' : 'false';
-                break;
-
-            case 'string':
-                // Sanitize any CRLF characters..
-                $string = '"' . str_replace(["\r\n", "\n"], '\\n', $value) . '"';
-                break;
-        }
-
-        return $string;
+        return match (gettype($value)) {
+            'integer', 'double' => $value,
+            'boolean' => $value ? 'true' : 'false',
+            'string' => '"' . str_replace(["\r\n", "\n"], '\\n', $value) . '"',
+        };
     }
 }

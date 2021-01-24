@@ -33,8 +33,8 @@ trait BaseAssertionTrait
      * @return  void
      */
     public static function assertStringDataEquals(
-        $expected,
-        $actual,
+        string $expected,
+        string $actual,
         string $message = ''
     ): void {
         static::assertEquals(
@@ -54,8 +54,8 @@ trait BaseAssertionTrait
      * @return  void
      */
     public static function assertStringSafeEquals(
-        $expected,
-        $actual,
+        string $expected,
+        string $actual,
         string $message = ''
     ): void {
         static::assertEquals(
@@ -68,11 +68,11 @@ trait BaseAssertionTrait
     /**
      * assertExpectedException
      *
-     * @param  callable     $closure
-     * @param  string       $class
-     * @param  string|null  $msg
-     * @param  int|null     $code
-     * @param  string       $message
+     * @param  callable          $closure
+     * @param  string|Throwable  $class
+     * @param  string|null       $msg
+     * @param  int|null          $code
+     * @param  string            $message
      *
      * @return  void
      */

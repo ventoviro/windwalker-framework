@@ -226,9 +226,9 @@ class PdoQueueDriver implements QueueDriverInterface
     /**
      * Method to get property Table
      *
-     * @return  mixed
+     * @return  string
      */
-    public function getTable(): mixed
+    public function getTable(): string
     {
         return $this->table;
     }
@@ -236,11 +236,11 @@ class PdoQueueDriver implements QueueDriverInterface
     /**
      * Method to set property table
      *
-     * @param   mixed $table
+     * @param   string $table
      *
      * @return  static  Return self to support chaining.
      */
-    public function setTable($table): static
+    public function setTable(string $table): static
     {
         $this->table = $table;
 

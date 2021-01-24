@@ -67,7 +67,7 @@ trait MarcoableTrait
         return $macro(...$args);
     }
 
-    public function __call($name, $args)
+    public function __call(string $name, array $args): mixed
     {
         if (!static::hasMacro($name)) {
             throw new BadMethodCallException(

@@ -77,7 +77,7 @@ class PdoDriver extends AbstractDriver implements TransactionDriverInterface
     /**
      * @inheritDoc
      */
-    public function execute($query, ?array $params = null): StatementInterface
+    public function execute(mixed $query, ?array $params = null): StatementInterface
     {
         return $this->prepare($query, ['exec' => true])->execute($params);
     }

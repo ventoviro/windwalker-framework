@@ -73,7 +73,7 @@ class PathCollection
      * @throws \InvalidArgumentException
      * @since  2.0
      */
-    public function add($path): static|PathCollection
+    public function add(\SplFileInfo|string $path): static|PathCollection
     {
         $new = clone $this;
 
@@ -277,7 +277,7 @@ class PathCollection
      *
      * @since  2.0
      */
-    public function isChild($path): bool
+    public function isChild(\SplFileInfo|string $path): bool
     {
         $path = FileObject::wrap($path);
 

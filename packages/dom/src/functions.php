@@ -92,7 +92,7 @@ function span(array $attributes = [], $content = null): DOMElement
  *
  * @return  DOMElement
  */
-function img($src, array $attributes = []): DOMElement
+function img(mixed $src, array $attributes = []): DOMElement
 {
     $attributes['src'] = value($src);
 

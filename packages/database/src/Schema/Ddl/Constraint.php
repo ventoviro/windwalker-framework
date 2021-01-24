@@ -18,7 +18,7 @@ use Windwalker\Utilities\Options\OptionAccessTrait;
  */
 class Constraint
 {
-    use WrapableTrait;
+    use WrappableTrait;
     use OptionAccessTrait;
 
     public const TYPE_PRIMARY_KEY = 'PRIMARY KEY';

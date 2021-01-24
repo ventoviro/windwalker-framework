@@ -265,7 +265,7 @@ class DOMFormatter
      *
      * @return  mixed
      */
-    public static function minify($buffer): mixed
+    public static function minify(string $buffer): string
     {
         $search = [
             // Strip whitespaces after tags, except space

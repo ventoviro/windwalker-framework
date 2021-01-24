@@ -51,7 +51,7 @@ class RabbitmqQueueDriver implements QueueDriverInterface
      * @param string $channel
      * @param array  $options
      */
-    public function __construct($channel, array $options = [])
+    public function __construct(string $channel, array $options = [])
     {
         $this->client = $this->getAMQPConnection($options);
 
@@ -169,7 +169,7 @@ class RabbitmqQueueDriver implements QueueDriverInterface
      *
      * @return  void
      */
-    protected function channelDeclare($channel)
+    protected function channelDeclare(string $channel)
     {
         $this->channel->channel_declare($channel, false, true, false, false);
     }

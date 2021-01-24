@@ -107,7 +107,7 @@ class Inject implements ContainerAttributeInterface
      *
      * @throws DependencyResolutionException
      */
-    public function resolveInjectable(Container $container, $class): mixed
+    public function resolveInjectable(Container $container, string $class): mixed
     {
         $id = $this->id ?? $class;
 
