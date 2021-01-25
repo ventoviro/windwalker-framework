@@ -17,14 +17,34 @@ namespace Windwalker\Pool;
 interface ConnectionInterface
 {
     /**
-     * Create connection
+     * setPool
+     *
+     * @param  PoolInterface  $pool
+     *
+     * @return  void
      */
-    public function connect(): void;
+    public function setPool(PoolInterface $pool): void;
+
+    /**
+     * Create connection
+     *
+     * @return mixed
+     */
+    public function connect(): mixed;
 
     /**
      * Reconnect connection
+     *
+     * @return mixed
      */
-    public function reconnect(): bool;
+    public function reconnect(): mixed;
+
+    /**
+     * Close connection
+     *
+     * @return mixed
+     */
+    public function disconnect(): mixed;
 
     /**
      * Get connection id
@@ -36,7 +56,7 @@ interface ConnectionInterface
     /**
      * Release connection
      *
-     * @param bool $force
+     * @param  bool  $force
      */
     public function release(bool $force = false): void;
 
@@ -55,17 +75,7 @@ interface ConnectionInterface
     /**
      * Set whether to release
      *
-     * @param bool $release
+     * @param bool $active
      */
-    public function setRelease(bool $release): void;
-
-    /**
-     * @param string $poolName
-     */
-    public function setPoolName(string $poolName): void;
-
-    /**
-     * Close connection
-     */
-    public function disconnect(): void;
+    public function setActive(bool $active): void;
 }

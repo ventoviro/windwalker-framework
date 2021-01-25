@@ -13,6 +13,7 @@ namespace Windwalker\Pool\Stack;
 
 use Swoole\Coroutine\Channel;
 use Windwalker\Pool\ConnectionInterface;
+use Windwalker\Pool\Exception\WaitTimeoutException;
 
 /**
  * The SwooleDriver class.
@@ -52,7 +53,13 @@ class SwooleStack implements StackInterface
             throw new \LogicException('Channel not exists in ' . static::class);
         }
 
-        return $this->channel->pop($timeout ?? -1);
+        $conn = $this->channel->pop($timeout ?? -1);
+
+        if ($conn === false) {
+            throw new WaitTimeoutException('Wait connection timeout or channel closed.');
+        }
+
+        return $conn;
     }
 
     /**

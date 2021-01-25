@@ -20,12 +20,12 @@ use Windwalker\Database\Driver\TransactionDriverInterface;
  */
 class MysqliDriver extends AbstractDriver implements TransactionDriverInterface
 {
-    protected static $name = 'mysqli';
+    protected static string $name = 'mysqli';
 
     /**
      * @var string
      */
-    protected $platformName = 'mysql';
+    protected string $platformName = 'mysql';
 
     /**
      * @inheritDoc

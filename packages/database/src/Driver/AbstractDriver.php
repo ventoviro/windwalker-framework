@@ -11,12 +11,15 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Driver;
 
+use JetBrains\PhpStorm\Pure;
 use Windwalker\Database\DatabaseAdapter;
 use Windwalker\Database\Event\QueryEndEvent;
 use Windwalker\Database\Event\QueryFailedEvent;
 use Windwalker\Database\Exception\DatabaseQueryException;
 use Windwalker\Database\Platform\AbstractPlatform;
 use Windwalker\Database\Schema\AbstractSchemaManager;
+use Windwalker\Pool\AbstractPool;
+use Windwalker\Pool\ConnectionPool;
 use Windwalker\Query\Query;
 
 /**
@@ -27,37 +30,39 @@ abstract class AbstractDriver implements DriverInterface
     /**
      * @var string
      */
-    protected static $name = '';
+    protected static string $name = '';
 
     /**
      * @var string
      */
-    protected $platformName = '';
-
-    /**
-     * @var AbstractPlatform
-     */
-    protected $platform;
-
-    /**
-     * @var AbstractSchemaManager
-     */
-    protected $schema;
-
-    /**
-     * @var DatabaseAdapter
-     */
-    protected $db;
-
-    /**
-     * @var ConnectionInterface
-     */
-    protected $connection;
+    protected string $platformName = '';
 
     /**
      * @var Query|string
      */
-    protected $lastQuery;
+    protected mixed $lastQuery;
+
+    /**
+     * @var AbstractPlatform
+     */
+    protected ?AbstractPlatform $platform = null;
+
+    /**
+     * @var AbstractSchemaManager
+     */
+    protected ?AbstractSchemaManager $schema = null;
+
+    /**
+     * @var DatabaseAdapter
+     */
+    protected ?DatabaseAdapter $db = null;
+
+    /**
+     * @var ConnectionInterface
+     */
+    protected ?ConnectionInterface $connection = null;
+
+    protected ?AbstractPool $pool = null;
 
     /**
      * AbstractPlatform constructor.
@@ -67,6 +72,8 @@ abstract class AbstractDriver implements DriverInterface
     public function __construct(DatabaseAdapter $db)
     {
         $this->db = $db;
+
+        $this->preparePool();
     }
 
     /**
@@ -197,7 +204,7 @@ abstract class AbstractDriver implements DriverInterface
      */
     public function replacePrefix(string $sql, string $prefix = '#__'): string
     {
-        if ($prefix === '' || strpos($sql, $prefix) === false) {
+        if ($prefix === '' || !str_contains($sql, $prefix)) {
             return $sql;
         }
 
@@ -255,11 +262,10 @@ abstract class AbstractDriver implements DriverInterface
      */
     public function getConnection(): ConnectionInterface
     {
-        if (!$this->connection) {
-            $this->connection = $this->createConnection();
-        }
+        /** @var ConnectionInterface $connection */
+        $connection = $this->pool->getConnection();
 
-        return $this->connection;
+        return $connection;
     }
 
     public function createConnection(): ConnectionInterface
@@ -269,6 +275,7 @@ abstract class AbstractDriver implements DriverInterface
         return new $class($this->db->getOptions());
     }
 
+    #[Pure]
     protected function getConnectionClass(): string
     {
         $class = __NAMESPACE__ . '\%s\%sConnection';
@@ -300,5 +307,35 @@ abstract class AbstractDriver implements DriverInterface
     public function __destruct()
     {
         $this->disconnect();
+    }
+
+    /**
+     * @param  AbstractPool|null  $pool
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setPool(?AbstractPool $pool): static
+    {
+        $this->pool = $pool;
+
+        return $this;
+    }
+
+    protected function preparePool(): void
+    {
+        $options = $this->db->getOptions();
+
+        $poolOptions = $options['pool'] ?? [];
+
+        $this->pool = new ConnectionPool(
+            $poolOptions,
+            null,
+            // todo: Add DB logger
+            null
+        );
+        $this->pool->setConnectionBuilder(function () {
+            return $this->createConnection();
+        });
+        $this->pool->init();
     }
 }

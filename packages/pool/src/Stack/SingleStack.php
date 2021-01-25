@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Pool\Stack;
 
 use Windwalker\Pool\ConnectionInterface;
+use Windwalker\Pool\Exception\ConnectionPoolException;
 
 /**
  * The BaseDriver class.
@@ -33,7 +34,15 @@ class SingleStack implements StackInterface
      */
     public function pop(?int $timeout = null): ConnectionInterface
     {
-        return $this->connection;
+        if (!$this->connection) {
+            throw new ConnectionPoolException('No connection exists, must push one into stack first.');
+        }
+
+        $conn = $this->connection;
+
+        $this->connection = null;
+
+        return $conn;
     }
 
     /**
@@ -41,7 +50,7 @@ class SingleStack implements StackInterface
      */
     public function count(): int
     {
-        return 1;
+        return $this->connection ? 1 : 0;
     }
 
     /**

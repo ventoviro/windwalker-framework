@@ -15,6 +15,7 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Windwalker\Pool\Exception\ConnectionPoolException;
+use Windwalker\Pool\Exception\WaitTimeoutException;
 use Windwalker\Pool\Stack\SingleStack;
 use Windwalker\Pool\Stack\StackInterface;
 use Windwalker\Pool\Stack\SwooleStack;
@@ -29,9 +30,27 @@ abstract class AbstractPool implements PoolInterface, \Countable
 {
     use OptionsResolverTrait;
 
+    public const MAX_SIZE = 'max_size';
+
+    public const MIN_SIZE = 'min_size';
+
+    public const MAX_ACTIVE = 'max_active';
+
+    public const MIN_ACTIVE = 'min_active';
+
+    public const MAX_WAIT = 'max_wait';
+
+    public const WAIT_TIMEOUT = 'wait_timeout';
+
+    public const IDLE_TIMEOUT = 'idle_timeout';
+
+    public const CLOSE_TIMEOUT = 'close_timeout';
+
     protected ?StackInterface $stack = null;
 
     protected bool $init = false;
+
+    protected int $serial = 0;
 
     /**
      * @var LoggerInterface
@@ -41,19 +60,15 @@ abstract class AbstractPool implements PoolInterface, \Countable
     /**
      * AbstractPool constructor.
      *
-     * @param  int                   $maxSize
      * @param  array                 $options
      * @param  StackInterface|null   $stack
      * @param  LoggerInterface|null  $logger
      */
     public function __construct(
-        int $maxSize = 1,
         array $options = [],
         ?StackInterface $stack = null,
         ?LoggerInterface $logger = null
     ) {
-        $options['max_size'] = $maxSize;
-
         $this->resolveOptions($options, [$this, 'configureOptions']);
 
         $this->stack = $stack ?? $this->createStack();
@@ -63,7 +78,7 @@ abstract class AbstractPool implements PoolInterface, \Countable
     protected function createStack(): StackInterface
     {
         if (swoole_in_coroutine()) {
-            return new SwooleStack($this->getOption('max_size'));
+            return new SwooleStack($this->getOption(self::MAX_SIZE));
         }
 
         return new SingleStack();
@@ -85,24 +100,24 @@ abstract class AbstractPool implements PoolInterface, \Countable
     {
         $resolver->setDefaults(
             [
-                'max_size' => 1,
-                'min_size' => 1,
-                'max_active' => 1,
-                'min_active' => 1,
-                'max_wait' => 0,
-                'max_wait_time' => 0,
-                'max_idle_time' => 60,
-                'max_close_time' => 3,
+                self::MAX_SIZE => 1,
+                self::MIN_SIZE => 1,
+                self::MAX_ACTIVE => 1,
+                self::MIN_ACTIVE => 1,
+                self::MAX_WAIT => 0,
+                self::WAIT_TIMEOUT => 0,
+                self::IDLE_TIMEOUT => 60,
+                self::CLOSE_TIMEOUT => 3,
             ]
         )
-            ->setAllowedTypes('max_size', 'int')
-            ->setAllowedTypes('min_size', 'int')
-            ->setAllowedTypes('max_active', 'int')
-            ->setAllowedTypes('min_active', 'int')
-            ->setAllowedTypes('max_wait', 'int')
-            ->setAllowedTypes('max_wait_time', 'int')
-            ->setAllowedTypes('max_idle_time', 'int')
-            ->setAllowedTypes('max_close_time', 'int');
+            ->setAllowedTypes(self::MAX_SIZE, 'int')
+            ->setAllowedTypes(self::MIN_SIZE, 'int')
+            ->setAllowedTypes(self::MAX_ACTIVE, 'int')
+            ->setAllowedTypes(self::MIN_ACTIVE, 'int')
+            ->setAllowedTypes(self::MAX_WAIT, 'int')
+            ->setAllowedTypes(self::WAIT_TIMEOUT, 'int')
+            ->setAllowedTypes(self::IDLE_TIMEOUT, 'int')
+            ->setAllowedTypes(self::CLOSE_TIMEOUT, 'int');
     }
 
     /**
@@ -114,9 +129,15 @@ abstract class AbstractPool implements PoolInterface, \Countable
             return;
         }
 
-        for ($i = 0; $i < $this->getOption('min_active'); $i++) {
+        if (swoole_in_coroutine()) {
+            for ($i = 0; $i < $this->getOption(self::MIN_ACTIVE); $i++) {
+                $this->createConnection();
+            }
+        } else {
             $this->createConnection();
         }
+
+        $this->init = true;
     }
 
     /**
@@ -124,9 +145,14 @@ abstract class AbstractPool implements PoolInterface, \Countable
      */
     public function createConnection(): ConnectionInterface
     {
+        $connection = $this->create();
+        $connection->setPool($this);
+        $connection->release(true);
+
+        return $connection;
     }
 
-    abstract public function create();
+    abstract public function create(): ConnectionInterface;
 
     /**
      * @inheritDoc
@@ -134,7 +160,7 @@ abstract class AbstractPool implements PoolInterface, \Countable
     public function getConnection(): ConnectionInterface
     {
         // Less than min active
-        if ($this->count() < $this->getOption('min_active')) {
+        if ($this->count() < $this->getOption(self::MIN_ACTIVE)) {
             return $this->createConnection();
         }
 
@@ -153,11 +179,11 @@ abstract class AbstractPool implements PoolInterface, \Countable
 
         // If no connections found, stack is empty
         // and if not reach max active number, create a new one.
-        if ($this->count() < $this->getOption('max_active')) {
+        if ($this->count() < $this->getOption(self::MAX_ACTIVE)) {
             return $this->createConnection();
         }
 
-        $maxWait = $this->getOption('max_wait');
+        $maxWait = $this->getOption(self::MAX_WAIT);
         if ($maxWait > 0 && $this->stack->waitingCount() >= $maxWait) {
             throw new ConnectionPoolException(
                 sprintf(
@@ -168,7 +194,11 @@ abstract class AbstractPool implements PoolInterface, \Countable
             );
         }
 
+        $connection = $this->stack->pop($this->getOption(self::WAIT_TIMEOUT));
 
+        $connection->updateLastTime();
+
+        return $connection;
     }
 
     /**
@@ -176,20 +206,22 @@ abstract class AbstractPool implements PoolInterface, \Countable
      */
     public function release(ConnectionInterface $connection): void
     {
+        if ($this->stack->count() < $this->getOption(self::MAX_ACTIVE)) {
+            $connection->setActive(false);
+            $this->stack->push($connection);
+            return;
+        }
+
+        // Disconnect then drop it.
+        $connection->disconnect();
     }
 
     /**
      * @inheritDoc
      */
-    public function getConnectionId(): int
+    public function getSerial(): int
     {
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function remove(): void
-    {
+        return ++$this->serial;
     }
 
     /**
@@ -197,6 +229,30 @@ abstract class AbstractPool implements PoolInterface, \Countable
      */
     public function close(): int
     {
+        if ($this->stack === null) {
+            return 0;
+        }
+
+        $length = $closed = $this->stack->count();
+
+        while ($length) {
+            $connection = $this->stack->pop($this->getOption(self::CLOSE_TIMEOUT));
+
+            try {
+                $connection->disconnect();
+            } catch (\Throwable $e) {
+                $this->logger->warning(
+                    sprintf(
+                        'Error while closing connection: %s',
+                        $e->getMessage()
+                    )
+                );
+            }
+
+            $length--;
+        }
+
+        return $closed;
     }
 
     protected function popFromStack(): ?ConnectionInterface
@@ -209,7 +265,7 @@ abstract class AbstractPool implements PoolInterface, \Countable
             $lastTime = $connection->getLastTime();
 
             // If out of max idle time, drop this connection.
-            if (($time - $lastTime) > $this->getOption('max_idle_time')) {
+            if (($time - $lastTime) > $this->getOption(self::IDLE_TIMEOUT)) {
                 $connection->disconnect();
                 continue;
             }

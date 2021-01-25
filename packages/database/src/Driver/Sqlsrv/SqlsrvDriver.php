@@ -19,9 +19,9 @@ use Windwalker\Database\Driver\StatementInterface;
  */
 class SqlsrvDriver extends AbstractDriver
 {
-    protected static $name = 'sqlsrv';
+    protected static string $name = 'sqlsrv';
 
-    protected $platformName = 'sqlsrv';
+    protected string $platformName = 'sqlsrv';
 
     /**
      * @inheritDoc

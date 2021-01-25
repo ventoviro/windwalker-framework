@@ -25,12 +25,12 @@ class PdoDriver extends AbstractDriver implements TransactionDriverInterface
     /**
      * @var string
      */
-    protected static $name = 'pdo';
+    protected static string $name = 'pdo';
 
     /**
      * @var string
      */
-    protected $platformName = 'odbc';
+    protected string $platformName = 'odbc';
 
     protected function getConnectionClass(): string
     {

@@ -36,7 +36,7 @@ if (!function_exists('Windwalker\go')) {
 if (!function_exists('Windwalker\swoole_in_coroutine')) {
     function swoole_in_coroutine(): bool
     {
-        if (swoole_installed()) {
+        if (!swoole_installed()) {
             return false;
         }
 

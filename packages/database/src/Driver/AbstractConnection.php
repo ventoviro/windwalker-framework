@@ -11,12 +11,13 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Driver;
 
+use Windwalker\Pool\AbstractConnection as AbstractPoolConnection;
 use Windwalker\Utilities\Options\OptionAccessTrait;
 
 /**
  * The AbstractConnection class.
  */
-abstract class AbstractConnection implements ConnectionInterface
+abstract class AbstractConnection extends AbstractPoolConnection implements ConnectionInterface
 {
     use OptionAccessTrait;
 
