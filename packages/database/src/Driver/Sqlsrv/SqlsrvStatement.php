@@ -31,7 +31,7 @@ class SqlsrvStatement extends AbstractStatement
     /**
      * @var string
      */
-    protected $query;
+    protected string $query;
 
     /**
      * SqlsrvStatement constructor.

@@ -20,6 +20,7 @@ use Windwalker\Database\Platform\AbstractPlatform;
 use Windwalker\Database\Schema\AbstractSchemaManager;
 use Windwalker\Pool\AbstractPool;
 use Windwalker\Pool\ConnectionPool;
+use Windwalker\Pool\PoolInterface;
 use Windwalker\Query\Query;
 
 /**
@@ -43,26 +44,26 @@ abstract class AbstractDriver implements DriverInterface
     protected mixed $lastQuery;
 
     /**
-     * @var AbstractPlatform
+     * @var ?AbstractPlatform
      */
     protected ?AbstractPlatform $platform = null;
 
     /**
-     * @var AbstractSchemaManager
+     * @var ?AbstractSchemaManager
      */
     protected ?AbstractSchemaManager $schema = null;
 
     /**
-     * @var DatabaseAdapter
+     * @var ?DatabaseAdapter
      */
     protected ?DatabaseAdapter $db = null;
 
     /**
-     * @var ConnectionInterface
+     * @var ?ConnectionInterface
      */
     protected ?ConnectionInterface $connection = null;
 
-    protected ?AbstractPool $pool = null;
+    protected ?PoolInterface $pool = null;
 
     /**
      * AbstractPlatform constructor.
@@ -287,18 +288,6 @@ abstract class AbstractDriver implements DriverInterface
         );
     }
 
-    /**
-     * @param  ConnectionInterface  $connection
-     *
-     * @return  static  Return self to support chaining.
-     */
-    public function setConnection(ConnectionInterface $connection): static
-    {
-        $this->connection = $connection;
-
-        return $this;
-    }
-
     public function isSupported(): bool
     {
         return $this->getConnectionClass()::isSupported();
@@ -314,7 +303,7 @@ abstract class AbstractDriver implements DriverInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setPool(?AbstractPool $pool): static
+    public function setPool(?PoolInterface $pool): static
     {
         $this->pool = $pool;
 
@@ -337,5 +326,13 @@ abstract class AbstractDriver implements DriverInterface
             return $this->createConnection();
         });
         $this->pool->init();
+    }
+
+    /**
+     * @return PoolInterface|null
+     */
+    public function getPool(): ?PoolInterface
+    {
+        return $this->pool;
     }
 }

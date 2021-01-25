@@ -33,6 +33,15 @@ interface ConnectionInterface extends PoolConnectionInterface
     public function get(): mixed;
 
     /**
+     * Use this connection.
+     *
+     * @param  callable  $callback
+     *
+     * @return  mixed
+     */
+    public function use(callable $callback): mixed;
+
+    /**
      * @return string
      */
     public static function getName(): string;
