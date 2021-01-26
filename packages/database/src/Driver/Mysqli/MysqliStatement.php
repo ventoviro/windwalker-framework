@@ -11,8 +11,12 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Driver\Mysqli;
 
+use JetBrains\PhpStorm\Pure;
 use Windwalker\Data\Collection;
 use Windwalker\Database\Driver\AbstractStatement;
+use Windwalker\Database\Driver\ConnectionInterface;
+use Windwalker\Database\Driver\DriverInterface;
+use Windwalker\Database\Exception\StatementException;
 use Windwalker\Query\Bounded\BoundedHelper;
 use Windwalker\Query\Bounded\ParamType;
 
@@ -26,32 +30,12 @@ class MysqliStatement extends AbstractStatement
     /**
      * @var \mysqli_stmt
      */
-    protected $cursor;
+    protected mixed $cursor;
 
     /**
-     * @var \mysqli_result
+     * @var \mysqli_result|null
      */
-    protected $result;
-
-    /**
-     * @var string
-     */
-    protected $query;
-
-    /**
-     * @var \mysqli
-     */
-    protected $conn;
-
-    /**
-     * @inheritDoc
-     */
-    public function __construct(\mysqli $conn, string $query, array $bounded = [])
-    {
-        $this->bounded = $bounded;
-        $this->query = $query;
-        $this->conn = $conn;
-    }
+    protected ?\mysqli_result $result = null;
 
     /**
      * @inheritDoc
@@ -75,28 +59,30 @@ class MysqliStatement extends AbstractStatement
 
         [$query, $params] = BoundedHelper::replaceParams($this->query, '?', $params);
 
-        $this->cursor = $stmt = $this->conn->prepare($query);
+        $this->driver->useConnection(function (ConnectionInterface $conn) use ($params, $query) {
+            $this->cursor = $stmt = $conn->get()->prepare($query);
 
-        if ($params !== []) {
-            $types = '';
-            $args = [];
+            if ($params !== []) {
+                $types = '';
+                $args = [];
 
-            foreach ($params as $param) {
-                $type = $param['dataType'] ?? ParamType::guessType($param['value']);
+                foreach ($params as $param) {
+                    $type = $param['dataType'] ?? ParamType::guessType($param['value']);
 
-                $types .= ParamType::convertToMysqli($type);
-                $args[] = &$param['value'];
+                    $types .= ParamType::convertToMysqli($type);
+                    $args[] = &$param['value'];
+                }
+
+                $stmt->bind_param(
+                    $types,
+                    ...$args
+                );
             }
 
-            $stmt->bind_param(
-                $types,
-                ...$args
-            );
-        }
+            $stmt->execute();
 
-        $stmt->execute();
-
-        $this->result = $stmt->get_result();
+            $this->result = $stmt->get_result();
+        });
 
         return true;
     }
@@ -137,6 +123,10 @@ class MysqliStatement extends AbstractStatement
      */
     public function countAffected(): int
     {
+        if (!$this->cursor) {
+            throw new StatementException('Cursor not exists or statement closed.');
+        }
+
         return $this->cursor->affected_rows;
     }
 }

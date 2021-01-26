@@ -32,7 +32,7 @@ class MysqliDriver extends AbstractDriver implements TransactionDriverInterface
      */
     public function doPrepare(string $query, array $bounded = [], array $options = []): StatementInterface
     {
-        $conn = $this->connect()->get();
+        $conn = $this->getConnection()->get();
 
         return new MysqliStatement($conn, $query, $bounded);
     }
@@ -43,7 +43,7 @@ class MysqliDriver extends AbstractDriver implements TransactionDriverInterface
     public function lastInsertId(?string $sequence = null): ?string
     {
         /** @var \mysqli $mysqli */
-        $mysqli = $this->connect()->get();
+        $mysqli = $this->getConnection()->get();
 
         return (string) $mysqli->insert_id;
     }
@@ -62,7 +62,7 @@ class MysqliDriver extends AbstractDriver implements TransactionDriverInterface
     public function escape(string $value): string
     {
         /** @var \mysqli $mysqli */
-        $mysqli = $this->connect()->get();
+        $mysqli = $this->getConnection()->get();
 
         return $mysqli->real_escape_string($value);
     }
@@ -73,7 +73,7 @@ class MysqliDriver extends AbstractDriver implements TransactionDriverInterface
     public function transactionStart(): bool
     {
         /** @var \mysqli $mysqli */
-        $mysqli = $this->connect()->get();
+        $mysqli = $this->getConnection()->get();
 
         return $mysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
     }
@@ -84,7 +84,7 @@ class MysqliDriver extends AbstractDriver implements TransactionDriverInterface
     public function transactionCommit(): bool
     {
         /** @var \mysqli $mysqli */
-        $mysqli = $this->connect()->get();
+        $mysqli = $this->getConnection()->get();
 
         return $mysqli->commit();
     }
@@ -95,7 +95,7 @@ class MysqliDriver extends AbstractDriver implements TransactionDriverInterface
     public function transactionRollback(): bool
     {
         /** @var \mysqli $mysqli */
-        $mysqli = $this->connect()->get();
+        $mysqli = $this->getConnection()->get();
 
         return $mysqli->rollback();
     }
@@ -108,7 +108,7 @@ class MysqliDriver extends AbstractDriver implements TransactionDriverInterface
     public function getVersion(): string
     {
         /** @var \mysqli $mysqli */
-        $mysqli = $this->connect()->get();
+        $mysqli = $this->getConnection()->get();
 
         return (string) $mysqli->server_version;
     }

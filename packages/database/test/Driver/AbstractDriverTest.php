@@ -281,15 +281,15 @@ abstract class AbstractDriverTest extends AbstractDatabaseDriverTestCase
     }
 
     /**
-     * @see  AbstractDriver::disconnect
+     * @see  AbstractDriver::disconnectAll
      */
     public function testDisconnect(): void
     {
-        static::$driver->disconnect();
+        static::$driver->disconnectAll();
 
-        self::assertFalse(static::$driver->getConnection()->isConnected());
+        self::assertFalse(static::$driver->getConnectionFromPool()->isConnected());
 
-        self::assertNull(static::$driver->getConnection()->get());
+        self::assertNull(static::$driver->getConnectionFromPool()->get());
     }
 
     /**
@@ -377,7 +377,7 @@ abstract class AbstractDriverTest extends AbstractDatabaseDriverTestCase
     {
         parent::tearDownAfterClass();
 
-        static::$driver->disconnect();
+        static::$driver->disconnectAll();
         static::$driver = null;
     }
 }

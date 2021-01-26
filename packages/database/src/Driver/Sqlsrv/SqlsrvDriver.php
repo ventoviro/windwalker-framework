@@ -28,7 +28,7 @@ class SqlsrvDriver extends AbstractDriver
      */
     public function doPrepare(string $query, array $bounded = [], array $options = []): StatementInterface
     {
-        $conn = $this->connect()->get();
+        $conn = $this->getConnection()->get();
 
         return new SqlsrvStatement($conn, $query, $bounded);
     }
@@ -64,6 +64,6 @@ class SqlsrvDriver extends AbstractDriver
      */
     public function getVersion(): string
     {
-        return (string) (sqlsrv_server_info($this->connect()->get())['SQLServerVersion'] ?? '');
+        return (string) (sqlsrv_server_info($this->getConnection()->get())['SQLServerVersion'] ?? '');
     }
 }

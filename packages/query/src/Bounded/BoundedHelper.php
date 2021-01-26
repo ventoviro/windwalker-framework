@@ -20,7 +20,16 @@ use Windwalker\Utilities\TypeCast;
  */
 class BoundedHelper
 {
-    public static function replaceParams(string $sql, string $symbol = '?', array $params = []): array
+    /**
+     * Replace all named params to ordered params.
+     *
+     * @param  string  $sql
+     * @param  string  $sign
+     * @param  array   $params
+     *
+     * @return  array
+     */
+    public static function replaceParams(string $sql, string $sign = '?', array $params = []): array
     {
         $values = [];
         $i      = 0;
@@ -32,7 +41,7 @@ class BoundedHelper
                 &$values,
                 &$i,
                 &$s,
-                $symbol,
+                $sign,
                 $params
             ) {
                 $name = $matched[0];
@@ -48,12 +57,12 @@ class BoundedHelper
                     $values[] = $params[$name] ?? $params[ltrim($name, ':')] ?? null;
                 }
 
-                if (str_contains($symbol, '%d')) {
-                    $symbol = str_replace('%d', (string) $s, $symbol);
+                if (str_contains($sign, '%d')) {
+                    $sign = str_replace('%d', (string) $s, $sign);
                     $s++;
                 }
 
-                return $symbol;
+                return $sign;
             },
             $sql
         );

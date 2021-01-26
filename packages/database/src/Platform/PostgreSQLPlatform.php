@@ -398,7 +398,7 @@ class PostgreSQLPlatform extends AbstractPlatform
     {
         if ($sequence && $this->db->getDriver() instanceof PdoDriver) {
             /** @var \PDO $pdo */
-            $pdo = $this->db->getDriver()->getConnection()->get();
+            $pdo = $this->db->getDriver()->getConnectionFromPool()->get();
 
             return $pdo->lastInsertId($sequence);
         }

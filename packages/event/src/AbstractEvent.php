@@ -65,6 +65,11 @@ abstract class AbstractEvent implements EventInterface
         return $event;
     }
 
+    public static function create(array $args): static
+    {
+        return static::wrap(static::class, $args);
+    }
+
     /**
      * Constructor.
      *

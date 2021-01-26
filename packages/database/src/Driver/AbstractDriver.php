@@ -99,13 +99,13 @@ abstract class AbstractDriver implements DriverInterface
     }
 
     /**
-     * connect
+     * Get a connection, must release manually.
      *
      * @return  ConnectionInterface
      */
-    public function connect(): ConnectionInterface
+    public function getConnection(): ConnectionInterface
     {
-        $conn = $this->getConnection();
+        $conn = $this->getConnectionFromPool();
 
         if ($conn->isConnected()) {
             return $conn;
@@ -117,13 +117,27 @@ abstract class AbstractDriver implements DriverInterface
     }
 
     /**
+     * @inheritDoc
+     */
+    public function useConnection(callable $callback): ConnectionInterface
+    {
+        $conn = $this->getConnection();
+
+        $callback($conn);
+
+        $conn->release();
+
+        return $conn;
+    }
+
+    /**
      * disconnect
      *
-     * @return  mixed
+     * @return  int
      */
-    public function disconnect(): mixed
+    public function disconnectAll(): int
     {
-        return $this->getConnection()->disconnect();
+        return $this->pool->close();
     }
 
     abstract protected function doPrepare(string $query, array $bounded = [], array $options = []): StatementInterface;
@@ -261,7 +275,7 @@ abstract class AbstractDriver implements DriverInterface
     /**
      * @return ConnectionInterface
      */
-    public function getConnection(): ConnectionInterface
+    public function getConnectionFromPool(): ConnectionInterface
     {
         /** @var ConnectionInterface $connection */
         $connection = $this->pool->getConnection();
@@ -295,7 +309,7 @@ abstract class AbstractDriver implements DriverInterface
 
     public function __destruct()
     {
-        $this->disconnect();
+        $this->disconnectAll();
     }
 
     /**

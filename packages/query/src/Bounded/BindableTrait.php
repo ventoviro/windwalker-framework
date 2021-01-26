@@ -116,7 +116,13 @@ trait BindableTrait
             return $this->bounded;
         }
 
-        return $this->bounded[$key] ?? null;
+        $value = null;
+
+        if ($this->bounded[$key] ?? null) {
+            $value = &$this->bounded[$key];
+        }
+
+        return $value;
     }
 
     /**

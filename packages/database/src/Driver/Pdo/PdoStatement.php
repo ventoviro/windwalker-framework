@@ -13,6 +13,9 @@ namespace Windwalker\Database\Driver\Pdo;
 
 use Windwalker\Data\Collection;
 use Windwalker\Database\Driver\AbstractStatement;
+use Windwalker\Database\Driver\ConnectionInterface;
+use Windwalker\Database\Driver\DriverInterface;
+use Windwalker\Database\Exception\StatementException;
 use Windwalker\Query\Bounded\ParamType;
 
 use function Windwalker\collect;
@@ -27,34 +30,18 @@ class PdoStatement extends AbstractStatement
     /**
      * @var \PDOStatement
      */
-    protected $cursor;
+    protected mixed $cursor;
+
+    protected array $options = [];
 
     /**
-     * @var \Closure|null
+     * @inheritDoc
      */
-    protected ?\Closure $prepare = null;
-
-    /**
-     * PdoStatement constructor.
-     *
-     * @param  \Closure  $prepare
-     */
-    public function __construct(\Closure $prepare)
+    public function __construct(DriverInterface $driver, string $query, array $bounded = [], array $options = [])
     {
-        $this->prepare = $prepare;
-    }
+        parent::__construct($driver, $query, $bounded);
 
-    private function prepareCursor(): \PDOStatement
-    {
-        if (!$this->cursor) {
-            $prepare = $this->prepare;
-            [$this->cursor, $bound] = $prepare();
-
-            $bound($this);
-            $this->prepare = null;
-        }
-
-        return $this->cursor;
+        $this->options = $options;
     }
 
     /**
@@ -62,7 +49,26 @@ class PdoStatement extends AbstractStatement
      */
     protected function doExecute(?array $params = null): bool
     {
-        return (bool) $this->prepareCursor()->execute($params);
+        $this->driver->useConnection(function (ConnectionInterface $conn) {
+            /** @var \PDO $pdo */
+            $pdo = $conn->get();
+
+            $this->cursor = $stmt = $pdo->prepare($this->query, $this->options);
+
+            foreach ($this->getBounded() as $key => $bound) {
+                $key = is_int($key) ? $key + 1 : $key;
+
+                $stmt->bindParam(
+                    $key,
+                    $bound['value'],
+                    $bound['dataType'] ?? null,
+                    $bound['length'] ?? 0,
+                    $bound['driverOptions'] ?? null
+                );
+            }
+        });
+
+        return (bool) $this->cursor->execute($params);
     }
 
     /**
@@ -72,40 +78,9 @@ class PdoStatement extends AbstractStatement
     {
         $this->execute();
 
-        $item = $this->prepareCursor()->fetch(\PDO::FETCH_ASSOC);
+        $item = $this->cursor->fetch(\PDO::FETCH_ASSOC);
 
         return $item !== false ? collect($item) : null;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function bindParam(
-        $key = null,
-        &$value = null,
-        $dataType = null,
-        int $length = 0,
-        $driverOptions = null
-    ): static {
-        if (is_array($key)) {
-            foreach ($key as $k => $v) {
-                $this->bindParam($k, $v);
-            }
-
-            return $this;
-        }
-
-        $dataType = $dataType ?? ParamType::guessType($value);
-
-        $this->prepareCursor()->bindParam(
-            $key,
-            $value,
-            ParamType::convertToPDO($dataType),
-            $length,
-            $driverOptions
-        );
-
-        return $this;
     }
 
     /**
@@ -117,6 +92,7 @@ class PdoStatement extends AbstractStatement
             $this->cursor->closeCursor();
         }
 
+        $this->cursor = null;
         $this->executed = false;
 
         return $this;
@@ -127,6 +103,10 @@ class PdoStatement extends AbstractStatement
      */
     public function countAffected(): int
     {
-        return $this->prepareCursor()->rowCount();
+        if (!$this->cursor) {
+            throw new StatementException('Cursor not exists or statement closed.');
+        }
+
+        return $this->cursor->rowCount();
     }
 }

@@ -25,14 +25,23 @@ interface DriverInterface
      *
      * @return  ConnectionInterface
      */
-    public function connect(): ConnectionInterface;
+    public function getConnection(): ConnectionInterface;
+
+    /**
+     * Use a connection then auto release.
+     *
+     * @param  callable  $callback
+     *
+     * @return  ConnectionInterface
+     */
+    public function useConnection(callable $callback): ConnectionInterface;
 
     /**
      * disconnect
      *
-     * @return  mixed
+     * @return  int
      */
-    public function disconnect(): mixed;
+    public function disconnectAll(): int;
 
     /**
      * Prepare a statement.

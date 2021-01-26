@@ -35,7 +35,7 @@ class PgsqlDriver extends AbstractDriver
      */
     public function doPrepare(string $query, array $bounded = [], array $options = []): StatementInterface
     {
-        $conn = $this->connect()->get();
+        $conn = $this->getConnection()->get();
 
         return new PgsqlStatement($conn, $query, $bounded);
     }
@@ -64,7 +64,7 @@ class PgsqlDriver extends AbstractDriver
      */
     public function escape(string $value): string
     {
-        return pg_escape_string($this->connect()->get(), $value);
+        return pg_escape_string($this->getConnection()->get(), $value);
     }
 
     /**
@@ -74,6 +74,6 @@ class PgsqlDriver extends AbstractDriver
      */
     public function getVersion(): string
     {
-        return pg_version($this->connect()->get())['server'] ?? '';
+        return pg_version($this->getConnection()->get())['server'] ?? '';
     }
 }

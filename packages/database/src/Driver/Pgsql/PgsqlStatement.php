@@ -13,6 +13,8 @@ namespace Windwalker\Database\Driver\Pgsql;
 
 use Windwalker\Data\Collection;
 use Windwalker\Database\Driver\AbstractStatement;
+use Windwalker\Database\Driver\ConnectionInterface;
+use Windwalker\Database\Exception\StatementException;
 use Windwalker\Query\Bounded\BoundedHelper;
 use Windwalker\Query\Bounded\ParamType;
 
@@ -23,35 +25,6 @@ use function Windwalker\collect;
  */
 class PgsqlStatement extends AbstractStatement
 {
-    /**
-     * @var resource
-     */
-    protected $conn;
-
-    /**
-     * @var string
-     */
-    protected $query;
-
-    /**
-     * @var resource
-     */
-    protected $stmt;
-
-    /**
-     * PgsqlStatement constructor.
-     *
-     * @param  resource  $conn
-     * @param  string    $query
-     * @param  array     $bounded
-     */
-    public function __construct($conn, string $query, array $bounded = [])
-    {
-        $this->conn    = $conn;
-        $this->query   = $query;
-        $this->bounded = $bounded;
-    }
-
     /**
      * @inheritDoc
      */
@@ -74,15 +47,17 @@ class PgsqlStatement extends AbstractStatement
 
         [$query, $params] = BoundedHelper::replaceParams($this->query, '$%d', $params);
 
-        $this->stmt = $stmt = pg_prepare($this->conn, $stname = uniqid('pg-'), $query);
+        $this->driver->useConnection(function (ConnectionInterface $conn) use ($params, $query) {
+            pg_prepare($conn, $stname = uniqid('pg-'), $query);
 
-        $args = [];
+            $args = [];
 
-        foreach ($params as $param) {
-            $args[] = &$param['value'];
-        }
+            foreach ($params as $param) {
+                $args[] = &$param['value'];
+            }
 
-        $this->cursor = pg_execute($this->conn, $stname, $args);
+            $this->cursor = pg_execute($conn, $stname, $args);
+        });
 
         return true;
     }
@@ -120,6 +95,10 @@ class PgsqlStatement extends AbstractStatement
      */
     public function countAffected(): int
     {
+        if (!$this->cursor) {
+            throw new StatementException('Cursor not exists or statement closed.');
+        }
+
         return pg_affected_rows($this->cursor);
     }
 }

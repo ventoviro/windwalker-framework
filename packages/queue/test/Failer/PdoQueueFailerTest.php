@@ -24,7 +24,7 @@ class PdoQueueFailerTest extends DatabaseQueueFailerTest
     protected function setUp(): void
     {
         $this->instance = new PdoQueueFailer(
-            self::$db->getDriver()->getConnection()->get()
+            self::$db->getDriver()->getConnectionFromPool()->get()
         );
     }
 

@@ -35,25 +35,40 @@ abstract class AbstractStatement implements StatementInterface
     /**
      * @var mixed|resource
      */
-    protected $cursor;
+    protected mixed $cursor;
 
     /**
      * @var bool
      */
-    protected $executed = false;
+    protected bool $executed = false;
+
+    /**
+     * @var DriverInterface
+     */
+    protected DriverInterface $driver;
+
+    /**
+     * @var string
+     */
+    protected string $query;
 
     /**
      * AbstractStatement constructor.
      *
-     * @param  mixed|resource  $cursor
+     * @param  DriverInterface  $driver
+     * @param  string           $query
+     * @param  array            $bounded
      */
-    public function __construct(mixed $cursor)
+    public function __construct(DriverInterface $driver, string $query, array $bounded = [])
     {
-        $this->cursor = $cursor;
+        $this->driver = $driver;
+        $this->query = $query;
+        $this->bounded = $bounded;
     }
 
     /**
      * @inheritDoc
+     * @throws \Throwable
      */
     public function getIterator($class = Collection::class, array $args = []): \Generator
     {
@@ -74,6 +89,7 @@ abstract class AbstractStatement implements StatementInterface
      * @param  array|null  $params
      *
      * @return  static
+     * @throws \Throwable
      */
     public function execute(?array $params = null): static
     {
@@ -82,9 +98,8 @@ abstract class AbstractStatement implements StatementInterface
         }
 
         $statement = $this;
-        $dispatcher = $this->getDispatcher();
 
-        $dispatcher->emit(QueryStartEvent::class, compact('params'));
+        $this->emit(QueryStartEvent::class, compact('params'));
 
         try {
             $result = $this->doExecute($params);
@@ -94,12 +109,12 @@ abstract class AbstractStatement implements StatementInterface
             }
         } catch (\RuntimeException $exception) {
             $statement->close();
-            $event = $dispatcher->emit(QueryFailedEvent::class, compact('exception'));
+            $event = $this->emit(QueryFailedEvent::class, compact('exception'));
 
             throw $event->getException();
         }
 
-        $dispatcher->emit(QueryEndEvent::class, compact('result'));
+        $this->emit(QueryEndEvent::class, compact('result'));
 
         $this->executed = true;
 

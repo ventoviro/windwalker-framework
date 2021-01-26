@@ -13,6 +13,7 @@ namespace Windwalker\Database\Driver\Sqlsrv;
 
 use Windwalker\Data\Collection;
 use Windwalker\Database\Driver\AbstractStatement;
+use Windwalker\Database\Exception\StatementException;
 use Windwalker\Query\Bounded\BoundedHelper;
 use Windwalker\Query\Bounded\ParamType;
 
@@ -97,7 +98,10 @@ class SqlsrvStatement extends AbstractStatement
      */
     public function close(): static
     {
-        sqlsrv_free_stmt($this->cursor);
+        if ($this->cursor) {
+            sqlsrv_free_stmt($this->cursor);
+        }
+
         $this->cursor = null;
         $this->executed = false;
 
@@ -109,6 +113,10 @@ class SqlsrvStatement extends AbstractStatement
      */
     public function countAffected(): int
     {
+        if (!$this->cursor) {
+            throw new StatementException('Cursor not exists or statement closed.');
+        }
+
         return (int) sqlsrv_rows_affected($this->cursor);
     }
 }

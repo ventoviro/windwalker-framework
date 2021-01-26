@@ -89,12 +89,12 @@ class DatabaseAdapter implements EventListenableInterface
 
     public function connect(): ConnectionInterface
     {
-        return $this->getDriver()->connect();
+        return $this->getDriver()->getConnection();
     }
 
-    public function disconnect()
+    public function disconnect(): int
     {
-        return $this->getDriver()->disconnect();
+        return $this->getDriver()->disconnectAll();
     }
 
     public function prepare(mixed $query, array $options = []): StatementInterface

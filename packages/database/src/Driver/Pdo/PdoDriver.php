@@ -41,36 +41,21 @@ class PdoDriver extends AbstractDriver implements TransactionDriverInterface
     }
 
     /**
-     * @inheritDoc
+     * doPrepare
+     *
+     * @param  string  $query
+     * @param  array   $bounded
+     * @param  array   $options
+     *
+     * @return  StatementInterface
      */
     public function doPrepare(string $query, array $bounded = [], array $options = []): StatementInterface
     {
-        /** @var \PDO $pdo */
-        $pdo = $this->connect()->get();
-
-        $exec = $options['exec'] ?? null;
-
-        unset($options['exec']);
-
         return new PdoStatement(
-            static function () use ($pdo, $query, $options, $bounded, $exec) {
-                return [
-                    $pdo->prepare($query, $options),
-                    static function (PdoStatement $stmt) use ($bounded) {
-                        foreach ($bounded as $key => $bound) {
-                            $key = is_int($key) ? $key + 1 : $key;
-
-                            $stmt->bindParam(
-                                $key,
-                                $bound['value'],
-                                $bound['dataType'] ?? null,
-                                $bound['length'] ?? 0,
-                                $bound['driverOptions'] ?? null
-                            );
-                        }
-                    }
-                ];
-            }
+            $this,
+            $query,
+            $bounded,
+            $options
         );
     }
 
@@ -88,7 +73,7 @@ class PdoDriver extends AbstractDriver implements TransactionDriverInterface
     public function lastInsertId(?string $sequence = null): ?string
     {
         /** @var \PDO $pdo */
-        $pdo = $this->connect()->get();
+        $pdo = $this->getConnection()->get();
 
         return $pdo->lastInsertId($sequence);
     }
@@ -99,7 +84,7 @@ class PdoDriver extends AbstractDriver implements TransactionDriverInterface
     public function quote(string $value): string
     {
         /** @var \PDO $pdo */
-        $pdo = $this->connect()->get();
+        $pdo = $this->getConnection()->get();
 
         return $pdo->quote($value);
     }
@@ -118,7 +103,7 @@ class PdoDriver extends AbstractDriver implements TransactionDriverInterface
     public function transactionStart(): bool
     {
         /** @var \PDO $pdo */
-        $pdo = $this->connect()->get();
+        $pdo = $this->getConnection()->get();
 
         return $pdo->beginTransaction();
     }
@@ -129,7 +114,7 @@ class PdoDriver extends AbstractDriver implements TransactionDriverInterface
     public function transactionCommit(): bool
     {
         /** @var \PDO $pdo */
-        $pdo = $this->connect()->get();
+        $pdo = $this->getConnection()->get();
 
         return $pdo->commit();
     }
@@ -140,7 +125,7 @@ class PdoDriver extends AbstractDriver implements TransactionDriverInterface
     public function transactionRollback(): bool
     {
         /** @var \PDO $pdo */
-        $pdo = $this->connect()->get();
+        $pdo = $this->getConnection()->get();
 
         return $pdo->rollBack();
     }
@@ -153,7 +138,7 @@ class PdoDriver extends AbstractDriver implements TransactionDriverInterface
     public function getVersion(): string
     {
         /** @var \PDO $pdo */
-        $pdo = $this->connect()->get();
+        $pdo = $this->getConnection()->get();
 
         return $pdo->getAttribute(\PDO::ATTR_SERVER_VERSION);
     }

@@ -81,9 +81,9 @@ trait EventAwareTrait
     /**
      * getDispatcher
      *
-     * @return  EventDispatcherInterface
+     * @return  EventEmitter
      */
-    public function getDispatcher(): EventDispatcherInterface
+    public function getDispatcher(): EventEmitter
     {
         if (!$this->dispatcher) {
             $this->dispatcher = new EventEmitter();

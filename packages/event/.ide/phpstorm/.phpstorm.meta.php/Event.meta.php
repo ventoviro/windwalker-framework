@@ -18,4 +18,8 @@ namespace PHPSTORM_META {
         \Windwalker\Event\EventEmitter::emit(0),
         type(0)
     );
+    override(
+        \Windwalker\Event\EventAwareTrait::emit(0),
+        type(0)
+    );
 }

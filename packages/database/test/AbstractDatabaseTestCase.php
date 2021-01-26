@@ -77,7 +77,7 @@ abstract class AbstractDatabaseTestCase extends AbstractDatabaseDriverTestCase
     {
         parent::tearDownAfterClass();
 
-        static::$db->getDriver()->disconnect();
+        static::$db->getDriver()->disconnectAll();
         static::$db = null;
     }
 
