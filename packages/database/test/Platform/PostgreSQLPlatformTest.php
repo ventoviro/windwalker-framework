@@ -13,6 +13,7 @@ namespace Windwalker\Database\Test\Platform;
 
 use Windwalker\Database\Platform\PostgreSQLPlatform;
 use Windwalker\Database\Schema\PostgreSQLSchemaManager;
+use Windwalker\Utilities\Str;
 
 /**
  * The PostgreSQLPlatform class.
@@ -99,7 +100,8 @@ class PostgreSQLPlatformTest extends AbstractPlatformTest
                     'TABLE_CATALOG' => 'windwalker_test',
                     'TABLE_SCHEMA' => 'public',
                     'TABLE_TYPE' => 'VIEW',
-                    'VIEW_DEFINITION' => ' SELECT ww_articles.id,
+                    'VIEW_DEFINITION' => Str::replaceCRLF(
+                        ' SELECT ww_articles.id,
     ww_articles.category_id,
     ww_articles.page_id,
     ww_articles.type,
@@ -113,7 +115,8 @@ class PostgreSQLPlatformTest extends AbstractPlatformTest
     ww_articles.created_by,
     ww_articles.language,
     ww_articles.params
-   FROM ww_articles;',
+   FROM ww_articles;'
+                    ),
                     'CHECK_OPTION' => 'NONE',
                     'IS_UPDATABLE' => 'YES',
                 ],

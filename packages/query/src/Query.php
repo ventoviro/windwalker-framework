@@ -636,7 +636,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
      * whereRaw
      *
      * @param  string|Clause  $string
-     * @param  array          ...$args
+     * @param  mixed          ...$args
      *
      * @return  static
      */

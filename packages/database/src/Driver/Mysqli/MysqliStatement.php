@@ -30,7 +30,12 @@ class MysqliStatement extends AbstractStatement
     /**
      * @var \mysqli_stmt
      */
-    protected mixed $cursor;
+    protected mixed $cursor = null;
+
+    /**
+     * @var \mysqli
+     */
+    protected mixed $conn = null;
 
     /**
      * @var \mysqli_result|bool|null
@@ -60,7 +65,8 @@ class MysqliStatement extends AbstractStatement
         [$query, $params] = BoundedHelper::replaceParams($this->query, '?', $params);
 
         $this->driver->useConnection(function (ConnectionInterface $conn) use ($params, $query) {
-            $this->cursor = $stmt = $conn->get()->prepare($query);
+            $this->conn = $conn->get();
+            $this->cursor = $stmt = $this->conn->prepare($query);
 
             if ($params !== []) {
                 $types = '';
@@ -128,5 +134,13 @@ class MysqliStatement extends AbstractStatement
         }
 
         return $this->cursor->affected_rows;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function lastInsertId(?string $sequence = null): ?string
+    {
+        return (string) $this->conn->insert_id;
     }
 }

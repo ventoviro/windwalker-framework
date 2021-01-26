@@ -26,6 +26,15 @@ use function Windwalker\collect;
 class SqlsrvStatement extends AbstractStatement
 {
     /**
+     * Keep connection resource to prevent gc after leave function scope.
+     *
+     * @see https://stackoverflow.com/questions/16562704/php-sqlsrv-passing-a-resource-from-a-function
+     *
+     * @var resource
+     */
+    protected mixed $conn = null;
+
+    /**
      * @inheritDoc
      */
     protected function doExecute(?array $params = null): bool
@@ -53,13 +62,13 @@ class SqlsrvStatement extends AbstractStatement
             $args[] = &$param['value'];
         }
 
-        $this->driver->useConnection(function (ConnectionInterface $conn) use ($args, $query) {
-            $resource = $conn->get();
+        return $this->driver->useConnection(function (ConnectionInterface $conn) use ($args, $query) {
+            $this->conn = $resource = $conn->get();
 
             $this->cursor = sqlsrv_prepare($resource, $query, $args);
-        });
 
-        return sqlsrv_execute($this->cursor);
+            return sqlsrv_execute($this->cursor);
+        });
     }
 
     /**
@@ -99,5 +108,16 @@ class SqlsrvStatement extends AbstractStatement
         }
 
         return (int) sqlsrv_rows_affected($this->cursor);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function lastInsertId(?string $sequence = null): ?string
+    {
+        $cursor = sqlsrv_query($this->conn, 'SELECT @@IDENTITY AS id');
+        sqlsrv_fetch($cursor);
+
+        return sqlsrv_get_field($cursor, 0);
     }
 }

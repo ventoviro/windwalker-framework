@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Database\Driver\Pdo;
 
 use Windwalker\Database\Driver\AbstractDriver;
+use Windwalker\Database\Driver\ConnectionInterface;
 use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\Database\Driver\TransactionDriverInterface;
 use Windwalker\Database\Platform\AbstractPlatform;
@@ -31,6 +32,11 @@ class PdoDriver extends AbstractDriver implements TransactionDriverInterface
      * @var string
      */
     protected string $platformName = 'odbc';
+
+    /**
+     * @var ?ConnectionInterface
+     */
+    protected ?ConnectionInterface $connection = null;
 
     protected function getConnectionClass(): string
     {
@@ -59,18 +65,7 @@ class PdoDriver extends AbstractDriver implements TransactionDriverInterface
      */
     public function execute(mixed $query, ?array $params = null): StatementInterface
     {
-        return $this->prepare($query, ['exec' => true])->execute($params);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function lastInsertId(?string $sequence = null): ?string
-    {
-        /** @var \PDO $pdo */
-        $pdo = $this->getConnection()->get();
-
-        return $pdo->lastInsertId($sequence);
+        return $this->prepare($query)->execute($params);
     }
 
     /**
@@ -78,10 +73,14 @@ class PdoDriver extends AbstractDriver implements TransactionDriverInterface
      */
     public function quote(string $value): string
     {
-        /** @var \PDO $pdo */
-        $pdo = $this->getConnection()->get();
+        return $this->useConnection(
+            function (ConnectionInterface $conn) use ($value) {
+                /** @var \PDO $pdo */
+                $pdo = $conn->get();
 
-        return $pdo->quote($value);
+                return $pdo->quote($value);
+            }
+        );
     }
 
     /**
@@ -95,10 +94,26 @@ class PdoDriver extends AbstractDriver implements TransactionDriverInterface
     /**
      * @inheritDoc
      */
+    public function getConnection(): ConnectionInterface
+    {
+        if ($this->connection) {
+            return $this->connection;
+        }
+
+        return parent::getConnection();
+    }
+
+    /**
+     * @inheritDoc
+     */
     public function transactionStart(): bool
     {
+        $connection = $this->getConnection();
+
         /** @var \PDO $pdo */
-        $pdo = $this->getConnection()->get();
+        $pdo = $connection->get();
+
+        $this->connection = $connection;
 
         return $pdo->beginTransaction();
     }
@@ -122,7 +137,9 @@ class PdoDriver extends AbstractDriver implements TransactionDriverInterface
         /** @var \PDO $pdo */
         $pdo = $this->getConnection()->get();
 
-        return $pdo->rollBack();
+        return \Windwalker\tap($pdo->rollBack(), function () {
+            $this->connection = null;
+        });
     }
 
     /**

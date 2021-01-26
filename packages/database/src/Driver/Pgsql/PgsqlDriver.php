@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Database\Driver\Pgsql;
 
 use Windwalker\Database\Driver\AbstractDriver;
+use Windwalker\Database\Driver\ConnectionInterface;
 use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\Database\Platform\PostgreSQLPlatform;
 
@@ -41,17 +42,6 @@ class PgsqlDriver extends AbstractDriver
     /**
      * @inheritDoc
      */
-    public function lastInsertId(?string $sequence = null): ?string
-    {
-        /** @var PostgreSQLPlatform $platform */
-        $platform = $this->getPlatform();
-
-        return $platform->lastInsertId($this->lastQuery, $sequence);
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function quote(string $value): string
     {
         return "'" . $this->escape($value) . "'";
@@ -62,7 +52,9 @@ class PgsqlDriver extends AbstractDriver
      */
     public function escape(string $value): string
     {
-        return pg_escape_string($this->getConnection()->get(), $value);
+        return $this->useConnection(
+            fn(ConnectionInterface $conn) => pg_escape_string($conn->get(), $value)
+        );
     }
 
     /**

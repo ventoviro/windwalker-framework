@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Driver;
 
+use Windwalker\Database\Platform\AbstractPlatform;
 use Windwalker\Query\Query;
 
 /**
@@ -32,9 +33,9 @@ interface DriverInterface
      *
      * @param  callable  $callback
      *
-     * @return  ConnectionInterface
+     * @return  mixed
      */
-    public function useConnection(callable $callback): ConnectionInterface;
+    public function useConnection(callable $callback): mixed;
 
     /**
      * disconnect
@@ -64,15 +65,6 @@ interface DriverInterface
     public function execute(mixed $query, ?array $params = null): StatementInterface;
 
     /**
-     * Method to get last auto-increment ID value.
-     *
-     * @param  string|null  $sequence
-     *
-     * @return string|null
-     */
-    public function lastInsertId(?string $sequence = null): ?string;
-
-    /**
      * Quote and escape a value.
      *
      * @param  string  $value
@@ -90,5 +82,14 @@ interface DriverInterface
      */
     public function escape(string $value): string;
 
+    /**
+     * getVersion
+     *
+     * @return  string
+     */
     public function getVersion(): string;
+
+    public function getPlatformName(): string;
+
+    public function getPlatform(): AbstractPlatform;
 }

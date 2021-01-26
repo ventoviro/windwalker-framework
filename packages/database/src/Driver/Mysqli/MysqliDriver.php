@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Database\Driver\Mysqli;
 
 use Windwalker\Database\Driver\AbstractDriver;
+use Windwalker\Database\Driver\ConnectionInterface;
 use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\Database\Driver\TransactionDriverInterface;
 
@@ -38,17 +39,6 @@ class MysqliDriver extends AbstractDriver implements TransactionDriverInterface
     /**
      * @inheritDoc
      */
-    public function lastInsertId(?string $sequence = null): ?string
-    {
-        /** @var \mysqli $mysqli */
-        $mysqli = $this->getConnection()->get();
-
-        return (string) $mysqli->insert_id;
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function quote(string $value): string
     {
         return "'" . $this->escape($value) . "'";
@@ -59,10 +49,14 @@ class MysqliDriver extends AbstractDriver implements TransactionDriverInterface
      */
     public function escape(string $value): string
     {
-        /** @var \mysqli $mysqli */
-        $mysqli = $this->getConnection()->get();
+        return $this->useConnection(
+            function (ConnectionInterface $conn) use ($value) {
+                /** @var \mysqli $mysqli */
+                $mysqli = $conn->get();
 
-        return $mysqli->real_escape_string($value);
+                return $mysqli->real_escape_string($value);
+            }
+        );
     }
 
     /**

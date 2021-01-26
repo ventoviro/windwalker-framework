@@ -15,7 +15,6 @@ use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Windwalker\Pool\Exception\ConnectionPoolException;
-use Windwalker\Pool\Exception\WaitTimeoutException;
 use Windwalker\Pool\Stack\SingleStack;
 use Windwalker\Pool\Stack\StackInterface;
 use Windwalker\Pool\Stack\SwooleStack;
@@ -155,32 +154,54 @@ abstract class AbstractPool implements PoolInterface, \Countable
     abstract public function create(): ConnectionInterface;
 
     /**
+     * pop
+     *
+     * todo: Separate count and totalCount
+     *
+     * @param  int|null  $timeout
+     *
+     * @return  ConnectionInterface
+     */
+    protected function popOne(?int $timeout = null): ConnectionInterface
+    {
+        $connection = $this->stack->pop($timeout);
+        $connection->updateLastTime();
+        $connection->setActive(true);
+
+        return $connection;
+    }
+
+    /**
      * @inheritDoc
      */
     public function getConnection(): ConnectionInterface
     {
         // Less than min active
         if ($this->count() < $this->getOption(self::MIN_ACTIVE)) {
-            return $this->createConnection();
+            $this->createConnection();
+
+            return $this->popOne();
         }
 
         // Pop connections
         $connection = null;
 
         if ($this->stack->count() !== 0) {
-            $connection = $this->popFromStack();
+            $connection = $this->popActive();
         }
 
         // Found a connection, return it.
         if ($connection !== null) {
             $connection->updateLastTime();
+            $connection->setActive(true);
             return $connection;
         }
 
         // If no connections found, stack is empty
         // and if not reach max active number, create a new one.
         if ($this->count() < $this->getOption(self::MAX_ACTIVE)) {
-            return $this->createConnection();
+            $this->createConnection();
+            return $this->popOne();
         }
 
         $maxWait = $this->getOption(self::MAX_WAIT);
@@ -194,11 +215,7 @@ abstract class AbstractPool implements PoolInterface, \Countable
             );
         }
 
-        $connection = $this->stack->pop($this->getOption(self::WAIT_TIMEOUT));
-
-        $connection->updateLastTime();
-
-        return $connection;
+        return $this->popOne($this->getOption(self::WAIT_TIMEOUT));
     }
 
     /**
@@ -255,7 +272,7 @@ abstract class AbstractPool implements PoolInterface, \Countable
         return $closed;
     }
 
-    protected function popFromStack(): ?ConnectionInterface
+    protected function popActive(): ?ConnectionInterface
     {
         $time = time();
 

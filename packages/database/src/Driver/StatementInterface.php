@@ -119,4 +119,13 @@ interface StatementInterface extends BindableInterface, \IteratorAggregate, Even
      * @return  void
      */
     public function addDispatcherDealer(EventDispatcherInterface $dispatcher): void;
+
+    /**
+     * Method to get last auto-increment ID value.
+     *
+     * @param  string|null  $sequence
+     *
+     * @return string|null
+     */
+    public function lastInsertId(?string $sequence = null): ?string;
 }

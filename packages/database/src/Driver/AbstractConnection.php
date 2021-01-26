@@ -87,22 +87,6 @@ abstract class AbstractConnection extends AbstractPoolConnection implements Conn
     abstract protected function doConnect(array $options);
 
     /**
-     * @inheritDoc
-     */
-    public function use(callable $callback): mixed
-    {
-        $this->connect();
-
-        $conn = $this->get();
-
-        $callback($conn, $this);
-
-        $this->release();
-
-        return $conn;
-    }
-
-    /**
      * disconnect
      *
      * @return  mixed

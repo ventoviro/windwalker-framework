@@ -19,18 +19,6 @@ use Windwalker\Database\Manager\AbstractMetaManager;
 class DatabaseManager extends AbstractMetaManager
 {
     /**
-     * select
-     *
-     * @return  static
-     */
-    public function select(): static
-    {
-        $this->db->getPlatform()->selectDatabase($this->getName());
-
-        return $this;
-    }
-
-    /**
      * createDatabase
      *
      * @param  bool   $ifNotExists

@@ -48,11 +48,11 @@ class ParamType
     /**
      * convertToPDO
      *
-     * @param  string  $type
+     * @param  string|null  $type
      *
-     * @return  mixed|string
+     * @return mixed
      */
-    public static function convertToPDO(string $type): mixed
+    public static function convertToPDO(?string $type): mixed
     {
         return static::PDO_MAPS[$type] ?? $type;
     }

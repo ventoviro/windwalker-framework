@@ -252,11 +252,6 @@ abstract class AbstractPlatform
 
     abstract public function getCurrentDatabase(): ?string;
 
-    public function selectDatabase(string $name): StatementInterface
-    {
-        return $this->db->execute('USE ' . $this->db->quoteName($name));
-    }
-
     public function createDatabase(string $name, array $options = []): StatementInterface
     {
         return $this->db->execute(

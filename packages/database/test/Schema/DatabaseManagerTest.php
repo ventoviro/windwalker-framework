@@ -46,22 +46,6 @@ class DatabaseManagerTest extends AbstractDatabaseTestCase
         self::assertTrue($dbManager->exists());
     }
 
-    public function testSelect()
-    {
-        $dbname = static::$db->getOption('database');
-
-        $newDbname = $dbname . '_new';
-
-        $dbManager = static::$db->getDatabase($newDbname);
-
-        $dbManager->select();
-
-        self::assertEquals(
-            $newDbname,
-            static::$db->getPlatform()->getCurrentDatabase()
-        );
-    }
-
     /**
      * @see  DatabaseManager::drop
      */

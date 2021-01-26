@@ -30,16 +30,21 @@ class PdoStatement extends AbstractStatement
     /**
      * @var \PDOStatement
      */
-    protected mixed $cursor;
+    protected mixed $cursor = null;
+
+    /**
+     * @var \PDO
+     */
+    protected mixed $conn = null;
 
     /**
      * @inheritDoc
      */
     protected function doExecute(?array $params = null): bool
     {
-        $this->driver->useConnection(function (ConnectionInterface $conn) {
+        return $this->driver->useConnection(function (ConnectionInterface $conn) use ($params) {
             /** @var \PDO $pdo */
-            $pdo = $conn->get();
+            $this->conn = $pdo = $conn->get();
 
             $this->cursor = $stmt = $pdo->prepare($this->query, $this->options);
 
@@ -49,14 +54,14 @@ class PdoStatement extends AbstractStatement
                 $stmt->bindParam(
                     $key,
                     $bound['value'],
-                    $bound['dataType'] ?? null,
+                    ParamType::convertToPDO($bound['dataType'] ?? null),
                     $bound['length'] ?? 0,
                     $bound['driverOptions'] ?? null
                 );
             }
-        });
 
-        return (bool) $this->cursor->execute($params);
+            return (bool) $this->cursor->execute($params);
+        });
     }
 
     /**
@@ -96,5 +101,13 @@ class PdoStatement extends AbstractStatement
         }
 
         return $this->cursor->rowCount();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function lastInsertId(?string $sequence = null): ?string
+    {
+        return $this->conn->lastInsertId($sequence);
     }
 }

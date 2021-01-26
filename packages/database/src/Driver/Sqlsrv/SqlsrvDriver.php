@@ -34,14 +34,6 @@ class SqlsrvDriver extends AbstractDriver
     /**
      * @inheritDoc
      */
-    public function lastInsertId(?string $sequence = null): ?string
-    {
-        return $this->prepare('SELECT @@IDENTITY')->result();
-    }
-
-    /**
-     * @inheritDoc
-     */
     public function quote(string $value): string
     {
         return "'" . $this->escape($value) . "'";

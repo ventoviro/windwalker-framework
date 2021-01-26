@@ -35,7 +35,9 @@ abstract class AbstractStatement implements StatementInterface
     /**
      * @var mixed|resource
      */
-    protected mixed $cursor;
+    protected mixed $cursor = null;
+
+    protected mixed $conn = null;
 
     /**
      * @var bool
@@ -219,5 +221,13 @@ abstract class AbstractStatement implements StatementInterface
     public function addDispatcherDealer(EventDispatcherInterface $dispatcher): void
     {
         $this->getDispatcher()->registerDealer($dispatcher);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function __destruct()
+    {
+        $this->close();
     }
 }

@@ -200,7 +200,7 @@ abstract class AbstractDriverTest extends AbstractDatabaseDriverTestCase
 
         self::assertEquals(
             86,
-            static::$driver->lastInsertId()
+            $st->lastInsertId()
         );
 
         self::assertEquals(
@@ -299,14 +299,14 @@ abstract class AbstractDriverTest extends AbstractDatabaseDriverTestCase
     {
         $platform = static::$driver->getPlatform();
 
-        self::assertInstanceOf(
+        self::assertEquals(
             get_class(
                 AbstractPlatform::create(
                     static::$driver->getPlatformName(),
                     static::$driver->getDb()
                 )
             ),
-            $platform
+            $platform::class
         );
     }
 

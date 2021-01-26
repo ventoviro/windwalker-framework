@@ -24,4 +24,12 @@ class PdoSqliteConnection extends AbstractPdoConnection
 
         return $options;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function disconnect(): mixed
+    {
+        return parent::disconnect();
+    }
 }

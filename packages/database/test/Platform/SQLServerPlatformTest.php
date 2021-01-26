@@ -104,7 +104,9 @@ class SQLServerPlatformTest extends AbstractPlatformTest
     public function testGetViews(): void
     {
         $views = $this->instance->listViews(static::$schema);
-        echo self::dumpArray($views);
+
+        $views['ww_articles_view']['VIEW_DEFINITION'] = Str::replaceCRLF($views['ww_articles_view']['VIEW_DEFINITION']);
+
         self::assertEquals(
             [
                 'ww_articles_view' => [

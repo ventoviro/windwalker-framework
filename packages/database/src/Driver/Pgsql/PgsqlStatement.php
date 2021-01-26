@@ -15,8 +15,11 @@ use Windwalker\Data\Collection;
 use Windwalker\Database\Driver\AbstractStatement;
 use Windwalker\Database\Driver\ConnectionInterface;
 use Windwalker\Database\Exception\StatementException;
+use Windwalker\Database\Platform\PostgreSQLPlatform;
 use Windwalker\Query\Bounded\BoundedHelper;
 use Windwalker\Query\Bounded\ParamType;
+
+use Windwalker\Query\Query;
 
 use function Windwalker\collect;
 
@@ -25,6 +28,11 @@ use function Windwalker\collect;
  */
 class PgsqlStatement extends AbstractStatement
 {
+    /**
+     * @var mixed|null
+     */
+    protected mixed $conn = null;
+
     /**
      * @inheritDoc
      */
@@ -48,7 +56,9 @@ class PgsqlStatement extends AbstractStatement
         [$query, $params] = BoundedHelper::replaceParams($this->query, '$%d', $params);
 
         $this->driver->useConnection(function (ConnectionInterface $conn) use ($params, $query) {
-            pg_prepare($conn, $stname = uniqid('pg-'), $query);
+            $this->conn = $resource = $conn->get();
+
+            pg_prepare($resource, $stname = uniqid('pg-'), $query);
 
             $args = [];
 
@@ -56,7 +66,7 @@ class PgsqlStatement extends AbstractStatement
                 $args[] = &$param['value'];
             }
 
-            $this->cursor = pg_execute($conn, $stname, $args);
+            $this->cursor = pg_execute($resource, $stname, $args);
         });
 
         return true;
@@ -84,7 +94,6 @@ class PgsqlStatement extends AbstractStatement
         }
 
         $this->cursor = null;
-        $this->stmt = null;
         $this->executed = false;
 
         return $this;
@@ -100,5 +109,43 @@ class PgsqlStatement extends AbstractStatement
         }
 
         return pg_affected_rows($this->cursor);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function lastInsertId(?string $sequence = null): ?string
+    {
+        $insertQuery = $this->query;
+
+        preg_match('/insert\s*into\s*[\"]*(\W\w+)[\"]*/i', $insertQuery, $matches);
+
+        if (!isset($matches[1])) {
+            return null;
+        }
+
+        $table = [$matches[1]];
+
+        /* find sequence column name */
+        $colNameQuery = $this->driver->getPlatform()->createQuery();
+
+        $colNameQuery->select('column_default')
+            ->from('information_schema.columns')
+            ->whereRaw('table_name = %q', $this->driver->replacePrefix(trim($table[0], '" ')))
+            ->whereRaw('column_default LIKE %q', '%nextval%');
+
+        $stmt = pg_query($this->conn, (string) $colNameQuery);
+
+        $colName = pg_fetch_result($stmt, 0, 0);
+
+        $changedColName = str_replace('nextval', 'currval', $colName);
+
+        $insertidQuery = $this->driver->getPlatform()->createQuery();
+
+        $insertidQuery->selectRaw($changedColName);
+
+        $stmt = pg_query($this->conn, (string) $insertidQuery);
+
+        return pg_fetch_result($stmt, 0, 0);
     }
 }

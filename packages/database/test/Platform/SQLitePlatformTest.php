@@ -96,7 +96,7 @@ class SQLitePlatformTest extends AbstractPlatformTest
     {
         $views = $this->instance->listViews(static::getTestSchema());
 
-        $views['ww_articles_view']['sql'] = Str::replaceCRLF($views['ww_articles_view']['sql']);
+        $views['ww_articles_view']['sql'] = Str::replaceCRLF($views['ww_articles_view']['sql'], ' ');
 
         self::assertEquals(
             [
@@ -107,9 +107,7 @@ class SQLitePlatformTest extends AbstractPlatformTest
                     'VIEW_DEFINITION' => null,
                     'CHECK_OPTION' => 'NONE',
                     'IS_UPDATABLE' => null,
-                    'sql' => 'CREATE VIEW `ww_articles_view` AS
-SELECT *
-FROM `ww_articles`'
+                    'sql' => 'CREATE VIEW `ww_articles_view` AS SELECT * FROM `ww_articles`'
                 ]
             ],
             $views

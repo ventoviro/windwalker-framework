@@ -119,15 +119,15 @@ abstract class AbstractDriver implements DriverInterface
     /**
      * @inheritDoc
      */
-    public function useConnection(callable $callback): ConnectionInterface
+    public function useConnection(callable $callback): mixed
     {
         $conn = $this->getConnection();
 
-        $callback($conn);
+        $result = $callback($conn);
 
         $conn->release();
 
-        return $conn;
+        return $result;
     }
 
     /**
