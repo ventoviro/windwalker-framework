@@ -29,6 +29,11 @@ class MysqliDriver extends AbstractDriver implements TransactionDriverInterface
     protected string $platformName = 'mysql';
 
     /**
+     * @var ?ConnectionInterface
+     */
+    protected ?ConnectionInterface $connection = null;
+
+    /**
      * @inheritDoc
      */
     public function createStatement(string $query, array $bounded = [], array $options = []): StatementInterface
@@ -57,6 +62,18 @@ class MysqliDriver extends AbstractDriver implements TransactionDriverInterface
                 return $mysqli->real_escape_string($value);
             }
         );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getConnection(): ConnectionInterface
+    {
+        if ($this->connection) {
+            return $this->connection;
+        }
+
+        return parent::getConnection();
     }
 
     /**

@@ -21,7 +21,7 @@ class ConnectionPool extends AbstractPool
      */
     protected $builder;
 
-    public function create(): ConnectionInterface
+    protected function create(): ConnectionInterface
     {
         return ($this->builder)();
     }

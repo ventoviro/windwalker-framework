@@ -27,7 +27,7 @@ class QueuePdoTest extends QueueDatabaseTest
     protected function setUp(): void
     {
         $this->instance = new Queue(
-            new PdoQueueDriver(static::$db->getDriver()->getConnectionFromPool()->get())
+            new PdoQueueDriver(static::$db->getDriver()->getConnection()->get())
         );
     }
 

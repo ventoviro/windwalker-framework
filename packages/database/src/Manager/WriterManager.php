@@ -375,7 +375,7 @@ class WriterManager
      */
     public function lastInsertId(?string $sequence = null): ?string
     {
-        return $this->db->getDriver()->lastInsertId($sequence);
+        return $this->getStatement()->lastInsertId($sequence);
     }
 
     /**

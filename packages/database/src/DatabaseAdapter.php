@@ -87,11 +87,25 @@ class DatabaseAdapter implements EventListenableInterface
             ->setAllowedTypes('driver', 'string');
     }
 
+    /**
+     * connect
+     *
+     * @return  ConnectionInterface
+     *
+     * @deprecated No-longer need since has conn-pool
+     */
     public function connect(): ConnectionInterface
     {
         return $this->getDriver()->getConnection();
     }
 
+    /**
+     * disconnect
+     *
+     * @return  int
+     *
+     * @deprecated No-longer need since has conn-pool
+     */
     public function disconnect(): int
     {
         return $this->getDriver()->disconnectAll();

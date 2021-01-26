@@ -25,19 +25,19 @@ class PdoDriverTest extends AbstractDriverTest
     protected static string $driverName = 'pdo_mysql';
 
     /**
-     * @see  AbstractDriver::setPlatformName
-     */
-    public function testSetPlatformName(): void
-    {
-        $driver = self::createDriver([]);
-        $driver->setPlatformName('sqlsrv');
-        $conn = $driver->createConnection();
-
-        self::assertInstanceOf(
-            PdoSqlsrvConnection::class,
-            $conn
-        );
-    }
+    //  * @see  AbstractDriver::setPlatformName
+    //  */
+    // public function testSetPlatformName(): void
+    // {
+    //     $driver = self::createDriver([]);
+    //     $driver->setPlatformName('sqlsrv');
+    //     $conn = $driver->createConnection();
+    //
+    //     self::assertInstanceOf(
+    //         PdoSqlsrvConnection::class,
+    //         $conn
+    //     );
+    // }
 
     /**
      * @see  AbstractDriver::quote

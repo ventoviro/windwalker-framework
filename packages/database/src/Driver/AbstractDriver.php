@@ -58,11 +58,6 @@ abstract class AbstractDriver implements DriverInterface
      */
     protected ?DatabaseAdapter $db = null;
 
-    /**
-     * @var ?ConnectionInterface
-     */
-    protected ?ConnectionInterface $connection = null;
-
     protected ?PoolInterface $pool = null;
 
     /**
@@ -73,8 +68,6 @@ abstract class AbstractDriver implements DriverInterface
     public function __construct(DatabaseAdapter $db)
     {
         $this->db = $db;
-
-        $this->preparePool();
     }
 
     /**
@@ -137,7 +130,7 @@ abstract class AbstractDriver implements DriverInterface
      */
     public function disconnectAll(): int
     {
-        return $this->pool->close();
+        return $this->getPool()->close();
     }
 
     /**
@@ -291,7 +284,7 @@ abstract class AbstractDriver implements DriverInterface
     public function getConnectionFromPool(): ConnectionInterface
     {
         /** @var ConnectionInterface $connection */
-        $connection = $this->pool->getConnection();
+        $connection = $this->getPool()->getConnection();
 
         return $connection;
     }
@@ -337,31 +330,34 @@ abstract class AbstractDriver implements DriverInterface
         return $this;
     }
 
-    protected function preparePool(): void
+    protected function preparePool(): ConnectionPool
     {
         $options = $this->db->getOptions();
 
         $poolOptions = $options['pool'] ?? [];
 
-        $this->pool = new ConnectionPool(
+        $pool = new ConnectionPool(
             $poolOptions,
             null,
             // todo: Add DB logger
             null
         );
-        $this->pool->setConnectionBuilder(
+
+        $pool->setConnectionBuilder(
             function () {
                 return $this->createConnection();
             }
         );
-        $this->pool->init();
+        $pool->init();
+
+        return $pool;
     }
 
     /**
-     * @return PoolInterface|null
+     * @return PoolInterface
      */
-    public function getPool(): ?PoolInterface
+    public function getPool(): PoolInterface
     {
-        return $this->pool;
+        return $this->pool ??= $this->preparePool();
     }
 }
