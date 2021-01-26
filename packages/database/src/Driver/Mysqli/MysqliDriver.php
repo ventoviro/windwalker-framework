@@ -30,11 +30,9 @@ class MysqliDriver extends AbstractDriver implements TransactionDriverInterface
     /**
      * @inheritDoc
      */
-    public function doPrepare(string $query, array $bounded = [], array $options = []): StatementInterface
+    public function createStatement(string $query, array $bounded = [], array $options = []): StatementInterface
     {
-        $conn = $this->getConnection()->get();
-
-        return new MysqliStatement($conn, $query, $bounded);
+        return new MysqliStatement($this, $query, $bounded, $options);
     }
 
     /**

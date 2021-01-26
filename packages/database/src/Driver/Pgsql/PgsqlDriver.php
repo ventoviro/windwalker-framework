@@ -33,11 +33,9 @@ class PgsqlDriver extends AbstractDriver
     /**
      * @inheritDoc
      */
-    public function doPrepare(string $query, array $bounded = [], array $options = []): StatementInterface
+    public function createStatement(string $query, array $bounded = [], array $options = []): StatementInterface
     {
-        $conn = $this->getConnection()->get();
-
-        return new PgsqlStatement($conn, $query, $bounded);
+        return new PgsqlStatement($this, $query, $bounded, $options);
     }
 
     /**

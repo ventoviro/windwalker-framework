@@ -33,9 +33,9 @@ class MysqliStatement extends AbstractStatement
     protected mixed $cursor;
 
     /**
-     * @var \mysqli_result|null
+     * @var \mysqli_result|bool|null
      */
-    protected ?\mysqli_result $result = null;
+    protected \mysqli_result|bool|null $result = null;
 
     /**
      * @inheritDoc

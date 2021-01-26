@@ -32,18 +32,6 @@ class PdoStatement extends AbstractStatement
      */
     protected mixed $cursor;
 
-    protected array $options = [];
-
-    /**
-     * @inheritDoc
-     */
-    public function __construct(DriverInterface $driver, string $query, array $bounded = [], array $options = [])
-    {
-        parent::__construct($driver, $query, $bounded);
-
-        $this->options = $options;
-    }
-
     /**
      * @inheritDoc
      */

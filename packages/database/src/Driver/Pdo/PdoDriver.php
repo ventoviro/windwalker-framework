@@ -49,14 +49,9 @@ class PdoDriver extends AbstractDriver implements TransactionDriverInterface
      *
      * @return  StatementInterface
      */
-    public function doPrepare(string $query, array $bounded = [], array $options = []): StatementInterface
+    public function createStatement(string $query, array $bounded = [], array $options = []): StatementInterface
     {
-        return new PdoStatement(
-            $this,
-            $query,
-            $bounded,
-            $options
-        );
+        return new PdoStatement($this, $query, $bounded, $options);
     }
 
     /**

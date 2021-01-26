@@ -140,7 +140,20 @@ abstract class AbstractDriver implements DriverInterface
         return $this->pool->close();
     }
 
-    abstract protected function doPrepare(string $query, array $bounded = [], array $options = []): StatementInterface;
+    /**
+     * createStatement
+     *
+     * @param  string  $query
+     * @param  array   $bounded
+     * @param  array   $options
+     *
+     * @return  StatementInterface
+     */
+    abstract protected function createStatement(
+        string $query,
+        array $bounded = [],
+        array $options = []
+    ): StatementInterface;
 
     /**
      * @inheritDoc
@@ -151,7 +164,7 @@ abstract class AbstractDriver implements DriverInterface
         $sql = $this->handleQuery($query, $bounded);
 
         // Prepare actions by driver
-        $stmt = $this->doPrepare($sql, $bounded, $options);
+        $stmt = $this->createStatement($sql, $bounded, $options);
 
         // Make DatabaseAdapter listen to statement events
         $stmt->addDispatcherDealer($this->db->getDispatcher());
@@ -212,8 +225,8 @@ abstract class AbstractDriver implements DriverInterface
      *
      * @see     https://stackoverflow.com/a/31745275
      *
-     * @param   string $sql    The SQL statement to prepare.
-     * @param   string $prefix The common table prefix.
+     * @param  string  $sql  The SQL statement to prepare.
+     * @param  string  $prefix  The common table prefix.
      *
      * @return  string  The processed SQL statement.
      */
@@ -336,9 +349,11 @@ abstract class AbstractDriver implements DriverInterface
             // todo: Add DB logger
             null
         );
-        $this->pool->setConnectionBuilder(function () {
-            return $this->createConnection();
-        });
+        $this->pool->setConnectionBuilder(
+            function () {
+                return $this->createConnection();
+            }
+        );
         $this->pool->init();
     }
 

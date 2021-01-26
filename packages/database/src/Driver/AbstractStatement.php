@@ -52,18 +52,22 @@ abstract class AbstractStatement implements StatementInterface
      */
     protected string $query;
 
+    protected array $options = [];
+
     /**
      * AbstractStatement constructor.
      *
      * @param  DriverInterface  $driver
      * @param  string           $query
      * @param  array            $bounded
+     * @param  array            $options
      */
-    public function __construct(DriverInterface $driver, string $query, array $bounded = [])
+    public function __construct(DriverInterface $driver, string $query, array $bounded = [], array $options = [])
     {
         $this->driver = $driver;
         $this->query = $query;
         $this->bounded = $bounded;
+        $this->options = $options;
     }
 
     /**
