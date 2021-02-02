@@ -13,11 +13,8 @@ namespace Windwalker\Database;
 
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Windwalker\Database\Driver\AbstractDriver;
 use Windwalker\Database\Driver\ConnectionInterface;
-use Windwalker\Database\Driver\DriverFactory;
-use Windwalker\Database\Driver\DriverInterface;
 use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\Database\Manager\TableManager;
 use Windwalker\Database\Manager\WriterManager;
@@ -28,7 +25,6 @@ use Windwalker\Event\EventAwareTrait;
 use Windwalker\Event\EventListenableInterface;
 use Windwalker\Query\Query;
 use Windwalker\Utilities\Cache\InstanceCacheTrait;
-use Windwalker\Utilities\Options\OptionsResolverTrait;
 
 /**
  * The DatabaseAdapter class.
@@ -40,7 +36,6 @@ use Windwalker\Utilities\Options\OptionsResolverTrait;
  */
 class DatabaseAdapter implements EventListenableInterface
 {
-    use DatabaseOptionsTrait;
     use EventAwareTrait;
     use InstanceCacheTrait;
 
@@ -59,16 +54,14 @@ class DatabaseAdapter implements EventListenableInterface
     /**
      * DatabaseAdapter constructor.
      *
-     * @param  DriverInterface|null  $driver
+     * @param  AbstractDriver       $driver
      * @param  LoggerInterface|null  $logger
      */
     public function __construct(
-        ?DriverInterface $driver = null,
+        AbstractDriver $driver,
         ?LoggerInterface $logger = null,
     ) {
-
         $this->driver = $driver;
-
         $this->logger = $logger ?? new NullLogger();
     }
 
@@ -133,7 +126,7 @@ class DatabaseAdapter implements EventListenableInterface
 
     public function getCachedQuery(bool $new = false): Query
     {
-        return $this->once('cached.query', fn () => $this->getQuery(true), $new);
+        return $this->once('cached.query', fn() => $this->getQuery(true), $new);
     }
 
     /**
@@ -187,9 +180,9 @@ class DatabaseAdapter implements EventListenableInterface
     }
 
     /**
-     * @return DriverInterface
+     * @return AbstractDriver
      */
-    public function getDriver(): DriverInterface
+    public function getDriver(): AbstractDriver
     {
         return $this->driver;
     }
@@ -204,16 +197,16 @@ class DatabaseAdapter implements EventListenableInterface
 
     public function getDatabase(string $name = null, $new = false): DatabaseManager
     {
-        $name = $name ?? $this->getOption('database');
+        $name = $name ?? $this->getDriver()->getOption('database');
 
-        return $this->once('database.' . $name, fn () => new DatabaseManager($name, $this), $new);
+        return $this->once('database.' . $name, fn() => new DatabaseManager($name, $this), $new);
     }
 
     public function getSchema(?string $name = null, $new = false): SchemaManager
     {
         $name = $name ?? $this->getPlatform()::getDefaultSchema();
 
-        return $this->once('schema.' . $name, fn () => new SchemaManager($name, $this), $new);
+        return $this->once('schema.' . $name, fn() => new SchemaManager($name, $this), $new);
     }
 
     public function getTable(string $name, $new = false): TableManager
@@ -223,7 +216,7 @@ class DatabaseAdapter implements EventListenableInterface
 
     public function getWriter($new = false): WriterManager
     {
-        return $this->once('writer', fn () => new WriterManager($this), $new);
+        return $this->once('writer', fn() => new WriterManager($this), $new);
     }
 
     public function replacePrefix(string $query, string $prefix = '#__'): string
@@ -295,7 +288,7 @@ class DatabaseAdapter implements EventListenableInterface
             'select',
             'delete',
             'update',
-            'insert'
+            'insert',
         ];
 
         if (in_array(strtolower($name), $queryMethods, true)) {

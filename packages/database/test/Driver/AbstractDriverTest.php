@@ -13,7 +13,6 @@ namespace Windwalker\Database\Test\Driver;
 
 use Windwalker\Database\DatabaseAdapter;
 use Windwalker\Database\Driver\AbstractDriver;
-use Windwalker\Database\Driver\DriverInterface;
 use Windwalker\Database\Event\QueryEndEvent;
 use Windwalker\Database\Exception\DatabaseQueryException;
 use Windwalker\Database\Platform\AbstractPlatform;
@@ -30,7 +29,7 @@ abstract class AbstractDriverTest extends AbstractDatabaseDriverTestCase
 
     protected static string $driverName = '';
 
-    protected static ?DriverInterface $driver;
+    protected static ?AbstractDriver $driver;
 
     /**
      * @see  AbstractDriver::prepare

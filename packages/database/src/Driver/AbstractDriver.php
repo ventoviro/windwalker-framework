@@ -28,7 +28,7 @@ use Windwalker\Utilities\Options\OptionsResolverTrait;
 /**
  * The AbstractDriver class.
  */
-abstract class AbstractDriver implements DriverInterface
+abstract class AbstractDriver
 {
     use OptionsResolverTrait;
 
@@ -102,14 +102,6 @@ abstract class AbstractDriver implements DriverInterface
                 ]
             );
             // ->setAllowedTypes('driver', 'string');
-    }
-
-    /**
-     * @return DatabaseAdapter
-     */
-    public function getDb(): DatabaseAdapter
-    {
-        return $this->db;
     }
 
     protected function handleQuery($query, ?array &$bounded = [], $emulated = false): string
@@ -390,4 +382,22 @@ abstract class AbstractDriver implements DriverInterface
     {
         return $this->pool ??= $this->preparePool();
     }
+
+    /**
+     * Quote and escape a value.
+     *
+     * @param  string  $value
+     *
+     * @return  string
+     */
+    abstract public function quote(string $value): string;
+
+    /**
+     * Escape a value.
+     *
+     * @param  string  $value
+     *
+     * @return  string
+     */
+    abstract public function escape(string $value): string;
 }

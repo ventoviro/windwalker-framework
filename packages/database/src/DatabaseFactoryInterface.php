@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Database;
 
 use Psr\Log\LoggerInterface;
-use Windwalker\Database\Driver\DriverInterface;
+use Windwalker\Database\Driver\AbstractDriver;
 use Windwalker\Database\Platform\AbstractPlatform;
 use Windwalker\Pool\PoolInterface;
 
@@ -24,15 +24,13 @@ interface DatabaseFactoryInterface
     /**
      * createAdapter
      *
-     * @param  array                 $options
-     * @param  DriverInterface|null  $driver
+     * @param  AbstractDriver|null   $driver
      * @param  LoggerInterface|null  $logger
      *
      * @return  DatabaseAdapter
      */
     public function create(
-        array $options,
-        ?DriverInterface $driver = null,
+        ?AbstractDriver $driver = null,
         ?LoggerInterface $logger = null,
     ): DatabaseAdapter;
 
@@ -69,11 +67,11 @@ interface DatabaseFactoryInterface
      * @param  AbstractPlatform|null  $platform
      * @param  PoolInterface|null     $pool
      *
-     * @return  DriverInterface
+     * @return  AbstractDriver
      */
     public function createDriver(string $driverName,
         DatabaseAdapter $db,
         AbstractPlatform $platform = null,
         ?PoolInterface $pool = null
-    ): DriverInterface;
+    ): AbstractDriver;
 }

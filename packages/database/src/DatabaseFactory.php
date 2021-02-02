@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Database;
 
 use Psr\Log\LoggerInterface;
-use Windwalker\Database\Driver\DriverInterface;
+use Windwalker\Database\Driver\AbstractDriver;
 use Windwalker\Database\Driver\Mysqli\MysqliDriver;
 use Windwalker\Database\Driver\Pdo\PdoDriver;
 use Windwalker\Database\Driver\Pgsql\PgsqlDriver;
@@ -43,11 +43,10 @@ class DatabaseFactory implements DatabaseFactoryInterface
      * @inheritDoc
      */
     public function create(
-        array $options,
-        ?DriverInterface $driver = null,
+        ?AbstractDriver $driver = null,
         ?LoggerInterface $logger = null,
     ): DatabaseAdapter {
-        return new DatabaseAdapter($options, $driver, $logger);
+        return new DatabaseAdapter($driver, $logger);
     }
 
     /**
@@ -75,7 +74,7 @@ class DatabaseFactory implements DatabaseFactoryInterface
         DatabaseAdapter $db,
         AbstractPlatform $platform = null,
         ?PoolInterface $pool = null
-    ): DriverInterface {
+    ): AbstractDriver {
         $names = explode('_', $driverName);
 
         $platformName = ucfirst(static::getDriverShortName($names[0]));

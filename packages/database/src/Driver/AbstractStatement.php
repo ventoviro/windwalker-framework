@@ -45,9 +45,9 @@ abstract class AbstractStatement implements StatementInterface
     protected bool $executed = false;
 
     /**
-     * @var DriverInterface
+     * @var AbstractDriver
      */
-    protected DriverInterface $driver;
+    protected AbstractDriver $driver;
 
     /**
      * @var string
@@ -59,12 +59,12 @@ abstract class AbstractStatement implements StatementInterface
     /**
      * AbstractStatement constructor.
      *
-     * @param  DriverInterface  $driver
+     * @param  AbstractDriver  $driver
      * @param  string           $query
      * @param  array            $bounded
      * @param  array            $options
      */
-    public function __construct(DriverInterface $driver, string $query, array $bounded = [], array $options = [])
+    public function __construct(AbstractDriver $driver, string $query, array $bounded = [], array $options = [])
     {
         $this->driver = $driver;
         $this->query = $query;
