@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Test\Traits\Reactor;
 
 use Swoole\Event;
+use Windwalker\Utilities\Env;
 
 /**
  * The SwooleTestTrait class.
@@ -37,7 +38,7 @@ trait SwooleTestTrait
 
     public function skipIfSwooleNotInstalled(): void
     {
-        if (!$this->swooleEnabled()) {
+        if (!Env::get('SWOOLE_ENABLED')) {
             self::markTestSkipped('Swoole havn\'t installed');
         }
     }

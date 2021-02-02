@@ -13,6 +13,10 @@
         <!--<const name="WINDWALKER_TEST_DB_DSN_ORACLE" value="host=localhost;port=5432;database=windwalker_test;username=root;password=ut1234;prefix=ww_" />-->
         <!--<const name="WINDWALKER_TEST_DB_DSN_SQLSERVER" value="host=localhost;port=1521;database=windwalker_test;username=root;password=ut1234;prefix=ww_" />-->
         <!--<const name="WINDWALKER_TEST_DB_DSN_SQLITE" value="database=tmp/test.db;prefix=ww_" />-->
+
+        <env name="REDIS_ENABLED" value="1" />
+        <env name="MEMCACHED_ENABLED" value="1" />
+        <env name="SWOOLE_ENABLED" value="1" />
 	</php>
 	<testsuites>
 		<testsuite name="Unit">

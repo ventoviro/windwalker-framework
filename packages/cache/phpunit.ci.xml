@@ -7,6 +7,9 @@
 >
     <php>
         <ini name="error_reporting" value="-1"/>
+
+        <env name="REDIS_ENABLED" value="1" />
+        <env name="MEMCACHED_ENABLED" value="1" />
     </php>
 
     <testsuites>

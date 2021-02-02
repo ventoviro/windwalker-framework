@@ -13,6 +13,22 @@ namespace {
 
     use JetBrains\PhpStorm\Pure;
     use Windwalker\Utilities\Arr;
+    use Windwalker\Utilities\Env;
+
+    if (!function_exists('env')) {
+        /**
+         * Get ENV var.
+         *
+         * @param string $name
+         * @param mixed  $default
+         *
+         * @return  string|null
+         */
+        function env(string $name, $default = null): ?string
+        {
+            return Env::get($name, $default);
+        }
+    }
 
     if (!function_exists('show')) {
         /**

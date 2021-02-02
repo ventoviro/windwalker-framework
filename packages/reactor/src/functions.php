@@ -57,6 +57,6 @@ if (!function_exists('Windwalker\swoole_installed')) {
     #[Pure]
     function swoole_installed(): bool
     {
-        return function_exists('\go');
+        return extension_loaded('swoole') && function_exists('\go');
     }
 }
