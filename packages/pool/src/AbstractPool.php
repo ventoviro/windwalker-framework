@@ -134,7 +134,7 @@ abstract class AbstractPool implements PoolInterface, \Countable
             return;
         }
 
-        if (swoole_in_coroutine()) {
+        if (!$this->stack instanceof SingleStack) {
             for ($i = 0; $i < $this->getOption(self::MIN_SIZE); $i++) {
                 $this->createConnection();
             }
@@ -150,8 +150,11 @@ abstract class AbstractPool implements PoolInterface, \Countable
      */
     public function createConnection(): ConnectionInterface
     {
+        $this->totalCount++;
+
         $connection = $this->create();
         $connection->setPool($this);
+        $connection->updateLastTime();
         $connection->release(true);
 
         return $connection;
@@ -163,6 +166,16 @@ abstract class AbstractPool implements PoolInterface, \Countable
      * @return  ConnectionInterface
      */
     abstract protected function create(): ConnectionInterface;
+
+    /**
+     * @inheritDoc
+     */
+    public function dropConnection(ConnectionInterface $connection): void
+    {
+        $this->totalCount--;
+        $connection->disconnect();
+        $connection->setPool(null);
+    }
 
     /**
      * pop
@@ -269,7 +282,7 @@ abstract class AbstractPool implements PoolInterface, \Countable
             $connection = $this->stack->pop($this->getOption(self::CLOSE_TIMEOUT));
 
             try {
-                $connection->disconnect();
+                $this->dropConnection($connection);
             } catch (\Throwable $e) {
                 $this->logger->warning(
                     sprintf(
@@ -280,7 +293,6 @@ abstract class AbstractPool implements PoolInterface, \Countable
             }
 
             $length--;
-            $this->totalCount--;
         }
 
         return $closed;

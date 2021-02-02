@@ -135,7 +135,7 @@ class AsyncPromiseTest extends AbstractPromiseTestCase
 
     public function testSwooleAsync()
     {
-        $this->skipIfSwooleNotInstalled();
+        static::skipIfSwooleNotInstalled();
 
         ScheduleRunner::getInstance()->setSchedulers(
             [
@@ -234,7 +234,7 @@ class AsyncPromiseTest extends AbstractPromiseTestCase
 
     public function testEventLoopSwoole()
     {
-        $this->skipIfSwooleNotInstalled();
+        static::skipIfSwooleNotInstalled();
 
         self::useScheduler(new EventLoopScheduler(EventLoopScheduler::createSwooleTimer()));
 

@@ -49,7 +49,7 @@ class FunctionsTest extends AbstractPromiseTestCase
 
     public function testAsync()
     {
-        $this->skipIfSwooleNotInstalled();
+        static::skipIfSwooleNotInstalled();
 
         static::useScheduler(new SwooleScheduler());
 
@@ -72,7 +72,7 @@ class FunctionsTest extends AbstractPromiseTestCase
 
     public function testAwait()
     {
-        $this->skipIfSwooleNotInstalled();
+        static::skipIfSwooleNotInstalled();
 
         static::useScheduler(new SwooleScheduler());
 
@@ -119,7 +119,7 @@ class FunctionsTest extends AbstractPromiseTestCase
 
     public function testCoroutineInSwoole(): void
     {
-        $this->skipIfSwooleNotInstalled();
+        static::skipIfSwooleNotInstalled();
 
         static::useScheduler(new SwooleScheduler());
 

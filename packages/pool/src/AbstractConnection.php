@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Pool;
 
+use Windwalker\Pool\Exception\ConnectionPoolException;
+
 /**
  * The AbstractConnection class.
  */
@@ -22,16 +24,18 @@ abstract class AbstractConnection implements ConnectionInterface
 
     protected int $lastTime = 0;
 
-    protected PoolInterface $pool;
+    protected ?PoolInterface $pool;
 
     /**
      * @inheritDoc
      */
-    public function setPool(PoolInterface $pool): void
+    public function setPool(?PoolInterface $pool): void
     {
         $this->pool = $pool;
 
-        $this->id = $this->pool->getSerial();
+        if ($pool !== null) {
+            $this->id = $this->pool->getSerial();
+        }
     }
 
     /**
@@ -57,6 +61,10 @@ abstract class AbstractConnection implements ConnectionInterface
      */
     public function release(bool $force = false): void
     {
+        if ($this->pool === null) {
+            throw new ConnectionPoolException('No assigned pool of this connection.');
+        }
+
         if ($this->active || $force) {
             $this->pool->release($this);
         }

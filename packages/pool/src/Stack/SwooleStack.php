@@ -29,7 +29,7 @@ class SwooleStack implements StackInterface
      *
      * @param  int  $maxSize
      */
-    public function __construct(int $maxSize)
+    public function __construct(int $maxSize = 10)
     {
         $this->maxSize = $maxSize;
 

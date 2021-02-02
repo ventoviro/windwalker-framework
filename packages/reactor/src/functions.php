@@ -33,6 +33,25 @@ if (!function_exists('Windwalker\go')) {
     }
 }
 
+if (!function_exists('Windwalker\run')) {
+    /**
+     * go
+     *
+     * @param  callable    $handler
+     * @param  array|null  $params
+     *
+     * @return  mixed
+     */
+    function run(callable $handler, $params = null): mixed
+    {
+        if (swoole_installed()) {
+            return Coroutine\run($handler, $params);
+        }
+
+        return $handler();
+    }
+}
+
 if (!function_exists('Windwalker\swoole_in_coroutine')) {
     function swoole_in_coroutine(): bool
     {
@@ -57,6 +76,6 @@ if (!function_exists('Windwalker\swoole_installed')) {
     #[Pure]
     function swoole_installed(): bool
     {
-        return extension_loaded('swoole') && function_exists('\go');
+        return extension_loaded('swoole');
     }
 }

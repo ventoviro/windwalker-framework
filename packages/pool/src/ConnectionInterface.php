@@ -19,11 +19,11 @@ interface ConnectionInterface
     /**
      * setPool
      *
-     * @param  PoolInterface  $pool
+     * @param  ?PoolInterface  $pool
      *
      * @return  void
      */
-    public function setPool(PoolInterface $pool): void;
+    public function setPool(?PoolInterface $pool): void;
 
     /**
      * Create connection

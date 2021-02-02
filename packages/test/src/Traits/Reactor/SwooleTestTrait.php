@@ -36,7 +36,7 @@ trait SwooleTestTrait
         return extension_loaded('swoole');
     }
 
-    public function skipIfSwooleNotInstalled(): void
+    public static function skipIfSwooleNotInstalled(): void
     {
         if (!Env::get('SWOOLE_ENABLED')) {
             self::markTestSkipped('Swoole havn\'t installed');

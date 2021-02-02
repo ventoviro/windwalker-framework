@@ -36,6 +36,15 @@ interface PoolInterface
     public function getConnection(): ConnectionInterface;
 
     /**
+     * dropConnection
+     *
+     * @param  ConnectionInterface  $connection
+     *
+     * @return  void
+     */
+    public function dropConnection(ConnectionInterface $connection): void;
+
+    /**
      * Release connection to pool
      *
      * @param ConnectionInterface $connection
