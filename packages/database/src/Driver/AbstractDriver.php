@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Database\Driver;
 
 use JetBrains\PhpStorm\Pure;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 use Windwalker\Database\DatabaseAdapter;
 use Windwalker\Database\Event\QueryEndEvent;
 use Windwalker\Database\Event\QueryFailedEvent;
@@ -22,12 +23,15 @@ use Windwalker\Pool\AbstractPool;
 use Windwalker\Pool\ConnectionPool;
 use Windwalker\Pool\PoolInterface;
 use Windwalker\Query\Query;
+use Windwalker\Utilities\Options\OptionsResolverTrait;
 
 /**
  * The AbstractDriver class.
  */
 abstract class AbstractDriver implements DriverInterface
 {
+    use OptionsResolverTrait;
+
     /**
      * @var string
      */
@@ -53,21 +57,51 @@ abstract class AbstractDriver implements DriverInterface
      */
     protected ?AbstractSchemaManager $schema = null;
 
-    /**
-     * @var ?DatabaseAdapter
-     */
-    protected ?DatabaseAdapter $db = null;
-
     protected ?PoolInterface $pool = null;
 
     /**
      * AbstractPlatform constructor.
      *
-     * @param  DatabaseAdapter  $db
+     * @param  array             $options
+     * @param  AbstractPlatform  $platform
      */
-    public function __construct(DatabaseAdapter $db)
+    public function __construct(array $options, AbstractPlatform $platform)
     {
-        $this->db = $db;
+        $this->resolveOptions(
+            $options,
+            [$this, 'configureOptions']
+        );
+
+        $this->platform = $platform;
+
+        if ($this->options['driver'] === 'mysql') {
+            $this->options['driver'] = 'pdo_mysql';
+        }
+    }
+
+    protected function configureOptions(OptionsResolver $resolver): void
+    {
+        $resolver->setDefaults(
+            [
+                'driver' => null,
+                'host' => 'localhost',
+                'database' => null,
+                'username' => null,
+                'password' => null,
+                'port' => null,
+                'prefix' => null,
+                'charset' => null,
+                'driverOptions' => [],
+            ]
+        )
+            ->setRequired(
+                [
+                    'driver',
+                    'host',
+                    'username'
+                ]
+            );
+            // ->setAllowedTypes('driver', 'string');
     }
 
     /**
@@ -259,10 +293,6 @@ abstract class AbstractDriver implements DriverInterface
 
     public function getPlatform(): AbstractPlatform
     {
-        if (!$this->platform) {
-            $this->platform = AbstractPlatform::createPlatform($this->platformName, $this->db);
-        }
-
         return $this->platform;
     }
 

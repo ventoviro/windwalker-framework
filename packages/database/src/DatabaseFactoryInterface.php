@@ -25,11 +25,31 @@ interface DatabaseFactoryInterface
      * createAdapter
      *
      * @param  array                 $options
+     * @param  DriverInterface|null  $driver
      * @param  LoggerInterface|null  $logger
      *
      * @return  DatabaseAdapter
      */
-    public function create(array $options = [], ?LoggerInterface $logger = null): DatabaseAdapter;
+    public function create(
+        array $options,
+        ?DriverInterface $driver = null,
+        ?LoggerInterface $logger = null,
+    ): DatabaseAdapter;
+
+    /**
+     * createByDriverName
+     *
+     * @param  string                $driverName
+     * @param  array                 $options
+     * @param  LoggerInterface|null  $logger
+     *
+     * @return  DatabaseAdapter
+     */
+    public function createByDriverName(
+        string $driverName,
+        array $options,
+        ?LoggerInterface $logger = null,
+    ): DatabaseAdapter;
 
     /**
      * createPlatform
@@ -44,11 +64,16 @@ interface DatabaseFactoryInterface
     /**
      * createDriver
      *
-     * @param  string              $driverName
-     * @param  DatabaseAdapter     $db
-     * @param  PoolInterface|null  $pool
+     * @param  string                 $driverName
+     * @param  DatabaseAdapter        $db
+     * @param  AbstractPlatform|null  $platform
+     * @param  PoolInterface|null     $pool
      *
      * @return  DriverInterface
      */
-    public function createDriver(string $driverName, DatabaseAdapter $db, ?PoolInterface $pool = null): DriverInterface;
+    public function createDriver(string $driverName,
+        DatabaseAdapter $db,
+        AbstractPlatform $platform = null,
+        ?PoolInterface $pool = null
+    ): DriverInterface;
 }

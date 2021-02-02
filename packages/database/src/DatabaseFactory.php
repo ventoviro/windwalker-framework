@@ -39,39 +39,43 @@ class DatabaseFactory implements DatabaseFactoryInterface
      */
     protected array $drivers = [];
 
-    public static function getDriverShortName(string $platform): string
-    {
-        return strtolower(
-            match (strtolower($platform)) {
-                'postgresql' => 'pgsql',
-                'sqlserver' => 'sqlsrv',
-            }
-        );
-    }
-
-    public static function getPlatformName(string $platform): string
-    {
-        return match (strtolower($platform)) {
-            'pgsql', 'postgresql' => 'PostgreSQL',
-            'sqlsrv', 'sqlserver' => 'SQLServer',
-            'mysql' => 'MySQL',
-            'sqlite' => 'SQLite', default => ucfirst($platform),
-        };
+    /**
+     * @inheritDoc
+     */
+    public function create(
+        array $options,
+        ?DriverInterface $driver = null,
+        ?LoggerInterface $logger = null,
+    ): DatabaseAdapter {
+        return new DatabaseAdapter($options, $driver, $logger);
     }
 
     /**
      * @inheritDoc
      */
-    public function create(array $options = [], ?LoggerInterface $logger = null): DatabaseAdapter
-    {
-        return new DatabaseAdapter($options, $logger);
+    public function createByDriverName(
+        string $driverName,
+        array $options,
+        ?LoggerInterface $logger = null,
+    ): DatabaseAdapter {
+        if (str_contains($driverName, '_')) {
+            [$driverName, $platform] = explode('_', $driverName, 2);
+
+            $this->createDriver($driverName)
+        } else {
+            $platform = static::getPlatformName($driverName);
+        }
     }
 
     /**
      * @inheritDoc
      */
-    public function createDriver(string $driverName, DatabaseAdapter $db, ?PoolInterface $pool = null): DriverInterface
-    {
+    public function createDriver(
+        string $driverName,
+        DatabaseAdapter $db,
+        AbstractPlatform $platform = null,
+        ?PoolInterface $pool = null
+    ): DriverInterface {
         $names = explode('_', $driverName);
 
         $platformName = ucfirst(static::getDriverShortName($names[0]));
@@ -120,5 +124,26 @@ class DatabaseFactory implements DatabaseFactoryInterface
         $names = explode('_', $name, 2);
 
         return $names[1] ?? $names[0];
+    }
+
+    public static function getDriverShortName(string $platform): string
+    {
+        return strtolower(
+            match (strtolower($platform)) {
+                'postgresql' => 'pgsql',
+                'sqlserver' => 'sqlsrv',
+            }
+        );
+    }
+
+    public static function getPlatformName(string $platform): string
+    {
+        return match (strtolower($platform)) {
+            'pgsql', 'postgresql' => 'PostgreSQL',
+            'sqlsrv', 'sqlserver' => 'SQLServer',
+            'mysql' => 'MySQL',
+            'sqlite' => 'SQLite',
+            default => ucfirst($platform),
+        };
     }
 }

@@ -11,10 +11,13 @@ declare(strict_types=1);
 
 namespace Windwalker\Database;
 
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Windwalker\Database\Driver\AbstractDriver;
 use Windwalker\Database\Driver\ConnectionInterface;
 use Windwalker\Database\Driver\DriverFactory;
+use Windwalker\Database\Driver\DriverInterface;
 use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\Database\Manager\TableManager;
 use Windwalker\Database\Manager\WriterManager;
@@ -37,54 +40,36 @@ use Windwalker\Utilities\Options\OptionsResolverTrait;
  */
 class DatabaseAdapter implements EventListenableInterface
 {
-    use OptionsResolverTrait;
+    use DatabaseOptionsTrait;
     use EventAwareTrait;
     use InstanceCacheTrait;
 
     protected ?AbstractDriver $driver = null;
 
-    protected \Stringable|string|null $query = null;
+    /**
+     * @var Query|string|\Stringable|null
+     */
+    protected mixed $query = null;
+
+    /**
+     * @var LoggerInterface|null
+     */
+    protected ?LoggerInterface $logger;
 
     /**
      * DatabaseAdapter constructor.
      *
-     * @param  array  $options
+     * @param  DriverInterface|null  $driver
+     * @param  LoggerInterface|null  $logger
      */
-    public function __construct(array $options = [])
-    {
-        $this->resolveOptions(
-            $options,
-            [$this, 'configureOptions']
-        );
+    public function __construct(
+        ?DriverInterface $driver = null,
+        ?LoggerInterface $logger = null,
+    ) {
 
-        if ($this->options['driver'] === 'mysql') {
-            $this->options['driver'] = 'pdo_mysql';
-        }
-    }
+        $this->driver = $driver;
 
-    protected function configureOptions(OptionsResolver $resolver): void
-    {
-        $resolver->setDefaults(
-            [
-                'driver' => null,
-                'host' => 'localhost',
-                'database' => null,
-                'username' => null,
-                'password' => null,
-                'port' => null,
-                'prefix' => null,
-                'charset' => null,
-                'driverOptions' => [],
-            ]
-        )
-            ->setRequired(
-                [
-                    'driver',
-                    'host',
-                    'username'
-                ]
-            )
-            ->setAllowedTypes('driver', 'string');
+        $this->logger = $logger ?? new NullLogger();
     }
 
     /**
@@ -202,11 +187,11 @@ class DatabaseAdapter implements EventListenableInterface
     }
 
     /**
-     * @return AbstractDriver
+     * @return DriverInterface
      */
-    public function getDriver(): AbstractDriver
+    public function getDriver(): DriverInterface
     {
-        return $this->driver ??= DriverFactory::create($this->getOption('driver'), $this);
+        return $this->driver;
     }
 
     /**
