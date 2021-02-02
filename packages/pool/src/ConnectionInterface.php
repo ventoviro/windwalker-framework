@@ -47,6 +47,13 @@ interface ConnectionInterface
     public function disconnect(): mixed;
 
     /**
+     * isConnected
+     *
+     * @return  bool
+     */
+    public function isConnected(): bool;
+
+    /**
      * Get connection id
      *
      * @return int
@@ -78,4 +85,11 @@ interface ConnectionInterface
      * @param bool $active
      */
     public function setActive(bool $active): void;
+
+    /**
+     * Is connection active.
+     *
+     * @return  bool
+     */
+    public function isActive(): bool;
 }

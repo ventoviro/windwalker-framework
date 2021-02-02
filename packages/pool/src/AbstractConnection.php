@@ -85,4 +85,14 @@ abstract class AbstractConnection implements ConnectionInterface
     {
         $this->active = $active;
     }
+
+    /**
+     * Is connection active.
+     *
+     * @return  bool
+     */
+    public function isActive(): bool
+    {
+        return $this->active;
+    }
 }

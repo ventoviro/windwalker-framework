@@ -19,13 +19,6 @@ use Windwalker\Pool\ConnectionInterface as PoolConnectionInterface;
 interface ConnectionInterface extends PoolConnectionInterface
 {
     /**
-     * isConnected
-     *
-     * @return  bool
-     */
-    public function isConnected(): bool;
-
-    /**
      * Get exists connection.
      *
      * @return mixed
