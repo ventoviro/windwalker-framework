@@ -15,10 +15,10 @@ use Asika\SqlSplitter\SqlSplitter;
 use PDOException;
 use RuntimeException;
 use Windwalker\Database\DatabaseAdapter;
+use Windwalker\Database\DatabaseFactory;
 use Windwalker\Database\Driver\DriverFactory;
 use Windwalker\Database\Driver\Pdo\DsnHelper;
 use Windwalker\Database\Event\QueryEndEvent;
-use Windwalker\Database\Platform\AbstractPlatform;
 
 /**
  * Trait DatabaseTestTrait
@@ -34,7 +34,7 @@ trait DatabaseTestTrait
     protected static function createDatabase(string $driver, ?array $params = null): DatabaseAdapter
     {
         $platform = DriverFactory::getPlatformName($driver);
-        $platform = AbstractPlatform::getPlatformName($platform);
+        $platform = DatabaseFactory::getPlatformName($platform);
 
         $params = $params ?? self::getTestParams($platform);
 

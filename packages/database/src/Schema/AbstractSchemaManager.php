@@ -12,9 +12,8 @@ declare(strict_types=1);
 namespace Windwalker\Database\Schema;
 
 use Windwalker\Database\DatabaseAdapter;
-use Windwalker\Database\Driver\StatementInterface;
+use Windwalker\Database\DatabaseFactory;
 use Windwalker\Database\Platform\AbstractPlatform;
-use Windwalker\Database\Schema\Ddl\Column;
 use Windwalker\Query\Grammar\AbstractGrammar;
 
 /**
@@ -41,7 +40,7 @@ abstract class AbstractSchemaManager
 
     public static function create(string $platform, DatabaseAdapter $db)
     {
-        $class = __NAMESPACE__ . '\\' . AbstractPlatform::getPlatformName($platform) . 'SchemaManager';
+        $class = __NAMESPACE__ . '\\' . DatabaseFactory::getPlatformName($platform) . 'SchemaManager';
 
         return new $class($db);
     }

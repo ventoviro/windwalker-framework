@@ -301,7 +301,7 @@ abstract class AbstractDriverTest extends AbstractDatabaseDriverTestCase
 
         self::assertEquals(
             get_class(
-                AbstractPlatform::create(
+                AbstractPlatform::createPlatform(
                     static::$driver->getPlatformName(),
                     static::$driver->getDb()
                 )

@@ -11,11 +11,11 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Driver\Pdo;
 
+use Windwalker\Database\DatabaseFactory;
 use Windwalker\Database\Driver\AbstractDriver;
 use Windwalker\Database\Driver\ConnectionInterface;
 use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\Database\Driver\TransactionDriverInterface;
-use Windwalker\Database\Platform\AbstractPlatform;
 use Windwalker\Query\Escaper;
 
 /**
@@ -42,7 +42,7 @@ class PdoDriver extends AbstractDriver implements TransactionDriverInterface
     {
         return sprintf(
             __NAMESPACE__ . '\Pdo%sConnection',
-            ucfirst(AbstractPlatform::getShortName($this->platformName))
+            ucfirst(DatabaseFactory::getDriverShortName($this->platformName))
         );
     }
 

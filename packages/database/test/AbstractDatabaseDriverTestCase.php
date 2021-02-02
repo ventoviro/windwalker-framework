@@ -13,9 +13,9 @@ namespace Windwalker\Database\Test;
 
 use Asika\SqlSplitter\SqlSplitter;
 use PHPUnit\Framework\TestCase;
+use Windwalker\Database\DatabaseFactory;
 use Windwalker\Database\Driver\Pdo\AbstractPdoConnection;
 use Windwalker\Database\Driver\Pdo\DsnHelper;
-use Windwalker\Database\Platform\AbstractPlatform;
 use Windwalker\Database\Test\Reseter\AbstractReseter;
 use Windwalker\Query\Escaper;
 use Windwalker\Query\Grammar\AbstractGrammar;
@@ -53,7 +53,7 @@ abstract class AbstractDatabaseDriverTestCase extends TestCase
 
         $platform = static::$platform;
 
-        $platform = AbstractPlatform::getShortName($platform);
+        $platform = DatabaseFactory::getDriverShortName($platform);
 
         /** @var AbstractPdoConnection|string $connClass */
         $connClass = 'Windwalker\Database\Driver\Pdo\Pdo' . ucfirst($platform) . 'Connection';

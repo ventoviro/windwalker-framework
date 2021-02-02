@@ -20,6 +20,7 @@
         "windwalker/event": "4.x-dev",
         "windwalker/data": "4.x-dev",
         "windwalker/cache": "4.x-dev",
+        "windwalker/pool": "4.x-dev",
         "windwalker/utilities": "4.x-dev"
     },
     "require-dev": {

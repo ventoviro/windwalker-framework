@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Test\Reseter;
 
-use Windwalker\Database\Platform\AbstractPlatform;
+use Windwalker\Database\DatabaseFactory;
 use Windwalker\Query\Grammar\AbstractGrammar;
 use Windwalker\Query\Query;
 
@@ -31,7 +31,7 @@ abstract class AbstractReseter
      */
     public static function create(string $platform): static
     {
-        $class = __NAMESPACE__ . '\\' . AbstractPlatform::getPlatformName($platform) . 'Reseter';
+        $class = __NAMESPACE__ . '\\' . DatabaseFactory::getPlatformName($platform) . 'Reseter';
 
         return new $class();
     }

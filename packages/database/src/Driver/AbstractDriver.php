@@ -260,7 +260,7 @@ abstract class AbstractDriver implements DriverInterface
     public function getPlatform(): AbstractPlatform
     {
         if (!$this->platform) {
-            $this->platform = AbstractPlatform::create($this->platformName, $this->db);
+            $this->platform = AbstractPlatform::createPlatform($this->platformName, $this->db);
         }
 
         return $this->platform;

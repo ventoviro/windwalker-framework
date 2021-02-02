@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Database\Platform;
 
 use Windwalker\Database\DatabaseAdapter;
+use Windwalker\Database\DatabaseFactory;
 use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\Database\Driver\TransactionDriverInterface;
 use Windwalker\Database\Platform\Type\DataType;
@@ -58,49 +59,6 @@ abstract class AbstractPlatform
 
     protected ?DataType $dataType = null;
 
-    public static function getPlatformName(string $platform): string
-    {
-        switch (strtolower($platform)) {
-            case 'pgsql':
-            case 'postgresql':
-                $platform = 'PostgreSQL';
-                break;
-
-            case 'sqlsrv':
-            case 'sqlserver':
-                $platform = 'SQLServer';
-                break;
-
-            case 'mysql':
-                $platform = 'MySQL';
-                break;
-
-            case 'sqlite':
-                $platform = 'SQLite';
-                break;
-
-            default:
-                $platform = ucfirst($platform);
-        }
-
-        return $platform;
-    }
-
-    public static function getShortName(string $platform): string
-    {
-        switch (strtolower($platform)) {
-            case 'postgresql':
-                $platform = 'pgsql';
-                break;
-
-            case 'sqlserver':
-                $platform = 'sqlsrv';
-                break;
-        }
-
-        return strtolower($platform);
-    }
-
     /**
      * @return string
      */
@@ -109,9 +67,9 @@ abstract class AbstractPlatform
         return $this->name;
     }
 
-    public static function create(string $platform, DatabaseAdapter $db)
+    public static function createPlatform(string $platform, DatabaseAdapter $db)
     {
-        $class = __NAMESPACE__ . '\\' . static::getPlatformName($platform) . 'Platform';
+        $class = __NAMESPACE__ . '\\' . DatabaseFactory::getPlatformName($platform) . 'Platform';
 
         return new $class($db);
     }
