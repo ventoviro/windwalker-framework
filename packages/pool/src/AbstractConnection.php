@@ -27,6 +27,13 @@ abstract class AbstractConnection implements ConnectionInterface
     protected ?PoolInterface $pool;
 
     /**
+     * Set this to TRUE, if a connection not released back to pool but destructed, will throw an exception.
+     *
+     * @var bool
+     */
+    public bool $leakProtect = true;
+
+    /**
      * @inheritDoc
      */
     public function setPool(?PoolInterface $pool): void
@@ -102,5 +109,18 @@ abstract class AbstractConnection implements ConnectionInterface
     public function isActive(): bool
     {
         return $this->active;
+    }
+
+    public function __destruct()
+    {
+        if ($this->active && $this->pool && $this->leakProtect) {
+            throw new ConnectionPoolException(
+                sprintf(
+                    'Connection ID: %s in pool: %s was not released but destruct.',
+                    $this->getId(),
+                    $this->pool::class
+                )
+            );
+        }
     }
 }

@@ -27,7 +27,7 @@ abstract class AbstractPlatformTest extends AbstractDatabaseTestCase
 
     protected function setUp(): void
     {
-        $this->instance = static::$db->getDriver()->getPlatform();
+        $this->instance = static::$db->getPlatform();
     }
 
     /**
@@ -115,7 +115,7 @@ abstract class AbstractPlatformTest extends AbstractDatabaseTestCase
     public function testGetCurrentDatabase(): void
     {
         self::assertEquals(
-            self::$db->getOption('database'),
+            self::$db->getDriver()->getOption('database'),
             $this->instance->getCurrentDatabase()
         );
     }

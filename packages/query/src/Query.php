@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Query;
 
 use Windwalker\Data\Collection;
+use Windwalker\Database\DatabaseAdapter;
 use Windwalker\Database\Driver\AbstractDriver;
 use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\Query\Bounded\BindableInterface;
@@ -1849,12 +1850,13 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
         if (in_array(strtolower($name), $methods)) {
             $db = $this->getEscaper()->getConnection();
 
-            if (!$db instanceof AbstractDriver) {
+            if (!($db instanceof AbstractDriver || $db instanceof DatabaseAdapter)) {
                 throw new \BadMethodCallException(
                     sprintf(
-                        'Calling method: %s() only support when escaper is %s class.',
+                        'Calling method: %s() only support when escaper is %s or %s class.',
                         $name,
-                        AbstractDriver::class
+                        AbstractDriver::class,
+                        DatabaseAdapter::class
                     )
                 );
             }
@@ -1876,11 +1878,12 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
     {
         $db = $this->getEscaper()->getConnection();
 
-        if (!$db instanceof AbstractDriver) {
+        if (!($db instanceof AbstractDriver || $db instanceof DatabaseAdapter)) {
             throw new \BadMethodCallException(
                 sprintf(
-                    'Instant iterate only supports when escaper is %s class.',
-                    AbstractDriver::class
+                    'Instant iterate only support when escaper is %s or %s class.',
+                    AbstractDriver::class,
+                    DatabaseAdapter::class
                 )
             );
         }

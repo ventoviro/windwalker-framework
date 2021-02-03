@@ -14,7 +14,7 @@ namespace Windwalker\Pool;
 /**
  * Interface PoolInterface
  */
-interface PoolInterface
+interface PoolInterface extends \Countable
 {
     /**
      * Initialize pool

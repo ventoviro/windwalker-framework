@@ -26,9 +26,11 @@ class QueuePdoTest extends QueueDatabaseTest
 {
     protected function setUp(): void
     {
-        $this->instance = new Queue(
-            new PdoQueueDriver(static::$db->getDriver()->getConnection()->get())
-        );
+        $conn = static::$db->getDriver()->getConnection();
+
+        $this->instance = new Queue(new PdoQueueDriver($conn->get()));
+
+        $conn->release();
     }
 
     protected function tearDown(): void

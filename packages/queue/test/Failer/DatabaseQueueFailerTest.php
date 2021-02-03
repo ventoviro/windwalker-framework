@@ -13,6 +13,7 @@ namespace Windwalker\Queue\Test\Failer;
 
 use PHPUnit\Framework\TestCase;
 use Windwalker\Queue\Failer\DatabaseQueueFailer;
+use Windwalker\Queue\Failer\QueueFailerInterface;
 use Windwalker\Test\Traits\DatabaseTestTrait;
 
 /**
@@ -23,9 +24,9 @@ class DatabaseQueueFailerTest extends TestCase
     use DatabaseTestTrait;
 
     /**
-     * @var DatabaseQueueFailer
+     * @var QueueFailerInterface|null
      */
-    protected $instance;
+    protected ?QueueFailerInterface $instance = null;
 
     /**
      * @see  DatabaseQueueFailer::add

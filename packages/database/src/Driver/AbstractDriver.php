@@ -149,9 +149,11 @@ abstract class AbstractDriver
     {
         $conn = $this->getConnection();
 
-        $result = $callback($conn);
-
-        $conn->release();
+        try {
+            $result = $callback($conn);
+        } finally {
+            $conn->release();
+        }
 
         return $result;
     }
@@ -270,7 +272,7 @@ abstract class AbstractDriver
             }
         }
 
-        $sql = str_replace($prefix, $this->db->getOption('prefix'), $sql);
+        $sql = str_replace($prefix, $this->getOption('prefix'), $sql);
 
         foreach ($array as $key => $js) {
             $sql = str_replace('<#encode:' . $key . ':code#>', $js, $sql);
@@ -289,7 +291,7 @@ abstract class AbstractDriver
 
     public function getPlatform(): AbstractPlatform
     {
-        return $this->platform ??= $this->factory->createPlatform($this->getPlatformName());
+        return $this->platform;
     }
 
     /**
@@ -380,7 +382,7 @@ abstract class AbstractDriver
      */
     public function getPool(): PoolInterface
     {
-        return $this->pool ??= $this->preparePool();
+        return $this->pool ??= $this->preparePool(null);
     }
 
     /**

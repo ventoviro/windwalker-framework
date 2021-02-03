@@ -87,14 +87,16 @@ class ConnectionPoolTest extends TestCase
      */
     public function testTotalCount(): void
     {
-        $this->instance->getConnection();
+        $conn0 = $this->instance->getConnection();
 
         self::assertEquals(3, $this->instance->totalCount());
 
-        $conn = $this->instance->getConnection();
-        $this->instance->dropConnection($conn);
+        $conn1 = $this->instance->getConnection();
+        $this->instance->dropConnection($conn1);
 
         self::assertEquals(2, $this->instance->totalCount());
+
+        $conn0->release();
     }
 
     /**

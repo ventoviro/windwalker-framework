@@ -54,11 +54,6 @@ class Escaper
         return static::tryQuote($this->getConnection(), $value);
     }
 
-    public function quoteMultiple($value): array|string
-    {
-        return $this->getDriver()->quote((string) $value);
-    }
-
     /**
      * escape
      *
@@ -78,6 +73,10 @@ class Escaper
         }
 
         if ($escaper instanceof AbstractDriver) {
+            return $escaper->escape((string) $value);
+        }
+
+        if ($escaper instanceof DatabaseAdapter) {
             return $escaper->escape((string) $value);
         }
 

@@ -25,7 +25,7 @@ use function Windwalker\swoole_in_coroutine;
 /**
  * The AbstractPool class.
  */
-abstract class AbstractPool implements PoolInterface, \Countable
+abstract class AbstractPool implements PoolInterface
 {
     use OptionsResolverTrait;
 

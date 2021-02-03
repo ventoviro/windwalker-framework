@@ -54,7 +54,7 @@ class DatabaseAdapter implements EventListenableInterface
     /**
      * DatabaseAdapter constructor.
      *
-     * @param  AbstractDriver       $driver
+     * @param  AbstractDriver        $driver
      * @param  LoggerInterface|null  $logger
      */
     public function __construct(
@@ -63,18 +63,6 @@ class DatabaseAdapter implements EventListenableInterface
     ) {
         $this->driver = $driver;
         $this->logger = $logger ?? new NullLogger();
-    }
-
-    /**
-     * connect
-     *
-     * @return  ConnectionInterface
-     *
-     * @deprecated No-longer need since has conn-pool
-     */
-    public function connect(): ConnectionInterface
-    {
-        return $this->getDriver()->getConnection();
     }
 
     /**
@@ -118,7 +106,7 @@ class DatabaseAdapter implements EventListenableInterface
     public function getQuery(bool $new = false): Query|\Stringable|string|null
     {
         if ($new) {
-            return $this->getPlatform()->createQuery();
+            return $this->getPlatform()->createQuery($this);
         }
 
         return $this->query;
@@ -129,9 +117,23 @@ class DatabaseAdapter implements EventListenableInterface
         return $this->getQuery(true);
     }
 
-    public function getCachedQuery(bool $new = false): Query
+    /**
+     * To support escape() and quote() methods, we must cache a Query object and reuse it.
+     *
+     * This Query must set Driver as escaper to prevent infinity-loop.
+     *
+     * @param  bool  $new
+     *
+     * @return  Query
+     */
+    protected function getEscaperQuery(bool $new = false): Query
     {
-        return $this->once('cached.query', fn() => $this->getQuery(true), $new);
+        return $this->once(
+            'cached.query',
+            fn() => $this->getPlatform()
+                ->createQuery($this->getDriver()),
+            $new
+        );
     }
 
     /**
@@ -148,7 +150,12 @@ class DatabaseAdapter implements EventListenableInterface
 
     public function quote(mixed $value): array|string
     {
-        return $this->getCachedQuery()->quote($value);
+        return $this->getEscaperQuery()->quote($value);
+    }
+
+    public function escape(mixed $value): array|string
+    {
+        return $this->getEscaperQuery()->escape($value);
     }
 
     /**

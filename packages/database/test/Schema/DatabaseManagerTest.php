@@ -33,7 +33,7 @@ class DatabaseManagerTest extends AbstractDatabaseTestCase
      */
     public function testCreate(): void
     {
-        $dbname = static::$db->getOption('database');
+        $dbname = static::$db->getDriver()->getOption('database');
 
         $newDbname = $dbname . '_new';
 
@@ -51,7 +51,7 @@ class DatabaseManagerTest extends AbstractDatabaseTestCase
      */
     public function testDrop(): void
     {
-        $dbname = static::$db->getOption('database');
+        $dbname = static::$db->getDriver()->getOption('database');
 
         $newDbname = $dbname . '_new';
 

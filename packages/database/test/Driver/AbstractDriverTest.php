@@ -287,27 +287,7 @@ abstract class AbstractDriverTest extends AbstractDatabaseDriverTestCase
     {
         static::$driver->disconnectAll();
 
-        self::assertFalse(static::$driver->getConnectionFromPool()->isConnected());
-
-        self::assertNull(static::$driver->getConnectionFromPool()->get());
-    }
-
-    /**
-     * @see  AbstractDriver::getPlatform
-     */
-    public function testGetPlatform(): void
-    {
-        $platform = static::$driver->getPlatform();
-
-        self::assertEquals(
-            get_class(
-                AbstractPlatform::createPlatform(
-                    static::$driver->getPlatformName(),
-                    static::$driver->getDb()
-                )
-            ),
-            $platform::class
-        );
+        self::assertCount(0, static::$driver->getPool());
     }
 
     /**

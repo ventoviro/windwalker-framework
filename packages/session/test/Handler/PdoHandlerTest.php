@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Session\Test\Handler;
 
+use Windwalker\Database\Driver\ConnectionInterface;
 use Windwalker\Session\Handler\ArrayHandler;
 use Windwalker\Session\Handler\HandlerInterface;
 use Windwalker\Session\Handler\PdoHandler;
@@ -54,7 +55,11 @@ class PdoHandlerTest extends AbstractHandlerTest
 
     protected function createInstance(): HandlerInterface
     {
-        $this->instance = new PdoHandler(static::$db->connect()->get());
+        static::$db->getDriver()->useConnection(
+            function (ConnectionInterface $conn) {
+                $this->instance = new PdoHandler($conn->get());
+            }
+        );
 
         self::$db->getTable('windwalker_sessions')->truncate();
 

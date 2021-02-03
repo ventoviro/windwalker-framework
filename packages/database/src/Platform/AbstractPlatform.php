@@ -98,9 +98,9 @@ abstract class AbstractPlatform
         return $this->grammar;
     }
 
-    public function createQuery(?AbstractDriver $driver = null): Query
+    public function createQuery(mixed $escaper = null): Query
     {
-        return new Query($driver ?? $this->db->getDriver(), $this->grammar);
+        return new Query($escaper ?? $this->db, $this->grammar);
     }
 
     abstract public function listDatabasesQuery(): Query;
@@ -560,9 +560,7 @@ abstract class AbstractPlatform
     public function transaction(callable $callback, bool $autoCommit = true, bool $enabled = true): mixed
     {
         if (!$enabled) {
-            $callback($this->db, $this);
-
-            return $this;
+            return $callback($this->db, $this);
         }
 
         $this->transactionStart();
