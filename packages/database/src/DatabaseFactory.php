@@ -33,16 +33,6 @@ use Windwalker\Query\Grammar\AbstractGrammar;
 class DatabaseFactory implements DatabaseFactoryInterface
 {
     /**
-     * @var array
-     */
-    protected array $platforms = [];
-
-    /**
-     * @var array
-     */
-    protected array $drivers = [];
-
-    /**
      * @inheritDoc
      */
     public function create(
