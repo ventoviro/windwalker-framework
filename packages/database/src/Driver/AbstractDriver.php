@@ -13,15 +13,12 @@ namespace Windwalker\Database\Driver;
 
 use JetBrains\PhpStorm\Pure;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Windwalker\Database\DatabaseAdapter;
 use Windwalker\Database\DatabaseFactory;
-use Windwalker\Database\DatabaseFactoryInterface;
 use Windwalker\Database\Event\QueryEndEvent;
 use Windwalker\Database\Event\QueryFailedEvent;
 use Windwalker\Database\Exception\DatabaseQueryException;
 use Windwalker\Database\Platform\AbstractPlatform;
 use Windwalker\Database\Schema\AbstractSchemaManager;
-use Windwalker\Pool\AbstractPool;
 use Windwalker\Pool\ConnectionPool;
 use Windwalker\Pool\PoolInterface;
 use Windwalker\Query\Query;
@@ -50,11 +47,6 @@ abstract class AbstractDriver
     protected mixed $lastQuery;
 
     /**
-     * @var ?AbstractPlatform
-     */
-    protected ?AbstractPlatform $platform = null;
-
-    /**
      * @var ?AbstractSchemaManager
      */
     protected ?AbstractSchemaManager $schema = null;
@@ -65,23 +57,14 @@ abstract class AbstractDriver
      * AbstractPlatform constructor.
      *
      * @param  array               $options
-     * @param  AbstractPlatform    $platform
      * @param  PoolInterface|null  $pool
      */
-    public function __construct(array $options, AbstractPlatform $platform, ?PoolInterface $pool = null)
+    public function __construct(array $options, ?PoolInterface $pool = null)
     {
         $this->resolveOptions(
             $options,
             [$this, 'configureOptions']
         );
-
-        if ($this->options['driver'] === 'mysql') {
-            $this->options['driver'] = 'pdo_mysql';
-        }
-
-        $this->platform = $platform;
-
-        $this->setPlatformName($platform->getName());
 
         $this->setPool($pool);
     }
@@ -98,6 +81,7 @@ abstract class AbstractDriver
                 'port' => null,
                 'prefix' => null,
                 'charset' => null,
+                'platform' => null,
                 'driverOptions' => [],
             ]
         )
@@ -105,10 +89,10 @@ abstract class AbstractDriver
                 [
                     'driver',
                     'host',
-                    'username'
+                    'username',
                 ]
             );
-            // ->setAllowedTypes('driver', 'string');
+        // ->setAllowedTypes('driver', 'string');
     }
 
     protected function handleQuery($query, ?array &$bounded = [], $emulated = false): string
@@ -250,7 +234,7 @@ abstract class AbstractDriver
      *
      * @see     https://stackoverflow.com/a/31745275
      *
-     * @param  string  $sql  The SQL statement to prepare.
+     * @param  string  $sql     The SQL statement to prepare.
      * @param  string  $prefix  The common table prefix.
      *
      * @return  string  The processed SQL statement.
@@ -287,11 +271,6 @@ abstract class AbstractDriver
     public function getPlatformName(): string
     {
         return $this->platformName;
-    }
-
-    public function getPlatform(): AbstractPlatform
-    {
-        return $this->platform;
     }
 
     /**

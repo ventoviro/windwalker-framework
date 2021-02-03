@@ -52,17 +52,27 @@ class DatabaseAdapter implements EventListenableInterface
     protected ?LoggerInterface $logger;
 
     /**
+     * @var AbstractPlatform
+     */
+    protected AbstractPlatform $platform;
+
+    /**
      * DatabaseAdapter constructor.
      *
      * @param  AbstractDriver        $driver
+     * @param  AbstractPlatform      $platform
      * @param  LoggerInterface|null  $logger
      */
     public function __construct(
         AbstractDriver $driver,
+        AbstractPlatform $platform,
         ?LoggerInterface $logger = null,
     ) {
         $this->driver = $driver;
         $this->logger = $logger ?? new NullLogger();
+        $this->platform = $platform;
+
+        $this->platform->setDbAdapter($this);
     }
 
     /**
@@ -204,10 +214,7 @@ class DatabaseAdapter implements EventListenableInterface
      */
     public function getPlatform(): AbstractPlatform
     {
-        $platform = $this->getDriver()->getPlatform();
-        $platform->setDbAdapter($this);
-
-        return $platform;
+        return $this->platform;
     }
 
     public function getDatabase(string $name = null, $new = false): DatabaseManager

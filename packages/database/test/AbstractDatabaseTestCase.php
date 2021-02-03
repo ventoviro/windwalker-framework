@@ -48,7 +48,7 @@ abstract class AbstractDatabaseTestCase extends AbstractDatabaseDriverTestCase
         $params['driver'] = static::$driver;
         static::$lastQueries = [];
 
-        $db = (new DatabaseFactory())->createByDriverName(
+        $db = (new DatabaseFactory())->create(
             static::$driver,
             $params
         );

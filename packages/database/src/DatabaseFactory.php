@@ -36,34 +36,20 @@ class DatabaseFactory implements DatabaseFactoryInterface
      * @inheritDoc
      */
     public function create(
-        ?AbstractDriver $driver = null,
-        ?LoggerInterface $logger = null,
-    ): DatabaseAdapter {
-        return new DatabaseAdapter($driver, $logger);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function createByDriverName(
         string $driverName,
         array $options,
         ?PoolInterface $pool = null,
         ?LoggerInterface $logger = null,
     ): DatabaseAdapter {
-        if (str_contains($driverName, '_')) {
-            [$driverName, $platformName] = explode('_', $driverName, 2);
-        } else {
-            $platformName = static::getPlatformName($driverName);
-        }
+        [, $platformShortName] = static::extractDriverName($driverName);
 
-        return $this->create(
+        return new DatabaseAdapter(
             $this->createDriver(
                 $driverName,
                 $options,
-                $this->createPlatform($platformName),
                 $pool ?? $this->createConnectionPool($options['pool'] ?? [])
             ),
+            $this->createPlatform($platformShortName),
             $logger
         );
     }
@@ -74,7 +60,6 @@ class DatabaseFactory implements DatabaseFactoryInterface
     public function createDriver(
         string $driverName,
         array $options,
-        AbstractPlatform $platform = null,
         ?PoolInterface $pool = null
     ): AbstractDriver {
         [$driverName, $platformName] = static::extractDriverName($driverName);
@@ -93,17 +78,12 @@ class DatabaseFactory implements DatabaseFactoryInterface
             )
         };
 
-        $driver = new $driverClass(
+        $options['platform'] = $platformName;
+
+        return new $driverClass(
             $options,
-            $platform ?? $this->createPlatform(static::getPlatformName($platformName)),
             $pool
         );
-
-        if (($driver instanceof PdoDriver) && isset($names[1])) {
-            $driver->setPlatformName($names[1]);
-        }
-
-        return $driver;
     }
 
     /**

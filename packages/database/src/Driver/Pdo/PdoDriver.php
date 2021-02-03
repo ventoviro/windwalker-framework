@@ -40,9 +40,11 @@ class PdoDriver extends AbstractDriver implements TransactionDriverInterface
 
     protected function getConnectionClass(): string
     {
+        $platformName = $this->options['platform'] ?? $this->options['driver'];
+
         return sprintf(
             __NAMESPACE__ . '\Pdo%sConnection',
-            ucfirst(DatabaseFactory::getDriverShortName($this->platformName))
+            ucfirst(DatabaseFactory::getDriverShortName($platformName))
         );
     }
 

@@ -337,4 +337,9 @@ abstract class AbstractPool implements PoolInterface
     {
         return $this->totalCount;
     }
+
+    public function __destruct()
+    {
+        $this->close();
+    }
 }

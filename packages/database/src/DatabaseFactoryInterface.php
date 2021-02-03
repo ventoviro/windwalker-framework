@@ -25,19 +25,6 @@ use Windwalker\Query\Grammar\AbstractGrammar;
 interface DatabaseFactoryInterface
 {
     /**
-     * createAdapter
-     *
-     * @param  AbstractDriver|null   $driver
-     * @param  LoggerInterface|null  $logger
-     *
-     * @return  DatabaseAdapter
-     */
-    public function create(
-        ?AbstractDriver $driver = null,
-        ?LoggerInterface $logger = null,
-    ): DatabaseAdapter;
-
-    /**
      * createByDriverName
      *
      * @param  string                $driverName
@@ -47,7 +34,7 @@ interface DatabaseFactoryInterface
      *
      * @return  DatabaseAdapter
      */
-    public function createByDriverName(
+    public function create(
         string $driverName,
         array $options,
         ?PoolInterface $pool = null,
@@ -67,18 +54,16 @@ interface DatabaseFactoryInterface
     /**
      * createDriver
      *
-     * @param  string                 $driverName
-     * @param  array                  $options
-     * @param  AbstractPlatform|null  $platform
-     * @param  PoolInterface|null     $pool
+     * @param  string              $driverName
+     * @param  array               $options
+     * @param  PoolInterface|null  $pool
      *
      * @return  AbstractDriver
      */
     public function createDriver(
         string $driverName,
-            array $options,
-            AbstractPlatform $platform = null,
-            ?PoolInterface $pool = null
+        array $options,
+        ?PoolInterface $pool = null
     ): AbstractDriver;
 
     /**

@@ -84,8 +84,8 @@ abstract class AbstractDriverTest extends AbstractDatabaseDriverTestCase
     public function testPrepareWithQuery(): void
     {
         $id    = 1;
-        $query = static::$driver->getPlatform()
-            ->createQuery(static::$driver)
+
+        $query = static::createQuery()
             ->select('*')
             ->from('ww_flower')
             ->whereRaw('id = :id')
@@ -222,8 +222,7 @@ abstract class AbstractDriverTest extends AbstractDatabaseDriverTestCase
     public function testEvents()
     {
         $stmt = static::$driver->prepare(
-            $q = static::$driver->getPlatform()
-                ->createQuery(static::$driver)
+            $q = static::createQuery()
                 ->select('*')
                 ->from('ww_flower')
                 ->where('id', 'in', [1, 2, 3])

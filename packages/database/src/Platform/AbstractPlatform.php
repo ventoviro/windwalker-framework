@@ -76,7 +76,7 @@ abstract class AbstractPlatform
     }
 
     /**
-     * @return string
+     * @return string|null
      */
     public static function getDefaultSchema(): ?string
     {

@@ -43,7 +43,7 @@ trait DatabaseTestTrait
 
         $params = $params ?? self::getTestParams($platform);
 
-        $db = (new DatabaseFactory())->createByDriverName($driver, $params);
+        $db = (new DatabaseFactory())->create($driver, $params);
 
         // $logFile = __DIR__ . '/../tmp/all-test-sql.sql';
         //
