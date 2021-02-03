@@ -93,14 +93,19 @@ class DatabaseAdapter implements EventListenableInterface
     {
         $this->query = $query;
 
-        return $this->getDriver()->prepare($query, $options);
+        $stmt = $this->getDriver()->prepare($query, $options);
+
+        // Make DatabaseAdapter listen to statement events
+        $stmt->addDispatcherDealer($this->getDispatcher());
+
+        return $stmt;
     }
 
     public function execute(mixed $query, ?array $params = null): StatementInterface
     {
         $this->query = $query;
 
-        return $this->getDriver()->execute($query, $params);
+        return $this->prepare($query)->execute($params);
     }
 
     /**
@@ -192,7 +197,10 @@ class DatabaseAdapter implements EventListenableInterface
      */
     public function getPlatform(): AbstractPlatform
     {
-        return $this->getDriver()->getPlatform();
+        $platform = $this->getDriver()->getPlatform();
+        $platform->setDbAdapter($this);
+
+        return $platform;
     }
 
     public function getDatabase(string $name = null, $new = false): DatabaseManager

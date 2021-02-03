@@ -33,7 +33,7 @@ trait DatabaseTestTrait
 
     protected static function createDatabase(string $driver, ?array $params = null): DatabaseAdapter
     {
-        $platform = DriverFactory::getPlatformName($driver);
+        [, $platform] = DatabaseFactory::extractDriverName($driver);
         $platform = DatabaseFactory::getPlatformName($platform);
 
         $params = $params ?? self::getTestParams($platform);
@@ -41,14 +41,9 @@ trait DatabaseTestTrait
         $params['driver']    = $driver;
         static::$lastQueries = [];
 
-        $db = new DatabaseAdapter(
-            [
-                'driver' => $driver,
-            ]
-        );
+        $params = $params ?? self::getTestParams($platform);
 
-        $params = $params ?? self::getTestParams($db->getPlatform()->getName());
-        $db->setOptions($params);
+        $db = (new DatabaseFactory())->createByDriverName($driver, $params);
 
         // $logFile = __DIR__ . '/../tmp/all-test-sql.sql';
         //

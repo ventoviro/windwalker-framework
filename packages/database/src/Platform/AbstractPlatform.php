@@ -13,6 +13,7 @@ namespace Windwalker\Database\Platform;
 
 use Windwalker\Database\DatabaseAdapter;
 use Windwalker\Database\DatabaseFactory;
+use Windwalker\Database\Driver\AbstractDriver;
 use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\Database\Driver\TransactionDriverInterface;
 use Windwalker\Database\Platform\Type\DataType;
@@ -85,25 +86,21 @@ abstract class AbstractPlatform
     /**
      * AbstractPlatform constructor.
      *
-     * @param  DatabaseAdapter  $db
+     * @param  AbstractGrammar|null  $grammar
      */
-    public function __construct(DatabaseAdapter $db)
+    public function __construct(?AbstractGrammar $grammar = null)
     {
-        $this->db = $db;
+        $this->grammar = $grammar ?? AbstractGrammar::create($this->name);
     }
 
     public function getGrammar(): AbstractGrammar
     {
-        if (!$this->grammar) {
-            $this->grammar = $this->createQuery()->getGrammar();
-        }
-
         return $this->grammar;
     }
 
-    public function createQuery(): Query
+    public function createQuery(?AbstractDriver $driver = null): Query
     {
-        return new Query($this->db->getDriver(), $this->name);
+        return new Query($driver ?? $this->db->getDriver(), $this->grammar);
     }
 
     abstract public function listDatabasesQuery(): Query;
@@ -598,5 +595,17 @@ abstract class AbstractPlatform
         }
 
         return $this->dataType;
+    }
+
+    /**
+     * @param  DatabaseAdapter|null  $db
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setDbAdapter(?DatabaseAdapter $db): static
+    {
+        $this->db = $db;
+
+        return $this;
     }
 }

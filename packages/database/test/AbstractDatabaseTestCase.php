@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Database\Test;
 
 use Windwalker\Database\DatabaseAdapter;
+use Windwalker\Database\DatabaseFactory;
 use Windwalker\Database\Event\QueryEndEvent;
 
 use function Windwalker\disposable;
@@ -47,7 +48,10 @@ abstract class AbstractDatabaseTestCase extends AbstractDatabaseDriverTestCase
         $params['driver'] = static::$driver;
         static::$lastQueries = [];
 
-        $db = new DatabaseAdapter($params);
+        $db = (new DatabaseFactory())->createByDriverName(
+            static::$driver,
+            $params
+        );
 
         $logFile = __DIR__ . '/../tmp/test-sql.sql';
 

@@ -13,7 +13,6 @@ namespace Windwalker\Database\Platform;
 
 use Windwalker\Data\Collection;
 use Windwalker\Database\Driver\Pdo\PdoDriver;
-use Windwalker\Database\Driver\Postgresql\PostgresqlTransaction;
 use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\Database\Platform\Type\PostgreSQLDataType;
 use Windwalker\Database\Schema\Ddl\Column;

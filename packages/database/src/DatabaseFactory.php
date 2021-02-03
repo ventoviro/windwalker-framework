@@ -22,7 +22,10 @@ use Windwalker\Database\Platform\MySQLPlatform;
 use Windwalker\Database\Platform\PostgreSQLPlatform;
 use Windwalker\Database\Platform\SQLitePlatform;
 use Windwalker\Database\Platform\SQLServerPlatform;
+use Windwalker\Pool\ConnectionPool;
 use Windwalker\Pool\PoolInterface;
+use Windwalker\Pool\Stack\StackInterface;
+use Windwalker\Query\Grammar\AbstractGrammar;
 
 /**
  * The DatabaseFactory class.
@@ -55,15 +58,24 @@ class DatabaseFactory implements DatabaseFactoryInterface
     public function createByDriverName(
         string $driverName,
         array $options,
+        ?PoolInterface $pool = null,
         ?LoggerInterface $logger = null,
     ): DatabaseAdapter {
         if (str_contains($driverName, '_')) {
-            [$driverName, $platform] = explode('_', $driverName, 2);
-
-            $this->createDriver($driverName)
+            [$driverName, $platformName] = explode('_', $driverName, 2);
         } else {
-            $platform = static::getPlatformName($driverName);
+            $platformName = static::getPlatformName($driverName);
         }
+
+        return $this->create(
+            $this->createDriver(
+                $driverName,
+                $options,
+                $this->createPlatform($platformName),
+                $pool ?? $this->createConnectionPool($options['pool'] ?? [])
+            ),
+            $logger
+        );
     }
 
     /**
@@ -71,27 +83,31 @@ class DatabaseFactory implements DatabaseFactoryInterface
      */
     public function createDriver(
         string $driverName,
-        DatabaseAdapter $db,
+        array $options,
         AbstractPlatform $platform = null,
         ?PoolInterface $pool = null
     ): AbstractDriver {
-        $names = explode('_', $driverName);
+        [$driverName, $platformName] = static::extractDriverName($driverName);
 
-        $platformName = ucfirst(static::getDriverShortName($names[0]));
+        $driverName = ucfirst(static::getDriverShortName($driverName));
 
-        $driverClass = match ($platformName) {
+        $driverClass = match ($driverName) {
             'pdo' => PdoDriver::class,
             'pgsql' => PgsqlDriver::class,
             'sqlsrv' => SqlsrvDriver::class,
             'mysqli' => MysqliDriver::class,
             default => sprintf(
-                __NAMESPACE__ . '\%s\%sDriver',
-                $platformName,
-                $platformName
+                __NAMESPACE__ . '\Driver\%s\%sDriver',
+                $driverName,
+                $driverName
             )
         };
 
-        $driver = new $driverClass($db);
+        $driver = new $driverClass(
+            $options,
+            $platform ?? $this->createPlatform(static::getPlatformName($platformName)),
+            $pool
+        );
 
         if (($driver instanceof PdoDriver) && isset($names[1])) {
             $driver->setPlatformName($names[1]);
@@ -103,7 +119,7 @@ class DatabaseFactory implements DatabaseFactoryInterface
     /**
      * @inheritDoc
      */
-    public function createPlatform(string $platform, DatabaseAdapter $db): AbstractPlatform
+    public function createPlatform(string $platform, ?AbstractGrammar $grammar = null): AbstractPlatform
     {
         $platformName = static::getPlatformName($platform);
 
@@ -115,14 +131,25 @@ class DatabaseFactory implements DatabaseFactoryInterface
             default => __NAMESPACE__ . '\\' . $platformName . 'Platform',
         };
 
-        return new $class($db);
+        return new $class($grammar);
     }
 
-    public static function extractPlatformName($name): string
+    /**
+     * extractDriverName
+     *
+     * @param string $name
+     *
+     * @return  string[]
+     */
+    public static function extractDriverName(string $name): array
     {
         $names = explode('_', $name, 2);
 
-        return $names[1] ?? $names[0];
+        if (\Windwalker\count($names) === 1) {
+            return [$names[0], $names[0]];
+        }
+
+        return $names;
     }
 
     public static function getDriverShortName(string $platform): string
@@ -131,6 +158,7 @@ class DatabaseFactory implements DatabaseFactoryInterface
             match (strtolower($platform)) {
                 'postgresql' => 'pgsql',
                 'sqlserver' => 'sqlsrv',
+                default => $platform
             }
         );
     }
@@ -140,9 +168,34 @@ class DatabaseFactory implements DatabaseFactoryInterface
         return match (strtolower($platform)) {
             'pgsql', 'postgresql' => 'PostgreSQL',
             'sqlsrv', 'sqlserver' => 'SQLServer',
-            'mysql' => 'MySQL',
+            'mysql', 'mysqli' => 'MySQL',
             'sqlite' => 'SQLite',
             default => ucfirst($platform),
         };
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function createGrammar(?string $platform = null): AbstractGrammar
+    {
+        $platform = static::getPlatformName($platform);
+
+        return AbstractGrammar::create($platform);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function createConnectionPool(
+        array $options = [],
+        ?StackInterface $stack = null,
+        ?LoggerInterface $logger = null
+    ): ConnectionPool {
+        return new ConnectionPool(
+            $options,
+            $stack,
+            $logger
+        );
     }
 }

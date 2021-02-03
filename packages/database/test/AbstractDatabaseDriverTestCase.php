@@ -188,7 +188,7 @@ abstract class AbstractDatabaseDriverTestCase extends TestCase
      *
      * @return  AbstractGrammar
      */
-    public static function getGrammar($escaper = null): AbstractGrammar
+    public static function getGrammar(mixed $escaper = null): AbstractGrammar
     {
         $grammar = AbstractGrammar::create(static::$platform);
 

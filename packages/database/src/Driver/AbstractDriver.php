@@ -14,6 +14,8 @@ namespace Windwalker\Database\Driver;
 use JetBrains\PhpStorm\Pure;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Windwalker\Database\DatabaseAdapter;
+use Windwalker\Database\DatabaseFactory;
+use Windwalker\Database\DatabaseFactoryInterface;
 use Windwalker\Database\Event\QueryEndEvent;
 use Windwalker\Database\Event\QueryFailedEvent;
 use Windwalker\Database\Exception\DatabaseQueryException;
@@ -62,21 +64,26 @@ abstract class AbstractDriver
     /**
      * AbstractPlatform constructor.
      *
-     * @param  array             $options
-     * @param  AbstractPlatform  $platform
+     * @param  array               $options
+     * @param  AbstractPlatform    $platform
+     * @param  PoolInterface|null  $pool
      */
-    public function __construct(array $options, AbstractPlatform $platform)
+    public function __construct(array $options, AbstractPlatform $platform, ?PoolInterface $pool = null)
     {
         $this->resolveOptions(
             $options,
             [$this, 'configureOptions']
         );
 
-        $this->platform = $platform;
-
         if ($this->options['driver'] === 'mysql') {
             $this->options['driver'] = 'pdo_mysql';
         }
+
+        $this->platform = $platform;
+
+        $this->setPlatformName($platform->getName());
+
+        $this->setPool($pool);
     }
 
     protected function configureOptions(OptionsResolver $resolver): void
@@ -185,9 +192,6 @@ abstract class AbstractDriver
         // Prepare actions by driver
         $stmt = $this->createStatement($sql, $bounded, $options);
 
-        // Make DatabaseAdapter listen to statement events
-        $stmt->addDispatcherDealer($this->db->getDispatcher());
-
         // Register monitor events
         $stmt->on(
             QueryFailedEvent::class,
@@ -285,7 +289,7 @@ abstract class AbstractDriver
 
     public function getPlatform(): AbstractPlatform
     {
-        return $this->platform;
+        return $this->platform ??= $this->factory->createPlatform($this->getPlatformName());
     }
 
     /**
@@ -315,7 +319,7 @@ abstract class AbstractDriver
     {
         $class = $this->getConnectionClass();
 
-        return new $class($this->db->getOptions());
+        return new $class($this->getOptions());
     }
 
     #[Pure]
@@ -341,29 +345,25 @@ abstract class AbstractDriver
     }
 
     /**
-     * @param  AbstractPool|null  $pool
+     * @param  PoolInterface|null  $pool
      *
      * @return  static  Return self to support chaining.
      */
     public function setPool(?PoolInterface $pool): static
     {
-        $this->pool = $pool;
+        $this->pool = $this->preparePool($pool);
 
         return $this;
     }
 
-    protected function preparePool(): ConnectionPool
+    protected function preparePool(?PoolInterface $pool): ConnectionPool
     {
-        $options = $this->db->getOptions();
+        if (!$pool) {
+            $options = $this->getOptions();
 
-        $poolOptions = $options['pool'] ?? [];
-
-        $pool = new ConnectionPool(
-            $poolOptions,
-            null,
-            // todo: Add DB logger
-            null
-        );
+            $pool = (new DatabaseFactory())
+                ->createConnectionPool($options['pool'] ?? []);
+        }
 
         $pool->setConnectionBuilder(
             function () {
