@@ -1639,6 +1639,30 @@ SQL
         }
     }
 
+    public function testStripQuote()
+    {
+        $quoteStr = $this->instance->quote('foo');
+
+        self::assertNotEquals('foo', $quoteStr);
+
+        self::assertEquals(
+            'foo',
+            $this->instance->stripQuote($quoteStr)
+        );
+    }
+
+    public function testStripNameQuote()
+    {
+        $quoteStr = $this->instance->quoteName('foo');
+
+        self::assertNotEquals('foo', $quoteStr);
+
+        self::assertEquals(
+            'foo',
+            $this->instance->stripNameQuote($quoteStr)
+        );
+    }
+
     public static function createQuery($conn = null): Query
     {
         return new Query($conn ?: new MockEscaper(), static::createGrammar());

@@ -21,12 +21,12 @@ class OracleGrammar extends BaseGrammar
     /**
      * @var string
      */
-    protected static $name = 'Oracle';
+    public static string $name = 'Oracle';
 
     /**
      * @var string
      */
-    protected static $nullDate = 'RRRR-MM-DD HH24:MI:SS';
+    public static string $nullDate = 'RRRR-MM-DD HH24:MI:SS';
 
     /**
      * @inheritDoc

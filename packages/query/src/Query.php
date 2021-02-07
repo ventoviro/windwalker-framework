@@ -25,6 +25,8 @@ use Windwalker\Query\Clause\Clause;
 use Windwalker\Query\Clause\ClauseInterface;
 use Windwalker\Query\Clause\JoinClause;
 use Windwalker\Query\Clause\ValueClause;
+use Windwalker\Query\Concern\QueryConcernTrait;
+use Windwalker\Query\Concern\ReflectConcernTrait;
 use Windwalker\Query\Expression\Expression;
 use Windwalker\Query\Grammar\AbstractGrammar;
 use Windwalker\Query\Wrapper\FormatRawWrapper;
@@ -95,6 +97,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
     use FlowControlTrait;
     use BindableTrait;
     use QueryConcernTrait;
+    use ReflectConcernTrait;
 
     public const TYPE_SELECT = 'select';
 
@@ -1139,9 +1142,9 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
      *
      * @param  mixed|WrapperInterface  $value
      *
-     * @return \Closure|string
+     * @return string
      */
-    public function quote(mixed $value): string|\Closure
+    public function quote(mixed $value): mixed
     {
         if ($value instanceof RawWrapper) {
             return value($value);
@@ -1172,12 +1175,13 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
      * quoteName
      *
      * @param  string|iterable|WrapperInterface  $name
+     * @param  bool                              $ignoreDot
      *
-     * @return  string|array
+     * @return mixed
      */
-    public function quoteName(mixed $name): mixed
+    public function quoteName(mixed $name, bool $ignoreDot = false): mixed
     {
-        return $this->getGrammar()::quoteNameMultiple($name);
+        return $this->getGrammar()::quoteNameMultiple($name, $ignoreDot);
     }
 
     /**

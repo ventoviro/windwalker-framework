@@ -128,17 +128,20 @@ class Escaper
      * stripQuoteIfExists
      *
      * @param  string|null  $value
-     * @param  string  $sign
+     * @param  string       $sign
+     * @param  string|null  $sign2
      *
-     * @return  string
+     * @return string|null
      */
-    public static function stripQuoteIfExists(?string $value, string $sign = "'"): ?string
+    public static function stripQuoteIfExists(?string $value, string $sign = "'", ?string $sign2 = null): ?string
     {
         if ($value === null) {
             return $value;
         }
 
-        if (Str::startsWith($value, $sign) && Str::endsWith($value, $sign)) {
+        $sign2 ??= $sign;
+
+        if (Str::startsWith($value, $sign) && Str::endsWith($value, $sign2)) {
             return static::stripQuote($value);
         }
 

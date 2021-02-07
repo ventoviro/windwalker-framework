@@ -13,6 +13,7 @@ namespace Windwalker\Database\Driver;
 
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Windwalker\Data\Collection;
+use Windwalker\Database\Event\ItemFetchedEvent;
 use Windwalker\Database\Event\QueryEndEvent;
 use Windwalker\Database\Event\QueryFailedEvent;
 use Windwalker\Database\Event\QueryStartEvent;
@@ -142,7 +143,7 @@ abstract class AbstractStatement implements StatementInterface
     public function get(array $args = []): ?Collection
     {
         return tap(
-            $this->fetch($args),
+            $this->fetchedEvent($this->fetch($args)),
             function () {
                 $this->close();
             }
@@ -160,7 +161,7 @@ abstract class AbstractStatement implements StatementInterface
 
         // Get all of the rows from the result set.
         while ($row = $this->fetch($args)) {
-            $array[] = $row;
+            $array[] = $this->fetchedEvent($row);
         }
 
         $items = collect($array);
@@ -168,6 +169,18 @@ abstract class AbstractStatement implements StatementInterface
         $this->close();
 
         return $items;
+    }
+
+    /**
+     * fetchedEvent
+     *
+     * @param  Collection  $item
+     *
+     * @return  Collection
+     */
+    protected function fetchedEvent(Collection $item): Collection
+    {
+        return $this->emit(ItemFetchedEvent::class, compact('item'))->getItem();
     }
 
     /**

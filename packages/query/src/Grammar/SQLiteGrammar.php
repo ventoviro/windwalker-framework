@@ -19,10 +19,10 @@ class SQLiteGrammar extends BaseGrammar
     /**
      * @var string
      */
-    protected static $name = 'SQLite';
+    public static string $name = 'SQLite';
 
     /**
      * @var array
      */
-    protected static $nameQuote = ['`', '`'];
+    public static array $nameQuote = ['`', '`'];
 }

@@ -30,27 +30,27 @@ abstract class AbstractGrammar
     /**
      * @var string
      */
-    protected static $name = '';
+    protected static string $name = '';
 
     /**
      * @var array
      */
-    protected static $nameQuote = ['"', '"'];
+    public static array $nameQuote = ['"', '"'];
 
     /**
      * @var string
      */
-    protected static $nullDate = '0000-00-00 00:00:00';
+    public static string $nullDate = '0000-00-00 00:00:00';
 
     /**
      * @var string
      */
-    protected static $dateFormat = 'Y-m-d H:i:s';
+    public static string $dateFormat = 'Y-m-d H:i:s';
 
     /**
      * @var Escaper
      */
-    protected $escaper;
+    protected Escaper $escaper;
 
     /**
      * create
@@ -228,28 +228,28 @@ abstract class AbstractGrammar
         return (string) $query->getSql();
     }
 
-    public static function quoteNameMultiple(mixed $name): mixed
+    public static function quoteNameMultiple(mixed $name, bool $ignoreDot = false): mixed
     {
         if ($name instanceof RawWrapper) {
             return value($name);
         }
 
         if ($name instanceof Clause) {
-            return $name->setElements(static::quoteNameMultiple($name->elements));
+            return $name->setElements(static::quoteNameMultiple($name->elements, $ignoreDot));
         }
 
         if (is_iterable($name)) {
             foreach ($name as &$n) {
-                $n = static::quoteNameMultiple($n);
+                $n = static::quoteNameMultiple($n, $ignoreDot);
             }
 
             return $name;
         }
 
-        return static::quoteName((string) $name);
+        return static::quoteName((string) $name, $ignoreDot);
     }
 
-    public static function quoteName(string $name): string
+    public static function quoteName(string $name, bool $ignoreDot = false): string
     {
         if ($name === '*') {
             return $name;
@@ -261,7 +261,7 @@ abstract class AbstractGrammar
             return static::quoteName($name) . ' AS ' . static::quoteName($alias);
         }
 
-        if (str_contains($name, '.')) {
+        if (str_contains($name, '.') && !$ignoreDot) {
             $name = trim($name, '.');
 
             return implode(

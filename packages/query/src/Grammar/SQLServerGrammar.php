@@ -22,17 +22,17 @@ class SQLServerGrammar extends AbstractGrammar
     /**
      * @var string
      */
-    protected static $name = 'SQLServer';
+    public static string $name = 'SQLServer';
 
     /**
      * @var array
      */
-    protected static $nameQuote = ['[', ']'];
+    public static array $nameQuote = ['[', ']'];
 
     /**
      * @var string
      */
-    protected static $nullDate = '1900-01-01 00:00:00';
+    public static string $nullDate = '1900-01-01 00:00:00';
 
     public function compileInsert(Query $query): string
     {

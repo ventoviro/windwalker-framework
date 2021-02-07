@@ -24,12 +24,12 @@ class PostgreSQLGrammar extends AbstractGrammar
     /**
      * @var string
      */
-    protected static $name = 'PostgreSQL';
+    public static string $name = 'PostgreSQL';
 
     /**
      * @var string
      */
-    protected static $nullDate = '1970-01-01 00:00:00';
+    public static string $nullDate = '1970-01-01 00:00:00';
 
     /**
      * @inheritDoc

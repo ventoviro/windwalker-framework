@@ -141,6 +141,7 @@ class WriterManager
         $options = array_merge(
             [
                 'updateNulls' => true,
+                'filterFields' => []
             ],
             $options
         );
@@ -435,7 +436,7 @@ class WriterManager
     public function filterfields(string $table, array $item): array
     {
         $schema       = $this->db->getTable($table)->getSchema();
-        $tableManager = $this->db->getTable($table)->getSchema()->getTable($table);
+        $tableManager = $schema->getTable($table);
 
         if (!$tableManager) {
             throw new \RuntimeException(

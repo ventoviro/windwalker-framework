@@ -150,12 +150,13 @@ class DatabaseAdapter implements EventListenableInterface
      * quoteName
      *
      * @param  mixed  $value
+     * @param  bool   $ignoreDot
      *
      * @return  array|string
      */
-    public function quoteName(mixed $value): array|string
+    public function quoteName(mixed $value, bool $ignoreDot = false): array|string
     {
-        return $this->getPlatform()->getGrammar()::quoteNameMultiple($value);
+        return $this->getPlatform()->getGrammar()::quoteNameMultiple($value, $ignoreDot);
     }
 
     public function quote(mixed $value): array|string
