@@ -24,6 +24,7 @@ use Windwalker\Http\Transport\MultiCurlTransport;
 use Windwalker\Http\Transport\TransportInterface;
 use Windwalker\Promise\PromiseInterface;
 use Windwalker\Stream\Stream;
+use Windwalker\Uri\Uri;
 use Windwalker\Utilities\Arr;
 use Windwalker\Utilities\Exception\ExceptionFactory;
 use Windwalker\Utilities\Options\OptionAccessTrait;

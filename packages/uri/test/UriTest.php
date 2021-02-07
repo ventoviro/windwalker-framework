@@ -9,12 +9,12 @@
 
 declare(strict_types=1);
 
-namespace Windwalker\Http\Test\Uri;
+namespace Windwalker\Uri\Test;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use Windwalker\Http\Uri;
 use Windwalker\Test\Traits\BaseAssertionTrait;
+use Windwalker\Uri\Uri;
 
 /**
  * Test class of Uri

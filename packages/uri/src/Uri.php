@@ -9,11 +9,10 @@
 
 declare(strict_types=1);
 
-namespace Windwalker\Http;
+namespace Windwalker\Uri;
 
 use InvalidArgumentException;
 use Psr\Http\Message\UriInterface;
-use Windwalker\Http\Helper\UriHelper;
 use Windwalker\Utilities\Assert\ArgumentsAssert;
 
 /**
@@ -442,7 +441,7 @@ class Uri implements UriInterface
             throw new InvalidArgumentException('Path should not contain `?` and `#` symbols.');
         }
 
-        $path = UriNormalize::normalizePath($path);
+        $path = UriNormalizer::normalizePath($path);
         $path = UriHelper::filterPath($path);
 
         $new       = clone $this;

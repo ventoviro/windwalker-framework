@@ -16,13 +16,13 @@ use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\StreamInterface;
 use RuntimeException;
 use Windwalker\Http\Exception\HttpRequestException;
-use Windwalker\Http\Helper\UriHelper;
 use Windwalker\Http\Request\Request;
 use Windwalker\Http\Transport\AbstractTransport;
-use Windwalker\Http\Uri;
 use Windwalker\Stream\Stream;
 use Windwalker\Stream\StringStream;
 use Windwalker\Test\Traits\BaseAssertionTrait;
+use Windwalker\Uri\Uri;
+use Windwalker\Uri\UriHelper;
 
 /**
  * Test class of CurlTransport

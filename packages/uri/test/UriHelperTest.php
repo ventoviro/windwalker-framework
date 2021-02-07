@@ -9,10 +9,10 @@
 
 declare(strict_types=1);
 
-namespace Windwalker\Http\Test\Uri;
+namespace Windwalker\Http\Test;
 
 use PHPUnit\Framework\TestCase;
-use Windwalker\Http\Helper\UriHelper;
+use Windwalker\Uri\UriHelper;
 
 /**
  * Tests for the Windwalker\Uri\UriHelper class.

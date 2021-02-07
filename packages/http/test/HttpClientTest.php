@@ -12,11 +12,11 @@ declare(strict_types=1);
 namespace Windwalker\Http\Test;
 
 use PHPUnit\Framework\TestCase;
-use Windwalker\Http\Helper\UriHelper;
 use Windwalker\Http\HttpClient;
 use Windwalker\Http\Request\Request;
 use Windwalker\Http\Test\Mock\MockTransport;
-use Windwalker\Http\Uri;
+use Windwalker\Uri\Uri;
+use Windwalker\Uri\UriHelper;
 
 /**
  * Test class of HttpClient

@@ -79,6 +79,7 @@ class Build extends Console
         'http' => 'Http',
         'promise' => 'Promise',
         'language' => 'Language',
+        'orm' => 'ORM',
         'pool' => 'Pool',
         'query' => 'Query',
         'queue' => 'Queue',

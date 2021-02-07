@@ -1,0 +1,53 @@
+{
+    "name": "windwalker/orm",
+    "type": "windwalker-package",
+    "description": "Windwalker ORM package",
+    "keywords": [
+        "windwalker",
+        "framework",
+        "orm",
+        "database",
+        "datamapper",
+        "mysql",
+        "postgresql",
+        "sqlsrv",
+        "pdo"
+    ],
+    "homepage": "https://github.com/ventoviro/windwalker-orm",
+    "license": "MIT",
+    "require": {
+        "php": ">=8.0.0",
+        "windwalker/database": "4.x-dev",
+        "windwalker/utilities": "4.x-dev"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8.0||^9.0",
+        "windwalker/test": "4.x-dev"
+    },
+    "suggest": {
+    },
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "Windwalker\\ORM\\": "src/"
+        },
+        "files": [
+            "src/bootstrap.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Windwalker\\ORM\\Test\\": "test/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-4": "4.x-dev"
+        }
+    },
+    "config": {
+        "platform": {
+            "php": "8.0.0"
+        }
+    }
+}

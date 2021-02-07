@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Http\Stream;
 
 use Psr\Http\Message\StreamInterface;
-use Windwalker\Http\Helper\UriHelper;
+use Windwalker\Uri\UriHelper;
 
 /**
  * The RequestBodyStream class.

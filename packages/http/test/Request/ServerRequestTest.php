@@ -15,7 +15,7 @@ use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use Windwalker\Http\Request\ServerRequest;
 use Windwalker\Http\UploadedFile;
-use Windwalker\Http\Uri;
+use Windwalker\Uri\Uri;
 use Windwalker\Utilities\Reflection\ReflectAccessor;
 
 /**

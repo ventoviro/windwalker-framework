@@ -9,12 +9,12 @@
 
 declare(strict_types=1);
 
-namespace Windwalker\Http;
+namespace Windwalker\Uri;
 
 /**
  * The UriNormalizer class.
  */
-class UriNormalize
+class UriNormalizer
 {
     public static function clean(string $uri): string
     {

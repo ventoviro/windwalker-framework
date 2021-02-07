@@ -19,8 +19,8 @@ use UnexpectedValueException;
 use Windwalker\Http\Helper\HeaderHelper;
 use Windwalker\Http\Helper\ServerHelper;
 use Windwalker\Http\UploadedFile;
-use Windwalker\Http\Uri;
 use Windwalker\Stream\PhpInputStream;
+use Windwalker\Uri\Uri;
 
 /**
  * The ServerRequestFactory class.

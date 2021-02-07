@@ -30,6 +30,8 @@ use Windwalker\Http\Request\ServerRequest;
 use Windwalker\Http\Request\ServerRequestFactory;
 use Windwalker\Http\Response\Response;
 use Windwalker\Stream\Stream;
+use Windwalker\Uri\Uri;
+use Windwalker\Uri\UriFactory;
 use Windwalker\Utilities\Assert\ArgumentsAssert;
 
 use const UPLOAD_ERR_OK;
@@ -37,13 +39,12 @@ use const UPLOAD_ERR_OK;
 /**
  * The HttpFactory class.
  */
-class HttpFactory implements
+class HttpFactory extends UriFactory implements
     RequestFactoryInterface,
     ResponseFactoryInterface,
     ServerRequestFactoryInterface,
     StreamFactoryInterface,
-    UploadedFileFactoryInterface,
-    UriFactoryInterface
+    UploadedFileFactoryInterface
 {
     public static function create(): static
     {
@@ -186,14 +187,13 @@ class HttpFactory implements
      *
      * @param  StreamInterface  $stream           Underlying stream representing the
      *                                            uploaded file content.
-     * @param  int              $size             in bytes
+     * @param  int|null         $size             in bytes
      * @param  int              $error            PHP file upload error
-     * @param  string           $clientFilename   Filename as provided by the client, if any.
-     * @param  string           $clientMediaType  Media type as provided by the client, if any.
+     * @param  string|null      $clientFilename   Filename as provided by the client, if any.
+     * @param  string|null      $clientMediaType  Media type as provided by the client, if any.
      *
      * @return UploadedFileInterface
      *
-     * @throws InvalidArgumentException If the file resource is not readable.
      */
     public function createUploadedFile(
         StreamInterface $stream,
@@ -203,19 +203,5 @@ class HttpFactory implements
         string $clientMediaType = null
     ): UploadedFileInterface {
         return new UploadedFile($stream, $size, $error, $clientFilename, $clientMediaType);
-    }
-
-    /**
-     * Create a new URI.
-     *
-     * @param  string  $uri
-     *
-     * @return UriInterface
-     *
-     * @throws InvalidArgumentException If the given URI cannot be parsed.
-     */
-    public function createUri(string $uri = ''): UriInterface
-    {
-        return new Uri($uri);
     }
 }

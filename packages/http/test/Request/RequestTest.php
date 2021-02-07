@@ -13,7 +13,7 @@ namespace Windwalker\Http\Test\Request;
 
 use PHPUnit\Framework\TestCase;
 use Windwalker\Http\Request\Request;
-use Windwalker\Http\Uri;
+use Windwalker\Uri\Uri;
 
 /**
  * Test class of Request

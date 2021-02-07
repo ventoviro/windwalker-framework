@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace Windwalker\Http\Helper;
+namespace Windwalker\Uri;
 
 /**
  * Uri Helper

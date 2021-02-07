@@ -17,8 +17,8 @@ use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UriInterface;
 use Windwalker\Http\Helper\HeaderHelper;
 use Windwalker\Http\MessageTrait;
-use Windwalker\Http\Uri;
 use Windwalker\Stream\Stream;
+use Windwalker\Uri\Uri;
 
 /**
  * The AbstractRequest class.
