@@ -15,6 +15,7 @@ use Windwalker\Scalars\ArrayObject;
 use Windwalker\Utilities\Contract\AccessibleInterface;
 use Windwalker\Utilities\Contract\AccessorAccessibleInterface;
 use Windwalker\Utilities\Contract\DumpableInterface;
+use Windwalker\Utilities\Reflection\ReflectAccessor;
 
 /**
  * The SimpleHydrator class.
@@ -50,9 +51,13 @@ class SimpleHydrator implements HydratorInterface
             foreach ($data as $key => $datum) {
                 $object[$key] = $datum;
             }
-        } else {
+        } elseif ($object instanceof \stdClass) {
             foreach ($data as $key => $datum) {
                 $object->$key = $datum;
+            }
+        } else {
+            foreach ($data as $key => $datum) {
+                ReflectAccessor::setValue($object, $key, $datum);
             }
         }
 
