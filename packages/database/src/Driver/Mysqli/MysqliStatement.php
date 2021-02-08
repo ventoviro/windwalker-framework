@@ -93,10 +93,7 @@ class MysqliStatement extends AbstractStatement
         return true;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function fetch(array $args = []): ?Collection
+    protected function doFetch(array $args = []): ?array
     {
         $this->execute();
 
@@ -106,7 +103,7 @@ class MysqliStatement extends AbstractStatement
 
         $row = $this->result->fetch_assoc();
 
-        return $row ? collect($row) : null;
+        return $row ?: null;
     }
 
     /**

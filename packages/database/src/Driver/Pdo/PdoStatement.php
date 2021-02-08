@@ -67,13 +67,13 @@ class PdoStatement extends AbstractStatement
     /**
      * @inheritDoc
      */
-    public function fetch(array $args = []): ?Collection
+    protected function doFetch(array $args = []): ?array
     {
         $this->execute();
 
         $item = $this->cursor->fetch(\PDO::FETCH_ASSOC);
 
-        return $item !== false ? collect($item) : null;
+        return $item !== false ? $item : null;
     }
 
     /**

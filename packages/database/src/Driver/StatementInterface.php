@@ -33,29 +33,32 @@ interface StatementInterface extends BindableInterface, \IteratorAggregate, Even
     /**
      * Fetch 1 row and move cursor to next position.
      *
-     * @param  array  $args
+     * @param  string|object  $class
+     * @param  array          $args
      *
      * @return  Collection|null
      */
-    public function fetch(array $args = []): ?Collection;
+    public function fetch(string|object $class = Collection::class, array $args = []): ?object;
 
     /**
      * Fetch 1 row and close ths cursor.
      *
-     * @param  array  $args
+     * @param  string|object  $class
+     * @param  array          $args
      *
      * @return  Collection|null
      */
-    public function get(array $args = []): ?Collection;
+    public function get(string|object $class = \Windwalker\Data\Collection::class, array $args = []): ?object;
 
     /**
      * Fetch all items and close cursor.
      *
-     * @param  array  $args
+     * @param  string|object  $class
+     * @param  array          $args
      *
      * @return Collection
      */
-    public function all(array $args = []): Collection;
+    public function all(string|object $class = \Windwalker\Data\Collection::class, array $args = []): Collection;
 
     /**
      * Fetch all column values and close the cursor.
@@ -104,12 +107,12 @@ interface StatementInterface extends BindableInterface, \IteratorAggregate, Even
     /**
      * getIterator
      *
-     * @param  string  $class
-     * @param  array   $args
+     * @param  string|object  $class
+     * @param  array          $args
      *
      * @return  \Generator
      */
-    public function getIterator($class = Collection::class, array $args = []): \Generator;
+    public function getIterator(string|object $class = Collection::class, array $args = []): \Generator;
 
     /**
      * addDispatcherDealer

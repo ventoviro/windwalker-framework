@@ -75,13 +75,13 @@ class PgsqlStatement extends AbstractStatement
     /**
      * @inheritDoc
      */
-    public function fetch(array $args = []): ?Collection
+    protected function doFetch(array $args = []): ?array
     {
         $this->execute();
 
         $row = pg_fetch_assoc($this->cursor);
 
-        return $row ? collect($row) : null;
+        return $row ?: null;
     }
 
     /**

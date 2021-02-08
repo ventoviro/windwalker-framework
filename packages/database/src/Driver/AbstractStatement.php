@@ -18,6 +18,8 @@ use Windwalker\Database\Event\QueryEndEvent;
 use Windwalker\Database\Event\QueryFailedEvent;
 use Windwalker\Database\Event\QueryStartEvent;
 use Windwalker\Database\Exception\StatementException;
+use Windwalker\Database\Hydrator\HydratorInterface;
+use Windwalker\Database\Hydrator\SimpleHydrator;
 use Windwalker\Event\EventEmitter;
 use Windwalker\Event\EventAwareTrait;
 use Windwalker\Query\Bounded\BindableTrait;
@@ -57,6 +59,8 @@ abstract class AbstractStatement implements StatementInterface
 
     protected array $options = [];
 
+    protected ?HydratorInterface $hydrator = null;
+
     /**
      * AbstractStatement constructor.
      *
@@ -77,18 +81,36 @@ abstract class AbstractStatement implements StatementInterface
      * @inheritDoc
      * @throws \Throwable
      */
-    public function getIterator($class = Collection::class, array $args = []): \Generator
+    public function getIterator(string|object $class = Collection::class, array $args = []): \Generator
     {
-        $gen = function () use ($class, $args) {
-            $this->execute();
+        $this->execute();
 
-            while (($row = $this->fetch($args)) !== null) {
-                yield $row;
-            }
-        };
-
-        return $gen();
+        while (($row = $this->fetch($class, $args)) !== null) {
+            yield $row;
+        }
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function fetch(object|string $class = Collection::class, array $args = []): ?object
+    {
+        // todo: Implement more hydrators.
+        $this->hydrator ??= new SimpleHydrator();
+
+        $item = $this->doFetch();
+
+        if ($item === null) {
+            return null;
+        }
+
+        return $this->hydrator->hydrate(
+            $item,
+            is_string($class) ? new $class() : $class
+        );
+    }
+
+    abstract protected function doFetch(array $args = []): ?array;
 
     /**
      * execute
@@ -140,10 +162,10 @@ abstract class AbstractStatement implements StatementInterface
     /**
      * @inheritDoc
      */
-    public function get(array $args = []): ?Collection
+    public function get(string|object $class = Collection::class, array $args = []): ?object
     {
         return tap(
-            $this->fetchedEvent($this->fetch($args)),
+            $this->fetchedEvent($this->fetch($class, $args)),
             function () {
                 $this->close();
             }
@@ -153,14 +175,14 @@ abstract class AbstractStatement implements StatementInterface
     /**
      * @inheritDoc
      */
-    public function all(array $args = []): Collection
+    public function all(string|object $class = Collection::class, array $args = []): Collection
     {
         $this->execute();
 
         $array = [];
 
         // Get all of the rows from the result set.
-        while ($row = $this->fetch($args)) {
+        while ($row = $this->fetch($class, $args)) {
             $array[] = $this->fetchedEvent($row);
         }
 
