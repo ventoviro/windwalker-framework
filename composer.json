@@ -61,7 +61,7 @@
         "twig/twig": "^2.0",
         "illuminate/view": "^6.0||^7.0||^8.0",
         "mustache/mustache": "^2.0",
-        "league/plates": "dev-master",
+        "league/plates": "^3.4",
         "league/flysystem": "^2.0",
         "webmozart/glob": "^4.1",
         "symfony/options-resolver": "^5.0"

@@ -19,22 +19,22 @@ use Windwalker\Event\AbstractEvent;
  */
 class ItemFetchedEvent extends AbstractEvent
 {
-    protected Collection $item;
+    protected ?Collection $item;
 
     /**
-     * @return Collection
+     * @return Collection|null
      */
-    public function getItem(): Collection
+    public function getItem(): ?Collection
     {
         return $this->item;
     }
 
     /**
-     * @param  Collection  $item
+     * @param  Collection|null  $item
      *
      * @return  static  Return self to support chaining.
      */
-    public function setItem(Collection $item): static
+    public function setItem(?Collection $item): static
     {
         $this->item = $item;
 

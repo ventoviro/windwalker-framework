@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\ORM\Test\Actions;
 
 use Windwalker\Database\Test\AbstractDatabaseTestCase;
-use Windwalker\ORM\Actions\SelectAction;
+use Windwalker\ORM\Strategy\Selector;
 use Windwalker\ORM\ORM;
 
 /**
@@ -20,7 +20,7 @@ use Windwalker\ORM\ORM;
  */
 class SelectActionTest extends AbstractDatabaseTestCase
 {
-    protected SelectAction $instance;
+    protected Selector $instance;
 
     public function testAutoSelections()
     {
@@ -46,6 +46,6 @@ class SelectActionTest extends AbstractDatabaseTestCase
 
     protected function setUp(): void
     {
-        $this->instance = new SelectAction(new ORM(self::$db));
+        $this->instance = new Selector(new ORM(self::$db));
     }
 }

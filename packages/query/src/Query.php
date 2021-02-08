@@ -1852,20 +1852,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
         ];
 
         if (in_array(strtolower($name), $methods)) {
-            $db = $this->getEscaper()->getConnection();
-
-            if (!($db instanceof AbstractDriver || $db instanceof DatabaseAdapter)) {
-                throw new \BadMethodCallException(
-                    sprintf(
-                        'Calling method: %s() only support when escaper is %s or %s class.',
-                        $name,
-                        AbstractDriver::class,
-                        DatabaseAdapter::class
-                    )
-                );
-            }
-
-            return $db->prepare($this)->$name(...$args);
+            return $this->prepareStatement()->$name(...$args);
         }
 
         throw new \BadMethodCallException(
@@ -1880,12 +1867,17 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
      */
     public function getIterator(): StatementInterface
     {
+        return $this->prepareStatement();
+    }
+
+    protected function prepareStatement(): StatementInterface
+    {
         $db = $this->getEscaper()->getConnection();
 
         if (!($db instanceof AbstractDriver || $db instanceof DatabaseAdapter)) {
             throw new \BadMethodCallException(
                 sprintf(
-                    'Instant iterate only support when escaper is %s or %s class.',
+                    'Directly fetch from DB must use %s or %s as Escaper::$connection.',
                     AbstractDriver::class,
                     DatabaseAdapter::class
                 )

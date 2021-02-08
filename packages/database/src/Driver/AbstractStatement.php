@@ -174,11 +174,11 @@ abstract class AbstractStatement implements StatementInterface
     /**
      * fetchedEvent
      *
-     * @param  Collection  $item
+     * @param  Collection|null  $item
      *
-     * @return  Collection
+     * @return Collection|null
      */
-    protected function fetchedEvent(Collection $item): Collection
+    protected function fetchedEvent(?Collection $item): ?Collection
     {
         return $this->emit(ItemFetchedEvent::class, compact('item'))->getItem();
     }

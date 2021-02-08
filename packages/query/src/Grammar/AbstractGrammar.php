@@ -261,13 +261,13 @@ abstract class AbstractGrammar
             return static::quoteName($name) . ' AS ' . static::quoteName($alias);
         }
 
-        if (str_contains($name, '.') && !$ignoreDot) {
+        if (!$ignoreDot && str_contains($name, '.')) {
             $name = trim($name, '.');
 
             return implode(
                 '.',
                 array_map(
-                    [static::class, 'quoteName'],
+                    static fn($v) => static::quoteName($v),
                     explode('.', $name)
                 )
             );
