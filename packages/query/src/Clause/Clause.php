@@ -135,6 +135,34 @@ class Clause implements \Countable, ClauseInterface
     }
 
     /**
+     * each
+     *
+     * @param  callable  $callable
+     *
+     * @return  static
+     */
+    public function mapElements(callable $callable): static
+    {
+        $this->elements = array_map($callable, $this->elements);
+
+        return $this;
+    }
+
+    /**
+     * each
+     *
+     * @param  callable  $callable
+     *
+     * @return  static
+     */
+    public function filterElements(callable $callable): static
+    {
+        $this->elements = array_filter($this->elements, $callable);
+
+        return $this;
+    }
+
+    /**
      * Gets the elements of this element.
      *
      * @return  array

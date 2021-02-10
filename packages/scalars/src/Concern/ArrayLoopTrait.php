@@ -94,7 +94,8 @@ trait ArrayLoopTrait
      */
     public function each(callable $callback): static
     {
-        $i                   = 0;
+        $i = 0;
+
         static::$currentLoop = new Loop(count($this), $this->storage, static::$currentLoop);
 
         foreach ($this as $key => $value) {

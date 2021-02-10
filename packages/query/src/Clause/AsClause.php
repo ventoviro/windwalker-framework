@@ -69,6 +69,8 @@ class AsClause implements ClauseInterface
             $column = $column();
         } elseif ($column instanceof Query) {
             $column = '(' . $column . ')';
+        } elseif ($column instanceof Clause) {
+            $column = $column->mapElements(fn($v) => $this->query->$quoteMethod($this->convertClassToColumn((string) $v)));
         } else {
             $column = $this->query->$quoteMethod($this->convertClassToColumn((string) $column));
         }
