@@ -14,6 +14,8 @@ namespace Windwalker\ORM\Test\Actions;
 use Windwalker\Database\Test\AbstractDatabaseTestCase;
 use Windwalker\ORM\Strategy\Selector;
 use Windwalker\ORM\ORM;
+use Windwalker\ORM\Test\Entity\Category;
+use Windwalker\ORM\Test\Entity\Flower;
 
 /**
  * The SelectActionTest class.
@@ -25,15 +27,19 @@ class SelectActionTest extends AbstractDatabaseTestCase
     public function testAutoSelections()
     {
         $this->instance->select('*')
-            ->from('ww_flower', 'f')
-            ->leftJoin('ww_categories', 'c', 'c.id', 'f.catid')
+            ->from(Flower::class, 'f')
+            ->leftJoin(Category::class, 'c', 'c.id', 'f.catid')
             ->limit(3)
             ->autoSelections()
             ->groupByDivider();
 
+        $tables = $this->instance->getAllTables();
+
+        // show($tables);
+
         $items = $this->instance->all();
 
-        show(json_encode($items, JSON_PRETTY_PRINT));
+        // show(json_encode($items, JSON_PRETTY_PRINT));
     }
 
     /**
@@ -46,6 +52,6 @@ class SelectActionTest extends AbstractDatabaseTestCase
 
     protected function setUp(): void
     {
-        $this->instance = new Selector(new ORM(self::$db));
+        $this->instance = new Selector(self::$db, self::$db->getPlatform()->getGrammar());
     }
 }

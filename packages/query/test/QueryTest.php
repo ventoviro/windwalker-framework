@@ -824,6 +824,21 @@ SQL
                     ],
                 ],
             ],
+            'Where array with more conditions' => [
+                'SELECT * FROM "a" WHERE foo >= \'bar\' AND "yoo" = \'hello\' AND "flower" IN (\'a\', \'b\', \'c\')',
+                [
+                    // arg 1 is array
+                    [
+                        'foo >= \'bar\'',
+                        'yoo' => 'hello',
+                        'flower' => [
+                            'a',
+                            'b',
+                            'c'
+                        ]
+                    ],
+                ],
+            ],
             'Where nested' => [
                 'SELECT * FROM "a" WHERE "foo" = \'bar\' AND ("yoo" = \'goo\' AND "flower" != \'Sakura\')',
                 ['foo', 'bar'],

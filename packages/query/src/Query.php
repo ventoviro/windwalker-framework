@@ -259,9 +259,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
      */
     public function from(mixed $tables, ?string $alias = null): static
     {
-        if ($this->from === null) {
-            $this->from = $this->clause('FROM', [], ', ');
-        }
+        $this->from ??= $this->clause('FROM', [], ', ');
 
         // if (!is_array($tables) && $alias !== null) {
         //     $tables = [$alias => $tables];
@@ -348,11 +346,10 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
      */
     public function as(mixed $value, mixed $alias = null, bool $isColumn = true): AsClause
     {
-        $quoteMethod = $isColumn ? 'quoteName' : 'quote';
-        $clause      = new AsClause();
+        $clause = new AsClause($this, null, null, $isColumn);
 
         if ($value instanceof RawWrapper) {
-            $clause->value($value());
+            $clause->value($value);
         } else {
             if ($value instanceof \Closure) {
                 $value($value = $this->createSubQuery());
@@ -362,15 +359,13 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
                 $alias = $alias ?? $value->getAlias();
 
                 $this->injectSubQuery($value, $alias);
-
-                $clause->value($value);
-            } else {
-                $clause->value((string) $this->$quoteMethod($value));
             }
+
+            $clause->value($value);
         }
 
         if ($alias !== false && (string) $alias !== '') {
-            $clause->alias($this->quoteName($alias));
+            $clause->alias($alias);
         }
 
         return $clause;
@@ -483,11 +478,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
         }
 
         if (is_array($column)) {
-            foreach ($column as $where) {
-                $this->where(...$where);
-            }
-
-            return $this;
+            return static::convertAllToWheres($this, $column);
         }
 
         $column = $this->as($column, false);

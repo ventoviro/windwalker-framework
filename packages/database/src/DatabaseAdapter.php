@@ -16,6 +16,8 @@ use Psr\Log\NullLogger;
 use Windwalker\Database\Driver\AbstractDriver;
 use Windwalker\Database\Driver\ConnectionInterface;
 use Windwalker\Database\Driver\StatementInterface;
+use Windwalker\Database\Hydrator\HydratorAwareInterface;
+use Windwalker\Database\Hydrator\HydratorInterface;
 use Windwalker\Database\Manager\TableManager;
 use Windwalker\Database\Manager\WriterManager;
 use Windwalker\Database\Platform\AbstractPlatform;
@@ -34,7 +36,7 @@ use Windwalker\Utilities\Cache\InstanceCacheTrait;
  * @method Query delete(string $table, ?string $alias = null)
  * @method Query insert(string $table, ?string $incrementField = null)
  */
-class DatabaseAdapter implements EventListenableInterface
+class DatabaseAdapter implements EventListenableInterface, HydratorAwareInterface
 {
     use EventAwareTrait;
     use InstanceCacheTrait;
@@ -321,5 +323,13 @@ class DatabaseAdapter implements EventListenableInterface
         throw new \BadMethodCallException(
             sprintf('Call to undefined method of: %s::%s()', static::class, $name)
         );
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getHydrator(): HydratorInterface
+    {
+        return $this->getDriver()->getHydrator();
     }
 }

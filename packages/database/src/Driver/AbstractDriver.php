@@ -17,6 +17,9 @@ use Windwalker\Database\DatabaseFactory;
 use Windwalker\Database\Event\QueryEndEvent;
 use Windwalker\Database\Event\QueryFailedEvent;
 use Windwalker\Database\Exception\DatabaseQueryException;
+use Windwalker\Database\Hydrator\HydratorAwareInterface;
+use Windwalker\Database\Hydrator\HydratorInterface;
+use Windwalker\Database\Hydrator\SimpleHydrator;
 use Windwalker\Database\Platform\AbstractPlatform;
 use Windwalker\Database\Schema\AbstractSchemaManager;
 use Windwalker\Pool\ConnectionPool;
@@ -27,7 +30,7 @@ use Windwalker\Utilities\Options\OptionsResolverTrait;
 /**
  * The AbstractDriver class.
  */
-abstract class AbstractDriver
+abstract class AbstractDriver implements HydratorAwareInterface
 {
     use OptionsResolverTrait;
 
@@ -52,6 +55,8 @@ abstract class AbstractDriver
     protected ?AbstractSchemaManager $schema = null;
 
     protected ?PoolInterface $pool = null;
+
+    protected ?HydratorInterface $hydrator = null;
 
     /**
      * AbstractPlatform constructor.
@@ -362,6 +367,23 @@ abstract class AbstractDriver
     public function getPool(): PoolInterface
     {
         return $this->pool ??= $this->preparePool(null);
+    }
+
+    public function getHydrator(): HydratorInterface
+    {
+        return $this->hydrator ??= new SimpleHydrator();
+    }
+
+    /**
+     * @param  HydratorInterface|null  $hydrator
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setHydrator(?HydratorInterface $hydrator): static
+    {
+        $this->hydrator = $hydrator;
+
+        return $this;
     }
 
     /**

@@ -21,6 +21,14 @@ use Windwalker\Query\Query;
  */
 abstract class AbstractQueryStrategy extends Query
 {
+    /**
+     * @inheritDoc
+     */
+    public function __construct(DatabaseAdapter $db, $grammar = null)
+    {
+        parent::__construct($db, $grammar ?? $db->getPlatform()->getGrammar());
+    }
+
     public function getDb(): DatabaseAdapter
     {
         return $this->getEscaper()->getConnection();

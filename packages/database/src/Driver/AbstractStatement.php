@@ -18,9 +18,6 @@ use Windwalker\Database\Event\QueryEndEvent;
 use Windwalker\Database\Event\QueryFailedEvent;
 use Windwalker\Database\Event\QueryStartEvent;
 use Windwalker\Database\Exception\StatementException;
-use Windwalker\Database\Hydrator\HydratorInterface;
-use Windwalker\Database\Hydrator\SimpleHydrator;
-use Windwalker\Event\EventEmitter;
 use Windwalker\Event\EventAwareTrait;
 use Windwalker\Query\Bounded\BindableTrait;
 
@@ -59,8 +56,6 @@ abstract class AbstractStatement implements StatementInterface
 
     protected array $options = [];
 
-    protected ?HydratorInterface $hydrator = null;
-
     /**
      * AbstractStatement constructor.
      *
@@ -96,7 +91,7 @@ abstract class AbstractStatement implements StatementInterface
     public function fetch(object|string $class = Collection::class, array $args = []): ?object
     {
         // todo: Implement more hydrators.
-        $this->hydrator ??= new SimpleHydrator();
+        $hydrator = $this->driver->getHydrator();
 
         $item = $this->doFetch();
 
@@ -104,7 +99,7 @@ abstract class AbstractStatement implements StatementInterface
             return null;
         }
 
-        return $this->hydrator->hydrate(
+        return $hydrator->hydrate(
             $item,
             is_string($class) ? new $class() : $class
         );
@@ -196,11 +191,11 @@ abstract class AbstractStatement implements StatementInterface
     /**
      * fetchedEvent
      *
-     * @param  Collection|null  $item
+     * @param  object|null  $item
      *
-     * @return Collection|null
+     * @return object|null
      */
-    protected function fetchedEvent(?Collection $item): ?Collection
+    protected function fetchedEvent(?object $item): ?object
     {
         return $this->emit(ItemFetchedEvent::class, compact('item'))->getItem();
     }

@@ -13,6 +13,7 @@ namespace Windwalker\Attributes;
 
 use Windwalker\Utilities\Classes\ObjectBuilder;
 use Windwalker\Utilities\Options\OptionAccessTrait;
+use Windwalker\Utilities\Reflection\ReflectAccessor;
 use Windwalker\Utilities\Reflection\ReflectionCallable;
 
 /**
@@ -372,19 +373,45 @@ class AttributesResolver extends ObjectBuilder
         return strtolower(trim($className, '\\'));
     }
 
+    /**
+     * Get Attributes from any supported object or class names.
+     *
+     * @param  mixed        $value
+     * @param  string|null  $name
+     * @param  int          $flags
+     *
+     * @return  ?array<int, \ReflectionAttribute>
+     */
+    public static function getAttributesFromAny(
+        mixed $value,
+        string|null $name = null,
+        int $flags = 0
+    ): ?array {
+        return ReflectAccessor::reflect($value)?->getAttributes($name, $flags);
+    }
+
+    public static function getFirstAttributeInstance(
+        mixed $value,
+        string $attributeClass,
+    ): ?object {
+        $attrs = static::getAttributesFromAny($value, $attributeClass);
+
+        return $attrs ? $attrs[0]->newInstance() : null;
+    }
+
     public static function runAttributeIfExists(
-        array|\Reflector $refOrAttributes,
+        mixed $valueOrAttrs,
         string $attributeClass,
         callable $handler
     ): int {
         $count = 0;
 
-        if ($refOrAttributes instanceof \Reflector) {
-            $refOrAttributes = $refOrAttributes->getAttributes();
+        if (!is_array($valueOrAttrs)) {
+            $valueOrAttrs = (array) static::getAttributesFromAny($valueOrAttrs, $attributeClass);
         }
 
         /** @var \ReflectionAttribute $attribute */
-        foreach ($refOrAttributes as $attribute) {
+        foreach ($valueOrAttrs as $attribute) {
             if (strtolower($attribute->getName()) === strtolower($attributeClass)) {
                 $handler($attribute->newInstance());
                 $count++;

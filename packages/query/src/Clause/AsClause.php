@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace Windwalker\Query\Clause;
 
+use Windwalker\Attributes\AttributesResolver;
+use Windwalker\Database\Exception\DatabaseQueryException;
+use Windwalker\ORM\Attributes\Table;
 use Windwalker\Query\Query;
 use Windwalker\Utilities\Wrapper\RawWrapper;
 
@@ -20,7 +23,7 @@ use Windwalker\Utilities\Wrapper\RawWrapper;
 class AsClause implements ClauseInterface
 {
     /**
-     * @var string|Query
+     * @var string|Query|RawWrapper
      */
     protected mixed $value;
 
@@ -29,32 +32,72 @@ class AsClause implements ClauseInterface
      */
     protected mixed $alias;
 
+    protected bool $isColumn = false;
+
+    /**
+     * @var Query
+     */
+    protected Query $query;
+
     /**
      * AsClause constructor.
      *
-     * @param  string|Query|RawWrapper  $value
-     * @param  string|bool|null         $alias
+     * @param  Query  $query
+     * @param  string|Query|null  $value
+     * @param  string|bool|null  $alias
+     * @param  bool  $isColumn
      */
-    public function __construct($value = null, $alias = null)
-    {
+    public function __construct(
+        Query $query,
+        mixed $value = null,
+        string|bool|null $alias = null,
+        bool $isColumn = true
+    ) {
         $this->value = $value;
         $this->alias = $alias;
+        $this->query = $query;
+        $this->isColumn = $isColumn;
     }
 
     public function __toString(): string
     {
+        $quoteMethod = $this->isColumn ? 'quoteName' : 'quote';
         $column = $this->value;
-        $alias = $this->alias;
+        $alias  = $this->alias;
 
-        if ($column instanceof Query) {
+        if ($column instanceof RawWrapper) {
+            $column = $column();
+        } elseif ($column instanceof Query) {
             $column = '(' . $column . ')';
+        } else {
+            $column = $this->query->$quoteMethod($this->convertClassToColumn((string) $column));
         }
 
         if ($alias !== false && (string) $alias !== '') {
-            $column .= ' AS ' . $alias;
+            $column .= ' AS ' . $this->query->quoteName($alias);
         }
 
         return (string) $column;
+    }
+
+    protected function convertClassToColumn(string $column): string
+    {
+        if (!str_contains($column, '\\') || !class_exists($column)) {
+            return $column;
+        }
+
+        $table = AttributesResolver::getFirstAttributeInstance($column, Table::class);
+
+        if (!$table) {
+            throw new DatabaseQueryException(
+                sprintf(
+                    'Value is class name but %s Attribute not assigned.',
+                    Table::class
+                )
+            );
+        }
+
+        return $table->getName();
     }
 
     /**
@@ -96,7 +139,7 @@ class AsClause implements ClauseInterface
     /**
      * Method to set property column
      *
-     * @param  string|Query $column
+     * @param  string|Query  $column
      *
      * @return  static  Return self to support chaining.
      *

@@ -1,151 +1,40 @@
-
-CREATE TABLE IF NOT EXISTS `ww_categories` (
-	`id` int(11) NOT NULL AUTO_INCREMENT,
-	`title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-	`ordering` int(11) NOT NULL,
-	`params` text COLLATE utf8_unicode_ci NOT NULL,
-	PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=3 ;
-
-INSERT INTO ww_categories (`id`, `title`, `ordering`, `params`) VALUES
-	(1, 'Foo', 1, ''),
-	(2, 'Bar', 2, '');
-
-CREATE TABLE IF NOT EXISTS `ww_flower` (
-	`id` int(11) NOT NULL AUTO_INCREMENT,
-	`catid` int(11) NOT NULL,
-	`title` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-	`meaning` text COLLATE utf8_unicode_ci NOT NULL,
-	`ordering` int(11) NOT NULL,
-	`state` tinyint(1) NOT NULL,
-	`params` text COLLATE utf8_unicode_ci NOT NULL,
-	PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci AUTO_INCREMENT=86 ;
-
-INSERT INTO `ww_flower` (`id`, `catid`, `title`, `meaning`, `ordering`, `state`, `params`) VALUES
-	(1, 2, 'Alstroemeria', 'aspiring', 1, 0, ''),
-	(2, 2, 'Amaryllis', 'dramatic', 2, 0, ''),
-	(3, 1, 'Anemone', 'fragile', 3, 0, ''),
-	(4, 1, 'Apple Blossom', 'promis', 4, 1, ''),
-	(5, 2, 'Aster', 'contentment', 5, 1, ''),
-	(6, 2, 'Azalea', 'abundance', 6, 0, ''),
-	(7, 1, 'Baby''s Breath', 'festivity', 7, 1, ''),
-	(8, 2, 'Bachelor Button', 'anticipation', 8, 0, ''),
-	(9, 2, 'Begonia', 'deep thoughts', 9, 0, ''),
-	(10, 2, 'Black-Eyed Susan', 'encouragement', 10, 0, ''),
-	(11, 1, 'Camellia', 'graciousness', 11, 1, ''),
-	(12, 1, 'Carnation', '', 12, 1, ''),
-	(13, 1, 'pink', 'gratitude', 13, 1, ''),
-	(14, 1, 'red', 'flashy', 14, 1, ''),
-	(15, 1, 'striped', 'refusal', 15, 1, ''),
-	(16, 1, 'white', 'remembrance', 16, 1, ''),
-	(17, 1, 'yellow', 'cheerful', 17, 1, ''),
-	(18, 1, 'Chrysanthemum', '', 18, 0, ''),
-	(19, 2, 'bronze', 'excitement', 19, 1, ''),
-	(20, 1, 'white', 'truth', 20, 0, ''),
-	(21, 1, 'red', 'sharing', 21, 1, ''),
-	(22, 1, 'yellow', 'secret admirer', 22, 0, ''),
-	(23, 1, 'Cosmos', 'peaceful', 23, 0, ''),
-	(24, 1, 'Crocus', 'foresight', 24, 0, ''),
-	(25, 1, 'Daffodil', 'chivalry', 25, 1, ''),
-	(26, 2, 'Delphinium', 'boldness', 26, 0, ''),
-	(27, 2, 'Daisy', 'innocence', 27, 0, ''),
-	(28, 1, 'Freesia', 'spirited', 28, 0, ''),
-	(29, 2, 'Forget-Me-Not', 'remember me forever', 29, 1, ''),
-	(30, 2, 'Gardenia', 'joy', 30, 1, ''),
-	(31, 2, 'Geranium', 'comfort', 31, 1, ''),
-	(32, 2, 'Ginger', 'proud', 32, 1, ''),
-	(33, 2, 'Gladiolus', 'strength of character', 33, 0, ''),
-	(34, 1, 'Heather', 'solitude', 34, 1, ''),
-	(35, 2, 'Hibiscus', 'delicate beauty', 35, 0, ''),
-	(36, 1, 'Holly', 'domestic happiness', 36, 1, ''),
-	(37, 1, 'Hyacinth', 'sincerity', 37, 0, ''),
-	(38, 1, 'Hydrangea', 'perseverance', 38, 1, ''),
-	(39, 2, 'Iris', 'inspiration', 39, 0, ''),
-	(40, 1, 'Ivy', 'fidelity', 40, 0, ''),
-	(41, 1, 'Jasmine', 'grace and elegance', 41, 0, ''),
-	(42, 1, 'Larkspur', 'beautiful spirit', 42, 0, ''),
-	(43, 1, 'Lavender', 'distrust', 43, 0, ''),
-	(44, 1, 'Lilac', 'first love', 44, 1, ''),
-	(45, 1, 'Lily', '', 45, 0, ''),
-	(46, 1, 'Calla', 'regal', 46, 1, ''),
-	(47, 1, 'Casablanca', 'celebration', 47, 1, ''),
-	(48, 2, 'Day', 'enthusiasm', 48, 1, ''),
-	(49, 1, 'Stargazer', 'ambition', 49, 0, ''),
-	(50, 1, 'Lisianthus', 'calming', 50, 1, ''),
-	(51, 2, 'Magnolia', 'dignity', 51, 0, ''),
-	(52, 1, 'Marigold', 'desire for riches', 52, 0, ''),
-	(53, 1, 'Nasturtium', 'patriotism', 53, 0, ''),
-	(54, 2, 'Orange Blossom', 'fertility', 54, 1, ''),
-	(55, 1, 'Orchid', 'delicate beauty', 55, 0, ''),
-	(56, 2, 'Pansy', 'loving thoughts', 56, 0, ''),
-	(57, 1, 'Passion flower', 'passion', 57, 1, ''),
-	(58, 2, 'Peony', 'healing', 58, 1, ''),
-	(59, 2, 'Poppy', 'consolation', 59, 0, ''),
-	(60, 1, 'Queen Anne''s Lace', 'delicate femininity', 60, 0, ''),
-	(61, 1, 'Ranunculus', 'radiant', 61, 1, ''),
-	(62, 1, 'Rhododendron', 'beware', 62, 0, ''),
-	(63, 1, 'Rose', '', 63, 1, ''),
-	(64, 2, 'pink', 'admiration/appreciation', 64, 0, ''),
-	(65, 2, 'red', 'passionate love', 65, 1, ''),
-	(66, 1, 'red & white', 'unity', 66, 1, ''),
-	(67, 1, 'white', 'purity', 67, 1, ''),
-	(68, 1, 'yellow', 'friendship', 68, 1, ''),
-	(69, 2, 'Snapdragon', 'presumptuous', 69, 1, ''),
-	(70, 1, 'Star of Bethlehem', 'hope', 70, 1, ''),
-	(71, 1, 'Stephanotis', 'good luck', 71, 1, ''),
-	(72, 2, 'Statice', 'success', 72, 1, ''),
-	(73, 2, 'Sunflower', 'adoration', 73, 0, ''),
-	(74, 1, 'Sweetpea', 'shyness', 74, 1, ''),
-	(75, 2, 'Tuberose', 'pleasure', 75, 1, ''),
-	(76, 1, 'Tulip', '', 76, 1, ''),
-	(77, 2, 'pink', 'caring', 77, 1, ''),
-	(78, 1, 'purple', 'royalty', 78, 0, ''),
-	(79, 1, 'red', 'declaration of love', 79, 1, ''),
-	(80, 1, 'white', 'forgiveness', 80, 0, ''),
-	(81, 1, 'yellow', 'hopelessly in love', 81, 0, ''),
-	(82, 2, 'Violet', 'faithfulness', 82, 1, ''),
-	(83, 2, 'Wisteria', 'steadfast', 83, 0, ''),
-	(84, 1, 'Yarrow', 'good health', 84, 1, ''),
-	(85, 2, 'Zinnia', 'thoughts of friends', 85, 1, '');
-
 CREATE TABLE `articles` (
-    `id` int(11) UNSIGNED NOT NULL COMMENT 'Primary Key',
-    `category_id` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Category ID',
-    `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'Title',
-    `image` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'Main Image',
-    `content` longtext COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Intro Text',
-    `state` tinyint(1) NOT NULL DEFAULT 0 COMMENT '0: unpublished, 1:published',
-    `created` datetime NOT NULL DEFAULT '1000-01-01 00:00:00' COMMENT 'Created Date',
-    `created_by` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Author',
-    `params` text COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Params'
+  `id` int(11) UNSIGNED NOT NULL COMMENT 'Primary Key',
+  `category_id` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Category ID',
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'Title',
+  `image` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'Main Image',
+  `content` longtext COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Intro Text',
+  `state` tinyint(1) NOT NULL DEFAULT 0 COMMENT '0: unpublished, 1:published',
+  `created` datetime NOT NULL DEFAULT '1000-01-01 00:00:00' COMMENT 'Created Date',
+  `created_by` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Author',
+  `params` text COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Params'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `articles` (`id`, `category_id`, `title`, `image`, `content`, `state`, `created`, `created_by`, `params`) VALUES
-(1, 2, 'Corrupti illum.', 'https://picsum.photos/800/600?image=618', 'Ullam aliquid et dignissimos explicabo modi quam. Autem esse non et ut non est nihil id. Maxime placeat quod in et est dolorem. Eum quasi quam delectus alias minus. In voluptatem quidem eum non voluptatem officia reiciendis commodi. Assumenda illo aut sunt ex commodi in reiciendis.', 1, '2009-05-14 17:45:24', 4, ''),
-(2, 2, 'Ut occaecati consectetur.', 'https://picsum.photos/800/600?image=692', 'Ut in architecto cupiditate qui eligendi sequi cupiditate autem. Distinctio corrupti suscipit et sint atque quaerat. Molestiae tenetur aut nobis eius dolor id quasi incidunt. Laborum qui sint dolores molestiae deleniti quaerat. Alias deleniti beatae architecto aut voluptatem reprehenderit nisi fuga. Suscipit atque eius dolorem facere. Totam hic mollitia omnis et laboriosam.', 1, '1995-11-26 01:17:07', 2, ''),
-(3, 2, 'Architecto modi aut.', 'https://picsum.photos/800/600?image=43', 'Qui sunt eaque minus aut. Sint at qui est ut. Est rem commodi et nostrum eos. Fuga eaque ut et veniam. Minus tempore quasi ut ut.', 1, '1977-06-29 16:15:18', 3, ''),
-(4, 2, 'Beatae minus.', 'https://picsum.photos/800/600?image=461', 'Animi voluptatem qui ab eligendi officia eius. Qui repudiandae tenetur corrupti unde atque at. Qui ab vitae incidunt sed quidem omnis. Cupiditate est quae reprehenderit enim consequatur sit.', 0, '1971-02-28 03:39:32', 1, ''),
-(5, 2, 'Aperiam at.', 'https://picsum.photos/800/600?image=943', 'Sunt nostrum praesentium qui beatae quia ut asperiores non. Velit aut voluptatem dolorem voluptates quia. Ducimus est et qui aut similique. Eos quidem et officiis iusto a aut ea. Ducimus rerum dolores facilis. Ut iste molestiae quis placeat. Possimus dolor perferendis ut est nulla hic omnis.', 1, '2003-11-03 04:17:58', 2, ''),
-(6, 3, 'Enim officia unde.', 'https://picsum.photos/800/600?image=393', 'Et occaecati ipsa qui dolorem neque. Ea sed adipisci voluptatem. Error tenetur unde dolorem aliquid. Eveniet maiores aut numquam voluptatem. Ea nobis autem libero dolores reprehenderit minima voluptatem. Est minima architecto earum totam cum.', 1, '1993-12-22 09:57:17', 4, ''),
-(7, 3, 'Labore qui asperiores.', 'https://picsum.photos/800/600?image=527', 'Dicta aut ex sed accusantium consequatur tempore. Ut sequi dicta cum eum fuga. Cumque quo repudiandae aut autem iusto quia aut culpa. Accusamus vitae vel quo ullam. Impedit debitis aut est quaerat sit. Eos ipsum deserunt labore aliquid quibusdam eos quos. Voluptatem nostrum earum et expedita quos aspernatur temporibus.', 0, '1976-11-08 17:40:13', 2, ''),
-(8, 3, 'Quo reprehenderit voluptas.', 'https://picsum.photos/800/600?image=392', 'Recusandae culpa minima rerum harum numquam neque. Quod deserunt at quia fugit libero officiis. Mollitia voluptas dolor libero dignissimos. Ut sed cupiditate ut esse est consequatur. Omnis soluta dolores repudiandae dolor culpa. Nihil odit error quis esse qui recusandae.', 1, '2017-12-24 02:31:03', 2, ''),
-(9, 3, 'Dolorem cum earum.', 'https://picsum.photos/800/600?image=90', 'Ut aliquam est eos nam. Quo consequatur possimus in delectus dicta. Quis minima ut et est reprehenderit. Et minus quidem accusantium omnis voluptatem tenetur. Accusantium culpa aperiam vel.', 1, '2008-08-02 16:37:57', 2, ''),
-(10, 3, 'Ut excepturi et.', 'https://picsum.photos/800/600?image=1043', 'Eaque blanditiis iste eligendi consequatur veritatis non consequuntur saepe. Dolorum molestiae nihil iste. Debitis nobis ducimus itaque quidem quis necessitatibus et. Velit vel velit dolores blanditiis amet consequatur. Ut eos quo distinctio est.', 0, '2008-04-26 13:58:14', 2, ''),
-(11, 4, 'Sit iusto.', 'https://picsum.photos/800/600?image=203', 'Autem accusantium distinctio sit exercitationem. Pariatur alias aut ut ut et nostrum. Quam ducimus eaque totam et. Ad et esse voluptates dolorum harum eum quidem quae. Nesciunt ut aut eligendi. Quo omnis repellendus necessitatibus saepe. Pariatur sit et similique.', 0, '2015-07-15 15:40:08', 3, ''),
-(12, 4, 'Iste temporibus aut.', 'https://picsum.photos/800/600?image=300', 'Iste ut ut fuga hic aut numquam. Dolorum harum dicta nihil mollitia exercitationem placeat odio. In perspiciatis omnis quibusdam sint veritatis facere qui. Suscipit quam pariatur reiciendis quia tempore nostrum.', 1, '1994-05-18 15:13:35', 1, ''),
-(13, 4, 'Atque nobis autem.', 'https://picsum.photos/800/600?image=493', 'Explicabo fugit ipsa quo quasi reiciendis assumenda mollitia. Quaerat inventore ipsum voluptatum alias est laboriosam iste. Voluptatem rerum voluptatem quam quas. Omnis unde qui consequatur voluptatibus sint magnam atque. Velit nihil quo corporis facere qui et ratione.', 1, '1985-12-03 17:44:15', 4, ''),
-(14, 4, 'Autem corrupti sit.', 'https://picsum.photos/800/600?image=326', 'Et impedit officiis aut perferendis. Perspiciatis molestias natus reiciendis voluptates in. Voluptas ratione voluptas enim doloremque eveniet. Vitae nulla non aut.', 1, '1995-09-30 13:23:36', 4, ''),
-(15, 4, 'Vel nisi est.', 'https://picsum.photos/800/600?image=53', 'Possimus asperiores voluptatem aut architecto at possimus. Magni non similique nostrum pariatur aliquam nobis. Dolor voluptatem praesentium tempora dolores suscipit. Consequuntur officiis sunt molestiae veritatis commodi aut aliquam.', 1, '1987-02-21 23:45:37', 2, '');
+(1, 2, '(zh-TW) Corrupti illum.', 'https://picsum.photos/800/600?image=618', 'Ullam aliquid et dignissimos explicabo modi quam. Autem esse non et ut non est nihil id. Maxime placeat quod in et est dolorem. Eum quasi quam delectus alias minus. In voluptatem quidem eum non voluptatem officia reiciendis commodi. Assumenda illo aut sunt ex commodi in reiciendis.', 1, '2009-05-14 17:45:24', 4, ''),
+(2, 2, '(ja-JP) Ut occaecati consectetur.', 'https://picsum.photos/800/600?image=692', 'Ut in architecto cupiditate qui eligendi sequi cupiditate autem. Distinctio corrupti suscipit et sint atque quaerat. Molestiae tenetur aut nobis eius dolor id quasi incidunt. Laborum qui sint dolores molestiae deleniti quaerat. Alias deleniti beatae architecto aut voluptatem reprehenderit nisi fuga. Suscipit atque eius dolorem facere. Totam hic mollitia omnis et laboriosam.', 1, '1995-11-26 01:17:07', 2, ''),
+(3, 2, '(ja-JP) Architecto modi aut.', 'https://picsum.photos/800/600?image=43', 'Qui sunt eaque minus aut. Sint at qui est ut. Est rem commodi et nostrum eos. Fuga eaque ut et veniam. Minus tempore quasi ut ut.', 1, '1977-06-29 16:15:18', 3, ''),
+(4, 2, '(*) Beatae minus.', 'https://picsum.photos/800/600?image=461', 'Animi voluptatem qui ab eligendi officia eius. Qui repudiandae tenetur corrupti unde atque at. Qui ab vitae incidunt sed quidem omnis. Cupiditate est quae reprehenderit enim consequatur sit.', 0, '1971-02-28 03:39:32', 1, ''),
+(5, 2, '(zh-TW) Aperiam at.', 'https://picsum.photos/800/600?image=943', 'Sunt nostrum praesentium qui beatae quia ut asperiores non. Velit aut voluptatem dolorem voluptates quia. Ducimus est et qui aut similique. Eos quidem et officiis iusto a aut ea. Ducimus rerum dolores facilis. Ut iste molestiae quis placeat. Possimus dolor perferendis ut est nulla hic omnis.', 1, '2003-11-03 04:17:58', 2, ''),
+(6, 3, '(*) Enim officia unde.', 'https://picsum.photos/800/600?image=393', 'Et occaecati ipsa qui dolorem neque. Ea sed adipisci voluptatem. Error tenetur unde dolorem aliquid. Eveniet maiores aut numquam voluptatem. Ea nobis autem libero dolores reprehenderit minima voluptatem. Est minima architecto earum totam cum.', 1, '1993-12-22 09:57:17', 4, ''),
+(7, 3, '(zh-TW) Labore qui asperiores.', 'https://picsum.photos/800/600?image=527', 'Dicta aut ex sed accusantium consequatur tempore. Ut sequi dicta cum eum fuga. Cumque quo repudiandae aut autem iusto quia aut culpa. Accusamus vitae vel quo ullam. Impedit debitis aut est quaerat sit. Eos ipsum deserunt labore aliquid quibusdam eos quos. Voluptatem nostrum earum et expedita quos aspernatur temporibus.', 0, '1976-11-08 17:40:13', 2, ''),
+(8, 3, '(ja-JP) Quo reprehenderit voluptas.', 'https://picsum.photos/800/600?image=392', 'Recusandae culpa minima rerum harum numquam neque. Quod deserunt at quia fugit libero officiis. Mollitia voluptas dolor libero dignissimos. Ut sed cupiditate ut esse est consequatur. Omnis soluta dolores repudiandae dolor culpa. Nihil odit error quis esse qui recusandae.', 1, '2017-12-24 02:31:03', 2, ''),
+(9, 3, '(ja-JP) Dolorem cum earum.', 'https://picsum.photos/800/600?image=90', 'Ut aliquam est eos nam. Quo consequatur possimus in delectus dicta. Quis minima ut et est reprehenderit. Et minus quidem accusantium omnis voluptatem tenetur. Accusantium culpa aperiam vel.', 1, '2008-08-02 16:37:57', 2, ''),
+(10, 3, '(en-GB) Ut excepturi et.', 'https://picsum.photos/800/600?image=1043', 'Eaque blanditiis iste eligendi consequatur veritatis non consequuntur saepe. Dolorum molestiae nihil iste. Debitis nobis ducimus itaque quidem quis necessitatibus et. Velit vel velit dolores blanditiis amet consequatur. Ut eos quo distinctio est.', 0, '2008-04-26 13:58:14', 2, ''),
+(11, 4, '(en-GB) Sit iusto.', 'https://picsum.photos/800/600?image=203', 'Autem accusantium distinctio sit exercitationem. Pariatur alias aut ut ut et nostrum. Quam ducimus eaque totam et. Ad et esse voluptates dolorum harum eum quidem quae. Nesciunt ut aut eligendi. Quo omnis repellendus necessitatibus saepe. Pariatur sit et similique.', 0, '2015-07-15 15:40:08', 3, ''),
+(12, 4, '(*) Iste temporibus aut.', 'https://picsum.photos/800/600?image=300', 'Iste ut ut fuga hic aut numquam. Dolorum harum dicta nihil mollitia exercitationem placeat odio. In perspiciatis omnis quibusdam sint veritatis facere qui. Suscipit quam pariatur reiciendis quia tempore nostrum.', 1, '1994-05-18 15:13:35', 1, ''),
+(13, 4, '(ja-JP) Atque nobis autem.', 'https://picsum.photos/800/600?image=493', 'Explicabo fugit ipsa quo quasi reiciendis assumenda mollitia. Quaerat inventore ipsum voluptatum alias est laboriosam iste. Voluptatem rerum voluptatem quam quas. Omnis unde qui consequatur voluptatibus sint magnam atque. Velit nihil quo corporis facere qui et ratione.', 1, '1985-12-03 17:44:15', 4, ''),
+(14, 4, '(*) Autem corrupti sit.', 'https://picsum.photos/800/600?image=326', 'Et impedit officiis aut perferendis. Perspiciatis molestias natus reiciendis voluptates in. Voluptas ratione voluptas enim doloremque eveniet. Vitae nulla non aut.', 1, '1995-09-30 13:23:36', 4, ''),
+(15, 4, '(zh-TW) Vel nisi est.', 'https://picsum.photos/800/600?image=53', 'Possimus asperiores voluptatem aut architecto at possimus. Magni non similique nostrum pariatur aliquam nobis. Dolor voluptatem praesentium tempora dolores suscipit. Consequuntur officiis sunt molestiae veritatis commodi aut aliquam.', 1, '1987-02-21 23:45:37', 2, '');
 
 CREATE TABLE `comments` (
-    `id` int(11) UNSIGNED NOT NULL COMMENT 'Primary Key',
-    `target_id` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Target ID',
-    `user_id` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'User ID',
-    `type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'Type',
-    `content` text COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Content',
-    `created` datetime NOT NULL DEFAULT '1000-01-01 00:00:00' COMMENT 'Created Date',
-    `created_by` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Author'
+  `id` int(11) UNSIGNED NOT NULL COMMENT 'Primary Key',
+  `target_id` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Target ID',
+  `user_id` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'User ID',
+  `type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'Type',
+  `content` text COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Content',
+  `created` datetime NOT NULL DEFAULT '1000-01-01 00:00:00' COMMENT 'Created Date',
+  `created_by` int(11) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Author'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `comments` (`id`, `target_id`, `user_id`, `type`, `content`, `created`, `created_by`) VALUES
@@ -196,14 +85,14 @@ INSERT INTO `comments` (`id`, `target_id`, `user_id`, `type`, `content`, `create
 (45, 15, 3, 'article', 'Quo et reprehenderit alias debitis. Ullam eum repellendus repellat qui non pariatur iste. Odit molestiae magnam non delectus dolorum qui sed. Libero eum veritatis provident. Minus voluptas expedita est quas. Esse architecto nisi qui quisquam est. Omnis et ut ad consequuntur totam.', '2009-08-19 07:50:11', 2);
 
 CREATE TABLE `users` (
-    `id` int(11) UNSIGNED NOT NULL COMMENT 'Primary Key',
-    `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'Full Name',
-    `username` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'Login name',
-    `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'Email',
-    `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'Password',
-    `avatar` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'Avatar',
-    `registered` datetime NOT NULL DEFAULT '1000-01-01 00:00:00' COMMENT 'Register Time',
-    `params` text COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Params'
+  `id` int(11) UNSIGNED NOT NULL COMMENT 'Primary Key',
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'Full Name',
+  `username` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'Login name',
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'Email',
+  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'Password',
+  `avatar` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '' COMMENT 'Avatar',
+  `registered` datetime NOT NULL DEFAULT '1000-01-01 00:00:00' COMMENT 'Register Time',
+  `params` text COLLATE utf8mb4_unicode_ci NOT NULL COMMENT 'Params'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 INSERT INTO `users` (`id`, `name`, `username`, `email`, `password`, `avatar`, `registered`, `params`) VALUES
@@ -213,22 +102,22 @@ INSERT INTO `users` (`id`, `name`, `username`, `email`, `password`, `avatar`, `r
 (4, 'Warren Kessler', 'alyson40', 'nadia.shanahan@example.org', '$2y$10$wL/yzrNr5lSJJGym1XL0HOu6hi.QDOuU8uEqNhm46S9hKz7BKvB0y', 'https://i.pravatar.cc/600?u=36023ad83154c90.20043323', '2020-09-18 09:05:24', '');
 
 ALTER TABLE `articles`
-    ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`);
 
 ALTER TABLE `comments`
-    ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`);
 
 ALTER TABLE `users`
-    ADD PRIMARY KEY (`id`),
+  ADD PRIMARY KEY (`id`),
   ADD KEY `idx_users_username` (`username`(150)),
   ADD KEY `idx_users_email` (`email`(150));
 
 ALTER TABLE `articles`
-    MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Primary Key', AUTO_INCREMENT=16;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Primary Key', AUTO_INCREMENT=16;
 
 ALTER TABLE `comments`
-    MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Primary Key', AUTO_INCREMENT=46;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Primary Key', AUTO_INCREMENT=46;
 
 ALTER TABLE `users`
-    MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Primary Key', AUTO_INCREMENT=5;
+  MODIFY `id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Primary Key', AUTO_INCREMENT=5;
 COMMIT;

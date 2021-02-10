@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\ORM\Strategy;
 
 use Windwalker\Data\Collection;
+use Windwalker\Database\DatabaseAdapter;
 use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\Database\Event\ItemFetchedEvent;
 use Windwalker\Query\Clause\AsClause;
@@ -84,23 +85,23 @@ class Selector extends AbstractQueryStrategy
         return $item;
     }
 
-    protected function registerGroupEvent(StatementInterface $stmt): StatementInterface
+    protected function registerEvents(StatementInterface $stmt): StatementInterface
     {
-        if ($this->groupDivider === null) {
-            return $stmt;
+        if ($this->groupDivider !== null) {
+            $stmt->on(
+                ItemFetchedEvent::class,
+                function (ItemFetchedEvent $event) {
+                    $item = $this->groupItem($event->getItem());
+                    $event->setItem($item);
+                }
+            );
         }
 
-        return $stmt->on(
-            ItemFetchedEvent::class,
-            function (ItemFetchedEvent $event) {
-                $item = $this->groupItem($event->getItem());
-                $event->setItem($item);
-            }
-        );
+        return $stmt;
     }
 
     protected function prepareStatement(): StatementInterface
     {
-        return $this->registerGroupEvent(parent::prepareStatement());
+        return $this->registerEvents(parent::prepareStatement());
     }
 }

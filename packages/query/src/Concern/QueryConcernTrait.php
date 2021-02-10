@@ -41,20 +41,28 @@ trait QueryConcernTrait
         $wheres = TypeCast::toArray($wheres);
 
         foreach ($wheres as $key => $where) {
+            // String key:
+            // 'key' => 'value'
             if (!is_numeric($key)) {
                 $query->where($key, '=', $where);
                 continue;
             }
 
+            // String element:
+            // 'key <= value'
             if (is_string($where)) {
                 $query->whereRaw($where);
                 continue;
             }
 
-            if (is_array($wheres)) {
-                return $query->where(...$wheres);
+            // Array element
+            // ['key', '=', 'value']
+            if (is_array($where)) {
+                $query->where(...$where);
+                continue;
             }
 
+            // Callback or others
             $query->where($where);
         }
 

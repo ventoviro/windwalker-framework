@@ -154,4 +154,30 @@ class ReflectAccessor
 
         throw new \InvalidArgumentException('No a valid target to get reflection.');
     }
+
+    public static function reflect(mixed $value): \Reflector
+    {
+        if ($value instanceof \Reflector) {
+            return $value;
+        }
+
+        if (is_callable($value)) {
+            return (new ReflectionCallable($value))->getReflector();
+        }
+
+        if (is_string($value) && class_exists($value)) {
+            return new ReflectionClass($value);
+        }
+
+        if (is_object($value)) {
+            return new \ReflectionObject($value);
+        }
+
+        throw new \InvalidArgumentException(
+            sprintf(
+                'Unable to reflect value of: %s',
+                get_debug_type($value)
+            )
+        );
+    }
 }
