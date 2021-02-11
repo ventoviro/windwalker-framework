@@ -41,12 +41,13 @@ class Article
 
     #[Column('created')]
     #[Cast(\DateTimeImmutable::class)]
-    protected string $created;
+    protected \DateTimeImmutable $created;
 
     #[Column('created_by')]
     protected int $createdBy;
 
     #[Column('params')]
     #[Cast(JsonCast::class)]
-    protected string $params;
+    #[Cast('array')]
+    protected ?array $params;
 }

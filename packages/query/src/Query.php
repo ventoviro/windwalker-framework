@@ -15,6 +15,7 @@ use Windwalker\Data\Collection;
 use Windwalker\Database\DatabaseAdapter;
 use Windwalker\Database\Driver\AbstractDriver;
 use Windwalker\Database\Driver\StatementInterface;
+use Windwalker\ORM\ORM;
 use Windwalker\Query\Bounded\BindableInterface;
 use Windwalker\Query\Bounded\BindableTrait;
 use Windwalker\Query\Bounded\BoundedHelper;
@@ -1865,7 +1866,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
     {
         $db = $this->getEscaper()->getConnection();
 
-        if (!($db instanceof AbstractDriver || $db instanceof DatabaseAdapter)) {
+        if (!($db instanceof AbstractDriver || $db instanceof DatabaseAdapter || $db instanceof ORM)) {
             throw new \BadMethodCallException(
                 sprintf(
                     'Directly fetch from DB must use %s or %s as Escaper::$connection.',
@@ -1873,6 +1874,10 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
                     DatabaseAdapter::class
                 )
             );
+        }
+
+        if ($db instanceof ORM) {
+            $db = $db->getDb();
         }
 
         return $db->prepare($this);

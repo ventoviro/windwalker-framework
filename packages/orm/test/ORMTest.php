@@ -28,7 +28,7 @@ class ORMTest extends AbstractDatabaseTestCase
      */
     public function testFindOne(): void
     {
-        $article = $this->instance->findOne(Article::class, 2);
+        $article = $this->instance->findOne(Article::class, 1);
 
         show($article);
     }

@@ -14,26 +14,56 @@ namespace Windwalker\ORM\Attributes;
 /**
  * The Cast class.
  */
-#[\Attribute]
+#[\Attribute(\Attribute::IS_REPEATABLE | \Attribute::TARGET_PROPERTY)]
 class Cast
 {
-    protected string $castClass;
+    public const CONSTRUCTOR = 2;
+    public const HYDRATOR = 3;
+
+    protected mixed $cast;
+
+    protected ?int $hydrateStrategy;
+
+    /**
+     * @var mixed
+     */
+    protected $extract;
 
     /**
      * Cast constructor.
      *
-     * @param  string  $castClass
+     * @param  string      $cast
+     * @param  mixed|null  $extract
+     * @param  int|null    $hydrateStrategy
      */
-    public function __construct(string $castClass)
+    public function __construct(mixed $cast, mixed $extract = null, ?int $hydrateStrategy = self::CONSTRUCTOR)
     {
-        $this->castClass = $castClass;
+        $this->cast            = $cast;
+        $this->hydrateStrategy = $hydrateStrategy;
+        $this->extract = $extract;
     }
 
     /**
-     * @return string
+     * @return mixed
      */
-    public function getCastClass(): string
+    public function getCast(): mixed
     {
-        return $this->castClass;
+        return $this->cast;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getExtract(): mixed
+    {
+        return $this->extract;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getHydrateStrategy(): ?int
+    {
+        return $this->hydrateStrategy;
     }
 }

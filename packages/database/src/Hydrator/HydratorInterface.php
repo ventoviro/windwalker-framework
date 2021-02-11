@@ -17,15 +17,6 @@ namespace Windwalker\Database\Hydrator;
 interface HydratorInterface
 {
     /**
-     * Extract to array.
-     *
-     * @param  object  $object
-     *
-     * @return  array
-     */
-    public function extract(object $object): array;
-
-    /**
      * Hydrate object with the provided data.
      *
      * @param  array   $data
@@ -34,4 +25,13 @@ interface HydratorInterface
      * @return  object
      */
     public function hydrate(array $data, object $object): object;
+
+    /**
+     * Extract to array.
+     *
+     * @param  object  $object
+     *
+     * @return  array
+     */
+    public function extract(object $object): array;
 }

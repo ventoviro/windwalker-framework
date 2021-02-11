@@ -12,10 +12,16 @@ declare(strict_types=1);
 namespace Windwalker\ORM\Metadata;
 
 use Windwalker\Attributes\AttributesResolver;
+use Windwalker\Database\Hydrator\HydratorAwareInterface;
+use Windwalker\Database\Hydrator\HydratorInterface;
+use Windwalker\ORM\Attributes\Cast;
 use Windwalker\ORM\Attributes\Column;
 use Windwalker\ORM\Attributes\PK;
 use Windwalker\ORM\Attributes\Table;
+use Windwalker\ORM\Cast\CastManager;
+use Windwalker\ORM\ORM;
 use Windwalker\Utilities\Cache\InstanceCacheTrait;
+use Windwalker\Utilities\Classes\ObjectBuilder;
 
 use function Windwalker\iterator_keys;
 
@@ -30,6 +36,8 @@ class EntityMetadata
 
     protected ?string $tableName = null;
 
+    protected CastManager $castManager;
+
     /**
      * EntityMetadata constructor.
      *
@@ -42,6 +50,38 @@ class EntityMetadata
         }
 
         $this->className = $entity;
+        $this->castManager = new CastManager();
+
+        $this->setup();
+    }
+
+    public function setup(): void
+    {
+        /** @var \ReflectionAttribute $refColumn */
+        /** @var \ReflectionProperty $prop */
+        foreach ($this->getReflectColumns() as [$prop, $refColumn]) {
+            /** @var Column $column */
+            $column = $refColumn->newInstance();
+            $casts   = $prop->getAttributes(Cast::class);
+
+            if ($casts === []) {
+                continue;
+            }
+
+            foreach ($casts as $cast) {
+                $cast = $cast->newInstance();
+                $this->cast(
+                    $column->getName(),
+                    $cast->getCast(),
+                    $cast->getExtract(),
+                    $cast->getHydrateStrategy()
+                );
+            }
+        }
+
+        if (is_subclass_of($this->className, EntitySetupInterface::class)) {
+            $this->className::setup($this);
+        }
     }
 
     public function getClassName(): string
@@ -103,17 +143,13 @@ class EntityMetadata
      */
     protected function getKeysAttrs(): \Generator
     {
-        foreach ($this->getReflectProperties() as $prop) {
-            show(
-                AttributesResolver::getFirstAttributeInstance($prop, PK::class)
-            );
+        foreach ($this->getReflectColumns() as [$prop, $refColumn]) {
+            /** @var \ReflectionProperty $prop */
+            /** @var Column $column */
+            $column = $refColumn->newInstance();
 
-            if (
-                ($pk = AttributesResolver::getFirstAttributeInstance($prop, PK::class))
-                && ($col = AttributesResolver::getFirstAttributeInstance($prop, Column::class))
-            ) {
-                show($pk, $col);
-                yield $col->getName() => [$prop, $pk, $col];
+            if ($pk = AttributesResolver::getFirstAttributeInstance($prop, PK::class)) {
+                yield $column->getName() => [$prop, $pk, $column];
             }
         }
     }
@@ -131,8 +167,58 @@ class EntityMetadata
             );
     }
 
+    /**
+     * getColumns
+     *
+     * @return \Generator<int, array<\Reflector>>
+     */
+    public function getReflectColumns(): \Generator
+    {
+        foreach ($this->getReflectProperties() as $key => $prop) {
+            if ($col = AttributesResolver::getFirstAttribute($prop, Column::class)) {
+                yield $key => [$prop, $col];
+            }
+        }
+    }
+
     public function getReflector(): \ReflectionClass
     {
         return new \ReflectionClass($this->className);
+    }
+
+    public function cast(
+        string $field,
+        mixed $cast,
+        mixed $extract = null,
+        int $hydrateStrategy = Cast::CONSTRUCTOR
+    ): static {
+        $this->getCastManager()->addCast(
+            $field,
+            $cast,
+            $extract,
+            $hydrateStrategy
+        );
+
+        return $this;
+    }
+
+    /**
+     * @return CastManager
+     */
+    public function getCastManager(): CastManager
+    {
+        return $this->castManager;
+    }
+
+    /**
+     * @param  CastManager  $castManager
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setCastManager(CastManager $castManager): static
+    {
+        $this->castManager = $castManager;
+
+        return $this;
     }
 }

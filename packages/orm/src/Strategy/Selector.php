@@ -12,9 +12,10 @@ declare(strict_types=1);
 namespace Windwalker\ORM\Strategy;
 
 use Windwalker\Data\Collection;
-use Windwalker\Database\DatabaseAdapter;
 use Windwalker\Database\Driver\StatementInterface;
+use Windwalker\Database\Event\HydrateEvent;
 use Windwalker\Database\Event\ItemFetchedEvent;
+use Windwalker\ORM\Hydrator\EntityHydrator;
 use Windwalker\Query\Clause\AsClause;
 use Windwalker\Utilities\Arr;
 
@@ -35,14 +36,12 @@ class Selector extends AbstractQueryStrategy
         $db = $this->getDb();
 
         foreach ($tables as $i => $clause) {
-            $tbm = $db->getTable(
-                $this->stripNameQuote($clause->getValue())
-            );
+            $tbm = $db->getTable($clause->getValue());
 
             $cols = $tbm->getColumnNames();
 
             foreach ($cols as $col) {
-                $alias = $this->stripNameQuote($clause->getAlias());
+                $alias = $clause->getAlias();
 
                 if ($i === 0) {
                     $as = $col;
@@ -68,17 +67,21 @@ class Selector extends AbstractQueryStrategy
         return $this;
     }
 
-    protected function groupItem(Collection $item): Collection
+    protected function groupItem(?object $item): ?object
     {
+        if ($item === null) {
+            return null;
+        }
+
         foreach ($item as $k => $value) {
             if (str_contains($k, $this->groupDivider)) {
                 [$prefix, $key] = explode($this->groupDivider, $k, 2);
 
-                $item[$prefix] ??= new Collection();
+                $item->$prefix ??= new Collection();
 
-                $item[$prefix][$key] = $value;
+                $item->$prefix->$key = $value;
 
-                unset($item[$k]);
+                unset($item->$k);
             }
         }
 
@@ -96,6 +99,34 @@ class Selector extends AbstractQueryStrategy
                 }
             );
         }
+
+        $stmt->on(
+            HydrateEvent::class,
+            function (HydrateEvent $event) {
+                $orm  = $this->getORM();
+                $item = $event->getItem();
+
+                if ($item === null) {
+                    return;
+                }
+
+                $object = $event->getClass();
+
+                if (is_string($object)) {
+                    $object = $orm->getAttributesResolver()->createObject($object);
+                }
+
+                $hydrator = $orm->getAttributesResolver()->createObject(
+                    EntityHydrator::class,
+                    hydrator: $this->getORM()->getDb()->getHydrator(),
+                    orm: $orm
+                );
+
+                $item = $hydrator->hydrate($item, $object);
+
+                $event->setItem($item);
+            }
+        );
 
         return $stmt;
     }

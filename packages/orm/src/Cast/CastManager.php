@@ -11,30 +11,218 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Cast;
 
+use Windwalker\ORM\Attributes\Cast;
+use Windwalker\ORM\Metadata\EntityMetadata;
+use Windwalker\ORM\ORM;
+use Windwalker\Utilities\Cache\InstanceCacheTrait;
+use Windwalker\Utilities\TypeCast;
+
 /**
  * The CastManager class.
  */
 class CastManager
 {
-    protected array $casts = [];
+    use InstanceCacheTrait;
 
     /**
-     * @return array
+     * @var array<int, array<int, array<int, callable|int>>>
      */
-    public function getCasts(): array
+    protected array $castGroups = [];
+
+    /**
+     * @var array<int, mixed>
+     */
+    protected array $castAliases = [];
+
+    /**
+     * CastManager constructor.
+     */
+    public function __construct()
     {
-        return $this->casts;
+        $this->prepareDefaultAliases();
     }
 
     /**
-     * @param  array  $casts
+     * Add a custom cast type, the field must be DB field name.
+     *
+     * @param  string      $field
+     * @param  mixed       $cast
+     * @param  mixed|null  $extract
+     *
+     * @param  int|null    $hydrateStrategy
+     *
+     * @return  static
+     */
+    public function addCast(
+        string $field,
+        mixed $cast,
+        mixed $extract = null,
+        ?int $hydrateStrategy = Cast::CONSTRUCTOR
+    ): static {
+        $this->castGroups[$field] ??= [];
+
+        $this->castGroups[$field][] = [$cast, $extract, $hydrateStrategy];
+
+        return $this;
+    }
+
+    /**
+     * getCast
+     *
+     * @param  string  $field
+     *
+     * @return  array<array<callable>>
+     */
+    public function getFieldCasts(string $field): array
+    {
+        return $this->once(
+            'casts:' . $field,
+            function () use ($field) {
+                $groups = $this->castGroups[$field] ?? [];
+                $casts = [];
+
+                foreach ($groups as $castControl) {
+                    [$cast, $extract, $hydrateStrategy] = $castControl;
+
+                    if (!$extract) {
+                        if ($cast instanceof CastInterface || is_subclass_of($extract, CastInterface::class)) {
+                            $extract = $cast;
+                        } else {
+                            $extract = [TypeCast::class, 'tryString'];
+                        }
+                    }
+
+                    $casts[] = [
+                        $this->castToCallback($cast, $hydrateStrategy, 'cast'),
+                        $this->castToCallback($extract, $hydrateStrategy, 'extract')
+                    ];
+                }
+
+                return $casts;
+            }
+        );
+    }
+
+    /**
+     * @param  array  $castGroups
      *
      * @return  static  Return self to support chaining.
      */
-    public function setCasts(array $casts): static
+    public function setCastGroups(array $castGroups): static
     {
-        $this->casts = $casts;
+        $this->castGroups = $castGroups;
 
         return $this;
+    }
+
+    public function alias(string $castName, mixed $alias): static
+    {
+        $this->castAliases[$castName] = $alias;
+
+        return $this;
+    }
+
+    public function removeAlias(string $castName): static
+    {
+        unset($this->castAliases[$castName]);
+
+        return $this;
+    }
+
+    public function setAliases(array $aliases): static
+    {
+        $this->castAliases = $aliases;
+
+        return $this;
+    }
+
+    public function resolveAlias(string $castName): mixed
+    {
+        while (isset($this->castAliases[$castName])) {
+            $castName = $this->castAliases[$castName];
+        }
+
+        return $castName;
+    }
+
+    /**
+     * castToCallback
+     *
+     * @param  mixed     $cast
+     * @param  int|null  $hydrateStrategy
+     * @param  string    $direction
+     *
+     * @return  callable
+     */
+    protected function castToCallback(mixed $cast, ?int $hydrateStrategy, $direction = 'cast'): callable
+    {
+        if (is_callable($cast)) {
+            return $cast;
+        }
+
+        if (is_string($cast)) {
+            $cast = $this->resolveAlias($cast);
+
+            if (class_exists($cast)) {
+                // Cast interface
+                if (is_subclass_of($cast, CastInterface::class)) {
+                    return function (mixed $value, ORM $orm) use ($direction, $cast) {
+                        $castObject = $orm->getAttributesResolver()->createObject($cast);
+
+                        return $castObject->$direction($value);
+                    };
+                }
+
+                // Pure class
+                return static function (mixed $value, ORM $orm) use ($hydrateStrategy, $cast) {
+                    if ($hydrateStrategy === Cast::HYDRATOR) {
+                        $object = $orm->getAttributesResolver()->createObject($cast);
+
+                        return $orm->getDb()->getHydrator()->hydrate($value, $object);
+                    }
+
+                    return $orm->getAttributesResolver()->createObject($cast, $value);
+                };
+            }
+
+            return static fn(mixed $value) => TypeCast::try($value, $cast);
+        }
+
+        if (is_object($cast)) {
+            // Cast interface
+            if ($cast instanceof CastInterface) {
+                return [$cast, $direction];
+            }
+
+            // Pure object
+            return static fn(mixed $value, ORM $orm) => $orm->getDb()
+                ->getHydrator()
+                ->hydrate($value, $cast);
+        }
+
+        throw new \InvalidArgumentException(
+            sprintf(
+                'Unsupported cast type: %s',
+                get_debug_type($cast)
+            )
+        );
+    }
+
+    protected function prepareDefaultAliases(): void
+    {
+        $this->alias(
+            'datetime',
+            DateTimeCast::class
+        );
+
+        $this->alias(
+            'timestamp',
+            TimestampCast::class
+        );
+
+        $this->alias(
+            'json',
+            JsonCast::class
+        );
     }
 }

@@ -14,6 +14,7 @@ namespace Windwalker\ORM;
 use Windwalker\Attributes\AttributesAwareTrait;
 use Windwalker\Attributes\AttributesResolver;
 use Windwalker\Database\DatabaseAdapter;
+use Windwalker\Database\Event\HydrateEvent;
 use Windwalker\ORM\Attributes\PK;
 use Windwalker\ORM\Attributes\Table;
 use Windwalker\ORM\Metadata\EntityMetadata;
@@ -46,12 +47,27 @@ class ORM
 
     public function from(mixed $tables, ?string $alias = null): Selector
     {
-        return (new Selector($this->getDb()))->from($tables, $alias);
+        return $this->createSelectorQuery()->from($tables, $alias);
     }
 
     public function select(...$columns): Selector
     {
-        return (new Selector($this->getDb()))->select(...$columns);
+        return $this->createSelectorQuery()->select(...$columns);
+    }
+
+    protected function createSelectorQuery(): Selector
+    {
+        return new Selector($this);
+    }
+
+    public function hydrate()
+    {
+
+    }
+
+    public function getEntityMetadata(string|object $entity): EntityMetadata
+    {
+        return $this->getEntityMetadataCollection()->get($entity);
     }
 
     public function findOne(string|object $entity, mixed $conditions): ?object
@@ -106,6 +122,26 @@ class ORM
     public function setDb(DatabaseAdapter $db): static
     {
         $this->db = $db;
+
+        return $this;
+    }
+
+    /**
+     * @return EntityMetadataCollection
+     */
+    public function getEntityMetadataCollection(): EntityMetadataCollection
+    {
+        return $this->entityMetadataCollection;
+    }
+
+    /**
+     * @param  EntityMetadataCollection  $entityMetadataCollection
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setEntityMetadataCollection(EntityMetadataCollection $entityMetadataCollection): static
+    {
+        $this->entityMetadataCollection = $entityMetadataCollection;
 
         return $this;
     }

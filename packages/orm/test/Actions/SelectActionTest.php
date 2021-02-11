@@ -52,6 +52,6 @@ class SelectActionTest extends AbstractDatabaseTestCase
 
     protected function setUp(): void
     {
-        $this->instance = new Selector(self::$db, self::$db->getPlatform()->getGrammar());
+        $this->instance = new Selector(new ORM(self::$db));
     }
 }

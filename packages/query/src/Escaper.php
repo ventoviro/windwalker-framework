@@ -13,6 +13,7 @@ namespace Windwalker\Query;
 
 use Windwalker\Database\DatabaseAdapter;
 use Windwalker\Database\Driver\AbstractDriver;
+use Windwalker\ORM\ORM;
 use Windwalker\Utilities\Str;
 
 use function Windwalker\value;
@@ -80,6 +81,10 @@ class Escaper
             return $escaper->escape((string) $value);
         }
 
+        if ($escaper instanceof ORM) {
+            return $escaper->getDb()->escape((string) $value);
+        }
+
         return $escaper->escape($value);
     }
 
@@ -100,6 +105,10 @@ class Escaper
 
         if ($escaper instanceof DatabaseAdapter) {
             return $escaper->getDriver()->quote((string) $value);
+        }
+
+        if ($escaper instanceof ORM) {
+            return $escaper->getDb()->quote((string) $value);
         }
 
         return "'" . static::tryEscape($escaper, $value) . "'";

@@ -18,10 +18,13 @@ class JsonCast implements CastInterface
 {
     /**
      * @inheritDoc
-     * @throws \JsonException
      */
     public function cast(?string $value): mixed
     {
+        if ($value === '' || $value === null) {
+            return null;
+        }
+
         return json_decode($value, true, 512, JSON_THROW_ON_ERROR);
     }
 
@@ -31,6 +34,6 @@ class JsonCast implements CastInterface
      */
     public function extract(mixed $value): ?string
     {
-        return is_json($value) ? $value : json_encode($value, JSON_THROW_ON_ERROR);
+        return is_json($value) ? $value : json_encode($value ?? '', JSON_THROW_ON_ERROR);
     }
 }

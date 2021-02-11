@@ -14,6 +14,7 @@ namespace Windwalker\Database\Driver;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Windwalker\Data\Collection;
 use Windwalker\Database\Event\ItemFetchedEvent;
+use Windwalker\Database\Event\HydrateEvent;
 use Windwalker\Database\Event\QueryEndEvent;
 use Windwalker\Database\Event\QueryFailedEvent;
 use Windwalker\Database\Event\QueryStartEvent;
@@ -90,13 +91,16 @@ abstract class AbstractStatement implements StatementInterface
      */
     public function fetch(object|string $class = Collection::class, array $args = []): ?object
     {
-        // todo: Implement more hydrators.
+        // todo: Implement more hydrators strategies.
         $hydrator = $this->driver->getHydrator();
 
         $item = $this->doFetch();
+        $query = $this->query;
 
-        if ($item === null) {
-            return null;
+        $item = $this->emit(HydrateEvent::class, compact('item', 'class', 'query'))->getItem();
+
+        if (!is_array($item)) {
+            return $item;
         }
 
         return $hydrator->hydrate(

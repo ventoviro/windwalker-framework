@@ -175,7 +175,7 @@ class AttributesResolver extends ObjectBuilder
                 $newArgs[$key] = &$args[$parameter->getName()];
             } elseif (array_key_exists($i, $args)) {
                 $newArgs[$key] = &$args[$i];
-            } else {
+            } elseif ($parameter->isDefaultValueAvailable()) {
                 $newArgs[$key] = $parameter->getDefaultValue();
             }
 
@@ -394,9 +394,18 @@ class AttributesResolver extends ObjectBuilder
         mixed $value,
         string $attributeClass,
     ): ?object {
+        $attr = static::getFirstAttribute($value, $attributeClass);
+
+        return $attr ? $attr->newInstance() : null;
+    }
+
+    public static function getFirstAttribute(
+        mixed $value,
+        string $attributeClass,
+    ): ?\ReflectionAttribute {
         $attrs = static::getAttributesFromAny($value, $attributeClass);
 
-        return $attrs ? $attrs[0]->newInstance() : null;
+        return $attrs ? $attrs[0] : null;
     }
 
     public static function runAttributeIfExists(
