@@ -53,3 +53,8 @@ foreach ($users as $user) {
 
 
 }
+
+// TODO:
+// create() / update() / delete()
+// store() commit()
+// Events

@@ -90,8 +90,8 @@ class ORM
     /**
      * findOne
      *
-     * @param  string|object  $entity
-     * @param  mixed          $conditions
+     * @param  string  $entity
+     * @param  mixed   $conditions
      *
      * @return  object|null
      *
@@ -101,18 +101,25 @@ class ORM
      *
      * @throws \ReflectionException
      */
-    public function findOne(string|object $entity, mixed $conditions): ?object
+    public function findOne(string $entity, mixed $conditions): ?object
     {
-        if (is_string($entity)) {
-            $entity = $this->getAttributesResolver()->createObject($entity);
-        }
-
         $metadata = $this->entityMetadataCollection->get($entity);
 
-        return $this->from($metadata->getTableName())
-            ->select('*')
+        return $this->from($entity)
             ->where(static::conditionsToWheres($metadata, $conditions))
-            ->get($metadata->getClassName());
+            ->get($entity);
+    }
+
+    public function createOne(string|object $entity, array|object $data = [])
+    {
+
+    }
+
+    public function updateOne(
+        string|object $entity,
+        array|object $data = [],
+    ) {
+
     }
 
     public static function conditionsToWheres(EntityMetadata $metadata, mixed $conditions): array
