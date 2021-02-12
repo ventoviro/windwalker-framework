@@ -55,6 +55,18 @@ class ReflectionCallable implements \Reflector
             return $this->callable;
         }
 
+        if ($this->type === static::TYPE_STATIC_METHOD || $this->type === static::TYPE_OBJECT_METHOD) {
+            $target = $this->instance ?? $this->class;
+
+            // If method is not exists, could be a magic method, wrap it with closure.
+            if (!method_exists($target, $this->function)) {
+                $callable = [$target, $this->function];
+                return function ($args) use ($callable) {
+                    return $callable(...$args);
+                };
+            }
+        }
+
         return Closure::fromCallable($this->callable);
     }
 
@@ -69,7 +81,15 @@ class ReflectionCallable implements \Reflector
             return new \ReflectionFunction($this->callable);
         }
 
-        return new \ReflectionMethod($this->instance ?? $this->class, $this->function);
+        $target = $this->instance ?? $this->class;
+
+        // If method is not exists, could be a magic method, wrap it with closure.
+        if (!method_exists($target, $this->function)) {
+            $callable = [$target, $this->function];
+            return new \ReflectionFunction(fn(...$args) => $callable(...$args));
+        }
+
+        return new \ReflectionMethod($target, $this->function);
     }
 
     protected function extractCallable(): void

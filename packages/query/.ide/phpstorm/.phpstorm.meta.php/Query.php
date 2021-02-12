@@ -11,6 +11,27 @@ declare(strict_types=1);
 
 namespace PHPSTORM_META {
 
+    // Types
+
+    override(
+        \Windwalker\Query\Query::get(0),
+        map(
+            [
+                '' => '@',
+            ]
+        )
+    );
+
+    override(
+        \Windwalker\Query\Query::all(0),
+        map(
+            [
+                '' => '@',
+            ]
+        )
+    );
+
+    // Options
     registerArgumentsSet(
         'query_join_types',
         'INNER',

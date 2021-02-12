@@ -19,6 +19,8 @@ class Column
 {
     protected string $name;
 
+    protected \ReflectionProperty $property;
+
     /**
      * Column constructor.
      *
@@ -35,5 +37,25 @@ class Column
     public function getName(): string
     {
         return $this->name;
+    }
+
+    /**
+     * @return \ReflectionProperty
+     */
+    public function getProperty(): \ReflectionProperty
+    {
+        return $this->property;
+    }
+
+    /**
+     * @param  \ReflectionProperty  $property
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setProperty(\ReflectionProperty $property): static
+    {
+        $this->property = $property;
+
+        return $this;
     }
 }

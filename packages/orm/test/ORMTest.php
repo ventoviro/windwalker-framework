@@ -30,7 +30,11 @@ class ORMTest extends AbstractDatabaseTestCase
     {
         $article = $this->instance->findOne(Article::class, 1);
 
-        show($article);
+        self::assertInstanceOf(Article::class, $article);
+        self::assertEquals(1, $article->getId());
+        self::assertEquals('Corrupti illum.', $article->getTitle());
+        self::assertEquals('2009-05-14 17:45:24', $article->getCreated()->format(self::$db->getDateFormat()));
+        self::assertTrue($article->getParams()['show_title']);
     }
 
     /**

@@ -40,4 +40,19 @@ namespace PHPSTORM_META {
         \Windwalker\Database\Manager\WriterManager::saveMultiple(1),
         type(1)
     );
+
+    override(
+        \Windwalker\Database\Hydrator\HydratorInterface::hydrate(1),
+        type(1)
+    );
+
+    override(
+        \Windwalker\Database\Driver\StatementInterface::get(0),
+        type(0)
+    );
+
+    override(
+        \Windwalker\Database\Driver\StatementInterface::all(0),
+        type(0)
+    );
 }

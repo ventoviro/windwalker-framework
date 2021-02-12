@@ -15,8 +15,10 @@ use Windwalker\Attributes\AttributesAwareTrait;
 use Windwalker\Attributes\AttributesResolver;
 use Windwalker\Database\DatabaseAdapter;
 use Windwalker\Database\Event\HydrateEvent;
+use Windwalker\Database\Hydrator\HydratorInterface;
 use Windwalker\ORM\Attributes\PK;
 use Windwalker\ORM\Attributes\Table;
+use Windwalker\ORM\Hydrator\EntityHydrator;
 use Windwalker\ORM\Metadata\EntityMetadata;
 use Windwalker\ORM\Metadata\EntityMetadataCollection;
 use Windwalker\ORM\Strategy\Selector;
@@ -30,6 +32,8 @@ class ORM
     use AttributesAwareTrait;
 
     protected DatabaseAdapter $db;
+
+    protected ?HydratorInterface $hydrator = null;
 
     protected EntityMetadataCollection $entityMetadataCollection;
 
@@ -60,9 +64,22 @@ class ORM
         return new Selector($this);
     }
 
-    public function hydrate()
+    /**
+     * hydrateEntity
+     *
+     * @param  array   $data
+     * @param  object  $entity
+     *
+     * @return  object
+     */
+    public function hydrateEntity(array $data, object $entity): object
     {
+        return $this->getEntityHydrator()->hydrate($data, $entity);
+    }
 
+    public function extractEntity(object $entity): array
+    {
+        return $this->getEntityHydrator()->extract($entity);
     }
 
     public function getEntityMetadata(string|object $entity): EntityMetadata
@@ -70,6 +87,20 @@ class ORM
         return $this->getEntityMetadataCollection()->get($entity);
     }
 
+    /**
+     * findOne
+     *
+     * @param  string|object  $entity
+     * @param  mixed          $conditions
+     *
+     * @return  object|null
+     *
+     * @template T
+     * @psalm-param T $entity
+     * @psalm-return T
+     *
+     * @throws \ReflectionException
+     */
     public function findOne(string|object $entity, mixed $conditions): ?object
     {
         if (is_string($entity)) {
@@ -78,12 +109,10 @@ class ORM
 
         $metadata = $this->entityMetadataCollection->get($entity);
 
-        $stmt = $this->from($metadata->getTableName())
+        return $this->from($metadata->getTableName())
             ->select('*')
             ->where(static::conditionsToWheres($metadata, $conditions))
-            ->execute();
-
-        return $stmt->get($metadata->getClassName());
+            ->get($metadata->getClassName());
     }
 
     public static function conditionsToWheres(EntityMetadata $metadata, mixed $conditions): array
@@ -142,6 +171,31 @@ class ORM
     public function setEntityMetadataCollection(EntityMetadataCollection $entityMetadataCollection): static
     {
         $this->entityMetadataCollection = $entityMetadataCollection;
+
+        return $this;
+    }
+
+    /**
+     * @return HydratorInterface
+     */
+    public function getEntityHydrator(): HydratorInterface
+    {
+        return $this->hydrator ??= $this->getAttributesResolver()
+            ->createObject(
+                EntityHydrator::class,
+                hydrator: $this->getDb()->getHydrator(),
+                orm: $this
+            );
+    }
+
+    /**
+     * @param  HydratorInterface|null  $hydrator
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setEntityHydrator(?HydratorInterface $hydrator): static
+    {
+        $this->hydrator = $hydrator;
 
         return $this;
     }

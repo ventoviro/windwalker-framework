@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace Windwalker\Query\Concern;
 
+use Windwalker\Attributes\AttributesResolver;
+use Windwalker\Database\Exception\DatabaseQueryException;
+use Windwalker\ORM\Attributes\Table;
 use Windwalker\Query\Clause\AsClause;
 use Windwalker\Query\Clause\JoinClause;
 
@@ -44,5 +47,26 @@ trait ReflectConcernTrait
         }
 
         return $tables;
+    }
+
+    public static function convertClassToTable(string $name): string
+    {
+        if (!str_contains($name, '\\') || !class_exists($name)) {
+            return $name;
+        }
+
+        $ref = new \ReflectionClass($name);
+        $table = $ref->getAttributes( Table::class)[0] ?? null;
+
+        if (!$table) {
+            throw new DatabaseQueryException(
+                sprintf(
+                    'Value or column is class name but %s Attribute not assigned.',
+                    Table::class
+                )
+            );
+        }
+
+        return $table->newInstance()->getName();
     }
 }

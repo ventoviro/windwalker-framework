@@ -34,7 +34,7 @@ class QueryTest extends TestCase
     /**
      * @var Query
      */
-    protected $instance;
+    protected Query $instance;
 
     /**
      * @param  array        $args
@@ -150,6 +150,17 @@ class QueryTest extends TestCase
                 'SELECT (SELECT *, "newcol" FROM "foo") AS "foooo", "bar" AS "barrr"',
             ],
         ];
+    }
+
+    public function testSelectWithNoColumns()
+    {
+        $this->instance->from('flowers')
+            ->where('id', 123);
+
+        self::assertSqlEquals(
+            'SELECT * FROM "flowers" WHERE "id" = 123',
+            $this->instance->render(true)
+        );
     }
 
     /**

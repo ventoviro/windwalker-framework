@@ -35,7 +35,7 @@ class SimpleHydrator implements HydratorInterface
             return iterator_to_array($object);
         }
 
-        return get_object_vars($object);
+        return ReflectAccessor::getProperties($object);
     }
 
     /**

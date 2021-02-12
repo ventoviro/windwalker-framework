@@ -154,6 +154,8 @@ abstract class AbstractGrammar
             }
 
             $sql['union'] = (string) $union;
+        } else {
+            $sql['select'] = $sql['select'] ?: 'SELECT *';
         }
 
         // Only order and limit can after union

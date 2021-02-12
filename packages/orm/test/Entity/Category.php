@@ -35,5 +35,26 @@ class Category
 
     #[Column('params')]
     #[Cast(JsonCast::class)]
+    #[Cast('array')]
     protected array $params;
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param  int  $id
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
+    }
 }

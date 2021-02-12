@@ -11,8 +11,10 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Hydrator;
 
+use Windwalker\Attributes\AttributesResolver;
 use Windwalker\Database\Hydrator\HydratorInterface;
 use Windwalker\ORM\Attributes\Column;
+use Windwalker\ORM\Metadata\EntityMetadata;
 use Windwalker\ORM\ORM;
 
 /**
@@ -35,28 +37,34 @@ class EntityHydrator implements HydratorInterface
      */
     public function hydrate(array $data, object $object): object
     {
+        if (!EntityMetadata::isEntity($object)) {
+            return $this->hydrator->hydrate($data, $object);
+        }
+
         $metadata = $this->orm->getEntityMetadata($object);
 
-        $item = [];
+        $item    = [];
+        $columns = [];
+        $props   = [];
 
-        /** @var \ReflectionAttribute $reflectColumn */
-        foreach ($metadata->getReflectColumns() as [$prop, $reflectColumn]) {
-            /** @var \ReflectionProperty $prop */
-            /** @var Column $column */
-            $column = $reflectColumn->newInstance();
+        foreach ($metadata->getReflectProperties() as $prop) {
+            $props[$prop->getName()] = $prop;
+            $column = AttributesResolver::getFirstAttributeInstance($prop, Column::class);
 
-            $colName  = $column->getName();
-            $propName = $prop->getName();
+            if ($column) {
+                $columns[$column->getName()] = $prop;
+            }
+        }
 
-            if (!array_key_exists($colName, $data)) {
-                $colName = $propName;
+        foreach ($data as $colName => $value) {
+            $prop = $columns[$colName] ?? $props[$colName] ?? null;
 
-                if (!array_key_exists($colName, $data)) {
-                    continue;
-                }
+            if (!$prop) {
+                $item[$colName] = $value;
+                continue;
             }
 
-            $value = $data[$colName];
+            $propName = $prop->getName();
 
             foreach ($metadata->getCastManager()->getFieldCasts($colName) as $cast) {
                 $value = $this->orm->getAttributesResolver()
@@ -64,15 +72,13 @@ class EntityHydrator implements HydratorInterface
                         $cast[0],
                         [
                             $value,
-                            'orm' => $this->orm
+                            'orm' => $this->orm,
                         ]
                     );
             }
 
             $item[$propName] = $value;
         }
-
-        show($item);
 
         return $this->hydrator->hydrate($item, $object);
     }
@@ -82,6 +88,10 @@ class EntityHydrator implements HydratorInterface
      */
     public function extract(object $object): array
     {
+        if (!EntityMetadata::isEntity($object)) {
+            return $this->hydrator->extract($object);
+        }
+
         $item = $this->hydrator->extract($object);
 
         if ($object instanceof \stdClass) {
@@ -90,11 +100,8 @@ class EntityHydrator implements HydratorInterface
 
         $metadata = $this->orm->getEntityMetadata($object);
 
-        /** @var \ReflectionAttribute $reflectColumn */
-        foreach ($metadata->getReflectColumns() as [$prop, $reflectColumn]) {
-            /** @var \ReflectionProperty $prop */
-            /** @var Column $column */
-            $column = $reflectColumn->newInstance();
+        foreach ($metadata->getColumnAttributes() as $column) {
+            $prop = $column->getProperty();
 
             $colName  = $column->getName();
             $propName = $prop->getName();
@@ -117,7 +124,7 @@ class EntityHydrator implements HydratorInterface
                         $cast[1],
                         [
                             $value,
-                            'orm' => $this->orm
+                            'orm' => $this->orm,
                         ]
                     );
             }

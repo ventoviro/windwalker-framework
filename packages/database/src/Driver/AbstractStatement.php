@@ -97,6 +97,8 @@ abstract class AbstractStatement implements StatementInterface
         $item = $this->doFetch();
         $query = $this->query;
 
+        $item = $this->fetchedEvent($item);
+
         $item = $this->emit(HydrateEvent::class, compact('item', 'class', 'query'))->getItem();
 
         if (!is_array($item)) {
@@ -164,7 +166,7 @@ abstract class AbstractStatement implements StatementInterface
     public function get(string|object $class = Collection::class, array $args = []): ?object
     {
         return tap(
-            $this->fetchedEvent($this->fetch($class, $args)),
+            $this->fetch($class, $args),
             function () {
                 $this->close();
             }
@@ -182,7 +184,7 @@ abstract class AbstractStatement implements StatementInterface
 
         // Get all of the rows from the result set.
         while ($row = $this->fetch($class, $args)) {
-            $array[] = $this->fetchedEvent($row);
+            $array[] = $row;
         }
 
         $items = collect($array);
@@ -195,11 +197,11 @@ abstract class AbstractStatement implements StatementInterface
     /**
      * fetchedEvent
      *
-     * @param  object|null  $item
+     * @param  array|null  $item
      *
-     * @return object|null
+     * @return array|null
      */
-    protected function fetchedEvent(?object $item): ?object
+    protected function fetchedEvent(?array $item): ?array
     {
         return $this->emit(ItemFetchedEvent::class, compact('item'))->getItem();
     }

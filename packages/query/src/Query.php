@@ -11,10 +11,13 @@ declare(strict_types=1);
 
 namespace Windwalker\Query;
 
+use Windwalker\Attributes\AttributesResolver;
 use Windwalker\Data\Collection;
 use Windwalker\Database\DatabaseAdapter;
 use Windwalker\Database\Driver\AbstractDriver;
 use Windwalker\Database\Driver\StatementInterface;
+use Windwalker\Database\Exception\DatabaseQueryException;
+use Windwalker\ORM\Attributes\Table;
 use Windwalker\ORM\ORM;
 use Windwalker\Query\Bounded\BindableInterface;
 use Windwalker\Query\Bounded\BindableTrait;
@@ -1519,7 +1522,13 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
     {
         $bounded = $bounded ?? [];
 
-        if (!$this->type) {
+        $type = $this->type;
+
+        if (!$type && $this->getFrom()) {
+            $type = static::TYPE_SELECT;
+        }
+
+        if (!$type) {
             return '';
         }
 
@@ -1528,7 +1537,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
             $bounded = $this->mergeBounded();
         }
 
-        $sql = $this->getGrammar()->compile((string) $this->type, $this);
+        $sql = $this->getGrammar()->compile((string) $type, $this);
 
         if ($emulatePrepared) {
             $sql = BoundedHelper::emulatePrepared($this->getEscaper(), $sql, $bounded);
@@ -1574,7 +1583,13 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
     {
         $bounded = $bounded ?: [];
 
-        if (!$this->type) {
+        $type = $this->type;
+
+        if (!$type && $this->getFrom()) {
+            $type = static::TYPE_SELECT;
+        }
+
+        if (!$type) {
             return '';
         }
 
@@ -1583,7 +1598,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
             $bounded = $this->mergeBounded();
         }
 
-        $sql = $this->getGrammar()->compile((string) $this->type, $this);
+        $sql = $this->getGrammar()->compile((string) $type, $this);
 
         [$sql, $bounded] = BoundedHelper::forPDO($sql, $bounded);
 

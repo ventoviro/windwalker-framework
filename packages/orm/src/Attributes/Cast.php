@@ -22,7 +22,7 @@ class Cast
 
     protected mixed $cast;
 
-    protected ?int $hydrateStrategy;
+    protected ?int $strategy;
 
     /**
      * @var mixed
@@ -34,13 +34,13 @@ class Cast
      *
      * @param  string      $cast
      * @param  mixed|null  $extract
-     * @param  int|null    $hydrateStrategy
+     * @param  int|null    $strategy
      */
-    public function __construct(mixed $cast, mixed $extract = null, ?int $hydrateStrategy = self::CONSTRUCTOR)
+    public function __construct(mixed $cast, mixed $extract = null, ?int $strategy = self::CONSTRUCTOR)
     {
-        $this->cast            = $cast;
-        $this->hydrateStrategy = $hydrateStrategy;
-        $this->extract = $extract;
+        $this->cast     = $cast;
+        $this->strategy = $strategy;
+        $this->extract  = $extract;
     }
 
     /**
@@ -62,8 +62,8 @@ class Cast
     /**
      * @return int|null
      */
-    public function getHydrateStrategy(): ?int
+    public function getStrategy(): ?int
     {
-        return $this->hydrateStrategy;
+        return $this->strategy;
     }
 }

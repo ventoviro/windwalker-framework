@@ -55,26 +55,35 @@ class EntityMetadata
         $this->setup();
     }
 
+    public static function isEntity(string|object $object): bool
+    {
+        return (new \ReflectionClass($object))->getAttributes(Table::class) !== [];
+    }
+
     public function setup(): void
     {
-        /** @var \ReflectionAttribute $refColumn */
-        /** @var \ReflectionProperty $prop */
-        foreach ($this->getReflectColumns() as [$prop, $refColumn]) {
-            /** @var Column $column */
-            $column = $refColumn->newInstance();
-            $casts   = $prop->getAttributes(Cast::class);
+        foreach ($this->getReflectProperties() as $prop) {
+            $casts = $prop->getAttributes(Cast::class);
 
             if ($casts === []) {
                 continue;
             }
 
+            $column = AttributesResolver::getFirstAttributeInstance(
+                $prop,
+                Column::class
+            );
+
+            $colName = $column ? $column->getName() : $prop->getName();
+
             foreach ($casts as $cast) {
+                /** @var Cast $cast */
                 $cast = $cast->newInstance();
                 $this->cast(
-                    $column->getName(),
+                    $colName,
                     $cast->getCast(),
                     $cast->getExtract(),
-                    $cast->getHydrateStrategy()
+                    $cast->getStrategy()
                 );
             }
         }
@@ -113,9 +122,9 @@ class EntityMetadata
     {
         $pks = [];
 
-        foreach ($this->getKeysAttrs() as $name => [$prop, $pk, $col]) {
-            /** @var PK $pk */
-            /** @var Column $col */
+        foreach ($this->getKeysAttrs() as $name => $pk) {
+            $col = $pk->getColumn();
+
             if ($pk->isPrimary()) {
                 return $col->getName();
             }
@@ -139,17 +148,15 @@ class EntityMetadata
     /**
      * getKeysReflectors
      *
-     * @return  \Generator
+     * @return  \Generator|PK[]
      */
     protected function getKeysAttrs(): \Generator
     {
-        foreach ($this->getReflectColumns() as [$prop, $refColumn]) {
-            /** @var \ReflectionProperty $prop */
-            /** @var Column $column */
-            $column = $refColumn->newInstance();
+        foreach ($this->getColumnAttributes() as $key => $column) {
+            $prop = $column->getProperty();
 
             if ($pk = AttributesResolver::getFirstAttributeInstance($prop, PK::class)) {
-                yield $column->getName() => [$prop, $pk, $column];
+                yield $key => $pk->setColumn($column);
             }
         }
     }
@@ -170,13 +177,17 @@ class EntityMetadata
     /**
      * getColumns
      *
-     * @return \Generator<int, array<\Reflector>>
+     * @return \Generator|Column[]
      */
-    public function getReflectColumns(): \Generator
+    public function getColumnAttributes(): \Generator
     {
-        foreach ($this->getReflectProperties() as $key => $prop) {
+        foreach ($this->getReflectProperties() as $prop) {
             if ($col = AttributesResolver::getFirstAttribute($prop, Column::class)) {
-                yield $key => [$prop, $col];
+                /** @var Column $column */
+                $column = $col->newInstance();
+                $column->setProperty($prop);
+
+                yield $column->getName() => $column;
             }
         }
     }
@@ -190,13 +201,13 @@ class EntityMetadata
         string $field,
         mixed $cast,
         mixed $extract = null,
-        int $hydrateStrategy = Cast::CONSTRUCTOR
+        int $strategy = Cast::CONSTRUCTOR
     ): static {
         $this->getCastManager()->addCast(
             $field,
             $cast,
             $extract,
-            $hydrateStrategy
+            $strategy
         );
 
         return $this;

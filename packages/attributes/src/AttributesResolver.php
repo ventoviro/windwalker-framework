@@ -136,7 +136,7 @@ class AttributesResolver extends ObjectBuilder
         return $this->resolveCallable($callable, $context)(...$args);
     }
 
-    public function resolveCallable(callable $callable, ?object $context = null): AttributeHandler
+    public function resolveCallable(callable $callable, ?object $context = null): callable
     {
         $ref     = new ReflectionCallable($callable);
         $funcRef = $ref->getReflector();
@@ -147,9 +147,15 @@ class AttributesResolver extends ObjectBuilder
             $closure = $closure->bindTo($context, $context);
         }
 
+        $attributes = $funcRef->getAttributes();
+
+        if (!$attributes) {
+            return $closure;
+        }
+
         $handler = $this->createHandler($closure, $ref, $ref->getObject());
 
-        foreach ($funcRef->getAttributes() as $attribute) {
+        foreach ($attributes as $attribute) {
             if ($this->hasAttribute($attribute, AttributeType::CALLABLE)) {
                 $handler = $this->runAttribute($attribute, $handler);
             }

@@ -19,6 +19,8 @@ class PK
 {
     protected bool $primary;
 
+    protected Column $column;
+
     /**
      * PK constructor.
      *
@@ -35,5 +37,25 @@ class PK
     public function isPrimary(): bool
     {
         return $this->primary;
+    }
+
+    /**
+     * @return Column
+     */
+    public function getColumn(): Column
+    {
+        return $this->column;
+    }
+
+    /**
+     * @param  Column  $column
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setColumn(Column $column): static
+    {
+        $this->column = $column;
+
+        return $this;
     }
 }

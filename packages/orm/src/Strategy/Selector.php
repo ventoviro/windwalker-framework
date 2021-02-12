@@ -17,6 +17,7 @@ use Windwalker\Database\Event\HydrateEvent;
 use Windwalker\Database\Event\ItemFetchedEvent;
 use Windwalker\ORM\Hydrator\EntityHydrator;
 use Windwalker\Query\Clause\AsClause;
+use Windwalker\Query\Query;
 use Windwalker\Utilities\Arr;
 
 /**
@@ -36,7 +37,9 @@ class Selector extends AbstractQueryStrategy
         $db = $this->getDb();
 
         foreach ($tables as $i => $clause) {
-            $tbm = $db->getTable($clause->getValue());
+            $tbm = $db->getTable(
+                Query::convertClassToTable($clause->getValue())
+            );
 
             $cols = $tbm->getColumnNames();
 
@@ -67,7 +70,13 @@ class Selector extends AbstractQueryStrategy
         return $this;
     }
 
-    protected function groupItem(?object $item): ?object
+    public function groupByJoins(string $divider = '.'): static
+    {
+        return $this->autoSelections($divider)
+            ->groupByDivider($divider);
+    }
+
+    protected function groupItem(?array $item): ?array
     {
         if ($item === null) {
             return null;
@@ -77,11 +86,11 @@ class Selector extends AbstractQueryStrategy
             if (str_contains($k, $this->groupDivider)) {
                 [$prefix, $key] = explode($this->groupDivider, $k, 2);
 
-                $item->$prefix ??= new Collection();
+                $item[$prefix] ??= new Collection();
 
-                $item->$prefix->$key = $value;
+                $item[$prefix][$key] = $value;
 
-                unset($item->$k);
+                unset($item[$k]);
             }
         }
 
@@ -116,13 +125,7 @@ class Selector extends AbstractQueryStrategy
                     $object = $orm->getAttributesResolver()->createObject($object);
                 }
 
-                $hydrator = $orm->getAttributesResolver()->createObject(
-                    EntityHydrator::class,
-                    hydrator: $this->getORM()->getDb()->getHydrator(),
-                    orm: $orm
-                );
-
-                $item = $hydrator->hydrate($item, $object);
+                $item = $this->getORM()->getEntityHydrator()->hydrate($item, $object);
 
                 $event->setItem($item);
             }

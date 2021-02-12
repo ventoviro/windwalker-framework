@@ -33,6 +33,7 @@ use Windwalker\DI\Test\Stub\StubServiceProvider;
 use Windwalker\Scalars\ArrayObject;
 use Windwalker\Test\Traits\BaseAssertionTrait;
 use Windwalker\Utilities\Reflection\ReflectAccessor;
+use Windwalker\Utilities\TypeCast;
 
 /**
  * The ContainerTest class.
@@ -533,6 +534,27 @@ class ContainerTest extends TestCase
     public function testCall(): void
     {
         self::markTestIncomplete(); // TODO: Complete this test
+    }
+
+    /**
+     * @see  Container::call
+     */
+    public function testCallStaticMagicMethod(): void
+    {
+        $result = $this->instance->call(
+            [
+                TypeCast::class,
+                'tryInteger'
+            ],
+            [
+                '123'
+            ]
+        );
+
+        self::assertSame(
+            123,
+            $result
+        );
     }
 
     /**

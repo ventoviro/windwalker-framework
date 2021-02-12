@@ -11,9 +11,6 @@ declare(strict_types=1);
 
 namespace Windwalker\Query\Clause;
 
-use Windwalker\Attributes\AttributesResolver;
-use Windwalker\Database\Exception\DatabaseQueryException;
-use Windwalker\ORM\Attributes\Table;
 use Windwalker\Query\Query;
 use Windwalker\Utilities\Wrapper\RawWrapper;
 
@@ -70,9 +67,11 @@ class AsClause implements ClauseInterface
         } elseif ($column instanceof Query) {
             $column = '(' . $column . ')';
         } elseif ($column instanceof Clause) {
-            $column = $column->mapElements(fn($v) => $this->query->$quoteMethod($this->convertClassToColumn((string) $v)));
+            $column = $column->mapElements(fn($v) => $this->query->$quoteMethod(
+                Query::convertClassToTable((string) $v)
+            ));
         } else {
-            $column = $this->query->$quoteMethod($this->convertClassToColumn((string) $column));
+            $column = $this->query->$quoteMethod(Query::convertClassToTable((string) $column));
         }
 
         if ($alias !== false && (string) $alias !== '') {
@@ -80,26 +79,6 @@ class AsClause implements ClauseInterface
         }
 
         return (string) $column;
-    }
-
-    protected function convertClassToColumn(string $column): string
-    {
-        if (!str_contains($column, '\\') || !class_exists($column)) {
-            return $column;
-        }
-
-        $table = AttributesResolver::getFirstAttributeInstance($column, Table::class);
-
-        if (!$table) {
-            throw new DatabaseQueryException(
-                sprintf(
-                    'Value is class name but %s Attribute not assigned.',
-                    Table::class
-                )
-            );
-        }
-
-        return $table->getName();
     }
 
     /**

@@ -49,7 +49,7 @@ class CastManager
      * @param  mixed       $cast
      * @param  mixed|null  $extract
      *
-     * @param  int|null    $hydrateStrategy
+     * @param  int|null    $strategy
      *
      * @return  static
      */
@@ -57,11 +57,11 @@ class CastManager
         string $field,
         mixed $cast,
         mixed $extract = null,
-        ?int $hydrateStrategy = Cast::CONSTRUCTOR
+        ?int $strategy = Cast::CONSTRUCTOR
     ): static {
         $this->castGroups[$field] ??= [];
 
-        $this->castGroups[$field][] = [$cast, $extract, $hydrateStrategy];
+        $this->castGroups[$field][] = [$cast, $extract, $strategy];
 
         return $this;
     }
@@ -157,7 +157,7 @@ class CastManager
     protected function castToCallback(mixed $cast, ?int $hydrateStrategy, $direction = 'cast'): callable
     {
         if (is_callable($cast)) {
-            return $cast;
+            return fn(mixed $value) => $cast($value);
         }
 
         if (is_string($cast)) {
@@ -177,6 +177,12 @@ class CastManager
                 return static function (mixed $value, ORM $orm) use ($hydrateStrategy, $cast) {
                     if ($hydrateStrategy === Cast::HYDRATOR) {
                         $object = $orm->getAttributesResolver()->createObject($cast);
+
+                        $value = TypeCast::toArray($value);
+
+                        if (EntityMetadata::isEntity($object)) {
+                            return $orm->getEntityHydrator()->hydrate($value, $object);
+                        }
 
                         return $orm->getDb()->getHydrator()->hydrate($value, $object);
                     }
