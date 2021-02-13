@@ -15,6 +15,7 @@ use Windwalker\Attributes\AttributesResolver;
 use Windwalker\Data\Collection;
 use Windwalker\Database\DatabaseAdapter;
 use Windwalker\Database\Driver\AbstractDriver;
+use Windwalker\Database\Driver\AbstractStatement;
 use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\Database\Exception\DatabaseQueryException;
 use Windwalker\ORM\Attributes\Table;
@@ -89,10 +90,11 @@ use function Windwalker\value;
  * @method string|array qn($text)
  * @method string|array q($text)
  *
+ * @see AbstractStatement
  * @method Collection|null get(string $class = Collection::class, array $args = [])
  * @method Collection|Collection[] all(string $class = Collection::class, array $args = [])
  * @method Collection loadColumn(int|string $offset = 0)
- * @method string|null result(int|string $offset = 0)
+ * @method string|null result()
  * @method StatementInterface execute(?array $params = null)
  */
 class Query implements QueryInterface, BindableInterface, \IteratorAggregate

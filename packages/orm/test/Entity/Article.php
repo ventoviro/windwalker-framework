@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Test\Entity;
 
+use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Cast;
 use Windwalker\ORM\Attributes\Column;
 use Windwalker\ORM\Attributes\PK;
@@ -23,7 +24,7 @@ use Windwalker\ORM\Cast\JsonCast;
 #[Table('articles')]
 class Article
 {
-    #[PK]
+    #[PK, AutoIncrement]
     #[Column('id')]
     protected int $id;
 

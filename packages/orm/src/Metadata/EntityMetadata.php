@@ -14,6 +14,7 @@ namespace Windwalker\ORM\Metadata;
 use Windwalker\Attributes\AttributesResolver;
 use Windwalker\Database\Hydrator\HydratorAwareInterface;
 use Windwalker\Database\Hydrator\HydratorInterface;
+use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Cast;
 use Windwalker\ORM\Attributes\Column;
 use Windwalker\ORM\Attributes\PK;
@@ -23,6 +24,7 @@ use Windwalker\ORM\ORM;
 use Windwalker\Utilities\Cache\InstanceCacheTrait;
 use Windwalker\Utilities\Classes\ObjectBuilder;
 
+use function DI\string;
 use function Windwalker\iterator_keys;
 
 /**
@@ -76,9 +78,9 @@ class EntityMetadata
 
             $colName = $column ? $column->getName() : $prop->getName();
 
-            foreach ($casts as $cast) {
+            foreach ($casts as $castAttr) {
                 /** @var Cast $cast */
-                $cast = $cast->newInstance();
+                $cast = $castAttr->newInstance();
                 $this->cast(
                     $colName,
                     $cast->getCast(),
@@ -145,6 +147,20 @@ class EntityMetadata
         return iterator_keys($this->getKeysAttrs());
     }
 
+    public function getAutoIncrementColumn(): ?Column
+    {
+        foreach ($this->getKeysAttrs() as $keyAttr) {
+            $column = $keyAttr->getColumn();
+            $prop   = $column->getProperty();
+
+            if ($prop->getAttributes(AutoIncrement::class)) {
+                return $column;
+            }
+        }
+
+        return null;
+    }
+
     /**
      * getKeysReflectors
      *
@@ -152,7 +168,7 @@ class EntityMetadata
      */
     protected function getKeysAttrs(): \Generator
     {
-        foreach ($this->getColumnAttributes() as $key => $column) {
+        foreach ($this->getColumnAttrs() as $key => $column) {
             $prop = $column->getProperty();
 
             if ($pk = AttributesResolver::getFirstAttributeInstance($prop, PK::class)) {
@@ -174,12 +190,17 @@ class EntityMetadata
             );
     }
 
+    public function getProperty(string $name): \ReflectionProperty
+    {
+        return $this->getReflector()->getProperty($name);
+    }
+
     /**
      * getColumns
      *
      * @return \Generator|Column[]
      */
-    public function getColumnAttributes(): \Generator
+    public function getColumnAttrs(): \Generator
     {
         foreach ($this->getReflectProperties() as $prop) {
             if ($col = AttributesResolver::getFirstAttribute($prop, Column::class)) {
@@ -190,6 +211,11 @@ class EntityMetadata
                 yield $column->getName() => $column;
             }
         }
+    }
+
+    public function getColumn(string $name): ?Column
+    {
+        return iterator_to_array($this->getColumnAttrs())[$name] ?? null;
     }
 
     public function getReflector(): \ReflectionClass

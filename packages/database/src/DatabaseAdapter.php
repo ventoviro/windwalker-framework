@@ -25,6 +25,8 @@ use Windwalker\Database\Schema\DatabaseManager;
 use Windwalker\Database\Schema\SchemaManager;
 use Windwalker\Event\EventAwareTrait;
 use Windwalker\Event\EventListenableInterface;
+use Windwalker\ORM\EntityMapper;
+use Windwalker\ORM\ORM;
 use Windwalker\Query\Query;
 use Windwalker\Utilities\Cache\InstanceCacheTrait;
 
@@ -57,6 +59,8 @@ class DatabaseAdapter implements EventListenableInterface, HydratorAwareInterfac
      * @var AbstractPlatform
      */
     protected AbstractPlatform $platform;
+
+    protected ?ORM $orm = null;
 
     /**
      * DatabaseAdapter constructor.
@@ -331,5 +335,34 @@ class DatabaseAdapter implements EventListenableInterface, HydratorAwareInterfac
     public function getHydrator(): HydratorInterface
     {
         return $this->getDriver()->getHydrator();
+    }
+
+    public function mapper(string $entityClass): EntityMapper
+    {
+        return $this->orm()->mapper($entityClass);
+    }
+
+    /**
+     * @return ORM
+     */
+    public function orm(): ORM
+    {
+        if (!class_exists(ORM::class)) {
+            throw new \DomainException('Please install windwalker/orm ^4.0 first.');
+        }
+
+        return $this->orm ??= new ORM($this);
+    }
+
+    /**
+     * @param  ORM|null  $orm
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setORM(?ORM $orm): static
+    {
+        $this->orm = $orm;
+
+        return $this;
     }
 }

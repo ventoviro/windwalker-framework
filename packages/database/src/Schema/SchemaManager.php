@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Schema;
 
+use Windwalker\Attributes\AttributesResolver;
 use Windwalker\Database\Manager\AbstractMetaManager;
 use Windwalker\Database\Manager\TableManager;
 use Windwalker\Database\Schema\Ddl\Table;
@@ -25,6 +26,15 @@ class SchemaManager extends AbstractMetaManager
 
     public function getTable(string $name, bool $new = false): TableManager
     {
+        if (class_exists($name)) {
+            /** @var \Windwalker\ORM\Attributes\Table $tableAttr */
+            $tableAttr = AttributesResolver::getFirstAttributeInstance($name, Table::class);
+
+            if ($tableAttr) {
+                $name = $tableAttr->getName();
+            }
+        }
+
         return $this->once('table.manager.' . $name, fn() => new TableManager($name, $this->db), $new);
     }
 

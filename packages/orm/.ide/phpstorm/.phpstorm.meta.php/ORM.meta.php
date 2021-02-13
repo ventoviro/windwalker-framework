@@ -16,7 +16,6 @@ namespace PHPSTORM_META {
         type(0)
     );
 
-    // Types
     override(
         \Windwalker\ORM\Strategy\Selector::get(0),
         map(

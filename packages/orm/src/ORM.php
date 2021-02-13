@@ -12,17 +12,12 @@ declare(strict_types=1);
 namespace Windwalker\ORM;
 
 use Windwalker\Attributes\AttributesAwareTrait;
-use Windwalker\Attributes\AttributesResolver;
 use Windwalker\Database\DatabaseAdapter;
-use Windwalker\Database\Event\HydrateEvent;
 use Windwalker\Database\Hydrator\HydratorInterface;
-use Windwalker\ORM\Attributes\PK;
-use Windwalker\ORM\Attributes\Table;
 use Windwalker\ORM\Hydrator\EntityHydrator;
 use Windwalker\ORM\Metadata\EntityMetadata;
 use Windwalker\ORM\Metadata\EntityMetadataCollection;
 use Windwalker\ORM\Strategy\Selector;
-use Windwalker\ORM\Test\Entity\User;
 
 /**
  * The ORM class.
@@ -49,8 +44,27 @@ class ORM
         $this->entityMetadataCollection = new EntityMetadataCollection();
     }
 
+    /**
+     * entity
+     *
+     * @param  string  $entityClass
+     *
+     * @return  EntityMapper
+     */
+    public function mapper(string $entityClass): EntityMapper
+    {
+        return new EntityMapper(
+            $this->entityMetadataCollection->get($entityClass),
+            $this
+        );
+    }
+
     public function from(mixed $tables, ?string $alias = null): Selector
     {
+        if (is_string($tables) && class_exists($tables)) {
+            return $this->mapper($tables)->select();
+        }
+
         return $this->createSelectorQuery()->from($tables, $alias);
     }
 
@@ -77,8 +91,12 @@ class ORM
         return $this->getEntityHydrator()->hydrate($data, $entity);
     }
 
-    public function extractEntity(object $entity): array
+    public function extractEntity(array|object $entity): array
     {
+        if (is_array($entity)) {
+            return $entity;
+        }
+
         return $this->getEntityHydrator()->extract($entity);
     }
 
@@ -95,31 +113,30 @@ class ORM
      *
      * @return  object|null
      *
-     * @template T
-     * @psalm-param T $entity
-     * @psalm-return T
-     *
      * @throws \ReflectionException
      */
     public function findOne(string $entity, mixed $conditions): ?object
     {
-        $metadata = $this->entityMetadataCollection->get($entity);
-
-        return $this->from($entity)
-            ->where(static::conditionsToWheres($metadata, $conditions))
-            ->get($entity);
+        return $this->mapper($entity)->findOne($conditions);
     }
 
-    public function createOne(string|object $entity, array|object $data = [])
+    public function createOne(string|object $entity, array|object $data = []): array|object
     {
-
+        return $this->mapper($entity)->createOne($data);
     }
 
     public function updateOne(
         string|object $entity,
         array|object $data = [],
-    ) {
+    ): array|object {
+        return $this->mapper($entity)->updateOne($data);
+    }
 
+    public function deleteOne(
+        string|object $entity,
+        array|object $data = [],
+    ): array|object {
+        return $this->mapper($entity)->updateOne($data);
     }
 
     public static function conditionsToWheres(EntityMetadata $metadata, mixed $conditions): array

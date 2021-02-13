@@ -12,7 +12,7 @@ declare(strict_types=1);
 use Windwalker\ORM\Test\Entity\User;
 
 $orm  = new \Windwalker\ORM\ORM($db);
-$em   = $orm->entity(User::class);
+$em   = $orm->mapper(User::class);
 $user = $em->findOne();
 
 /** @psalm-var  \Windwalker\ORM\DataMapper<User> $dm */

@@ -100,7 +100,7 @@ class EntityHydrator implements HydratorInterface
 
         $metadata = $this->orm->getEntityMetadata($object);
 
-        foreach ($metadata->getColumnAttributes() as $column) {
+        foreach ($metadata->getColumnAttrs() as $column) {
             $prop = $column->getProperty();
 
             $colName  = $column->getName();

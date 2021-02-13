@@ -225,7 +225,7 @@ abstract class AbstractStatement implements StatementInterface
         $assoc = $this->get();
 
         if ($assoc === null) {
-            return $assoc;
+            return null;
         }
 
         return $assoc->first();

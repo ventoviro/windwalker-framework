@@ -59,7 +59,6 @@ class WriterManager
         $options = array_merge(
             [
                 'incrementField' => false,
-                'toJson' => true,
                 'filterFields' => false,
             ],
             $options
@@ -71,25 +70,13 @@ class WriterManager
         $item = TypeCast::toArray($data);
 
         if ($options['filterFields']) {
-            $item = $this->filterfields($table, $item);
+            $item = $this->filterFields($table, $item);
         }
 
         $query = $this->db->createQuery();
 
         // Iterate over the object variables to build the query fields and values.
         foreach ($item as $k => $v) {
-            // if (is_array($v) || is_object($v)) {
-            //     if ($options['toJson']) {
-            //         // To JSON
-            //         $v = json_encode($v, JSON_THROW_ON_ERROR);
-            //     } else {
-            //         // Only process non-null scalars.
-            //         continue;
-            //     }
-            // }
-            //
-            // $v = TypeCast::toString($v);
-
             // Prepare and sanitize the fields and values for the database query.
             $fields[] = $k;
             $values[] = $v;
@@ -154,7 +141,7 @@ class WriterManager
         $query = $this->db->update($table);
 
         if ($options['filterFields']) {
-            $item = $this->filterfields($table, $item);
+            $item = $this->filterFields($table, $item);
         }
 
         // Iterate over the object variables to build the query fields/value pairs.
@@ -316,7 +303,7 @@ class WriterManager
 
         // Build update values.
         if ($options['filterFields']) {
-            $data = $this->filterfields($table, $data);
+            $data = $this->filterFields($table, $data);
         }
 
         foreach ($data as $field => $value) {
@@ -347,7 +334,7 @@ class WriterManager
         // Conditions.
         $query = Query::convertAllToWheres($query, $conditions);
 
-        $query->delete($query->quoteName($table));
+        $query->delete($table);
 
         return $this->execute($query);
     }
@@ -433,7 +420,7 @@ class WriterManager
      *
      * @return  array
      */
-    public function filterfields(string $table, array $item): array
+    public function filterFields(string $table, array $item): array
     {
         $schema       = $this->db->getTable($table)->getSchema();
         $tableManager = $schema->getTable($table);

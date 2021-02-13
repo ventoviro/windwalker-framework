@@ -59,5 +59,17 @@ namespace PHPSTORM_META {
         argumentsSet('query_union_types')
     );
 
+    registerArgumentsSet(
+        'order_directions',
+        'ASC',
+        'DESC'
+    );
+
+    expectedArguments(
+        \Windwalker\Query\Query::order(),
+        1,
+        argumentsSet('order_directions')
+    );
+
     // todo: add row lock hints
 }
