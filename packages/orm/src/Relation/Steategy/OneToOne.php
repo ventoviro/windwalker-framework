@@ -9,20 +9,21 @@
 
 declare(strict_types=1);
 
-namespace Windwalker\ORM\Relation;
-
-use Windwalker\ORM\Relation\Steategy\RelationStrategyInterface;
+namespace Windwalker\ORM\Relation\Steategy;
 
 /**
- * The Relation class.
+ * The OneToOne class.
  */
-class Relation implements RelationStrategyInterface
+class OneToOne extends AbstractRelationStrategy
 {
     /**
      * @inheritDoc
      */
-    public function load(): void
+    public function load(array $data): void
     {
+        $query = $this->createLoadQuery($data);
+
+        $data[$this->getField()] = fn () => $query->get();
     }
 
     /**

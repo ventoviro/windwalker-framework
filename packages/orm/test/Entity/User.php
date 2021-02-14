@@ -15,16 +15,18 @@ use Windwalker\Data\Collection;
 use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Cast;
 use Windwalker\ORM\Attributes\Column;
+use Windwalker\ORM\Attributes\EntitySetup;
 use Windwalker\ORM\Attributes\PK;
 use Windwalker\ORM\Attributes\Table;
 use Windwalker\ORM\Cast\JsonCast;
+use Windwalker\ORM\Metadata\EntityMetadata;
 use Windwalker\ORM\TableAwareInterface;
 
 /**
  * The User class.
  */
 #[Table('users')]
-class User implements TableAwareInterface
+class User
 {
     #[Column('id')]
     #[PK]
@@ -50,28 +52,14 @@ class User implements TableAwareInterface
     #[Cast(JsonCast::class)]
     protected array $params = [];
 
-
-
-    /**
-     * @inheritDoc
-     */
-    public static function table(): string
+    #[EntitySetup]
+    public static function setup(EntityMetadata $metadata)
     {
-        return 'users';
-    }
+        $relation = $metadata->getRelationManager();
 
-    /**
-     * getArray
-     *
-     * @return  array<int, Collection>
-     */
-    public static function getArray(): array
-    {
+        $relation->manyToOne('category_id')
+            ->target(
 
-    }
-
-    public function hello(): string
-    {
-        return '';
+            );
     }
 }

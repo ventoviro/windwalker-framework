@@ -19,9 +19,11 @@ interface RelationStrategyInterface
     /**
      * Load all relative children data.
      *
+     * @param  array  $data
+     *
      * @return  void
      */
-    public function load(): void;
+    public function load(array $data): void;
 
     /**
      * Store all relative children data.

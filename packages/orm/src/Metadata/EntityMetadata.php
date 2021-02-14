@@ -14,6 +14,7 @@ namespace Windwalker\ORM\Metadata;
 use Windwalker\ORM\Attributes\{AutoIncrement, Cast, Column, EntitySetup, PK, Table};
 use Windwalker\ORM\Cast\CastManager;
 use Windwalker\ORM\ORM;
+use Windwalker\ORM\Relation\RelationManager;
 use Windwalker\Utilities\Cache\RuntimeCacheTrait;
 use Windwalker\Utilities\Reflection\ReflectAccessor;
 
@@ -57,6 +58,8 @@ class EntityMetadata
 
     protected CastManager $castManager;
 
+    protected RelationManager $relationManager;
+
     /**
      * @var ORM
      */
@@ -77,6 +80,7 @@ class EntityMetadata
         $this->orm         = $orm;
         $this->className   = $entity;
         $this->castManager = new CastManager();
+        $this->relationManager = new RelationManager();
 
         $this->setup();
     }
@@ -388,6 +392,26 @@ class EntityMetadata
     public function setORM(ORM $orm): static
     {
         $this->orm = $orm;
+
+        return $this;
+    }
+
+    /**
+     * @return RelationManager
+     */
+    public function getRelationManager(): RelationManager
+    {
+        return $this->relationManager;
+    }
+
+    /**
+     * @param  RelationManager  $relationManager
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setRelationManager(RelationManager $relationManager): static
+    {
+        $this->relationManager = $relationManager;
 
         return $this;
     }

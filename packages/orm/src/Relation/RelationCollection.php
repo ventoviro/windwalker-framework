@@ -17,16 +17,16 @@ namespace Windwalker\ORM\Relation;
 class RelationCollection
 {
     /**
-     * @var Relation[]
+     * @var RelationManager[]
      */
     protected array $relations = [];
 
-    public function getRelation(string $name): Relation
+    public function getRelation(string $name): RelationManager
     {
-        return $this->relations[$name] ??= new Relation();
+        return $this->relations[$name] ??= new RelationManager();
     }
 
-    public function setRelation(string $name, Relation $relation): static
+    public function setRelation(string $name, RelationManager $relation): static
     {
         $this->relations[$name] = $relation;
 
@@ -34,7 +34,7 @@ class RelationCollection
     }
 
     /**
-     * @return Relation[]
+     * @return RelationManager[]
      */
     public function getRelations(): array
     {
@@ -42,7 +42,7 @@ class RelationCollection
     }
 
     /**
-     * @param  Relation[]  $relations
+     * @param  RelationManager[]  $relations
      *
      * @return  static  Return self to support chaining.
      */
