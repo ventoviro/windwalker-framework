@@ -16,14 +16,17 @@ use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
 use ReflectionProperty;
+use Windwalker\Utilities\Cache\RuntimeCacheTrait;
 
 /**
  * The Reflector class.
  */
 class ReflectAccessor
 {
+    use RuntimeCacheTrait;
+
     public static function getProperties(
-        object $object,
+        object|string $object,
         int $filters = ReflectionProperty::IS_PUBLIC | ReflectionProperty::IS_PRIVATE | ReflectionProperty::IS_PROTECTED
     ): array {
         $ref = new ReflectionClass($object);
@@ -150,25 +153,6 @@ class ReflectAccessor
         return $method->invokeArgs(is_object($object) ? $object : null, $args);
     }
 
-    public static function wrap($target): \Reflector
-    {
-        if (is_string($target)) {
-            if (str_contains($target, '::')) {
-                $target = explode('::', $target, 2);
-            } elseif (class_exists($target)) {
-                return new \ReflectionClass($target);
-            } else {
-                return new \ReflectionFunction($target);
-            }
-        }
-
-        if (is_array($target)) {
-            return new ReflectionMethod($target[0], $target[1]);
-        }
-
-        throw new \InvalidArgumentException('No a valid target to get reflection.');
-    }
-
     public static function reflect(mixed $value): \Reflector
     {
         if ($value instanceof \Reflector) {
@@ -179,12 +163,12 @@ class ReflectAccessor
             return (new ReflectionCallable($value))->getReflector();
         }
 
-        if (is_string($value) && class_exists($value)) {
-            return new ReflectionClass($value);
+        if (is_string($value)) {
+            return static::$cacheStorage[$value] ??= new ReflectionClass($value);
         }
 
         if (is_object($value)) {
-            return new \ReflectionObject($value);
+            return static::$cacheStorage[$value::class] ??= new \ReflectionObject($value);
         }
 
         throw new \InvalidArgumentException(
@@ -193,5 +177,66 @@ class ReflectAccessor
                 get_debug_type($value)
             )
         );
+    }
+
+    public static function getReflectProperties(
+        object|string $object,
+        ?int $filters = ReflectionProperty::IS_PUBLIC | ReflectionProperty::IS_PRIVATE | ReflectionProperty::IS_PROTECTED
+    ): array {
+        $ref = new ReflectionClass($object);
+
+        $properties = $ref->getProperties($filters);
+
+        $values = [];
+
+        foreach ($properties as $property) {
+            $values[$property->getName()] = $property;
+        }
+
+        return $values;
+    }
+
+    /**
+     * getAssocProperties
+     *
+     * @param  string|object  $object
+     * @param  int|null       $filters
+     *
+     * @return  ReflectionMethod[]
+     * @throws ReflectionException
+     */
+    public static function getReflectMethods(
+        string|object $object,
+        ?int $filters = ReflectionMethod::IS_PUBLIC | ReflectionMethod::IS_PROTECTED | ReflectionMethod::IS_PRIVATE
+    ): array {
+        $ref = new ReflectionClass($object);
+        $methods = [];
+
+        foreach ($ref->getMethods($filters) as $method) {
+            $methods[$method->getName()] = $method;
+        }
+
+        return $methods;
+    }
+
+    /**
+     * getNoRepeatAttributes
+     *
+     * @param  \Reflector   $ref
+     * @param  string|null  $name
+     * @param  int          $flags
+     *
+     * @return  \ReflectionAttribute[]
+     */
+    public static function getNoRepeatAttributes(\Reflector $ref, ?string $name = null, int $flags = 0): array
+    {
+        $attrs = [];
+
+        /** @var \ReflectionAttribute $attribute */
+        foreach ($ref->getAttributes($name, $flags) as $attribute) {
+            $attrs[$attribute->getName()] = $attribute;
+        }
+
+        return $attrs;
     }
 }

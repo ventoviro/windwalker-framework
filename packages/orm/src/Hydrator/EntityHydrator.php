@@ -47,7 +47,7 @@ class EntityHydrator implements HydratorInterface
         $columns = [];
         $props   = [];
 
-        foreach ($metadata->getReflectProperties() as $prop) {
+        foreach ($metadata->getProperties() as $prop) {
             $props[$prop->getName()] = $prop;
             $column = AttributesResolver::getFirstAttributeInstance($prop, Column::class);
 
@@ -100,7 +100,7 @@ class EntityHydrator implements HydratorInterface
 
         $metadata = $this->orm->getEntityMetadata($object);
 
-        foreach ($metadata->getColumnAttrs() as $column) {
+        foreach ($metadata->getColumns() as $column) {
             $prop = $column->getProperty();
 
             $colName  = $column->getName();

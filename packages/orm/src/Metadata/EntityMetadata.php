@@ -11,31 +11,49 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Metadata;
 
-use Windwalker\Attributes\AttributesResolver;
-use Windwalker\ORM\Attributes\AutoIncrement;
-use Windwalker\ORM\Attributes\Cast;
-use Windwalker\ORM\Attributes\Column;
-use Windwalker\ORM\Attributes\EntitySetup;
-use Windwalker\ORM\Attributes\PK;
-use Windwalker\ORM\Attributes\Table;
+use Windwalker\ORM\Attributes\{AutoIncrement, Cast, Column, EntitySetup, PK, Table};
 use Windwalker\ORM\Cast\CastManager;
 use Windwalker\ORM\ORM;
-use Windwalker\Utilities\Cache\InstanceCacheTrait;
-
-use function Windwalker\iterator_keys;
+use Windwalker\Utilities\Cache\RuntimeCacheTrait;
+use Windwalker\Utilities\Reflection\ReflectAccessor;
 
 /**
  * The EntityMetadata class.
  */
 class EntityMetadata
 {
-    use InstanceCacheTrait;
-
-    protected static array $classes = [];
+    use RuntimeCacheTrait;
 
     protected string $className;
 
     protected ?string $tableName = null;
+
+    protected ?Column $aiColumn = null;
+
+    /**
+     * @var PK[]
+     */
+    protected array $keys = [];
+
+    /**
+     * @var \ReflectionProperty[]
+     */
+    protected ?array $properties = null;
+
+    /**
+     * @var \ReflectionMethod[]
+     */
+    protected ?array $methods = null;
+
+    /**
+     * @var Column[]
+     */
+    protected array $columns = [];
+
+    /**
+     * @var array
+     */
+    protected array $attributeMaps = [];
 
     protected CastManager $castManager;
 
@@ -43,11 +61,6 @@ class EntityMetadata
      * @var ORM
      */
     protected ORM $orm;
-
-    /**
-     * @var array
-     */
-    protected array $attributeMaps = [];
 
     /**
      * EntityMetadata constructor.
@@ -70,34 +83,56 @@ class EntityMetadata
 
     public static function isEntity(string|object $object): bool
     {
-        if (is_object($object)) {
-            $object = $object::class;
-        }
+        $class = new \ReflectionClass($object);
 
-        return static::$classes[$object] ??= (new \ReflectionClass($object))->getAttributes(Table::class) !== [];
+        return $class->getAttributes(Table::class) !== [];
     }
 
-    public function setup(): void
+    public function setup(): static
     {
         // Loop all properties
-        foreach ($this->getReflectProperties() as $prop) {
-            $attributes = $prop->getAttributes();
-            $column = null;
+        foreach ($this->getProperties() as $prop) {
+            $attributes  = $prop->getAttributes();
+            $singleAttrs = [];
+            $column      = null;
 
             foreach ($attributes as $attribute) {
-                // Is column
-                if ($attribute->getName() === Column::class) {
-                    $column = $attribute->newInstance();
-                }
-
-                // Cache prop attributes
                 if (!$attribute->isRepeated()) {
-                    $this->attributeMaps[$attribute::class] ??= [];
-
-                    $this->attributeMaps[$attribute::class][] = $prop;
+                    $this->attributeMaps[$attribute->getName()]['props'][$prop->getName()] = $prop;
+                    $singleAttrs[$attribute->getName()]                                    = $attribute;
                 }
             }
 
+            if ($singleAttrs[Column::class] ?? null) {
+                /** @var Column $column */
+                $column = $singleAttrs[Column::class]->newInstance();
+                $column->setProperty($prop);
+
+                $this->columns[$column->getName()] = $column;
+            }
+
+            if ($singleAttrs[PK::class] ?? null) {
+                /** @var PK $pk */
+                $pk = $singleAttrs[PK::class]->newInstance();
+
+                if ($column === null) {
+                    throw new \LogicException(
+                        sprintf(
+                            '%s set on a property without %s',
+                            PK::class,
+                            Column::class
+                        )
+                    );
+                }
+
+                $this->keys[$column->getName()] = $pk->setColumn($column);
+            }
+
+            if ($singleAttrs[AutoIncrement::class] ?? null) {
+                $this->aiColumn = $column;
+            }
+
+            // Register casts
             $casts = $prop->getAttributes(Cast::class);
 
             if (!$casts === []) {
@@ -118,14 +153,8 @@ class EntityMetadata
             }
         }
 
-        $ref = $this->getReflector();
-
-        $methods = $ref->getMethods(
-            \ReflectionMethod::IS_STATIC | \ReflectionMethod::IS_PROTECTED | \ReflectionMethod::IS_PUBLIC
-        );
-
         // Loop all methods
-        foreach ($methods as $method) {
+        foreach ($this->getMethods() as $method) {
             $attributes = $method->getAttributes();
 
             foreach ($attributes as $attribute) {
@@ -137,52 +166,43 @@ class EntityMetadata
                             $method->getClosure(),
                             [
                                 'metadata' => $this,
-                                static::class => $this
+                                static::class => $this,
                             ]
                         );
                 }
 
                 // Cache method attributes
-                if ($attribute->isRepeated()) {
-                    $this->attributeMaps[$attribute::class] ??= [];
-
-                    $this->attributeMaps[$attribute::class][] = $method;
+                if (!$attribute->isRepeated()) {
+                    $this->attributeMaps[$attribute->getName()]['methods'][$method->getName()] = $method;
                 }
             }
         }
+
+        return $this;
     }
 
-    public function getMethodsOfAttribute(string $attributeClass): \Generator
+    /**
+     * getMethodsOfAttribute
+     *
+     * @param  string  $attributeClass
+     *
+     * @return  \ReflectionMethod[]
+     */
+    public function getMethodsOfAttribute(string $attributeClass): array
     {
-        // $ref = $this->getReflector();
-        //
-        // $methods = $ref->getMethods(
-        //     \ReflectionMethod::IS_STATIC | \ReflectionMethod::IS_PROTECTED | \ReflectionMethod::IS_PUBLIC
-        // );
-        //
-        // // Loop all methods
-        // foreach ($methods as $method) {
-        //     $attributes = $method->getAttributes($attributeClass);
-        //
-        //     foreach ($attributes as $attribute) {
-        //         yield $method->getName() => $method;
-        //     }
-        // }
-
-        foreach ($this->attributeMaps[$attributeClass] ?? [] as $ref) {
-            if ($ref instanceof \ReflectionMethod) {
-                yield $ref->getName() => $ref;
-            }
-        }
+        return $this->attributeMaps[$attributeClass]['methods'] ?? [];
     }
 
-    public function getPropertiesOfAttribute(string $attributeClass): \Generator
+    /**
+     * getPropertiesOfAttribute
+     *
+     * @param  string  $attributeClass
+     *
+     * @return  \ReflectionProperty[]
+     */
+    public function getPropertiesOfAttribute(string $attributeClass): array
     {
-        foreach ($this->attributeMaps[$attributeClass] ?? [] as $ref) {
-            if ($ref instanceof \ReflectionProperty) {
-                yield $ref->getName() => $ref;
-            }
-        }
+        return $this->attributeMaps[$attributeClass]['props'] ?? [];
     }
 
     public function getClassName(): string
@@ -196,7 +216,7 @@ class EntityMetadata
             return $this->tableName;
         }
 
-        $tableAttr = AttributesResolver::getFirstAttributeInstance($this->className, Table::class);
+        $tableAttr = $this->getReflector()->getAttributes(Table::class)[0]?->newInstance();
 
         if (!$tableAttr) {
             throw new \InvalidArgumentException(
@@ -208,109 +228,6 @@ class EntityMetadata
         }
 
         return $this->tableName = $tableAttr->getName();
-    }
-
-    public function getMainKey(): ?string
-    {
-        $pks = [];
-
-        foreach ($this->getKeysAttrs() as $name => $pk) {
-            $col = $pk->getColumn();
-
-            if ($pk->isPrimary()) {
-                return $col->getName();
-            }
-
-            $pks[] = $name;
-        }
-
-        return $pks[0] ?? null;
-    }
-
-    /**
-     * getKeys
-     *
-     * @return  string[]
-     */
-    public function getKeys(): array
-    {
-        return iterator_keys($this->getKeysAttrs());
-    }
-
-    public function getAutoIncrementColumn(): ?Column
-    {
-        foreach ($this->getKeysAttrs() as $keyAttr) {
-            $column = $keyAttr->getColumn();
-            $prop   = $column->getProperty();
-
-            if ($prop->getAttributes(AutoIncrement::class)) {
-                return $column;
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * getKeysReflectors
-     *
-     * @return  \Generator|PK[]
-     */
-    protected function getKeysAttrs(): \Generator
-    {
-        foreach ($this->getColumnAttrs() as $key => $column) {
-            $prop = $column->getProperty();
-
-            if ($pk = AttributesResolver::getFirstAttributeInstance($prop, PK::class)) {
-                yield $key => $pk->setColumn($column);
-            }
-        }
-    }
-
-    /**
-     * getProperties
-     *
-     * @return  array<int, \ReflectionProperty>
-     */
-    public function getReflectProperties(): array
-    {
-        return $this->getReflector()
-            ->getProperties(
-                \ReflectionProperty::IS_PUBLIC | \ReflectionProperty::IS_PROTECTED | \ReflectionProperty::IS_PRIVATE
-            );
-    }
-
-    public function getProperty(string $name): \ReflectionProperty
-    {
-        return $this->getReflector()->getProperty($name);
-    }
-
-    /**
-     * getColumns
-     *
-     * @return \Generator|Column[]
-     */
-    public function getColumnAttrs(): \Generator
-    {
-        foreach ($this->getReflectProperties() as $prop) {
-            if ($col = AttributesResolver::getFirstAttribute($prop, Column::class)) {
-                /** @var Column $column */
-                $column = $col->newInstance();
-                $column->setProperty($prop);
-
-                yield $column->getName() => $column;
-            }
-        }
-    }
-
-    public function getColumn(string $name): ?Column
-    {
-        return iterator_to_array($this->getColumnAttrs())[$name] ?? null;
-    }
-
-    public function getReflector(): \ReflectionClass
-    {
-        return new \ReflectionClass($this->className);
     }
 
     public function cast(
@@ -327,6 +244,112 @@ class EntityMetadata
         );
 
         return $this;
+    }
+
+    public function getMainKey(): ?string
+    {
+        $pks = [];
+
+        foreach ($this->getKeysAttrs() as $name => $pk) {
+            if ($pk->isPrimary()) {
+                return $pk->getColumn()->getName();
+            }
+
+            $pks[] = $name;
+        }
+
+        return $pks[0] ?? null;
+    }
+
+    /**
+     * getKeys
+     *
+     * @return  string[]
+     */
+    public function getKeys(): array
+    {
+        return array_keys($this->getKeysAttrs());
+    }
+
+    public function getAutoIncrementColumn(): ?Column
+    {
+        return $this->aiColumn;
+    }
+
+    /**
+     * getKeysReflectors
+     *
+     * @return  PK[]
+     */
+    protected function getKeysAttrs(): array
+    {
+        return $this->keys;
+    }
+
+    /**
+     * getMethods
+     *
+     * @return  array<int, \ReflectionMethod>
+     *
+     * @throws \ReflectionException
+     */
+    public function getMethods(): array
+    {
+        return $this->methods ??= ReflectAccessor::getReflectMethods(
+            $this->className,
+            \ReflectionMethod::IS_STATIC | \ReflectionMethod::IS_PROTECTED | \ReflectionMethod::IS_PUBLIC
+        );
+    }
+
+    public function getMethod(string $name): ?\ReflectionMethod
+    {
+        return $this->getMethods()[$name] ?? null;
+    }
+
+    /**
+     * getProperties
+     *
+     * @return  array<int, \ReflectionProperty>
+     * @throws \ReflectionException
+     */
+    public function getProperties(): array
+    {
+        return $this->properties ??= ReflectAccessor::getReflectProperties(
+            $this->className,
+            \ReflectionProperty::IS_PUBLIC | \ReflectionProperty::IS_PROTECTED | \ReflectionProperty::IS_PRIVATE
+        );
+    }
+
+    public function getProperty(string $name): ?\ReflectionProperty
+    {
+        return $this->getProperties()[$name] ?? null;
+    }
+
+    /**
+     * getColumns
+     *
+     * @return Column[]
+     */
+    public function getColumns(): array
+    {
+        return $this->columns;
+    }
+
+    public function getColumn(string $name): ?Column
+    {
+        return $this->getColumns()[$name] ?? null;
+    }
+
+    /**
+     * ReflectionClass creation is very fast that no need to cache it.
+     *
+     * @return  \ReflectionClass
+     *
+     * @throws \ReflectionException
+     */
+    public function getReflector(): \ReflectionClass
+    {
+        return new \ReflectionClass($this->className);
     }
 
     /**

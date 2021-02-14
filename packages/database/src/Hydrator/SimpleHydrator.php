@@ -11,8 +11,6 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Hydrator;
 
-use Windwalker\Scalars\ArrayObject;
-use Windwalker\Utilities\Contract\AccessibleInterface;
 use Windwalker\Utilities\Contract\AccessorAccessibleInterface;
 use Windwalker\Utilities\Contract\DumpableInterface;
 use Windwalker\Utilities\Reflection\ReflectAccessor;

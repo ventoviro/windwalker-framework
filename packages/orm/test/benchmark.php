@@ -28,8 +28,10 @@ const NUM_TESTS = 100000;
 $start = microtime(true);
 
 for ($i = 0; $i < NUM_TESTS; $i++) {
+    // \Windwalker\Utilities\Reflection\ReflectAccessor::reflect(Article::class);
     // \Windwalker\ORM\Metadata\EntityMetadata::isEntity(Article::class);
-    iterator_to_array($meta->getMethodsOfAttribute(AfterSaveEvent::class));
+    $meta->getProperties();
+    // iterator_to_array($meta->getMethodsOfAttribute(AfterSaveEvent::class));
     // $meta->getPropertiesOfAttribute(Column::class);
 }
 

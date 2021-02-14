@@ -21,13 +21,15 @@ use Windwalker\Event\EventAwareInterface;
 use Windwalker\Event\EventAwareTrait;
 use Windwalker\Event\EventInterface;
 use Windwalker\ORM\Attributes\CurrentTime;
-use Windwalker\ORM\Event\AbstractSaveEvent;
-use Windwalker\ORM\Event\AfterDeleteEvent;
-use Windwalker\ORM\Event\AfterSaveEvent;
-use Windwalker\ORM\Event\AfterUpdateBatchEvent;
-use Windwalker\ORM\Event\BeforeDeleteEvent;
-use Windwalker\ORM\Event\BeforeSaveEvent;
-use Windwalker\ORM\Event\BeforeUpdateBatchEvent;
+use Windwalker\ORM\Event\{
+    AbstractSaveEvent,
+    AfterDeleteEvent,
+    AfterSaveEvent,
+    AfterUpdateBatchEvent,
+    BeforeDeleteEvent,
+    BeforeSaveEvent,
+    BeforeUpdateBatchEvent
+};
 use Windwalker\ORM\Metadata\EntityMetadata;
 use Windwalker\ORM\Strategy\Selector;
 use Windwalker\Utilities\Arr;
