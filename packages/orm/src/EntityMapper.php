@@ -805,25 +805,19 @@ class EntityMapper implements EventAwareInterface
     {
         $event = $this->emit($event, $args);
 
-        $ref = $this->getMetadata()->getReflector();
-
-        $methods = $ref->getMethods(
-            \ReflectionMethod::IS_PUBLIC | \ReflectionMethod::IS_PROTECTED | \ReflectionMethod::IS_STATIC
-        );
+        $methods = $this->getMetadata()->getMethodsOfAttribute($event::class);
 
         foreach ($methods as $method) {
-            if ($method->getAttributes($event::class)) {
-                $result = $this->getORM()->getAttributesResolver()->call(
-                    $method->getClosure(),
-                    [
-                        $event::class => $event,
-                        'event' => $event
-                    ]
-                );
+            $result = $this->getORM()->getAttributesResolver()->call(
+                $method->getClosure(),
+                [
+                    $event::class => $event,
+                    'event' => $event
+                ]
+            );
 
-                if ($result instanceof EventInterface) {
-                    $event = $result;
-                }
+            if ($result instanceof EventInterface) {
+                $event = $result;
             }
         }
 

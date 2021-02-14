@@ -15,6 +15,7 @@ use Windwalker\Attributes\AttributesResolver;
 use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Cast;
 use Windwalker\ORM\Attributes\Column;
+use Windwalker\ORM\Attributes\EntitySetup;
 use Windwalker\ORM\Attributes\PK;
 use Windwalker\ORM\Attributes\Table;
 use Windwalker\ORM\Cast\CastManager;
@@ -29,6 +30,8 @@ use function Windwalker\iterator_keys;
 class EntityMetadata
 {
     use InstanceCacheTrait;
+
+    protected static array $classes = [];
 
     protected string $className;
 
@@ -67,30 +70,39 @@ class EntityMetadata
 
     public static function isEntity(string|object $object): bool
     {
-        return (new \ReflectionClass($object))->getAttributes(Table::class) !== [];
+        if (is_object($object)) {
+            $object = $object::class;
+        }
+
+        return static::$classes[$object] ??= (new \ReflectionClass($object))->getAttributes(Table::class) !== [];
     }
 
     public function setup(): void
     {
+        // Loop all properties
         foreach ($this->getReflectProperties() as $prop) {
             $attributes = $prop->getAttributes();
+            $column = null;
 
             foreach ($attributes as $attribute) {
+                // Is column
+                if ($attribute->getName() === Column::class) {
+                    $column = $attribute->newInstance();
+                }
+
+                // Cache prop attributes
                 if (!$attribute->isRepeated()) {
-                    $this->attributeMaps[$attribute::class]
+                    $this->attributeMaps[$attribute::class] ??= [];
+
+                    $this->attributeMaps[$attribute::class][] = $prop;
                 }
             }
 
             $casts = $prop->getAttributes(Cast::class);
 
-            if ($casts === []) {
+            if (!$casts === []) {
                 continue;
             }
-
-            $column = AttributesResolver::getFirstAttributeInstance(
-                $prop,
-                Column::class
-            );
 
             $colName = $column ? $column->getName() : $prop->getName();
 
@@ -112,8 +124,64 @@ class EntityMetadata
             \ReflectionMethod::IS_STATIC | \ReflectionMethod::IS_PROTECTED | \ReflectionMethod::IS_PUBLIC
         );
 
+        // Loop all methods
         foreach ($methods as $method) {
+            $attributes = $method->getAttributes();
 
+            foreach ($attributes as $attribute) {
+                // If is setup method, call it.
+                if ($attribute->getName() === EntitySetup::class) {
+                    $this->getORM()
+                        ->getAttributesResolver()
+                        ->call(
+                            $method->getClosure(),
+                            [
+                                'metadata' => $this,
+                                static::class => $this
+                            ]
+                        );
+                }
+
+                // Cache method attributes
+                if ($attribute->isRepeated()) {
+                    $this->attributeMaps[$attribute::class] ??= [];
+
+                    $this->attributeMaps[$attribute::class][] = $method;
+                }
+            }
+        }
+    }
+
+    public function getMethodsOfAttribute(string $attributeClass): \Generator
+    {
+        // $ref = $this->getReflector();
+        //
+        // $methods = $ref->getMethods(
+        //     \ReflectionMethod::IS_STATIC | \ReflectionMethod::IS_PROTECTED | \ReflectionMethod::IS_PUBLIC
+        // );
+        //
+        // // Loop all methods
+        // foreach ($methods as $method) {
+        //     $attributes = $method->getAttributes($attributeClass);
+        //
+        //     foreach ($attributes as $attribute) {
+        //         yield $method->getName() => $method;
+        //     }
+        // }
+
+        foreach ($this->attributeMaps[$attributeClass] ?? [] as $ref) {
+            if ($ref instanceof \ReflectionMethod) {
+                yield $ref->getName() => $ref;
+            }
+        }
+    }
+
+    public function getPropertiesOfAttribute(string $attributeClass): \Generator
+    {
+        foreach ($this->attributeMaps[$attributeClass] ?? [] as $ref) {
+            if ($ref instanceof \ReflectionProperty) {
+                yield $ref->getName() => $ref;
+            }
         }
     }
 
