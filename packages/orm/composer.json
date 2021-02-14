@@ -22,7 +22,8 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^8.0||^9.0",
-        "windwalker/test": "4.x-dev"
+        "windwalker/test": "4.x-dev",
+        "myclabs/php-enum": "^1.7"
     },
     "suggest": {
     },

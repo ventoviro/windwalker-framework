@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Metadata;
 
+use Windwalker\ORM\ORM;
+
 /**
  * The EntityMetadataCollection class.
  */
@@ -21,14 +23,18 @@ class EntityMetadataCollection
      */
     protected array $metadataList = [];
 
+    protected ORM $orm;
+
     /**
      * EntityMetadataCollection constructor.
      *
      * @param  EntityMetadata[]  $metadataItems
+     * @param  ORM               $orm
      */
-    public function __construct(array $metadataItems = [])
+    public function __construct(ORM $orm, array $metadataItems = [])
     {
         $this->metadataList = $metadataItems;
+        $this->orm = $orm;
     }
 
     public function get(string|object $entity): EntityMetadata
@@ -37,7 +43,7 @@ class EntityMetadataCollection
 
         $class = strtolower(trim($class, '\\'));
 
-        return $this->metadataList[$class] ??= new EntityMetadata($entity);
+        return $this->metadataList[$class] ??= new EntityMetadata($entity, $this->getORM());
     }
 
     public function set(EntityMetadata $metadata): static
@@ -84,6 +90,26 @@ class EntityMetadataCollection
     public function setMetadataList(array $metadataList): static
     {
         $this->metadataList = $metadataList;
+
+        return $this;
+    }
+
+    /**
+     * @return ORM
+     */
+    public function getORM(): ORM
+    {
+        return $this->orm;
+    }
+
+    /**
+     * @param  ORM  $orm
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setORM(ORM $orm): static
+    {
+        $this->orm = $orm;
 
         return $this;
     }

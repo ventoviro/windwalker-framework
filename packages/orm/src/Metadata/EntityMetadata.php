@@ -12,8 +12,6 @@ declare(strict_types=1);
 namespace Windwalker\ORM\Metadata;
 
 use Windwalker\Attributes\AttributesResolver;
-use Windwalker\Database\Hydrator\HydratorAwareInterface;
-use Windwalker\Database\Hydrator\HydratorInterface;
 use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Cast;
 use Windwalker\ORM\Attributes\Column;
@@ -22,9 +20,7 @@ use Windwalker\ORM\Attributes\Table;
 use Windwalker\ORM\Cast\CastManager;
 use Windwalker\ORM\ORM;
 use Windwalker\Utilities\Cache\InstanceCacheTrait;
-use Windwalker\Utilities\Classes\ObjectBuilder;
 
-use function DI\string;
 use function Windwalker\iterator_keys;
 
 /**
@@ -41,17 +37,29 @@ class EntityMetadata
     protected CastManager $castManager;
 
     /**
+     * @var ORM
+     */
+    protected ORM $orm;
+
+    /**
+     * @var array
+     */
+    protected array $attributeMaps = [];
+
+    /**
      * EntityMetadata constructor.
      *
      * @param  string|object  $entity
+     * @param  ORM            $orm
      */
-    public function __construct(string|object $entity)
+    public function __construct(string|object $entity, ORM $orm)
     {
         if (is_object($entity)) {
             $entity = $entity::class;
         }
 
-        $this->className = $entity;
+        $this->orm         = $orm;
+        $this->className   = $entity;
         $this->castManager = new CastManager();
 
         $this->setup();
@@ -65,6 +73,14 @@ class EntityMetadata
     public function setup(): void
     {
         foreach ($this->getReflectProperties() as $prop) {
+            $attributes = $prop->getAttributes();
+
+            foreach ($attributes as $attribute) {
+                if (!$attribute->isRepeated()) {
+                    $this->attributeMaps[$attribute::class]
+                }
+            }
+
             $casts = $prop->getAttributes(Cast::class);
 
             if ($casts === []) {
@@ -90,8 +106,14 @@ class EntityMetadata
             }
         }
 
-        if (is_subclass_of($this->className, EntitySetupInterface::class)) {
-            $this->className::setup($this);
+        $ref = $this->getReflector();
+
+        $methods = $ref->getMethods(
+            \ReflectionMethod::IS_STATIC | \ReflectionMethod::IS_PROTECTED | \ReflectionMethod::IS_PUBLIC
+        );
+
+        foreach ($methods as $method) {
+
         }
     }
 
@@ -255,6 +277,26 @@ class EntityMetadata
     public function setCastManager(CastManager $castManager): static
     {
         $this->castManager = $castManager;
+
+        return $this;
+    }
+
+    /**
+     * @return ORM
+     */
+    public function getORM(): ORM
+    {
+        return $this->orm;
+    }
+
+    /**
+     * @param  ORM  $orm
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setORM(ORM $orm): static
+    {
+        $this->orm = $orm;
 
         return $this;
     }

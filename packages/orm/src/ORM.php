@@ -41,7 +41,7 @@ class ORM
     {
         $this->db = $db;
 
-        $this->entityMetadataCollection = new EntityMetadataCollection();
+        $this->entityMetadataCollection = new EntityMetadataCollection($this);
     }
 
     /**

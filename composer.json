@@ -64,7 +64,8 @@
         "league/plates": "^3.4",
         "league/flysystem": "^2.0",
         "webmozart/glob": "^4.1",
-        "symfony/options-resolver": "^5.0"
+        "symfony/options-resolver": "^5.0",
+        "myclabs/php-enum": "^1.7"
     },
     "suggest": {
         "symfony/yaml": "Install ~4.0 if you require YAML support.",
