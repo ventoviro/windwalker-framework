@@ -11,11 +11,9 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Relation\Steategy;
 
-use Windwalker\ORM\Attributes\Column;
 use Windwalker\ORM\Metadata\EntityMetadata;
 use Windwalker\ORM\ORM;
 use Windwalker\ORM\Relation\Action;
-use Windwalker\ORM\Strategy\Selector;
 use Windwalker\Utilities\Options\OptionAccessTrait;
 
 /**
@@ -25,7 +23,7 @@ abstract class AbstractRelationStrategy implements RelationStrategyInterface
 {
     use OptionAccessTrait;
 
-    protected string $field;
+    protected string $propName;
 
     protected ?string $targetTable;
 
@@ -46,8 +44,8 @@ abstract class AbstractRelationStrategy implements RelationStrategyInterface
      * AbstractRelationStrategy constructor.
      *
      * @param  EntityMetadata  $metadata
-     * @param  string          $field
-     * @param  string          $targetTable
+     * @param  string          $propName
+     * @param  string|null     $targetTable
      * @param  array           $fks
      * @param  string          $onUpdate
      * @param  string          $onDelete
@@ -55,7 +53,7 @@ abstract class AbstractRelationStrategy implements RelationStrategyInterface
      */
     public function __construct(
         EntityMetadata $metadata,
-        string $field,
+        string $propName,
         ?string $targetTable = null,
         array $fks = [],
         string $onUpdate = Action::NO_ACTION,
@@ -65,7 +63,7 @@ abstract class AbstractRelationStrategy implements RelationStrategyInterface
         $this->target($targetTable, $fks);
 
         $this->metadata = $metadata;
-        $this->field    = $field;
+        $this->propName = $propName;
         $this->onUpdate = $onUpdate;
         $this->onDelete = $onDelete;
         $this->options  = $options;
@@ -80,24 +78,158 @@ abstract class AbstractRelationStrategy implements RelationStrategyInterface
         return $this->metadata;
     }
 
-    public function createLoadQuery(array $data): Selector
+    public function getTargetMetadata(): EntityMetadata
     {
-        $metadata = $this->getMetadata();
+        return $this->getORM()->getEntityMetadata($this->targetTable);
+    }
+
+    public function createLoadConditions(array $data): array
+    {
         $conditions = [];
 
         foreach ($this->fks as $field => $foreign) {
             $conditions[$foreign] = $data[$field];
         }
 
-        $query = $this->getORM()->from($metadata->getClassName());
-        $query->where($conditions);
-
-        return $query;
+        return $conditions;
     }
 
-    public function target(string $table, array|string $fks)
+    /**
+     * deleteAllRelatives
+     *
+     * @param  array  $relData
+     *
+     * @return  static
+     */
+    public function deleteAllRelatives(array $relData): static
+    {
+        $mapper = $this->getORM()->mapper($this->targetTable);
+        $conditions = [];
+
+        foreach ($this->fks as $field => $foreign) {
+            $conditions[$foreign] = $relData[$field];
+        }
+
+        $mapper->delete($conditions);
+
+        return $this;
+    }
+
+    public function clearKeysValues(array $relData): array
+    {
+        $relMetadata = $this->getORM()->getEntityMetadata($this->targetTable);
+
+        foreach ($relMetadata->getKeys() as $key)
+        {
+            $relData[$key] = null;
+        }
+
+        return $relData;
+    }
+
+    /**
+     * Handle update relation and set matched value to child table.
+     *
+     * @param  array  $selfData  The self entity.
+     * @param  array  $relData   The relative entity to be handled.
+     *
+     * @return  array  Return table if you need.
+     */
+    public function handleUpdateRelations(array $selfData, array $relData): array
+    {
+        if ($this->onUpdate === Action::CASCADE) {
+            // Handle Cascade
+            $relData = $this->syncValuesToRelData($selfData, $relData);
+        } elseif ($this->onUpdate === Action::SET_NULL) {
+            // Handle Set NULL
+            if ($this->isChanged($selfData, $relData)) {
+                $relData = $this->clearRelativeFields($relData);
+            }
+        }
+
+        return $relData;
+    }
+
+    /**
+     * Handle delete relation, if is CASCADE, mark child table to delete. If is SET NULL, set all children fields to
+     * NULL.
+     *
+     * @param  JTable  $itemTable  The child table to be handled.
+     *
+     * @return  JTable  Return table if you need.
+     */
+    public function handleDeleteRelations(JTable $itemTable)
+    {
+        // Handle Cascade
+        if ($this->onDelete === \Windwalker\Relation\Action::CASCADE) {
+            $itemTable->_delete = true;
+        } // Handle Set NULL
+        elseif ($this->onDelete === Action::SET_NULL) {
+            $itemTable = $this->clearRelativeFields($itemTable);
+        }
+
+        return $itemTable;
+    }
+
+    /**
+     * Sync parent fields value to child table.
+     *
+     * @param  array  $selfData
+     * @param  array  $relData  The child table to be handled.
+     *
+     * @return  array  Return rel data if you need.
+     */
+    protected function syncValuesToRelData(array $selfData, array $relData): array
+    {
+        foreach ($this->fks as $field => $foreign) {
+            $relData[$foreign] = $selfData[$field];
+        }
+
+        return $relData;
+    }
+
+    /**
+     * Clear value to all relative children fields.
+     *
+     * @param  array  $relData  The child table to be handled.
+     *
+     * @return  array  Return data if you need.
+     */
+    protected function clearRelativeFields(array $relData): array
+    {
+        foreach ($this->fks as $field => $foreign) {
+            $relData[$foreign] = null;
+        }
+
+        return $relData;
+    }
+
+    /**
+     * Is fields changed. If any field changed, means we have to do something to children.
+     *
+     * @param  array  $selfData
+     * @param  array  $relData  The child data to be handled.
+     *
+     * @return  bool  Something changed of not.
+     */
+    public function isChanged(array $selfData, array $relData): bool
+    {
+        // If any key changed, set all fields as NULL.
+        foreach ($this->fks as $field => $foreign) {
+            if ($relData[$foreign] != $selfData[$field]) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function target(?string $table, array $fks): static
     {
         $this->targetTable = $table;
+        $this->foreignKeys($fks);
+
+        return $this;
     }
 
     public function foreignKeys(array $fks): static
@@ -138,9 +270,9 @@ abstract class AbstractRelationStrategy implements RelationStrategyInterface
     /**
      * @return string
      */
-    public function getField(): string
+    public function getPropName(): string
     {
-        return $this->field;
+        return $this->propName;
     }
 
     /**
@@ -150,7 +282,7 @@ abstract class AbstractRelationStrategy implements RelationStrategyInterface
      */
     public function field(string $field): static
     {
-        $this->field = $field;
+        $this->propName = $field;
 
         return $this;
     }

@@ -41,6 +41,8 @@ class EntityMetadata
      */
     protected ?array $properties = null;
 
+    protected array $propertyColumns = [];
+
     /**
      * @var \ReflectionMethod[]
      */
@@ -80,7 +82,7 @@ class EntityMetadata
         $this->orm         = $orm;
         $this->className   = $entity;
         $this->castManager = new CastManager();
-        $this->relationManager = new RelationManager();
+        $this->relationManager = new RelationManager($this);
 
         $this->setup();
     }
@@ -113,6 +115,7 @@ class EntityMetadata
                 $column->setProperty($prop);
 
                 $this->columns[$column->getName()] = $column;
+                $this->propertyColumns[$prop->getName()] = $column;
             }
 
             if ($singleAttrs[PK::class] ?? null) {
@@ -207,6 +210,11 @@ class EntityMetadata
     public function getPropertiesOfAttribute(string $attributeClass): array
     {
         return $this->attributeMaps[$attributeClass]['props'] ?? [];
+    }
+
+    public function getColumnByPropertyName(string $propName): ?Column
+    {
+        return $this->propertyColumns[$propName] ?? null;
     }
 
     public function getClassName(): string

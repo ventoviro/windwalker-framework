@@ -39,15 +39,21 @@ class RelationManager implements RelationStrategyInterface
     /**
      * @inheritDoc
      */
-    public function load(array $data): void
+    public function load(array $data, object $entity): array
     {
+        foreach ($this->getRelations() as $relation) {
+            $data = $relation->load($data, $entity);
+        }
+
+        return $data;
     }
 
     /**
      * @inheritDoc
      */
-    public function store(): void
+    public function save(array $data, object $entity): void
     {
+
     }
 
     /**

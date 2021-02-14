@@ -19,20 +19,24 @@ interface RelationStrategyInterface
     /**
      * Load all relative children data.
      *
-     * @param  array  $data
+     * @param  array   $data
+     * @param  object  $entity
      *
-     * @return  void
+     * @return array
      */
-    public function load(array $data): void;
+    public function load(array $data, object $entity): array;
 
     /**
      * Store all relative children data.
      *
      * The onUpdate option will work in this method.
      *
+     * @param  array   $data
+     * @param  object  $entity
+     *
      * @return  void
      */
-    public function store(): void;
+    public function save(array $data, object $entity): void;
 
     /**
      * Delete all relative children data.

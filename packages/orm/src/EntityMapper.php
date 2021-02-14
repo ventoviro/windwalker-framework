@@ -170,9 +170,9 @@ class EntityMapper implements EventAwareInterface
                 compact('data', 'type', 'metadata')
             );
 
-            $data = $this->getDb()->getWriter()->insertOne(
+            $this->getDb()->getWriter()->insertOne(
                 $metadata->getTableName(),
-                $event->getData(),
+                $data = $event->getData(),
                 $pk,
                 [
                     'incrementField' => $aiColumn && isset($data[$aiColumn]),
@@ -190,10 +190,12 @@ class EntityMapper implements EventAwareInterface
                 compact('data', 'type', 'metadata', 'entity')
             );
 
-            $items[$k] = $this->hydrate(
+            $items[$k] = $entity = $this->hydrate(
                 $event->getData(),
                 $event->getEntity()
             );
+
+            $metadata->getRelationManager()->save($event->getData(), $entity);
         }
 
         // Event
