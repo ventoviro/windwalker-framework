@@ -50,6 +50,17 @@ class AttributeSubscriberTest extends TestCase
         self::assertEquals(72, $subscriber->count);
     }
 
+    public function testSubscribeStatic()
+    {
+        $subscriber = $this->getCounterSubscriber();
+
+        $this->instance->subscribe($subscriber);
+
+        $this->instance->emit('staticCount');
+
+        self::assertEquals(1, $subscriber::$staticCount);
+    }
+
     /**
      * @see  EventEmitter::off
      */
@@ -151,9 +162,11 @@ class AttributeSubscriberTest extends TestCase
         return new
         #[EventSubscriber]
         class {
-            public $count = 0;
+            public int $count = 0;
 
-            public $flower = '';
+            public string $flower = '';
+
+            public static int $staticCount = 0;
 
             #[ListenTo('count')]
             public function count1(EventInterface $event): void
@@ -171,6 +184,12 @@ class AttributeSubscriberTest extends TestCase
             public function sakura()
             {
                 $this->flower = 'Sakura';
+            }
+
+            #[ListenTo('staticCount')]
+            public static function staticCount(): void
+            {
+                static::$staticCount++;
             }
         };
     }

@@ -24,6 +24,10 @@ if (!function_exists('entity_table')) {
      */
     function entity_table(string|object $entity): string
     {
+        if (!str_contains($entity, '\\') || !class_exists($entity)) {
+            return $entity;
+        }
+
         if (is_object($entity)) {
             $entity = $entity::class;
         }

@@ -35,7 +35,7 @@ class SubscribableListenerProvider implements SubscribableListenerProviderInterf
     /**
      * @var ListenersQueue[]
      */
-    protected $queues = [];
+    protected array $queues = [];
 
     /**
      * SubscribableListenerProvider constructor.

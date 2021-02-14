@@ -13,10 +13,21 @@ namespace Windwalker\ORM;
 
 use Windwalker\Attributes\AttributesResolver;
 use Windwalker\Cache\Serializer\JsonSerializer;
+use Windwalker\Data\Collection;
 use Windwalker\Database\DatabaseAdapter;
 use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\Database\Schema\Ddl\Column as DbColumn;
+use Windwalker\Event\EventAwareInterface;
+use Windwalker\Event\EventAwareTrait;
+use Windwalker\Event\EventInterface;
 use Windwalker\ORM\Attributes\CurrentTime;
+use Windwalker\ORM\Event\AbstractSaveEvent;
+use Windwalker\ORM\Event\AfterDeleteEvent;
+use Windwalker\ORM\Event\AfterSaveEvent;
+use Windwalker\ORM\Event\AfterUpdateBatchEvent;
+use Windwalker\ORM\Event\BeforeDeleteEvent;
+use Windwalker\ORM\Event\BeforeSaveEvent;
+use Windwalker\ORM\Event\BeforeUpdateBatchEvent;
 use Windwalker\ORM\Metadata\EntityMetadata;
 use Windwalker\ORM\Strategy\Selector;
 use Windwalker\Utilities\Arr;
@@ -24,10 +35,14 @@ use Windwalker\Utilities\Assert\TypeAssert;
 use Windwalker\Utilities\TypeCast;
 
 /**
- * The EntityManager class.
+ * EntityMapper is an entity & database mapping object.
+ *
+ * Similar to DataMapper pattern.
  */
-class EntityMapper
+class EntityMapper implements EventAwareInterface
 {
+    use EventAwareTrait;
+
     /**
      * @var ORM
      */
@@ -50,21 +65,29 @@ class EntityMapper
         $this->metadata = $metadata;
     }
 
-    public function getKeys(): array
-    {
-        return $this->getMetadata()->getKeys();
-    }
-
-    public function getMainKey(): ?string
-    {
-        return $this->getMetadata()->getMainKey();
-    }
-
+    /**
+     * Create Query with select from.
+     *
+     * @param  mixed        $tables
+     * @param  string|null  $alias
+     *
+     * @return  Selector
+     */
     public function from(mixed $tables, ?string $alias = null): Selector
     {
         return $this->createSelectorQuery()->from($tables, $alias);
     }
 
+    /**
+     * Create Query with select.
+     *
+     * Use `select('...')` to select columns.
+     * Use `select()` to create select query without any settings.
+     *
+     * @param  mixed  ...$columns
+     *
+     * @return  Selector
+     */
     public function select(...$columns): Selector
     {
         return $this->createSelectorQuery()
@@ -72,6 +95,11 @@ class EntityMapper
             ->select(...$columns);
     }
 
+    /**
+     * Create Selector query.
+     *
+     * @return  Selector
+     */
     public function createSelectorQuery(): Selector
     {
         return (new Selector($this->getORM()));
@@ -106,13 +134,9 @@ class EntityMapper
 
     public function createOne(array|object $item = []): array|object
     {
-        // Event
-
         $items = $this->createMultiple(
             [$item]
         );
-
-        // Event
 
         return $items[0];
     }
@@ -123,8 +147,6 @@ class EntityMapper
         $metadata  = $this->getMetadata();
         $aiColumn  = $this->getAutoIncrementColumn();
         $className = $metadata->getClassName();
-
-        // Event
 
         /** @var array|object $item */
         foreach ($items as $k => $item) {
@@ -140,9 +162,15 @@ class EntityMapper
                 unset($data[$aiColumn]);
             }
 
+            $type = AbstractSaveEvent::TYPE_CREATE;
+            $event = $this->emitEvent(
+                BeforeSaveEvent::class,
+                compact('data', 'type', 'metadata')
+            );
+
             $data = $this->getDb()->getWriter()->insertOne(
                 $metadata->getTableName(),
-                $data,
+                $event->getData(),
                 $pk,
                 [
                     'incrementField' => $aiColumn && isset($data[$aiColumn]),
@@ -153,9 +181,16 @@ class EntityMapper
                 $item = $this->getORM()->getAttributesResolver()->createObject($className);
             }
 
+            $entity = $item;
+
+            $event = $this->emitEvent(
+                AfterSaveEvent::class,
+                compact('data', 'type', 'metadata', 'entity')
+            );
+
             $items[$k] = $this->hydrate(
-                $data,
-                $item
+                $event->getData(),
+                $event->getEntity()
             );
         }
 
@@ -164,8 +199,11 @@ class EntityMapper
         return $items;
     }
 
-    public function updateOne(array|object $item = [], array|string $condFields = null, bool $updateNulls = false)
-    {
+    public function updateOne(
+        array|object $item = [],
+        array|string $condFields = null,
+        bool $updateNulls = false
+    ): StatementInterface {
         return $this->updateMultiple([$item], $condFields, $updateNulls)[0];
     }
 
@@ -184,8 +222,6 @@ class EntityMapper
     {
         $metadata = $this->getMetadata();
 
-        // Event
-
         if (!$condFields) {
             $condFields = $this->getKeys();
         }
@@ -201,13 +237,28 @@ class EntityMapper
 
             $data = $this->extractForSave($item, $updateNulls);
 
+            $type = AbstractSaveEvent::TYPE_UPDATE;
+            $event = $this->emitEvent(
+                BeforeSaveEvent::class,
+                compact('data', 'type', 'metadata')
+            );
+
+            $metadata = $event->getMetadata();
+
             $results[] = $this->getDb()->getWriter()->updateOne(
                 $metadata->getTableName(),
-                $data,
+                $data = $event->getData(),
                 $condFields,
                 [
                     'updateNulls' => $updateNulls,
                 ]
+            );
+
+            $entity = $this->toEntity($data);
+
+            $this->emitEvent(
+                AfterSaveEvent::class,
+                compact('data', 'type', 'metadata', 'entity')
             );
         }
 
@@ -222,7 +273,7 @@ class EntityMapper
      * `$mapper->updateAll(new Data(array('published' => 0)), array('date' => '2014-03-02'))`
      * Means we make every records which date is 2014-03-02 unpublished.
      *
-     * @param  mixed  $item        The data we want to update to every rows.
+     * @param  mixed  $data        The data we want to update to every rows.
      * @param  mixed  $conditions  Where conditions, you can use array or Compare object.
      *                             Example:
      *                             - `array('id' => 5)` => id = 5
@@ -232,21 +283,32 @@ class EntityMapper
      * @return  boolean
      * @throws \InvalidArgumentException
      */
-    public function updateBatch(array|object $item, mixed $conditions = null): StatementInterface
+    public function updateBatch(array|object $data, mixed $conditions = null): StatementInterface
     {
-        // Event
-
         $metadata = $this->getMetadata();
+        $data = $this->extract($data);
 
-        $result = $this->getDb()->getWriter()->updateBatch(
+        // Event
+        $event = $this->emitEvent(
+            BeforeUpdateBatchEvent::class,
+            compact('data', 'metadata', 'conditions')
+        );
+
+        $metadata = $event->getMetadata();
+
+        $statement = $this->getDb()->getWriter()->updateBatch(
             $metadata->getTableName(),
-            $item,
-            $conditions
+            $data = $event->getData(),
+            $conditions = $event->getConditions()
         );
 
         // Event
+        $event = $this->emitEvent(
+            AfterUpdateBatchEvent::class,
+            compact('data', 'metadata', 'conditions', 'statement')
+        );
 
-        return $result;
+        return $event->getStatement();
     }
 
     public function saveMultiple(iterable $items, string|array $condFields = null, bool $updateNulls = false): iterable
@@ -280,15 +342,7 @@ class EntityMapper
 
     public function saveOne(array|object $item, array|string $condFields = null, bool $updateNulls = false)
     {
-        // Event
-
-        $items = $this->saveMultiple([$item], $condFields, $updateNulls);
-
-        $result = $items[0];
-
-        // Event
-
-        return $result;
+        return $this->saveMultiple([$item], $condFields, $updateNulls)[0];
     }
 
     public function findOneOrCreate(mixed $conditions, mixed $initData = null, bool $mergeConditions = true): object
@@ -365,7 +419,7 @@ class EntityMapper
         return $this->createOne($data);
     }
 
-    public function delete(mixed $conditions)
+    public function delete(mixed $conditions): array
     {
         // Event
 
@@ -391,25 +445,42 @@ class EntityMapper
         $keys = $this->getKeys();
 
         if (!$keys) {
-            return [
-                $writer->delete($metadata->getTableName(), $conditions),
-            ];
+            // If Entity has no keys, just use conditions to delete batch.
+            $delItems = [$conditions];
+        } else {
+            // If Entity has keys, use this keys to delete once per item.
+            $delItems = $this->getORM()
+                ->from($metadata->getClassName())
+                ->where($this->conditionsToWheres($conditions));
         }
-
-        $delItems = $this->getORM()
-            ->select(...$keys)
-            ->from($metadata->getClassName())
-            ->where($this->conditionsToWheres($conditions));
 
         $results = [];
 
-        foreach ($delItems as $keys) {
-            $keys = $keys->dump();
+        foreach ($delItems as $item) {
+            if (!$keys) {
+                $conditions = $this->conditionsToWheres($item);
+                $data       = null;
+            } else {
+                /** @var Collection $item */
+                $conditions = $item->only($keys)->dump();
+                $data = $item->dump(true);
+            }
 
-            // Entity Event
+            // Event
+            $event = $this->emitEvent(
+                BeforeDeleteEvent::class,
+                compact('data', 'conditions', 'metadata')
+            );
 
-            $results[] = $writer->delete($metadata->getTableName(), $keys);
-            // Entity Event
+            $statement = $writer->delete($metadata->getTableName(), $conditions = $event->getConditions());
+
+            // Event
+            $event = $this->emitEvent(
+                AfterDeleteEvent::class,
+                compact('data', 'conditions', 'metadata', 'statement')
+            );
+
+            $results[] = $event->getStatement();
         }
 
         // Event
@@ -539,6 +610,16 @@ class EntityMapper
         }
 
         return [$creates, $keep];
+    }
+
+    public function getKeys(): array
+    {
+        return $this->getMetadata()->getKeys();
+    }
+
+    public function getMainKey(): ?string
+    {
+        return $this->getMetadata()->getMainKey();
     }
 
     public function getTableName(): string
@@ -718,5 +799,34 @@ class EntityMapper
     public function getMetadata(): EntityMetadata
     {
         return $this->metadata;
+    }
+
+    public function emitEvent(EventInterface|string $event, array $args = []): EventInterface
+    {
+        $event = $this->emit($event, $args);
+
+        $ref = $this->getMetadata()->getReflector();
+
+        $methods = $ref->getMethods(
+            \ReflectionMethod::IS_PUBLIC | \ReflectionMethod::IS_PROTECTED | \ReflectionMethod::IS_STATIC
+        );
+
+        foreach ($methods as $method) {
+            if ($method->getAttributes($event::class)) {
+                $result = $this->getORM()->getAttributesResolver()->call(
+                    $method->getClosure(),
+                    [
+                        $event::class => $event,
+                        'event' => $event
+                    ]
+                );
+
+                if ($result instanceof EventInterface) {
+                    $event = $result;
+                }
+            }
+        }
+
+        return $event;
     }
 }

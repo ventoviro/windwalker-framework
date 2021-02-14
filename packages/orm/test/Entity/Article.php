@@ -11,12 +11,15 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Test\Entity;
 
+use Windwalker\Event\Attributes\EventSubscriber;
+use Windwalker\Event\Attributes\ListenTo;
 use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Cast;
 use Windwalker\ORM\Attributes\Column;
 use Windwalker\ORM\Attributes\PK;
 use Windwalker\ORM\Attributes\Table;
 use Windwalker\ORM\Cast\JsonCast;
+use Windwalker\ORM\Event\AfterSaveEvent;
 
 /**
  * The Article class.
@@ -26,57 +29,39 @@ class Article
 {
     #[PK, AutoIncrement]
     #[Column('id')]
-    protected int $id;
+    protected ?int $id = null;
 
     #[Column('category_id')]
     protected int $categoryId;
 
     #[Column('title')]
-    protected string $title;
+    protected string $title = '';
 
     #[Column('image')]
-    protected string $image;
+    protected string $image = '';
 
     #[Column('content')]
-    protected string $content;
+    protected string $content = '';
 
     #[Column('state')]
-    protected string $state;
+    protected int $state = 1;
 
     #[Column('created')]
     #[Cast(\DateTimeImmutable::class)]
     protected \DateTimeImmutable $created;
 
     #[Column('created_by')]
-    protected int $createdBy;
+    protected int $createdBy = 0;
 
     #[Column('params')]
     #[Cast(JsonCast::class)]
     #[Cast('array')]
-    protected ?array $params;
+    protected ?array $params = [];
 
     #[Cast(Category::class, strategy: Cast::HYDRATOR)]
-    public Category $c;
+    public ?Category $c = null;
 
-    /**
-     * @return int
-     */
-    public function getId(): int
-    {
-        return $this->id;
-    }
-
-    /**
-     * @param  int  $id
-     *
-     * @return  static  Return self to support chaining.
-     */
-    public function setId(int $id): static
-    {
-        $this->id = $id;
-
-        return $this;
-    }
+    public static int $counter = 0;
 
     /**
      * @return string
@@ -134,26 +119,6 @@ class Article
     public function setContent(string $content): static
     {
         $this->content = $content;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getState(): string
-    {
-        return $this->state;
-    }
-
-    /**
-     * @param  string  $state
-     *
-     * @return  static  Return self to support chaining.
-     */
-    public function setState(string $state): static
-    {
-        $this->state = $state;
 
         return $this;
     }
@@ -236,5 +201,56 @@ class Article
         $this->categoryId = $categoryId;
 
         return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getState(): int
+    {
+        return $this->state;
+    }
+
+    /**
+     * @param  int  $state
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setState(int $state): static
+    {
+        $this->state = $state;
+
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @param  int|null  $id
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setId(?int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    #[AfterSaveEvent]
+    public static function afterSave(AfterSaveEvent $event): void
+    {
+        static::$counter++;
+
+        $data = $event->getData();
+        $data['category_id'] = 2;
+
+        $event->setData($data);
     }
 }

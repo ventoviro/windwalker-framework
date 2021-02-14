@@ -17,6 +17,8 @@ use Rx\Observable;
 use Rx\ObserverInterface;
 use Windwalker\Event\Provider\CompositeListenerProvider;
 
+use Windwalker\Utilities\Classes\ObjectBuilderAwareTrait;
+
 use function Windwalker\disposable;
 use function Windwalker\tap;
 
@@ -28,6 +30,8 @@ class EventEmitter extends EventDispatcher implements
     EventListenableInterface,
     EventDisposableInterface
 {
+    use ObjectBuilderAwareTrait;
+
     /**
      * @var CompositeListenerProvider
      */
@@ -36,7 +40,7 @@ class EventEmitter extends EventDispatcher implements
     /**
      * @var EventDispatcherInterface[]
      */
-    protected $dealers = [];
+    protected array $dealers = [];
 
     /**
      * EventEmitter constructor.

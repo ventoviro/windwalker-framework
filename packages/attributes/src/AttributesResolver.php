@@ -402,7 +402,7 @@ class AttributesResolver extends ObjectBuilder
     ): ?object {
         $attr = static::getFirstAttribute($value, $attributeClass);
 
-        return $attr ? $attr->newInstance() : null;
+        return $attr?->newInstance();
     }
 
     public static function getFirstAttribute(
