@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\ORM;
 
 use Windwalker\Data\Collection;
+use Windwalker\ORM\Relation\RelationCollection;
 use Windwalker\ORM\Relation\RelationProxies;
 use Windwalker\Utilities\Contract\DumpableInterface;
 use Windwalker\Utilities\TypeCast;
@@ -21,16 +22,21 @@ use Windwalker\Utilities\TypeCast;
  */
 class AbstractEntity implements \JsonSerializable, DumpableInterface
 {
-    protected function loadRelation(string $propName): mixed
+    protected function loadChild(string $propName): mixed
     {
         return RelationProxies::call($this, $propName);
+    }
+
+    protected function loadCollection(string $propName)
+    {
+        return RelationProxies::call($this, $propName) ?? new RelationCollection(static::class);
     }
 
     public function loadAllRelations(): void
     {
         foreach ($this->dump() as $prop => $value) {
             if ($value === null && RelationProxies::has($this, $prop)) {
-                $this->$prop = $this->loadRelation($prop);
+                $this->$prop = $this->loadChild($prop);
             }
         }
     }

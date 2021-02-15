@@ -18,6 +18,7 @@ use Windwalker\ORM\Attributes\EntitySetup;
 use Windwalker\ORM\Attributes\PK;
 use Windwalker\ORM\Attributes\Table;
 use Windwalker\ORM\Metadata\EntityMetadata;
+use Windwalker\ORM\Relation\RelationCollection;
 use Windwalker\ORM\Strategy\Selector;
 
 /**
@@ -38,9 +39,9 @@ class Location extends AbstractEntity
 
     protected ?LocationData $data = null;
 
-    protected iterable|null $sakuras = null;
+    protected RelationCollection|null $sakuras = null;
 
-    protected iterable|null $roses = null;
+    protected RelationCollection|null $roses = null;
 
     #[EntitySetup]
     public static function setup(EntityMetadata $metadata): void
@@ -96,7 +97,7 @@ class Location extends AbstractEntity
      */
     public function getData(): ?LocationData
     {
-        return $this->data ??= $this->loadRelation('data');
+        return $this->data ??= $this->loadChild('data');
     }
 
     /**
@@ -127,6 +128,46 @@ class Location extends AbstractEntity
     public function setState(int $state): static
     {
         $this->state = $state;
+
+        return $this;
+    }
+
+    /**
+     * @return RelationCollection|null
+     */
+    public function getSakuras(): ?RelationCollection
+    {
+        return $this->sakuras ??= $this->loadCollection('sakuras');
+    }
+
+    /**
+     * @param  RelationCollection|null  $sakuras
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setSakuras(?RelationCollection $sakuras): static
+    {
+        $this->sakuras = $sakuras;
+
+        return $this;
+    }
+
+    /**
+     * @return RelationCollection|null
+     */
+    public function getRoses(): ?RelationCollection
+    {
+        return $this->roses ??= $this->loadCollection('roses');
+    }
+
+    /**
+     * @param  RelationCollection|null  $roses
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setRoses(?RelationCollection $roses): static
+    {
+        $this->roses = $roses;
 
         return $this;
     }

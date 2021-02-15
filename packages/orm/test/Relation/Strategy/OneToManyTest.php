@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Test\Relation\Strategy;
 
+use Windwalker\Data\Collection;
 use Windwalker\ORM\Relation\Action;
 use Windwalker\ORM\Test\AbstractORMTestCase;
 use Windwalker\ORM\Test\Entity\Location;
@@ -33,11 +34,11 @@ class OneToManyTest extends AbstractORMTestCase
         $sakuras = $item->getSakuras();
         $roses = $item->getRoses();
 
-        self::assertEquals([11, 12, 13, 14, 15], $sakuras->all()->column('id')->dump());
-        self::assertEquals([11, 12, 13, 14, 15], $roses->all()->column('id')->dump());
+        self::assertEquals([11, 12, 13, 14, 15], $sakuras->all(Collection::class)->column('id')->dump());
+        self::assertEquals([11, 12, 13, 14, 15], $roses->all(Collection::class)->column('id')->dump());
     }
 
-    public function testLoadAll()
+    public function testJsonSerialize()
     {
         $mapper = $this->createTestMapper();
 
@@ -47,8 +48,8 @@ class OneToManyTest extends AbstractORMTestCase
         $encoded = json_encode($item);
 
         self::assertEquals(
-            '「至難得者，謂操曰：運籌決算有神功，二虎還須遜一龍。初到任，即設五色棒十餘條於縣之四門。有犯禁者，。',
-            json_decode($encoded, true)['data']['data'],
+            [],
+            json_decode($encoded, true)['sakuras'],
         );
     }
 
@@ -58,24 +59,49 @@ class OneToManyTest extends AbstractORMTestCase
 
         $location = new Location();
         $location->setTitle('Location Create 1');
+        $location->setState(1);
 
-        $data = new LocationData();
-        $data->setData('Location Data Create 1');
+        $sakuras = $location->getSakuras();
 
-        $location->setData($data);
+        $sakura1 = new StubSakura();
+        $sakura1->setTitle('Sakura Create 1');
+        $sakura1->setState(1);
+
+        $sakuras->add($sakura1);
+
+        $sakura2 = new StubSakura();
+        $sakura2->setTitle('Sakura Create 2');
+        $sakura2->setState(1);
+
+        $sakuras->add($sakura2);
+
+        $roses = $location->getRoses();
+
+        $rose1 = new StubRose();
+        $rose1->setTitle('Rose Create 1');
+        $rose1->setState(1);
+
+        $rose2 = new StubRose();
+        $rose2->setTitle('Rose Create 2');
+        $rose2->setState(1);
+
+        $roses->add(compact('rose1', 'rose2'));
 
         $mapper->createOne($location);
 
         /** @var Location $newLocation */
         $newLocation = $mapper->findOne(['title' => 'Location Create 1']);
 
-        $data = $newLocation->getData();
-
-        self::assertEquals(11, $data->getId());
-        self::assertEquals('Location Data Create 1', $data->getData());
+        self::assertEquals(
+            ['Rose Create 1', 'Rose Create 2'],
+            $newLocation->getRoses()
+                ->all(Collection::class)
+                ->column('title')
+                ->dump()
+        );
     }
 
-    public function testUpdate()
+    public function testUpdateAddRemove()
     {
         $mapper   = $this->createTestMapper();
         /** @var Location $location */
@@ -244,13 +270,13 @@ class OneToManyTest extends AbstractORMTestCase
             ->getRelationManager();
 
         $rm->oneToMany('sakuras')
-            ->target(StubSakura::class, ['id' => 'location_id'])
+            ->target(StubSakura::class, ['id' => 'location'])
             ->flush($flush)
             ->onUpdate($onUpdate)
             ->onDelete($onDelete);
 
         $rm->oneToMany('roses')
-            ->target(StubRose::class, ['id' => 'location_id'])
+            ->target(StubRose::class, ['id' => 'location'])
             ->flush($flush)
             ->onUpdate($onUpdate)
             ->onDelete($onDelete);
