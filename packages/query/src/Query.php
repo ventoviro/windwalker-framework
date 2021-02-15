@@ -1872,14 +1872,17 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
     /**
      * getIterator
      *
-     * @return  StatementInterface
+     * @param  string  $class
+     * @param  array   $args
+     *
+     * @return  \Generator
      */
-    public function getIterator(): StatementInterface
+    public function getIterator($class = Collection::class, array $args = []): \Generator
     {
-        return $this->prepareStatement();
+        return $this->prepareStatement()->getIterator($class, $args);
     }
 
-    protected function prepareStatement(): StatementInterface
+    public function prepareStatement(): StatementInterface
     {
         $db = $this->getEscaper()->getConnection();
 

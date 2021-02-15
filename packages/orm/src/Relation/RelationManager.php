@@ -62,8 +62,11 @@ class RelationManager implements RelationStrategyInterface
     /**
      * @inheritDoc
      */
-    public function delete(): void
+    public function delete(array $data, object $entity): void
     {
+        foreach ($this->getRelations() as $relation) {
+            $relation->delete($data, $entity);
+        }
     }
 
     public function oneToOne(

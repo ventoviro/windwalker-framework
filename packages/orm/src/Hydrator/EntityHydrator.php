@@ -92,11 +92,11 @@ class EntityHydrator implements HydratorInterface
             return $this->hydrator->extract($object);
         }
 
-        $item = $this->hydrator->extract($object);
-
         if ($object instanceof \stdClass) {
             return get_object_vars($object);
         }
+
+        $data = $this->hydrator->extract($object);
 
         $metadata = $this->orm->getEntityMetadata($object);
 
@@ -106,15 +106,15 @@ class EntityHydrator implements HydratorInterface
             $colName  = $column->getName();
             $propName = $prop->getName();
 
-            if (!array_key_exists($propName, $item)) {
+            if (!array_key_exists($propName, $data)) {
                 $propName = $colName;
 
-                if (!array_key_exists($propName, $item)) {
+                if (!array_key_exists($propName, $data)) {
                     continue;
                 }
             }
 
-            $value = $item[$propName];
+            $value = $data[$propName];
             $casts = $metadata->getCastManager()->getFieldCasts($colName);
             $casts = array_reverse($casts);
 

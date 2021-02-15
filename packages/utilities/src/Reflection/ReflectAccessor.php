@@ -17,6 +17,7 @@ use ReflectionException;
 use ReflectionMethod;
 use ReflectionProperty;
 use Windwalker\Utilities\Cache\RuntimeCacheTrait;
+use Windwalker\Utilities\TypeCast;
 
 /**
  * The Reflector class.
@@ -50,13 +51,14 @@ class ReflectAccessor
      * @param  object  $object        The object for which to set the property.
      * @param  string  $propertyName  The name of the property to set.
      * @param  mixed   $value         The value to set for the property.
+     * @param  bool    $safe          Guess and try type casting.
      *
      * @return  void
      *
      * @throws ReflectionException
      * @since   2.0
      */
-    public static function setValue(object $object, string $propertyName, mixed $value): void
+    public static function setValue(object $object, string $propertyName, mixed $value, bool $safe = false): void
     {
         $refl = new ReflectionClass($object);
 
@@ -64,6 +66,10 @@ class ReflectAccessor
         if ($refl->hasProperty($propertyName)) {
             $property = $refl->getProperty($propertyName);
             $property->setAccessible(true);
+
+            if ($safe) {
+                $value = static::safeTypeCast($property, $value);
+            }
 
             $property->setValue($object, $value);
 
@@ -80,6 +86,10 @@ class ReflectAccessor
                 $property = new ReflectionProperty($parent, $propertyName);
                 $property->setAccessible(true);
 
+                if ($safe) {
+                    $value = static::safeTypeCast($property, $value);
+                }
+
                 $property->setValue($object, $value);
 
                 return;
@@ -87,6 +97,39 @@ class ReflectAccessor
         }
 
         $object->$propertyName = $value;
+    }
+
+    protected static function safeTypeCast(\ReflectionProperty $prop, mixed $value): mixed
+    {
+        $typeRef = $prop->getType();
+
+        if (!$typeRef) {
+            return $value;
+        }
+
+        if ($typeRef instanceof \ReflectionUnionType) {
+            $types = $typeRef->getTypes();
+        } else {
+            $types = [$typeRef];
+        }
+
+        foreach ($types as $type) {
+            if (!$type->isBuiltin()) {
+                continue;
+            }
+
+            if ($value === null && $type->allowsNull()) {
+                return null;
+            }
+
+            $value = TypeCast::try($value, $type->getName());
+
+            if ($value !== null) {
+                return $value;
+            }
+        }
+
+        return $value ?? settype($value, $types[0]->getName());
     }
 
     /**

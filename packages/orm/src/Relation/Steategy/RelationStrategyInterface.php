@@ -43,7 +43,10 @@ interface RelationStrategyInterface
      *
      * The onDelete option will work in this method.
      *
+     * @param  array   $data
+     * @param  object  $entity
+     *
      * @return  void
      */
-    public function delete(): void;
+    public function delete(array $data, object $entity): void;
 }

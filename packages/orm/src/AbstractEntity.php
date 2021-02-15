@@ -23,10 +23,7 @@ class AbstractEntity implements \JsonSerializable, DumpableInterface
 {
     protected function loadRelation(string $propName): mixed
     {
-        return \Windwalker\tap(
-            RelationProxies::get($this, $propName)(),
-            fn () => RelationProxies::remove($this, $propName)
-        );
+        return RelationProxies::call($this, $propName);
     }
 
     public function loadAllRelations(): void

@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Relation\Steategy;
 
+use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\ORM\Metadata\EntityMetadata;
 use Windwalker\ORM\ORM;
 use Windwalker\ORM\Relation\Action;
@@ -99,20 +100,13 @@ abstract class AbstractRelationStrategy implements RelationStrategyInterface
      *
      * @param  array  $relData
      *
-     * @return  static
+     * @return  StatementInterface[]
      */
-    public function deleteAllRelatives(array $relData): static
+    public function deleteAllRelatives(array $relData): array
     {
-        $mapper = $this->getORM()->mapper($this->targetTable);
-        $conditions = [];
-
-        foreach ($this->fks as $field => $foreign) {
-            $conditions[$foreign] = $relData[$field];
-        }
-
-        $mapper->delete($conditions);
-
-        return $this;
+        return $this->getORM()
+            ->mapper($this->targetTable)
+            ->delete($this->createLoadConditions($relData));
     }
 
     public function clearKeysValues(array $relData): array
@@ -139,12 +133,12 @@ abstract class AbstractRelationStrategy implements RelationStrategyInterface
     {
         if ($this->onUpdate === Action::CASCADE) {
             // Handle Cascade
-            $relData = $this->syncValuesToRelData($selfData, $relData);
-        } elseif ($this->onUpdate === Action::SET_NULL) {
-            // Handle Set NULL
-            if ($this->isChanged($selfData, $relData)) {
-                $relData = $this->clearRelativeFields($relData);
-            }
+            return $this->syncValuesToRelData($selfData, $relData);
+        }
+
+        // Handle Set NULL
+        if ($this->onUpdate === Action::SET_NULL && $this->isChanged($selfData, $relData)) {
+            return $this->clearRelativeFields($relData);
         }
 
         return $relData;
@@ -154,21 +148,14 @@ abstract class AbstractRelationStrategy implements RelationStrategyInterface
      * Handle delete relation, if is CASCADE, mark child table to delete. If is SET NULL, set all children fields to
      * NULL.
      *
-     * @param  JTable  $itemTable  The child table to be handled.
+     * @param  array  $selfData  The self entity.
+     * @param  array  $relData   The relative entity to be handled.
      *
-     * @return  JTable  Return table if you need.
+     * @return array Return table if you need.
      */
-    public function handleDeleteRelations(JTable $itemTable)
+    public function handleDeleteRelations(array $selfData, array $relData): array
     {
-        // Handle Cascade
-        if ($this->onDelete === \Windwalker\Relation\Action::CASCADE) {
-            $itemTable->_delete = true;
-        } // Handle Set NULL
-        elseif ($this->onDelete === Action::SET_NULL) {
-            $itemTable = $this->clearRelativeFields($itemTable);
-        }
-
-        return $itemTable;
+        return $this->clearRelativeFields($relData);
     }
 
     /**

@@ -105,4 +105,24 @@ class Location extends AbstractEntity
 
         return $this;
     }
+
+    /**
+     * @return int
+     */
+    public function getState(): int
+    {
+        return $this->state;
+    }
+
+    /**
+     * @param  int  $state
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setState(int $state): static
+    {
+        $this->state = $state;
+
+        return $this;
+    }
 }

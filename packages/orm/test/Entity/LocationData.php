@@ -12,7 +12,9 @@ declare(strict_types=1);
 namespace Windwalker\ORM\Test\Entity;
 
 use Windwalker\ORM\AbstractEntity;
+use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Column;
+use Windwalker\ORM\Attributes\PK;
 use Windwalker\ORM\Attributes\Table;
 
 /**
@@ -21,6 +23,7 @@ use Windwalker\ORM\Attributes\Table;
 #[Table('location_data')]
 class LocationData extends AbstractEntity
 {
+    #[PK, AutoIncrement]
     #[Column('id')]
     protected ?int $id = null;
 
@@ -28,7 +31,7 @@ class LocationData extends AbstractEntity
     protected int $locationId = 0;
 
     #[Column('data')]
-    protected string $data = '';
+    protected string|\stdClass $data = '';
 
     /**
      * @return string
@@ -66,6 +69,26 @@ class LocationData extends AbstractEntity
     public function setId(?int $id): static
     {
         $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLocationId(): int
+    {
+        return $this->locationId;
+    }
+
+    /**
+     * @param  int  $locationId
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setLocationId(int $locationId): static
+    {
+        $this->locationId = $locationId;
 
         return $this;
     }

@@ -25,7 +25,7 @@ class RelationProxies
         self::getMap()[$entity][$prop] = $getter;
     }
 
-    public static function get(object $entity, string $prop): ?callable
+    public static function get(object $entity, string $prop): mixed
     {
         return self::getMap()[$entity][$prop] ?? null;
     }
@@ -33,6 +33,21 @@ class RelationProxies
     public static function has(object $entity, string $prop): bool
     {
         return isset(self::getMap()[$entity][$prop]);
+    }
+
+    public static function call(object $entity, string $prop): mixed
+    {
+        $result = self::get($entity, $prop);
+
+        if (!$result) {
+            return null;
+        }
+
+        if ($result instanceof \Closure) {
+            self::getMap()[$entity][$prop] = $result = $result();
+        }
+
+        return $result;
     }
 
     public static function remove(object $entity, string $prop): void

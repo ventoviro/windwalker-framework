@@ -47,6 +47,14 @@ class OneToOne extends AbstractRelationStrategy
 
         $relEntity = ReflectAccessor::getValue($entity, $this->getPropName());
 
+        if ($relEntity === null && $this->onUpdate === Action::CASCADE) {
+            $relEntity = RelationProxies::call($entity, $this->getPropName());
+        }
+
+        if ($relEntity === null) {
+            return;
+        }
+
         $relData = $this->getORM()->extractEntity($relEntity);
         $relData = $this->handleUpdateRelations($data, $relData);
 
@@ -59,7 +67,7 @@ class OneToOne extends AbstractRelationStrategy
             ->mapper($this->targetTable)
             ->saveOne(
                 $relData,
-                $this->getTargetMetadata()->getKeys(),
+                null,
                 true
             );
     }
@@ -67,7 +75,34 @@ class OneToOne extends AbstractRelationStrategy
     /**
      * @inheritDoc
      */
-    public function delete(): void
+    public function delete(array $data, object $entity): void
     {
+        if ($this->onDelete === Action::NO_ACTION || $this->onDelete === Action::RESTRICT) {
+            return;
+        }
+
+        if ($this->onDelete === Action::CASCADE) {
+            $this->deleteAllRelatives($data);
+            return;
+        }
+
+        // SET NULL
+        $relEntity = ReflectAccessor::getValue($entity, $this->getPropName())
+            ?? RelationProxies::call($entity, $this->getPropName());
+
+        if ($relEntity === null) {
+            return;
+        }
+
+        $relData = $this->getORM()->extractEntity($relEntity);
+        $relData = $this->handleDeleteRelations($data, $relData);
+
+        $this->getORM()
+            ->mapper($this->targetTable)
+            ->updateOne(
+                $relData,
+                null,
+                true
+            );
     }
 }

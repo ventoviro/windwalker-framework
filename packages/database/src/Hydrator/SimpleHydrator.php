@@ -55,7 +55,7 @@ class SimpleHydrator implements HydratorInterface
             }
         } else {
             foreach ($data as $key => $datum) {
-                ReflectAccessor::setValue($object, $key, $datum);
+                ReflectAccessor::setValue($object, $key, $datum, true);
             }
         }
 

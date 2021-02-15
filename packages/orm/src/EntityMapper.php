@@ -34,6 +34,7 @@ use Windwalker\ORM\Metadata\EntityMetadata;
 use Windwalker\ORM\Strategy\Selector;
 use Windwalker\Utilities\Arr;
 use Windwalker\Utilities\Assert\TypeAssert;
+use Windwalker\Utilities\Reflection\ReflectAccessor;
 use Windwalker\Utilities\TypeCast;
 
 /**
@@ -258,12 +259,14 @@ class EntityMapper implements EventAwareInterface
                 ]
             );
 
-            $entity = $this->toEntity($data);
+            $entity = $this->toEntity($item);
 
-            $this->emitEvent(
+            $event = $this->emitEvent(
                 AfterSaveEvent::class,
                 compact('data', 'type', 'metadata', 'entity')
             );
+
+            $metadata->getRelationManager()->save($event->getData(), $entity);
         }
 
         // Event
@@ -319,15 +322,31 @@ class EntityMapper implements EventAwareInterface
     {
         // Event
 
-        $aiColumn = $this->getAutoIncrementColumn(true);
+        $aiColumnName = $this->getAutoIncrementColumn(true);
+
+        $metadata = $this->getMetadata();
 
         TypeAssert::assert(
-            $aiColumn !== null,
+            $aiColumnName !== null,
             '{caller} must has an auto-increment column in Entity to separate update and create.'
         );
 
         foreach ($items as $k => $item) {
-            $update = !empty($item[$aiColumn]);
+            if (
+                $aiColumnName
+                && is_object($item)
+                && $metadata::isEntity($item)
+                && $aiColumn = $metadata->getColumn($aiColumnName)
+            ) {
+                // If is Entity
+                $aiPropName = $aiColumn->getName();
+                $keyValue = ReflectAccessor::getValue($item, $aiPropName);
+            } else {
+                // Is array, object or Collection
+                $keyValue = Arr::get($item, $aiColumnName);
+            }
+
+            $update = !empty($keyValue);
 
             // Do save
             if ($update) {
@@ -429,9 +448,11 @@ class EntityMapper implements EventAwareInterface
 
         $metadata = $this->getMetadata();
         $writer   = $this->getDb()->getWriter();
+        $entity   = null;
 
         // Handle Entity
         if (is_object($conditions) && EntityMetadata::isEntity($conditions)) {
+            $entity = $conditions;
             $data = $this->extract($conditions);
 
             $conditions = Arr::only($data, $this->getKeys());
@@ -455,7 +476,8 @@ class EntityMapper implements EventAwareInterface
             // If Entity has keys, use this keys to delete once per item.
             $delItems = $this->getORM()
                 ->from($metadata->getClassName())
-                ->where($this->conditionsToWheres($conditions));
+                ->where($this->conditionsToWheres($conditions))
+                ->getIterator($metadata->getClassName());
         }
 
         $results = [];
@@ -465,9 +487,10 @@ class EntityMapper implements EventAwareInterface
                 $conditions = $this->conditionsToWheres($item);
                 $data       = null;
             } else {
-                /** @var Collection $item */
-                $conditions = $item->only($keys)->dump();
-                $data = $item->dump(true);
+                /** @var object $item */
+                $entity = $item;
+                $data = $this->extract($entity);
+                $conditions = Arr::only($data, $keys);
             }
 
             // Event
@@ -485,6 +508,8 @@ class EntityMapper implements EventAwareInterface
             );
 
             $results[] = $event->getStatement();
+
+            $metadata->getRelationManager()->delete($event->getData(), $entity);
         }
 
         // Event
@@ -639,6 +664,10 @@ class EntityMapper implements EventAwareInterface
             return $data;
         }
 
+        if (is_object($data)) {
+            $data = TypeCast::toArray($data);
+        }
+
         return $this->getORM()->hydrateEntity(
             $data,
             $this->getORM()->getAttributesResolver()->createObject($class)
@@ -652,6 +681,10 @@ class EntityMapper implements EventAwareInterface
 
     public function extract(object|array $entity): array
     {
+        if (is_array($entity)) {
+            return $entity;
+        }
+
         return $this->getORM()->extractEntity($entity);
     }
 

@@ -176,7 +176,7 @@ abstract class AbstractPlatform
      */
     public function loadColumnsStatement(string $table, ?string $schema = null): StatementInterface
     {
-        return $this->listColumnsQuery($table, $schema)->getIterator();
+        return $this->listColumnsQuery($table, $schema)->prepareStatement();
     }
 
     /**
@@ -189,7 +189,7 @@ abstract class AbstractPlatform
      */
     public function loadConstraintsStatement(string $table, ?string $schema = null): StatementInterface
     {
-        return $this->listConstraintsQuery($table, $schema)->getIterator();
+        return $this->listConstraintsQuery($table, $schema)->prepareStatement();
     }
 
     /**
@@ -202,7 +202,7 @@ abstract class AbstractPlatform
      */
     public function loadIndexesStatement(string $table, ?string $schema = null): StatementInterface
     {
-        return $this->listIndexesQuery($table, $schema)->getIterator();
+        return $this->listIndexesQuery($table, $schema)->prepareStatement();
     }
 
     abstract public function getCurrentDatabase(): ?string;

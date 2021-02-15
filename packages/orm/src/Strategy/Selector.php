@@ -139,7 +139,7 @@ class Selector extends AbstractQueryStrategy
         return $stmt;
     }
 
-    protected function prepareStatement(): StatementInterface
+    public function prepareStatement(): StatementInterface
     {
         return $this->registerEvents(parent::prepareStatement());
     }
