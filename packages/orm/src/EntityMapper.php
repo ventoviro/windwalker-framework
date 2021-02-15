@@ -170,7 +170,7 @@ class EntityMapper implements EventAwareInterface
                 compact('data', 'type', 'metadata')
             );
 
-            $this->getDb()->getWriter()->insertOne(
+            $data = $this->getDb()->getWriter()->insertOne(
                 $metadata->getTableName(),
                 $data = $event->getData(),
                 $pk,

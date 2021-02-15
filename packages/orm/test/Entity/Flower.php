@@ -26,7 +26,7 @@ class Flower
 {
     #[PK, AutoIncrement]
     #[Column('id')]
-    public ?int $id;
+    public ?int $id = null;
 
     #[Column('catid')]
     protected int $catid = 0;

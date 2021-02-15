@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\ORM\Relation;
 
 use Windwalker\ORM\Metadata\EntityMetadata;
+use Windwalker\ORM\Relation\Steategy\AbstractRelationStrategy;
 use Windwalker\ORM\Relation\Steategy\ManyToOne;
 use Windwalker\ORM\Relation\Steategy\OneToOne;
 use Windwalker\ORM\Relation\Steategy\RelationStrategyInterface;
@@ -22,7 +23,7 @@ use Windwalker\ORM\Relation\Steategy\RelationStrategyInterface;
 class RelationManager implements RelationStrategyInterface
 {
     /**
-     * @var RelationStrategyInterface[]
+     * @var AbstractRelationStrategy[]
      */
     protected array $relations = [];
 
@@ -53,7 +54,9 @@ class RelationManager implements RelationStrategyInterface
      */
     public function save(array $data, object $entity): void
     {
-
+        foreach ($this->getRelations() as $relation) {
+            $relation->save($data, $entity);
+        }
     }
 
     /**
@@ -114,10 +117,15 @@ class RelationManager implements RelationStrategyInterface
     }
 
     /**
-     * @return RelationStrategyInterface[]
+     * @return AbstractRelationStrategy[]
      */
     public function getRelations(): array
     {
         return $this->relations;
+    }
+
+    public function getRelation(string $propName): ?AbstractRelationStrategy
+    {
+        return $this->relations[$propName] ?? null;
     }
 }

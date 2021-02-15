@@ -125,14 +125,14 @@ class Selector extends AbstractQueryStrategy
                     $object = $orm->getAttributesResolver()->createObject($object);
                 }
 
-                $item = $orm->hydrateEntity($item, $object);
+                $object = $orm->hydrateEntity($item, $object);
 
                 // Prepare relations
-                $item = $orm->getEntityMetadata($item)
+                $orm->getEntityMetadata($object)
                     ->getRelationManager()
-                    ->load($item);
+                    ->load($item, $object);
 
-                $event->setItem($item);
+                $event->setItem($object);
             }
         );
 
