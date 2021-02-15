@@ -12,8 +12,9 @@ declare(strict_types=1);
 namespace Windwalker\ORM\Relation;
 
 use Windwalker\ORM\Metadata\EntityMetadata;
-use Windwalker\ORM\Relation\Steategy\AbstractRelationStrategy;
+use Windwalker\ORM\Relation\Steategy\AbstractRelation;
 use Windwalker\ORM\Relation\Steategy\ManyToOne;
+use Windwalker\ORM\Relation\Steategy\OneToMany;
 use Windwalker\ORM\Relation\Steategy\OneToOne;
 use Windwalker\ORM\Relation\Steategy\RelationStrategyInterface;
 
@@ -23,7 +24,7 @@ use Windwalker\ORM\Relation\Steategy\RelationStrategyInterface;
 class RelationManager implements RelationStrategyInterface
 {
     /**
-     * @var AbstractRelationStrategy[]
+     * @var AbstractRelation[]
      */
     protected array $relations = [];
 
@@ -90,6 +91,27 @@ class RelationManager implements RelationStrategyInterface
         return $this->relations[$field] = $rel;
     }
 
+    public function oneToMany(
+        string $field,
+        ?string $targetTable = null,
+        array|string $fks = [],
+        string $onUpdate = Action::NO_ACTION,
+        string $onDelete = Action::NO_ACTION,
+        array $options = [],
+    ) {
+        $rel = new OneToMany(
+            $this->getMetadata(),
+            $field,
+            $targetTable,
+            $fks,
+            $onUpdate,
+            $onDelete,
+            $options
+        );
+
+        return $this->relations[$field] = $rel;
+    }
+
     public function manyToOne(
         string $field,
         ?string $targetTable = null,
@@ -120,15 +142,20 @@ class RelationManager implements RelationStrategyInterface
     }
 
     /**
-     * @return AbstractRelationStrategy[]
+     * @return AbstractRelation[]
      */
     public function getRelations(): array
     {
         return $this->relations;
     }
 
-    public function getRelation(string $propName): ?AbstractRelationStrategy
+    public function getRelation(string $propName): ?AbstractRelation
     {
         return $this->relations[$propName] ?? null;
+    }
+
+    public function addRelation(string $field, RelationStrategyInterface $relation): RelationStrategyInterface
+    {
+        return $this->relations[$field] = $relation;
     }
 }

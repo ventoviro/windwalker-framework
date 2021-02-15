@@ -14,7 +14,7 @@ namespace Windwalker\ORM\Relation\Steategy;
 /**
  * The ManyToOne class.
  */
-class ManyToOne extends AbstractRelationStrategy
+class ManyToOne extends AbstractRelation
 {
 
 }

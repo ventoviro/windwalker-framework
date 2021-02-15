@@ -11,45 +11,32 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Test\Entity;
 
-use Windwalker\ORM\AbstractEntity;
 use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Column;
-use Windwalker\ORM\Attributes\EntitySetup;
 use Windwalker\ORM\Attributes\PK;
 use Windwalker\ORM\Attributes\Table;
-use Windwalker\ORM\Metadata\EntityMetadata;
-use Windwalker\ORM\Strategy\Selector;
 
 /**
- * The Location class.
+ * The StubRose class.
  */
-#[Table('locations')]
-class Location extends AbstractEntity
+#[Table('roses')]
+class StubRose
 {
     #[PK, AutoIncrement]
     #[Column('id')]
     protected ?int $id = null;
+
+    #[Column('location')]
+    protected int $location = 0;
+
+    #[Column('sakura_id')]
+    protected int $sakuraId = 0;
 
     #[Column('title')]
     protected string $title = '';
 
     #[Column('state')]
     protected int $state = 0;
-
-    protected ?LocationData $data = null;
-
-    protected iterable|null $sakuras = null;
-
-    protected iterable|null $roses = null;
-
-    #[EntitySetup]
-    public static function setup(EntityMetadata $metadata): void
-    {
-        $rm = $metadata->getRelationManager();
-
-        $rm->oneToOne('data')
-            ->target(LocationData::class, ['id' => 'location_id']);
-    }
 
     /**
      * @return int|null
@@ -72,6 +59,46 @@ class Location extends AbstractEntity
     }
 
     /**
+     * @return int
+     */
+    public function getLocation(): int
+    {
+        return $this->location;
+    }
+
+    /**
+     * @param  int  $location
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setLocation(int $location): static
+    {
+        $this->location = $location;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getSakuraId(): int
+    {
+        return $this->sakuraId;
+    }
+
+    /**
+     * @param  int  $sakuraId
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setSakuraId(int $sakuraId): static
+    {
+        $this->sakuraId = $sakuraId;
+
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getTitle(): string
@@ -87,26 +114,6 @@ class Location extends AbstractEntity
     public function setTitle(string $title): static
     {
         $this->title = $title;
-
-        return $this;
-    }
-
-    /**
-     * @return LocationData|null
-     */
-    public function getData(): ?LocationData
-    {
-        return $this->data ??= $this->loadRelation('data');
-    }
-
-    /**
-     * @param  LocationData  $data
-     *
-     * @return  static  Return self to support chaining.
-     */
-    public function setData(LocationData $data): static
-    {
-        $this->data = $data;
 
         return $this;
     }

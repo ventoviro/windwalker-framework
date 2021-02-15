@@ -20,7 +20,7 @@ use Windwalker\Utilities\Options\OptionAccessTrait;
 /**
  * The AbstractRelationStrategy class.
  */
-abstract class AbstractRelationStrategy implements RelationStrategyInterface
+abstract class AbstractRelation implements RelationStrategyInterface, RelationConfigureInterface
 {
     use OptionAccessTrait;
 
@@ -263,13 +263,13 @@ abstract class AbstractRelationStrategy implements RelationStrategyInterface
     }
 
     /**
-     * @param  string  $field
+     * @param  string  $propName
      *
      * @return  static  Return self to support chaining.
      */
-    public function field(string $field): static
+    public function propName(string $propName): static
     {
-        $this->propName = $field;
+        $this->propName = $propName;
 
         return $this;
     }

@@ -18,7 +18,7 @@ use Windwalker\Utilities\Reflection\ReflectAccessor;
 /**
  * The OneToOne class.
  */
-class OneToOne extends AbstractRelationStrategy
+class OneToOne extends AbstractRelation
 {
     /**
      * @inheritDoc
