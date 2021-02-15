@@ -262,6 +262,12 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
         return $this->propName;
     }
 
+    // Todo: Try use column name to get value
+    public function getColumnName(): string
+    {
+        //
+    }
+
     /**
      * @param  string  $propName
      *
