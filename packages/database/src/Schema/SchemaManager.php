@@ -15,6 +15,7 @@ use Windwalker\Attributes\AttributesResolver;
 use Windwalker\Database\Manager\AbstractMetaManager;
 use Windwalker\Database\Manager\TableManager;
 use Windwalker\Database\Schema\Ddl\Table;
+use Windwalker\ORM\Attributes\Table as TableAttr;
 use Windwalker\Utilities\Cache\InstanceCacheTrait;
 
 /**
@@ -27,8 +28,8 @@ class SchemaManager extends AbstractMetaManager
     public function getTable(string $name, bool $new = false): TableManager
     {
         if (class_exists($name)) {
-            /** @var \Windwalker\ORM\Attributes\Table $tableAttr */
-            $tableAttr = AttributesResolver::getFirstAttributeInstance($name, Table::class);
+            /** @var TableAttr $tableAttr */
+            $tableAttr = AttributesResolver::getFirstAttributeInstance($name, TableAttr::class);
 
             if ($tableAttr) {
                 $name = $tableAttr->getName();

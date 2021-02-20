@@ -12,10 +12,11 @@ declare(strict_types=1);
 namespace Windwalker\ORM\Test\Relation\Strategy;
 
 use Windwalker\Data\Collection;
+use Windwalker\Database\Schema\Schema;
 use Windwalker\ORM\Relation\Action;
 use Windwalker\ORM\Test\AbstractORMTestCase;
-use Windwalker\ORM\Test\Entity\Location;
-use Windwalker\ORM\Test\Entity\LocationData;
+use Windwalker\ORM\Test\Entity\StubLocation;
+use Windwalker\ORM\Test\Entity\StubLocationData;
 use Windwalker\ORM\Test\Entity\StubRose;
 use Windwalker\ORM\Test\Entity\StubSakura;
 
@@ -24,11 +25,115 @@ use Windwalker\ORM\Test\Entity\StubSakura;
  */
 class OneToManyTest extends AbstractORMTestCase
 {
+    // public function testReset()
+    // {
+    //     self::$db->getTable(Location::class)->update(function (Schema $schema) {
+    //         $schema->varchar('no')->position('AFTER', 'id');
+    //     });
+    //
+    //     foreach (self::$orm->from(Location::class) as $item) {
+    //         $item->no = 'L' . str_pad($item->id, 5, '0', STR_PAD_LEFT);
+    //
+    //         self::$orm->updateOne(Location::class, $item);
+    //     }
+    //
+    //     self::$db->getTable(LocationData::class)->update(
+    //         function (Schema $schema) {
+    //             $schema->varchar('location_no')->position('AFTER', 'location_id');
+    //             $schema->addIndex('location_no');
+    //         }
+    //     );
+    //
+    //     $items = self::$db->select()->from(LocationData::class)->all();
+    //
+    //     foreach ($items as $item) {
+    //         $item->location_no = self::$orm->findOne(Location::class, $item->location_id)->no;
+    //
+    //         self::$orm->updateOne(LocationData::class, $item);
+    //     }
+    //
+    //     self::$db->getTable(StubSakura::class)->update(
+    //         function (Schema $schema) {
+    //             $schema->varchar('no')->position('AFTER', 'id');
+    //             $schema->varchar('location_no')->position('AFTER', 'location');
+    //             $schema->varchar('rose_no')->position('AFTER', 'location_no');
+    //             $schema->addIndex('no');
+    //             $schema->addIndex('location_no');
+    //         }
+    //     );
+    //
+    //     self::$db->getTable(StubRose::class)->update(
+    //         function (Schema $schema) {
+    //             $schema->varchar('no')->position('AFTER', 'id');
+    //             $schema->varchar('location_no')->position('AFTER', 'location');
+    //             $schema->varchar('sakura_no')->position('AFTER', 'location_no');
+    //             $schema->addIndex('no');
+    //             $schema->addIndex('location_no');
+    //         }
+    //     );
+    //
+    //     $items = self::$db->select()->from(StubSakura::class)->all();
+    //
+    //     foreach ($items as $item) {
+    //         $item->location_no = self::$orm->findOne(Location::class, $item->location)->no;
+    //         $item->rose_no = self::$db->select()
+    //             ->from('roses')
+    //             ->where('id', $item->rose_id)
+    //             ->get()
+    //             ->no;
+    //         $item->no = 'S' . str_pad($item->id, 5, '0', STR_PAD_LEFT);
+    //
+    //         self::$orm->updateOne(StubSakura::class, $item);
+    //     }
+    //
+    //     $items = self::$db->select()->from(StubRose::class)->all();
+    //
+    //     foreach ($items as $item) {
+    //         $item->location_no = self::$orm->findOne(Location::class, $item->location)->no;
+    //         $item->sakura_no = self::$db->select()
+    //             ->from('sakuras')
+    //             ->where('id', $item->sakura_id)
+    //             ->get()
+    //             ->no;
+    //         $item->no = 'R' . str_pad($item->id, 5, '0', STR_PAD_LEFT);
+    //
+    //         self::$orm->updateOne(StubRose::class, $item);
+    //     }
+    //
+    //     self::$db->getTable('sakura_rose_maps')->update(
+    //         function (Schema $schema) {
+    //             $schema->varchar('sakura_no');
+    //             $schema->varchar('rose_no');
+    //         }
+    //     );
+    //
+    //     $items = self::$db->select()->from('sakura_rose_maps')->all();
+    //
+    //     foreach ($items as $item) {
+    //         $item->sakura_no = self::$db->select()
+    //             ->from('sakuras')
+    //             ->where('id', $item->sakura_id)
+    //             ->get()
+    //             ->no;
+    //         $item->rose_no = self::$db->select()
+    //             ->from('roses')
+    //             ->where('id', $item->rose_id)
+    //             ->get()
+    //             ->no;
+    //
+    //         self::$db->getWriter()->updateOne(
+    //             'sakura_rose_maps',
+    //             $item,
+    //             ['rose_id', 'sakura_id']
+    //         );
+    //     }
+    // }
+
     public function testLoad()
     {
         $mapper = $this->createTestMapper();
 
-        /** @var Location $item */
+        /** @var StubLocation $item */
         $item = $mapper->findOne(3);
 
         $sakuras = $item->getSakuras();
@@ -42,7 +147,7 @@ class OneToManyTest extends AbstractORMTestCase
     {
         $mapper = $this->createTestMapper();
 
-        /** @var Location $item */
+        /** @var StubLocation $item */
         $item = $mapper->findOne(1);
 
         $encoded = json_encode($item);
@@ -57,7 +162,7 @@ class OneToManyTest extends AbstractORMTestCase
     {
         $mapper = $this->createTestMapper();
 
-        $location = new Location();
+        $location = new StubLocation();
         $location->setTitle('Location Create 1');
         $location->setState(1);
 
@@ -89,7 +194,7 @@ class OneToManyTest extends AbstractORMTestCase
 
         $mapper->createOne($location);
 
-        /** @var Location $newLocation */
+        /** @var StubLocation $newLocation */
         $newLocation = $mapper->findOne(['title' => 'Location Create 1']);
 
         self::assertEquals(
@@ -104,7 +209,7 @@ class OneToManyTest extends AbstractORMTestCase
     public function testUpdateAddRemove()
     {
         $mapper   = $this->createTestMapper();
-        /** @var Location $location */
+        /** @var StubLocation $location */
         $location = $mapper->findOne(1);
 
         $location->setState(2);
@@ -112,21 +217,21 @@ class OneToManyTest extends AbstractORMTestCase
 
         $mapper->updateOne($location);
 
-        /** @var Location $newLocation */
+        /** @var StubLocation $newLocation */
         $newLocation = $mapper->findOne(1);
 
         self::assertEquals(2, $newLocation->getState());
         self::assertEquals($location->getState(), $newLocation->getState());
         self::assertEquals(
             $newLocation->getData()->getData(),
-            self::$orm->from(LocationData::class)
+            self::$orm->from(StubLocationData::class)
                 ->where('id', 6)
                 ->get()
                 ->data
         );
 
         // Update Without child value
-        /** @var Location $location */
+        /** @var StubLocation $location */
         $location = $mapper->findOne(1);
 
         $mapper->updateOne($location);
@@ -141,7 +246,7 @@ class OneToManyTest extends AbstractORMTestCase
     {
         $mapper   = $this->createTestMapper(Action::NO_ACTION);
 
-        /** @var Location $location */
+        /** @var StubLocation $location */
         $location = $mapper->findOne(1);
 
         $location->setId(null);
@@ -150,7 +255,7 @@ class OneToManyTest extends AbstractORMTestCase
 
         $mapper->saveOne($location);
 
-        /** @var Location $newLocation */
+        /** @var StubLocation $newLocation */
         $newLocation = $mapper->findOne(7);
 
         self::assertEquals(1, $newLocation->getState());
@@ -159,7 +264,7 @@ class OneToManyTest extends AbstractORMTestCase
 
         self::assertEquals(
             '123',
-            self::$orm->from(LocationData::class)
+            self::$orm->from(StubLocationData::class)
                 ->where('id', 6)
                 ->get()
                 ->data
@@ -170,7 +275,7 @@ class OneToManyTest extends AbstractORMTestCase
     {
         $mapper = $this->createTestMapper(Action::SET_NULL);
 
-        /** @var Location $location */
+        /** @var StubLocation $location */
         $location = $mapper->findOne(2);
 
         $location->setId(null);
@@ -179,7 +284,7 @@ class OneToManyTest extends AbstractORMTestCase
 
         $mapper->saveOne($location);
 
-        /** @var Location $newLocation */
+        /** @var StubLocation $newLocation */
         $newLocation = $mapper->findOne(8);
 
         self::assertEquals(2, $newLocation->getState());
@@ -187,7 +292,7 @@ class OneToManyTest extends AbstractORMTestCase
 
         self::assertEquals(
             0,
-            self::$orm->from(LocationData::class)
+            self::$orm->from(StubLocationData::class)
                 ->where('id', $location->getData()->getId())
                 ->get()
                 ->location_id
@@ -198,7 +303,7 @@ class OneToManyTest extends AbstractORMTestCase
     {
         $mapper = $this->createTestMapper();
 
-        /** @var Location $location */
+        /** @var StubLocation $location */
         $location = $mapper->findOne(3);
 
         $dataId = $location->getData()->getId();
@@ -207,10 +312,10 @@ class OneToManyTest extends AbstractORMTestCase
 
         self::assertEquals(8, $dataId);
         self::assertNull(
-            self::$orm->findOne(Location::class, 3)
+            self::$orm->findOne(StubLocation::class, 3)
         );
         self::assertNull(
-            self::$orm->findOne(LocationData::class, $dataId)
+            self::$orm->findOne(StubLocationData::class, $dataId)
         );
     }
 
@@ -218,7 +323,7 @@ class OneToManyTest extends AbstractORMTestCase
     {
         $mapper = $this->createTestMapper(Action::CASCADE, Action::NO_ACTION);
 
-        /** @var Location $location */
+        /** @var StubLocation $location */
         $location = $mapper->findOne(4);
 
         $dataId = $location->getData()->getId();
@@ -227,15 +332,15 @@ class OneToManyTest extends AbstractORMTestCase
 
         self::assertEquals(9, $dataId);
         self::assertNull(
-            self::$orm->findOne(Location::class, 4)
+            self::$orm->findOne(StubLocation::class, 4)
         );
         self::assertEquals(
             4,
-            self::$orm->findOne(LocationData::class, $dataId)->getLocationId()
+            self::$orm->findOne(StubLocationData::class, $dataId)->getLocationNo()
         );
         self::assertEquals(
             '壘。汝可引本部五百餘人，以天書三卷授之，曰：「此張角正殺敗董卓回寨。玄德謂關、張寶勢窮力乏，必獲惡。',
-            self::$orm->findOne(LocationData::class, $dataId)->getData()
+            self::$orm->findOne(StubLocationData::class, $dataId)->getData()
         );
     }
 
@@ -243,7 +348,7 @@ class OneToManyTest extends AbstractORMTestCase
     {
         $mapper = $this->createTestMapper(Action::CASCADE, Action::SET_NULL);
 
-        /** @var Location $location */
+        /** @var StubLocation $location */
         $location = $mapper->findOne(5);
 
         $dataId = $location->getData()->getId();
@@ -252,11 +357,11 @@ class OneToManyTest extends AbstractORMTestCase
 
         self::assertEquals(10, $dataId);
         self::assertNull(
-            self::$orm->findOne(Location::class, 5)
+            self::$orm->findOne(StubLocation::class, 5)
         );
         self::assertEquals(
             0,
-            self::$orm->findOne(LocationData::class, $dataId)->getLocationId()
+            self::$orm->findOne(StubLocationData::class, $dataId)->getLocationNo()
         );
     }
 
@@ -265,7 +370,7 @@ class OneToManyTest extends AbstractORMTestCase
         string $onDelete = Action::CASCADE,
         bool $flush = false
     ) {
-        $mapper = self::$orm->mapper(Location::class);
+        $mapper = self::$orm->mapper(StubLocation::class);
         $rm = $mapper->getMetadata()
             ->getRelationManager();
 

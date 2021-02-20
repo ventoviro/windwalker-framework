@@ -26,11 +26,11 @@ class StubSakura
     #[Column('id')]
     protected ?int $id = null;
 
-    #[Column('location')]
-    protected int $location = 0;
+    #[Column('location_no')]
+    protected string $locationNo = '';
 
-    #[Column('rose_id')]
-    protected int $roseId = 0;
+    #[Column('rose_no')]
+    protected string $roseNo = '';
 
     #[Column('title')]
     protected string $title = '';
@@ -59,41 +59,41 @@ class StubSakura
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getLocation(): int
+    public function getLocationNo(): string
     {
-        return $this->location;
+        return $this->locationNo;
     }
 
     /**
-     * @param  int  $location
+     * @param  string  $locationNo
      *
      * @return  static  Return self to support chaining.
      */
-    public function setLocation(int $location): static
+    public function setLocationNo(string $locationNo): static
     {
-        $this->location = $location;
+        $this->locationNo = $locationNo;
 
         return $this;
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getRoseId(): int
+    public function getRoseNo(): string
     {
-        return $this->roseId;
+        return $this->roseNo;
     }
 
     /**
-     * @param  int  $roseId
+     * @param  string  $roseNo
      *
      * @return  static  Return self to support chaining.
      */
-    public function setRoseId(int $roseId): static
+    public function setRoseNo(string $roseNo): static
     {
-        $this->roseId = $roseId;
+        $this->roseNo = $roseNo;
 
         return $this;
     }

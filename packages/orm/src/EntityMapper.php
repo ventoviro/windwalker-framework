@@ -126,6 +126,15 @@ class EntityMapper implements EventAwareInterface
             ->get($metadata->getClassName());
     }
 
+    public function findList(mixed $conditions = []): \Generator
+    {
+        $metadata = $this->getMetadata();
+
+        return $this->from($metadata->getClassName())
+            ->where($this->conditionsToWheres($conditions))
+            ->getIterator($metadata->getClassName());
+    }
+
     public function findResult(mixed $conditions): ?string
     {
         $metadata = $this->getMetadata();

@@ -120,20 +120,25 @@ class ORM
         return $this->mapper($entity)->findOne($conditions);
     }
 
-    public function createOne(string|object $entity, array|object $data = []): array|object
+    public function findList(string $entity, mixed $conditions = []): \Generator
+    {
+        return $this->mapper($entity)->findList($conditions);
+    }
+
+    public function createOne(string $entity, array|object $data = []): array|object
     {
         return $this->mapper($entity)->createOne($data);
     }
 
     public function updateOne(
-        string|object $entity,
+        string $entity,
         array|object $data = [],
     ): array|object {
         return $this->mapper($entity)->updateOne($data);
     }
 
     public function deleteOne(
-        string|object $entity,
+        string $entity,
         array|object $data = [],
     ): array|object {
         return $this->mapper($entity)->updateOne($data);

@@ -25,11 +25,14 @@ use Windwalker\ORM\Strategy\Selector;
  * The Location class.
  */
 #[Table('locations')]
-class Location extends AbstractEntity
+class StubLocation extends AbstractEntity
 {
     #[PK, AutoIncrement]
     #[Column('id')]
     protected ?int $id = null;
+
+    #[Column('no')]
+    protected string $no = '';
 
     #[Column('title')]
     protected string $title = '';
@@ -37,7 +40,7 @@ class Location extends AbstractEntity
     #[Column('state')]
     protected int $state = 0;
 
-    protected ?LocationData $data = null;
+    protected ?StubLocationData $data = null;
 
     protected RelationCollection|null $sakuras = null;
 
@@ -49,7 +52,7 @@ class Location extends AbstractEntity
         $rm = $metadata->getRelationManager();
 
         $rm->oneToOne('data')
-            ->target(LocationData::class, ['id' => 'location_id']);
+            ->target(StubLocationData::class, ['no' => 'location_no']);
     }
 
     /**
@@ -93,19 +96,19 @@ class Location extends AbstractEntity
     }
 
     /**
-     * @return LocationData|null
+     * @return StubLocationData|null
      */
-    public function getData(): ?LocationData
+    public function getData(): ?StubLocationData
     {
         return $this->data ??= $this->loadChild('data');
     }
 
     /**
-     * @param  LocationData  $data
+     * @param  StubLocationData  $data
      *
      * @return  static  Return self to support chaining.
      */
-    public function setData(LocationData $data): static
+    public function setData(StubLocationData $data): static
     {
         $this->data = $data;
 
@@ -168,6 +171,26 @@ class Location extends AbstractEntity
     public function setRoses(?RelationCollection $roses): static
     {
         $this->roses = $roses;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNo(): string
+    {
+        return $this->no;
+    }
+
+    /**
+     * @param  string  $no
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setNo(string $no): static
+    {
+        $this->no = $no;
 
         return $this;
     }

@@ -21,14 +21,14 @@ use Windwalker\ORM\Attributes\Table;
  * The LocationData class.
  */
 #[Table('location_data')]
-class LocationData extends AbstractEntity
+class StubLocationData extends AbstractEntity
 {
     #[PK, AutoIncrement]
     #[Column('id')]
     protected ?int $id = null;
 
-    #[Column('location_id')]
-    protected int $locationId = 0;
+    #[Column('location_no')]
+    protected string $locationNo = '';
 
     #[Column('data')]
     protected string|\stdClass $data = '';
@@ -74,21 +74,21 @@ class LocationData extends AbstractEntity
     }
 
     /**
-     * @return int
+     * @return string
      */
-    public function getLocationId(): int
+    public function getLocationNo(): string
     {
-        return $this->locationId;
+        return $this->locationNo;
     }
 
     /**
-     * @param  int  $locationId
+     * @param  string  $locationNo
      *
      * @return  static  Return self to support chaining.
      */
-    public function setLocationId(int $locationId): static
+    public function setLocationNo(string $locationNo): static
     {
-        $this->locationId = $locationId;
+        $this->locationNo = $locationNo;
 
         return $this;
     }
