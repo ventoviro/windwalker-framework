@@ -785,6 +785,20 @@ abstract class Arr
     }
 
     /**
+     * arrayEquals
+     *
+     * @param  array  $a
+     * @param  array  $b
+     *
+     * @return  bool
+     */
+    public static function arrayEquals(array $a, array $b): bool
+    {
+        return count($a) === count($b)
+            && array_diff($a, $b) === array_diff($b, $a);
+    }
+
+    /**
      * Recursive dump variables and limit by level.
      *
      * @param  mixed  $data   The variable you want to dump.

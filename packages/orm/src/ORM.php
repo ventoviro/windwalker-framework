@@ -13,6 +13,7 @@ namespace Windwalker\ORM;
 
 use Windwalker\Attributes\AttributesAwareTrait;
 use Windwalker\Database\DatabaseAdapter;
+use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\Database\Hydrator\HydratorInterface;
 use Windwalker\ORM\Hydrator\EntityHydrator;
 use Windwalker\ORM\Metadata\EntityMetadata;
@@ -132,9 +133,19 @@ class ORM
 
     public function updateOne(
         string $entity,
-        array|object $data = [],
+        array|object $item = [],
+        array|string $condFields = null,
+        bool $updateNulls = false
     ): array|object {
-        return $this->mapper($entity)->updateOne($data);
+        return $this->mapper($entity)->updateOne($item, $condFields, $updateNulls);
+    }
+
+    public function updateBatch(
+        string $entity,
+        array|object $data,
+        mixed $conditions = null,
+    ): StatementInterface {
+        return $this->mapper($entity)->updateBatch($data, $conditions);
     }
 
     public function deleteOne(

@@ -11,8 +11,10 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Event;
 
+use Windwalker\Database\DatabaseAdapter;
 use Windwalker\Event\AbstractEvent;
 use Windwalker\ORM\Metadata\EntityMetadata;
+use Windwalker\ORM\ORM;
 
 /**
  * The AbstractEntityEvent class.
@@ -39,5 +41,15 @@ class AbstractEntityEvent extends AbstractEvent
         $this->metadata = $metadata;
 
         return $this;
+    }
+
+    public function getORM(): ORM
+    {
+        return $this->getMetadata()->getORM();
+    }
+
+    public function getDb(): DatabaseAdapter
+    {
+        return $this->getORM()->getDb();
     }
 }

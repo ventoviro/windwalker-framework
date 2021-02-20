@@ -15,6 +15,7 @@ use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Column;
 use Windwalker\ORM\Attributes\PK;
 use Windwalker\ORM\Attributes\Table;
+use Windwalker\ORM\Event\AfterSaveEvent;
 
 /**
  * The Sakura class.
@@ -25,6 +26,9 @@ class StubSakura
     #[PK, AutoIncrement]
     #[Column('id')]
     protected ?int $id = null;
+
+    #[Column('no')]
+    protected string $no = '';
 
     #[Column('location_no')]
     protected string $locationNo = '';
@@ -37,6 +41,25 @@ class StubSakura
 
     #[Column('state')]
     protected int $state = 0;
+
+    #[AfterSaveEvent]
+    public static function afterSave(AfterSaveEvent $event)
+    {
+        $data = $event->getData();
+
+        if (!empty($data['id']) && empty($data['no'])) {
+            $data['no'] = 'S' . str_pad((string) $data['id'], 5, '0', STR_PAD_LEFT);
+
+            $event->getORM()
+                ->updateBatch(
+                    static::class,
+                    ['no' => $data['no']],
+                    ['id' => $data['id']]
+                );
+
+            $event->setData($data);
+        }
+    }
 
     /**
      * @return int|null
@@ -134,6 +157,26 @@ class StubSakura
     public function setState(int $state): static
     {
         $this->state = $state;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNo(): string
+    {
+        return $this->no;
+    }
+
+    /**
+     * @param  string  $no
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setNo(string $no): static
+    {
+        $this->no = $no;
 
         return $this;
     }

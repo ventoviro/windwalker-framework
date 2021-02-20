@@ -26,6 +26,9 @@ class StubRose
     #[Column('id')]
     protected ?int $id = null;
 
+    #[Column('no')]
+    protected string $no = '';
+
     #[Column('location_no')]
     protected string $locationNo = '';
 
@@ -134,6 +137,26 @@ class StubRose
     public function setState(int $state): static
     {
         $this->state = $state;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getNo(): string
+    {
+        return $this->no;
+    }
+
+    /**
+     * @param  string  $no
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setNo(string $no): static
+    {
+        $this->no = $no;
 
         return $this;
     }

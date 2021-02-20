@@ -14,6 +14,7 @@ namespace Windwalker\ORM;
 use Windwalker\Data\Collection;
 use Windwalker\ORM\Relation\RelationCollection;
 use Windwalker\ORM\Relation\RelationProxies;
+use Windwalker\ORM\Relation\Steategy\RelationStrategyInterface;
 use Windwalker\Utilities\Contract\DumpableInterface;
 use Windwalker\Utilities\TypeCast;
 
@@ -37,6 +38,18 @@ class AbstractEntity implements \JsonSerializable, DumpableInterface
         foreach ($this->dump() as $prop => $value) {
             if ($value === null && RelationProxies::has($this, $prop)) {
                 $this->$prop = $this->loadChild($prop);
+            }
+        }
+    }
+
+    public function clearRelations(): void
+    {
+        foreach ($this->dump() as $prop => $value) {
+            $ref = new \ReflectionProperty($this, $prop);
+            $attrs = $ref->getAttributes(RelationStrategyInterface::class, \ReflectionAttribute::IS_INSTANCEOF);
+
+            if ($attrs) {
+                $this->$prop = null;
             }
         }
     }

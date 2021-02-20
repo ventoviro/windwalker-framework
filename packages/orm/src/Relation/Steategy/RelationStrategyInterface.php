@@ -31,12 +31,13 @@ interface RelationStrategyInterface
      *
      * The onUpdate option will work in this method.
      *
-     * @param  array   $data
-     * @param  object  $entity
+     * @param  array       $data
+     * @param  object      $entity
+     * @param  array|null  $oldData
      *
      * @return  void
      */
-    public function save(array $data, object $entity): void;
+    public function save(array $data, object $entity, ?array $oldData = null): void;
 
     /**
      * Delete all relative children data.

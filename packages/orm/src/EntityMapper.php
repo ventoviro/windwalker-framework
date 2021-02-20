@@ -251,10 +251,21 @@ class EntityMapper implements EventAwareInterface
 
             $data = $this->extractForSave($item, $updateNulls);
 
+            // Get old data
+            $oldData = null;
+
+            if ($this->getKeys() && !empty($data[$this->getMainKey()])) {
+                $oldData = $this->getDb()->select('*')
+                    ->from($metadata->getTableName())
+                    ->where(Arr::only($data, $this->getKeys()))
+                    ->get()
+                    ?->dump();
+            }
+
             $type = AbstractSaveEvent::TYPE_UPDATE;
             $event = $this->emitEvent(
                 BeforeSaveEvent::class,
-                compact('data', 'type', 'metadata')
+                compact('data', 'type', 'metadata', 'oldData')
             );
 
             $metadata = $event->getMetadata();
@@ -272,10 +283,10 @@ class EntityMapper implements EventAwareInterface
 
             $event = $this->emitEvent(
                 AfterSaveEvent::class,
-                compact('data', 'type', 'metadata', 'entity')
+                compact('data', 'type', 'metadata', 'entity', 'oldData')
             );
 
-            $metadata->getRelationManager()->save($event->getData(), $entity);
+            $metadata->getRelationManager()->save($event->getData(), $entity, $oldData);
         }
 
         // Event
@@ -597,24 +608,17 @@ class EntityMapper implements EventAwareInterface
 
         foreach ($oldItems as $old) {
             $oldValues = Arr::only($old, $compareKeys);
-            ksort($oldValues);
-
-            $matched = false;
 
             foreach ($items as $item) {
-                $values = Arr::only($item, $compareKeys);
-                ksort($values);
-
                 // Check this old item has at-least 1 new item matched.
-                $matched = $matched || $oldValues === $values;
+                if (Arr::arrayEquals($oldValues, Arr::only($item, $compareKeys))) {
+                    $keep[] = $old;
+                    continue 2;
+                }
             }
 
             // If no matched, mark this old item to be delete.
-            if ($matched) {
-                $keep[] = $old;
-            } else {
-                $deletes[] = $old;
-            }
+            $deletes[] = $old;
         }
 
         return [$deletes, $keep];
@@ -627,24 +631,17 @@ class EntityMapper implements EventAwareInterface
 
         foreach ($items as $item) {
             $values = Arr::only($item, $compareKeys);
-            ksort($values);
-
-            $matched = false;
 
             foreach ($oldItems as $old) {
-                $oldValues = Arr::only($old, $compareKeys);
-                ksort($oldValues);
-
                 // Check this new item has at-least 1 old item matched.
-                $matched = $matched || $oldValues === $values;
+                if (Arr::arrayEquals(Arr::only($old, $compareKeys), $values)) {
+                    $keep[] = $item;
+                    continue 2;
+                }
             }
 
             // If no matched, mark this new item to be create.
-            if ($matched) {
-                $keep[] = $item;
-            } else {
-                $creates[] = $item;
-            }
+            $creates[] = $item;
         }
 
         return [$creates, $keep];

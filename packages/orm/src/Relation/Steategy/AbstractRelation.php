@@ -15,6 +15,7 @@ use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\ORM\Metadata\EntityMetadata;
 use Windwalker\ORM\ORM;
 use Windwalker\ORM\Relation\Action;
+use Windwalker\Utilities\Arr;
 use Windwalker\Utilities\Options\OptionAccessTrait;
 
 /**
@@ -79,7 +80,7 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
         return $this->metadata;
     }
 
-    public function getTargetMetadata(): EntityMetadata
+    public function getForeignMetadata(): EntityMetadata
     {
         return $this->getORM()->getEntityMetadata($this->targetTable);
     }
@@ -98,50 +99,50 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
     /**
      * deleteAllRelatives
      *
-     * @param  array  $relData
+     * @param  array  $foreignData
      *
      * @return  StatementInterface[]
      */
-    public function deleteAllRelatives(array $relData): array
+    public function deleteAllRelatives(array $foreignData): array
     {
         return $this->getORM()
             ->mapper($this->targetTable)
-            ->delete($this->createLoadConditions($relData));
+            ->delete($this->createLoadConditions($foreignData));
     }
 
-    public function clearKeysValues(array $relData): array
+    public function clearKeysValues(array $foreignData): array
     {
         $relMetadata = $this->getORM()->getEntityMetadata($this->targetTable);
 
         foreach ($relMetadata->getKeys() as $key)
         {
-            $relData[$key] = null;
+            $foreignData[$key] = null;
         }
 
-        return $relData;
+        return $foreignData;
     }
 
     /**
      * Handle update relation and set matched value to child table.
      *
      * @param  array  $selfData  The self entity.
-     * @param  array  $relData   The relative entity to be handled.
+     * @param  array  $foreignData   The relative entity to be handled.
      *
      * @return  array  Return table if you need.
      */
-    public function handleUpdateRelations(array $selfData, array $relData): array
+    public function handleUpdateRelations(array $selfData, array $foreignData): array
     {
         if ($this->onUpdate === Action::CASCADE) {
             // Handle Cascade
-            return $this->syncValuesToRelData($selfData, $relData);
+            return $this->syncValuesToForeign($selfData, $foreignData);
         }
 
         // Handle Set NULL
-        if ($this->onUpdate === Action::SET_NULL && $this->isChanged($selfData, $relData)) {
-            return $this->clearRelativeFields($relData);
+        if ($this->onUpdate === Action::SET_NULL && $this->isForeignDataDifferent($selfData, $foreignData)) {
+            return $this->clearRelativeFields($foreignData);
         }
 
-        return $relData;
+        return $foreignData;
     }
 
     /**
@@ -149,66 +150,81 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
      * NULL.
      *
      * @param  array  $selfData  The self entity.
-     * @param  array  $relData   The relative entity to be handled.
+     * @param  array  $foreignData   The relative entity to be handled.
      *
      * @return array Return table if you need.
      */
-    public function handleDeleteRelations(array $selfData, array $relData): array
+    public function handleDeleteRelations(array $selfData, array $foreignData): array
     {
-        return $this->clearRelativeFields($relData);
+        return $this->clearRelativeFields($foreignData);
     }
 
     /**
      * Sync parent fields value to child table.
      *
      * @param  array  $selfData
-     * @param  array  $relData  The child table to be handled.
+     * @param  array  $foreignData  The child table to be handled.
      *
      * @return  array  Return rel data if you need.
      */
-    protected function syncValuesToRelData(array $selfData, array $relData): array
+    protected function syncValuesToForeign(array $selfData, array $foreignData): array
     {
         foreach ($this->fks as $field => $foreign) {
-            $relData[$foreign] = $selfData[$field];
+            $foreignData[$foreign] = $selfData[$field];
         }
 
-        return $relData;
+        return $foreignData;
+    }
+
+    protected function getRelativeValues(array $data, bool $foreign = false): array
+    {
+        $keys = $foreign ? array_values($this->fks) : array_keys($this->fks);
+
+        return Arr::only($data, $keys);
     }
 
     /**
      * Clear value to all relative children fields.
      *
-     * @param  array  $relData  The child table to be handled.
+     * @param  array  $foreignData  The child table to be handled.
      *
      * @return  array  Return data if you need.
      */
-    protected function clearRelativeFields(array $relData): array
+    protected function clearRelativeFields(array $foreignData): array
     {
         foreach ($this->fks as $field => $foreign) {
-            $relData[$foreign] = null;
+            $foreignData[$foreign] = null;
         }
 
-        return $relData;
+        return $foreignData;
     }
 
     /**
      * Is fields changed. If any field changed, means we have to do something to children.
      *
      * @param  array  $selfData
-     * @param  array  $relData  The child data to be handled.
+     * @param  array  $foreignData  The child data to be handled.
      *
      * @return  bool  Something changed of not.
      */
-    public function isChanged(array $selfData, array $relData): bool
+    public function isForeignDataDifferent(array $selfData, array $foreignData): bool
     {
         // If any key changed, set all fields as NULL.
         foreach ($this->fks as $field => $foreign) {
-            if ($relData[$foreign] != $selfData[$field]) {
+            if ($foreignData[$foreign] != $selfData[$field]) {
                 return true;
             }
         }
 
         return false;
+    }
+
+    protected function isChanged(array $data, ?array $oldData): bool
+    {
+        return $oldData ? !Arr::arrayEquals(
+            Arr::only($data, array_keys($this->fks)),
+            Arr::only($oldData, array_keys($this->fks)),
+        ) : false;
     }
 
     public function target(?string $table, array $fks): static

@@ -172,13 +172,13 @@ class OneToManyTest extends AbstractORMTestCase
         $sakura1->setTitle('Sakura Create 1');
         $sakura1->setState(1);
 
-        $sakuras->add($sakura1);
+        $sakuras->attach($sakura1);
 
         $sakura2 = new StubSakura();
         $sakura2->setTitle('Sakura Create 2');
         $sakura2->setState(1);
 
-        $sakuras->add($sakura2);
+        $sakuras->attach($sakura2);
 
         $roses = $location->getRoses();
 
@@ -190,7 +190,7 @@ class OneToManyTest extends AbstractORMTestCase
         $rose2->setTitle('Rose Create 2');
         $rose2->setState(1);
 
-        $roses->add(compact('rose1', 'rose2'));
+        $roses->attach(compact('rose1', 'rose2'));
 
         $mapper->createOne($location);
 
@@ -206,96 +206,237 @@ class OneToManyTest extends AbstractORMTestCase
         );
     }
 
-    public function testUpdateAddRemove()
+    public function testUpdateAttachAndDetach()
     {
         $mapper   = $this->createTestMapper();
         /** @var StubLocation $location */
         $location = $mapper->findOne(1);
-
         $location->setState(2);
-        $location->getData()->setData('123');
+
+        $sakuras = $location->getSakuras();
+
+        $sakuras->detach($sakuras->all()[0]);
+
+        $sakura = (new StubSakura())
+            ->setTitle('New Sakura 1')
+            ->setState(1);
+
+        $sakuras->attach($sakura);
 
         $mapper->updateOne($location);
 
         /** @var StubLocation $newLocation */
         $newLocation = $mapper->findOne(1);
 
+        $newSakuras = $newLocation->getSakuras()->all(Collection::class);
+
         self::assertEquals(2, $newLocation->getState());
-        self::assertEquals($location->getState(), $newLocation->getState());
         self::assertEquals(
-            $newLocation->getData()->getData(),
-            self::$orm->from(StubLocationData::class)
-                ->where('id', 6)
-                ->get()
-                ->data
+            [2, 3, 4, 5, 28],
+            $newSakuras->column('id')->dump()
         );
 
-        // Update Without child value
+        // Id 1 location_no should be empty
+        self::assertEmpty(
+            self::$orm->findOne(StubSakura::class, 1)->getLocationNo()
+        );
+    }
+
+    public function testUpdateSync(): void
+    {
+        $mapper   = $this->createTestMapper();
         /** @var StubLocation $location */
-        $location = $mapper->findOne(1);
+        $location = $mapper->findOne(2);
+
+        $sakurasCollection = $location->getSakuras();
+        $sakuras = $sakurasCollection->all(StubSakura::class);
+
+        $sakuras[0] = (new StubSakura())
+            ->setTitle('Create Sakura 2')
+            ->setState(1);
+
+        $sakurasCollection->sync($sakuras);
 
         $mapper->updateOne($location);
 
+        /** @var StubLocation $newLocation */
+        $newLocation = $mapper->findOne(2);
+
+        $newSakuras = $newLocation->getSakuras()->all(Collection::class);
+
         self::assertEquals(
-            '123',
-            $location->getData()->getData()
+            [7, 8, 9, 10, 29],
+            $newSakuras->column('id')->dump()
+        );
+        // Id 1 location_no should be empty
+        self::assertEmpty(
+            self::$orm->findOne(StubSakura::class, 6)->getLocationNo()
+        );
+    }
+
+    public function testUpdateCascade()
+    {
+        $mapper   = $this->createTestMapper();
+        /** @var StubLocation $location */
+        $location = $mapper->findOne(3);
+        $location->setNo($location->getNo() . '-2');
+
+        $sakuras = $location->getSakuras();
+
+        $sakuras->detach($sakuras->all()[0]);
+
+        $sakura = (new StubSakura())
+            ->setTitle('New Sakura 4')
+            ->setState(1);
+
+        $sakuras->attach($sakura);
+
+        $mapper->updateOne($location);
+
+        /** @var StubLocation $newLocation */
+        $newLocation = $mapper->findOne(3);
+
+        $newSakuras = $newLocation->getSakuras()->all(Collection::class);
+
+        self::assertEquals(
+            [12, 13, 14, 15, 30],
+            $newSakuras->column('id')->dump()
+        );
+
+        self::assertEquals(
+            ['L00003-2'],
+            $newSakuras->column('location_no')->unique()->dump()
+        );
+
+        // The detached fk should be empty
+        self::assertEquals(
+            '',
+            self::$orm->from(StubSakura::class)
+                ->where('id', 11)
+                ->get()
+                ->location_no
+        );
+    }
+
+
+    public function testUpdateSyncCascade()
+    {
+        $mapper   = $this->createTestMapper();
+        /** @var StubLocation $location */
+        $location = $mapper->findOne(3);
+        $location->setNo($location->getNo() . '-2');
+
+        $sakurasCollection = $location->getSakuras();
+        $sakuras = $sakurasCollection->all();
+
+        $sakuras[0] = (new StubSakura())
+            ->setTitle('Create Sakura 2')
+            ->setState(1);
+
+        $sakurasCollection->sync($sakuras);
+
+        $mapper->updateOne($location);
+
+        /** @var StubLocation $newLocation */
+        $newLocation = $mapper->findOne(3);
+
+        $newSakuras = $newLocation->getSakuras()->all(Collection::class);
+
+        self::assertEquals(
+            [13, 14, 15, 30, 31],
+            $newSakuras->column('id')->dump()
+        );
+
+        self::assertEquals(
+            ['L00003-2-2'],
+            $newSakuras->column('location_no')->unique()->dump()
+        );
+
+        // The detached fk should be empty
+        self::assertEquals(
+            '',
+            self::$orm->from(StubSakura::class)
+                ->where('id', 12)
+                ->get()
+                ->location_no
+        );
+    }
+
+    public function testUpdateWithoutInitCollection()
+    {
+        $mapper   = $this->createTestMapper();
+        /** @var StubLocation $location */
+        $location = $mapper->findOne(3);
+        $location->setNo('L00003-3');
+
+        $mapper->updateOne($location);
+
+        /** @var StubLocation $newLocation */
+        $newLocation = $mapper->findOne(3);
+
+        $newSakuras = $newLocation->getSakuras()->all(Collection::class);
+
+        self::assertEquals(
+            [13, 14, 15, 30, 31],
+            $newSakuras->column('id')->dump()
+        );
+
+        self::assertEquals(
+            ['L00003-3'],
+            $newSakuras->column('location_no')->unique()->dump()
         );
     }
 
     public function testUpdateNoAction()
     {
         $mapper   = $this->createTestMapper(Action::NO_ACTION);
-
         /** @var StubLocation $location */
-        $location = $mapper->findOne(1);
+        $location = $mapper->findOne(3);
+        $location->setNo('L00003-4');
 
-        $location->setId(null);
-        $location->setState(1);
-        $location->getData()->setData('Gandalf');
-
-        $mapper->saveOne($location);
+        $mapper->updateOne($location);
 
         /** @var StubLocation $newLocation */
-        $newLocation = $mapper->findOne(7);
+        $newLocation = $mapper->findOne(3);
 
-        self::assertEquals(1, $newLocation->getState());
-        self::assertNotEquals($location->getData()->getId(), $newLocation->getData()?->getId());
-        self::assertNull($newLocation->getData());
+        $newSakuras = $newLocation->getSakuras()->all(Collection::class);
 
+        self::assertCount(0, $newSakuras);
+
+        // The detached fk should be empty
         self::assertEquals(
-            '123',
-            self::$orm->from(StubLocationData::class)
-                ->where('id', 6)
+            'L00003-3',
+            self::$orm->from(StubSakura::class)
+                ->where('id', 13)
                 ->get()
-                ->data
+                ->location_no
         );
     }
 
-    public function testUpdateSelNull()
+    public function testUpdateSetNull()
     {
         $mapper = $this->createTestMapper(Action::SET_NULL);
 
         /** @var StubLocation $location */
-        $location = $mapper->findOne(2);
-
-        $location->setId(null);
-        $location->setState(2);
-        $location->getData()->setData('Aragorn');
+        $location = $mapper->findOne(4);
+        $location->setNo('L00004-2');
 
         $mapper->saveOne($location);
 
         /** @var StubLocation $newLocation */
-        $newLocation = $mapper->findOne(8);
+        $newLocation = $mapper->findOne(4);
 
-        self::assertEquals(2, $newLocation->getState());
-        self::assertNull($newLocation->getData());
+        $newSakuras = $newLocation->getSakuras()->all(Collection::class);
 
+        self::assertCount(0, $newSakuras);
+
+        // The detached fk should be empty
         self::assertEquals(
-            0,
-            self::$orm->from(StubLocationData::class)
-                ->where('id', $location->getData()->getId())
+            '',
+            self::$orm->from(StubSakura::class)
+                ->where('id', 16)
                 ->get()
-                ->location_id
+                ->location_no
         );
     }
 
@@ -304,43 +445,40 @@ class OneToManyTest extends AbstractORMTestCase
         $mapper = $this->createTestMapper();
 
         /** @var StubLocation $location */
-        $location = $mapper->findOne(3);
-
-        $dataId = $location->getData()->getId();
+        $location = $mapper->findOne(1);
 
         $mapper->delete($location);
 
-        self::assertEquals(8, $dataId);
+        $sakuras = $location->getSakuras()->all();
+
+        self::assertCount(0, $sakuras);
         self::assertNull(
-            self::$orm->findOne(StubLocation::class, 3)
+            self::$orm->findOne(StubSakura::class, 2)
         );
-        self::assertNull(
-            self::$orm->findOne(StubLocationData::class, $dataId)
+        self::assertCount(
+            0,
+            self::$orm->from(StubSakura::class)
+                ->where('location_no', $location->getNo())
+                ->all()
         );
     }
 
     public function testDeleteNoAction()
     {
-        $mapper = $this->createTestMapper(Action::CASCADE, Action::NO_ACTION);
+        $mapper = $this->createTestMapper(Action::NO_ACTION, Action::NO_ACTION);
 
         /** @var StubLocation $location */
-        $location = $mapper->findOne(4);
-
-        $dataId = $location->getData()->getId();
+        $location = $mapper->findOne(2);
 
         $mapper->delete($location);
 
-        self::assertEquals(9, $dataId);
-        self::assertNull(
-            self::$orm->findOne(StubLocation::class, 4)
-        );
         self::assertEquals(
-            4,
-            self::$orm->findOne(StubLocationData::class, $dataId)->getLocationNo()
-        );
-        self::assertEquals(
-            '壘。汝可引本部五百餘人，以天書三卷授之，曰：「此張角正殺敗董卓回寨。玄德謂關、張寶勢窮力乏，必獲惡。',
-            self::$orm->findOne(StubLocationData::class, $dataId)->getData()
+            [7, 8, 9, 10, 29],
+            self::$orm->from(StubSakura::class)
+                ->where('location_no', $location->getNo())
+                ->all()
+                ->column('id')
+                ->dump()
         );
     }
 
@@ -351,17 +489,22 @@ class OneToManyTest extends AbstractORMTestCase
         /** @var StubLocation $location */
         $location = $mapper->findOne(5);
 
-        $dataId = $location->getData()->getId();
+        $ids = $location->getSakuras()
+            ->all(Collection::class)
+            ->column('id')
+            ->dump();
+
+        $location->clearRelations();
 
         $mapper->delete($location);
 
-        self::assertEquals(10, $dataId);
-        self::assertNull(
-            self::$orm->findOne(StubLocation::class, 5)
-        );
         self::assertEquals(
-            0,
-            self::$orm->findOne(StubLocationData::class, $dataId)->getLocationNo()
+            [null, null, null, null, null],
+            self::$orm->from(StubSakura::class)
+                ->where('id', $ids)
+                ->all()
+                ->column('location_no')
+                ->dump()
         );
     }
 
@@ -375,13 +518,13 @@ class OneToManyTest extends AbstractORMTestCase
             ->getRelationManager();
 
         $rm->oneToMany('sakuras')
-            ->target(StubSakura::class, ['id' => 'location'])
+            ->target(StubSakura::class, ['no' => 'location_no'])
             ->flush($flush)
             ->onUpdate($onUpdate)
             ->onDelete($onDelete);
 
         $rm->oneToMany('roses')
-            ->target(StubRose::class, ['id' => 'location'])
+            ->target(StubRose::class, ['no' => 'location_no'])
             ->flush($flush)
             ->onUpdate($onUpdate)
             ->onDelete($onDelete);

@@ -39,34 +39,38 @@ class OneToOne extends AbstractRelation
     /**
      * @inheritDoc
      */
-    public function save(array $data, object $entity): void
+    public function save(array $data, object $entity, ?array $oldData = null): void
     {
         if ($this->onUpdate === Action::NO_ACTION || $this->onUpdate === Action::RESTRICT) {
             return;
         }
 
-        $relEntity = ReflectAccessor::getValue($entity, $this->getPropName());
+        // Get foreign entity
+        $foreignEntity = ReflectAccessor::getValue($entity, $this->getPropName());
 
-        if ($relEntity === null && $this->onUpdate === Action::CASCADE) {
-            $relEntity = RelationProxies::call($entity, $this->getPropName());
+        // If no foreign entity exists but on update is CASCADE
+        // try load it once.
+        if ($foreignEntity === null && $this->onUpdate === Action::CASCADE) {
+            $foreignEntity = RelationProxies::call($entity, $this->getPropName());
         }
 
-        if ($relEntity === null) {
+        // If still no any relation found, return.
+        if ($foreignEntity === null) {
             return;
         }
 
-        $relData = $this->getORM()->extractEntity($relEntity);
-        $relData = $this->handleUpdateRelations($data, $relData);
+        $foreignData = $this->getORM()->extractEntity($foreignEntity);
+        $foreignData = $this->handleUpdateRelations($data, $foreignData);
 
         if ($this->isFlush()) {
-            $this->deleteAllRelatives($relData);
-            $relData = $this->clearKeysValues($relData);
+            $this->deleteAllRelatives($foreignData);
+            $foreignData = $this->clearKeysValues($foreignData);
         }
 
         $this->getORM()
             ->mapper($this->targetTable)
             ->saveOne(
-                $relData,
+                $foreignData,
                 null,
                 true
             );
@@ -87,20 +91,20 @@ class OneToOne extends AbstractRelation
         }
 
         // SET NULL
-        $relEntity = ReflectAccessor::getValue($entity, $this->getPropName())
+        $foreignEntity = ReflectAccessor::getValue($entity, $this->getPropName())
             ?? RelationProxies::call($entity, $this->getPropName());
 
-        if ($relEntity === null) {
+        if ($foreignEntity === null) {
             return;
         }
 
-        $relData = $this->getORM()->extractEntity($relEntity);
-        $relData = $this->handleDeleteRelations($data, $relData);
+        $foreignData = $this->getORM()->extractEntity($foreignEntity);
+        $foreignData = $this->handleDeleteRelations($data, $foreignData);
 
         $this->getORM()
             ->mapper($this->targetTable)
             ->updateOne(
-                $relData,
+                $foreignData,
                 null,
                 true
             );

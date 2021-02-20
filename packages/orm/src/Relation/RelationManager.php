@@ -53,10 +53,10 @@ class RelationManager implements RelationStrategyInterface
     /**
      * @inheritDoc
      */
-    public function save(array $data, object $entity): void
+    public function save(array $data, object $entity, ?array $oldData = null): void
     {
         foreach ($this->getRelations() as $relation) {
-            $relation->save($data, $entity);
+            $relation->save($data, $entity, $oldData);
         }
     }
 

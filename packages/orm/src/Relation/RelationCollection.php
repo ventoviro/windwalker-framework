@@ -23,12 +23,12 @@ class RelationCollection implements \IteratorAggregate, \JsonSerializable
     /**
      * @var object[]
      */
-    protected array $addedEntities = [];
+    protected array $attachedEntities = [];
 
     /**
      * @var object[]
      */
-    protected array $removeEntities = [];
+    protected array $detachedEntities = [];
 
     /**
      * @var object[]
@@ -50,44 +50,44 @@ class RelationCollection implements \IteratorAggregate, \JsonSerializable
         //
     }
 
-    public function add(object|array $entities): static
+    public function attach(object|array $entities): static
     {
         if (is_object($entities)) {
             $entities = [$entities];
         }
 
         foreach ($entities as $entity) {
-            $this->addedEntities[spl_object_hash($entity)] = $entity;
+            $this->attachedEntities[spl_object_hash($entity)] = $entity;
         }
 
         return $this;
     }
 
-    public function cancelAdd(object $entity): static
+    public function cancelAttach(object $entity): static
     {
-        unset($this->addedEntities[spl_object_hash($entity)]);
+        unset($this->attachedEntities[spl_object_hash($entity)]);
 
         return $this;
     }
 
-    public function remove(object $entity): static
+    public function detach(object $entity): static
     {
-        $this->removeEntities[spl_object_hash($entity)] = $entity;
+        $this->detachedEntities[spl_object_hash($entity)] = $entity;
 
         return $this;
     }
 
-    public function cancelRemove(object $entity): static
+    public function cancelDetach(object $entity): static
     {
-        unset($this->removeEntities[spl_object_hash($entity)]);
+        unset($this->detachedEntities[spl_object_hash($entity)]);
 
         return $this;
     }
 
-    public function clearAddAndRemove(): static
+    public function clearAttachesAndDetaches(): static
     {
-        $this->addedEntities = [];
-        $this->removeEntities = [];
+        $this->attachedEntities = [];
+        $this->detachedEntities = [];
 
         return $this;
     }
@@ -102,7 +102,7 @@ class RelationCollection implements \IteratorAggregate, \JsonSerializable
 
     public function clearAll(): static
     {
-        return $this->clearAddAndRemove()->clearCache();
+        return $this->clearAttachesAndDetaches()->clearCache();
     }
 
     /**
@@ -150,19 +150,19 @@ class RelationCollection implements \IteratorAggregate, \JsonSerializable
     /**
      * @return object[]
      */
-    public function getAddedEntities(): array
+    public function getAttachedEntities(): array
     {
-        return $this->addedEntities;
+        return $this->attachedEntities;
     }
 
     /**
-     * @param  object[]  $addedEntities
+     * @param  object[]  $attachedEntities
      *
      * @return  static  Return self to support chaining.
      */
-    public function setAddedEntities(array $addedEntities): static
+    public function setAttachedEntities(array $attachedEntities): static
     {
-        $this->addedEntities = $addedEntities;
+        $this->attachedEntities = $attachedEntities;
 
         return $this;
     }
@@ -170,19 +170,19 @@ class RelationCollection implements \IteratorAggregate, \JsonSerializable
     /**
      * @return object[]
      */
-    public function getRemoveEntities(): array
+    public function getDetachedEntities(): array
     {
-        return $this->removeEntities;
+        return $this->detachedEntities;
     }
 
     /**
-     * @param  object[]  $removeEntities
+     * @param  object[]  $detachedEntities
      *
      * @return  static  Return self to support chaining.
      */
-    public function setRemoveEntities(array $removeEntities): static
+    public function setDetachedEntities(array $detachedEntities): static
     {
-        $this->removeEntities = $removeEntities;
+        $this->detachedEntities = $detachedEntities;
 
         return $this;
     }
