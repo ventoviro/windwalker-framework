@@ -24,24 +24,24 @@ use function Windwalker\value;
 class Escaper
 {
     /**
-     * @var \PDO|callable|mixed
+     * @var \WeakReference<\PDO|callable|mixed>|null
      */
-    protected $connection;
+    protected ?\WeakReference $connection = null;
 
     /**
-     * @var Query
+     * @var Query|null
      */
-    protected $query;
+    protected ?Query $query = null;
 
     /**
      * Escaper constructor.
      *
-     * @param  \PDO|callable|mixed  $connection
+     * @param  \PDO|callable|object  $connection
      * @param  Query|null           $query
      */
     public function __construct(mixed $connection, ?Query $query = null)
     {
-        $this->connection = $connection;
+        $this->connection = $connection ? \WeakReference::create($connection) : null;
         $this->query      = $query;
     }
 
@@ -164,11 +164,7 @@ class Escaper
      */
     public function getConnection(): mixed
     {
-        if ($this->connection instanceof \WeakReference) {
-            $conn = $this->connection->get();
-        } else {
-            $conn = $this->connection;
-        }
+        $conn = $this->connection?->get();
 
         return $conn ?: [$this->query->getGrammar(), 'localEscape'];
     }

@@ -18,6 +18,7 @@ use Windwalker\ORM\Relation\RelationProxies;
 use Windwalker\ORM\Strategy\Selector;
 use Windwalker\Query\Clause\JoinClause;
 use Windwalker\Utilities\Assert\TypeAssert;
+use Windwalker\Utilities\Reflection\ReflectAccessor;
 
 /**
  * The ManyToMany class.
@@ -69,15 +70,79 @@ class ManyToMany extends AbstractRelation
         );
     }
 
+    /**
+     * @inheritDoc
+     */
+    public function save(array $data, object $entity, ?array $oldData = null): void
+    {
+        if ($this->onUpdate === Action::NO_ACTION || $this->onUpdate === Action::RESTRICT) {
+            return;
+        }
+
+        $collection = ReflectAccessor::getValue($entity, $this->getPropName())
+            ?? $this->createCollection($data);
+
+        $changed = $this->isChanged($data, $oldData);
+        $attachEntities = null;
+        $detachEntities = null;
+        $keepEntities = null;
+
+        if ($collection->isSync()) {
+            // $conditions = $this->syncValuesToForeign($oldData, []);
+            //
+            // $entities = $collection->all()
+            //     ->map(fn ($entity) => $this->getORM()->extractEntity($entity));
+            //
+            // if ($this->isFlush()) {
+            //     // If is flush, let's delete all relations and make all attaches
+            //     $this->deleteAllRelatives($conditions);
+            //
+            //     $attachEntities = $entities;
+            // } else {
+            //     // If not flush let's make attach and detach diff
+            //     $oldItems = $this->getORM()
+            //         ->from($this->getForeignMetadata()->getClassName())
+            //         ->where($conditions)
+            //         ->all()
+            //         ->dump(true);
+            //
+            //     [$detachEntities,] = $this->getDetachDiff(
+            //         $entities,
+            //         $oldItems,
+            //         $this->getForeignMetadata()->getKeys(),
+            //         $data
+            //     );
+            //     [$attachEntities, $keepEntities] = $this->getAttachDiff(
+            //         $entities,
+            //         $oldItems,
+            //         $this->getForeignMetadata()->getKeys(),
+            //         $data
+            //     );
+            // }
+        } else {
+            // Not sync, manually set attach/detach
+            $attachEntities = $collection->getAttachedEntities();
+            $detachEntities = $collection->getDetachedEntities();
+        }
+        
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function delete(array $data, object $entity): void
+    {
+    }
+
     protected function createCollectionQuery(array $data): Selector
     {
         $foreignMetadata = $this->getForeignMetadata();
-        $foreignTable = $foreignMetadata->getTableName();
-        $foreignAlias = $foreignMetadata->getTableAlias();
+        $foreignTable    = $foreignMetadata->getTableName();
+        $foreignAlias    = $foreignMetadata->getTableAlias();
 
         $mapMetadata = $this->getMapMetadata();
-        $mapTable = $mapMetadata->getTableName();
-        $mapAlias = $mapMetadata->getTableAlias();
+        $mapTable    = $mapMetadata->getTableName();
+        $mapAlias    = $mapMetadata->getTableAlias();
 
         return $this->getORM()
             ->from($foreignTable, $foreignAlias)
@@ -110,20 +175,6 @@ class ManyToMany extends AbstractRelation
         }
 
         return $conditions;
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function save(array $data, object $entity, ?array $oldData = null): void
-    {
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function delete(array $data, object $entity): void
-    {
     }
 
     public function getMapMetadata(): EntityMetadata

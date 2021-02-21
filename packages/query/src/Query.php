@@ -173,7 +173,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
      * @param  mixed|\PDO|Escaper|AbstractDriver  $escaper
      * @param  AbstractGrammar|string|null        $grammar
      */
-    public function __construct($escaper = null, $grammar = null)
+    public function __construct($escaper = null, mixed $grammar = null)
     {
         $this->grammar = $grammar instanceof AbstractGrammar
             ? $grammar
@@ -1872,12 +1872,12 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
     /**
      * getIterator
      *
-     * @param  string  $class
-     * @param  array   $args
+     * @param  string|null  $class
+     * @param  array        $args
      *
      * @return  \Generator
      */
-    public function getIterator($class = Collection::class, array $args = []): \Generator
+    public function getIterator(?string $class = Collection::class, array $args = []): \Generator
     {
         return $this->prepareStatement()->getIterator($class, $args);
     }

@@ -62,6 +62,34 @@ class ManyToManyTest extends AbstractORMTestCase
         );
     }
 
+    public function testCreate()
+    {
+        $sakuraMapper = $this->createSakuraMapper();
+
+        $sakura = new StubSakura();
+        $sakura->setTitle('New Sakura 1');
+        $sakura->setNo('S10001');
+        $sakura->setState(1);
+
+        $roses = $sakura->getRoses();
+
+        $roses->attach(
+            StubRose::newInstance()
+                ->setTitle('New Rose 1')
+                ->setNo('R10001')
+        );
+
+        $roses->attach(
+            $this->createRoseMapper()->findOne(2)
+        );
+
+        $sakuraMapper->createOne($sakura);
+
+        /** @var StubSakura $newSakura */
+        $newSakura = $sakuraMapper->findOne(['no' => 'S10001']);
+        show($newSakura->getRoses()->all());
+    }
+
     public function createRoseMapper(
         string $onUpdate = Action::CASCADE,
         string $onDelete = Action::CASCADE,

@@ -23,6 +23,17 @@ use Windwalker\Utilities\TypeCast;
  */
 trait EntityTrait
 {
+    public static function newInstance(array $data = []): static
+    {
+        $instance = new static();
+
+        foreach ($data as $k => $datum) {
+            $instance->$k = $datum;
+        }
+
+        return $instance;
+    }
+
     protected function loadRelation(string $propName): mixed
     {
         return $this->$propName ?? RelationProxies::call($this, $propName);
@@ -30,7 +41,7 @@ trait EntityTrait
 
     protected function loadCollection(string $propName)
     {
-        return $this->$propName ?? RelationProxies::call($this, $propName) ?? new RelationCollection(static::class);
+        return $this->$propName ?? RelationProxies::call($this, $propName) ?? new RelationCollection(static::class, null);
     }
 
     public function loadAllRelations(): void
