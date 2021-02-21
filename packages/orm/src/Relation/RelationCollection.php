@@ -18,7 +18,7 @@ use Windwalker\Utilities\TypeCast;
 /**
  * The RelationCollections class.
  */
-class RelationCollection implements \IteratorAggregate, \JsonSerializable
+class RelationCollection implements \IteratorAggregate, \JsonSerializable, \ArrayAccess
 {
     /**
      * @var object[]
@@ -111,6 +111,7 @@ class RelationCollection implements \IteratorAggregate, \JsonSerializable
      * @param  string|null  $class
      *
      * @return Collection
+     * @throws \Exception
      */
     public function all(?string $class = null): Collection
     {
@@ -215,5 +216,45 @@ class RelationCollection implements \IteratorAggregate, \JsonSerializable
         $this->cache = TypeCast::toArray($items);
 
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetExists($offset)
+    {
+        $this->all();
+
+        return isset($this->cache[$offset]);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetGet($offset)
+    {
+        $this->all();
+
+        return $this->cache[$offset];
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetSet($offset, $value)
+    {
+        $this->all();
+
+        $this->cache[$offset] = $value;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function offsetUnset($offset)
+    {
+        $this->all();
+
+        unset($this->cache[$offset]);
     }
 }

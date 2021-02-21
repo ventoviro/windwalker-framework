@@ -154,7 +154,7 @@ class CastManager
      *
      * @return  callable
      */
-    protected function castToCallback(mixed $cast, ?int $hydrateStrategy, $direction = 'cast'): callable
+    public function castToCallback(mixed $cast, ?int $hydrateStrategy, $direction = 'cast'): callable
     {
         if (is_callable($cast)) {
             return fn(mixed $value) => $cast($value);

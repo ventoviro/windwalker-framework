@@ -30,7 +30,7 @@ class ManyToMany extends AbstractRelation
     public function __construct(
         EntityMetadata $metadata,
         string $propName,
-        protected ?string $intermediate = null,
+        protected ?string $mapTable = null,
         protected array $mapFks = [],
         ?string $targetTable = null,
         array $fks = [],
@@ -72,28 +72,28 @@ class ManyToMany extends AbstractRelation
     protected function createCollectionQuery(array $data): Selector
     {
         $foreignMetadata = $this->getForeignMetadata();
-        $intermediateMetadata = $this->getIntermediateMetadata();
+        $foreignTable = $foreignMetadata->getTableName();
+        $foreignAlias = $foreignMetadata->getTableAlias();
+
+        $mapMetadata = $this->getMapMetadata();
+        $mapTable = $mapMetadata->getTableName();
+        $mapAlias = $mapMetadata->getTableAlias();
 
         return $this->getORM()
-            ->from($foreignMetadata->getTableName(), $foreignMetadata->getTableAlias())
+            ->from($foreignTable, $foreignAlias)
             ->leftJoin(
-                $intermediateMetadata->getTableName(),
-                $intermediateMetadata->getTableAlias(),
-                function (JoinClause $joinClause) use ($foreignMetadata, $intermediateMetadata) {
+                $mapTable,
+                $mapMetadata->getTableAlias(),
+                function (JoinClause $joinClause) use ($foreignAlias, $mapAlias) {
                     foreach ($this->getForeignKeys() as $mapKey => $foreignKey) {
                         $joinClause->on(
-                            $foreignMetadata->getTableAlias() . '.' . $foreignKey,
-                            $intermediateMetadata->getTableAlias() . '.' . $mapKey
+                            "$foreignAlias.$foreignKey",
+                            "$mapAlias.$mapKey"
                         );
                     }
                 }
             )
-            ->where(
-                $this->createLoadConditions(
-                    $data,
-                    $intermediateMetadata->getTableAlias()
-                )
-            )
+            ->where($this->createLoadConditions($data, $mapAlias))
             ->groupByJoins();
     }
 
@@ -126,9 +126,9 @@ class ManyToMany extends AbstractRelation
     {
     }
 
-    public function getIntermediateMetadata(): EntityMetadata
+    public function getMapMetadata(): EntityMetadata
     {
-        return $this->getORM()->getEntityMetadata($this->intermediate);
+        return $this->getORM()->getEntityMetadata($this->mapTable);
     }
 
     /**
@@ -142,19 +142,19 @@ class ManyToMany extends AbstractRelation
     /**
      * @return string|null
      */
-    public function getIntermediate(): ?string
+    public function getMapTable(): ?string
     {
-        return $this->intermediate;
+        return $this->mapTable;
     }
 
     /**
-     * @param  string|null   $intermediate
+     * @param  string|null   $mapTable
      * @param  array|string  $ownerKey
      * @param  string|null   $mapKey
      *
      * @return  static  Return self to support chaining.
      */
-    public function through(?string $intermediate, array|string $ownerKey, ?string $mapKey = null): static
+    public function mapBy(?string $mapTable, array|string $ownerKey, ?string $mapKey = null): static
     {
         $fks = $ownerKey;
 
@@ -170,7 +170,7 @@ class ManyToMany extends AbstractRelation
             $fks = $ownerKey;
         }
 
-        $this->intermediate = $intermediate;
+        $this->mapTable = $mapTable;
 
         $this->setMapForeignKeys($fks);
 

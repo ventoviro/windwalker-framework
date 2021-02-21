@@ -533,7 +533,7 @@ abstract class Arr
      * @return  mixed
      */
     public static function takeout(
-        object | array &$data,
+        object|array &$data,
         int|string $key,
         $default = null,
         string $delimiter = '.'
@@ -643,7 +643,7 @@ abstract class Arr
      *
      * @param  array  $array  An array to test.
      *
-     * @return  boolean  True if the array is an associative array.
+     * @return  bool  True if the array is an associative array.
      *
      * @since   2.0
      */
@@ -689,6 +689,67 @@ abstract class Arr
         $array = array_map('unserialize', $array);
 
         return $array;
+    }
+
+    /**
+     * To get 2-dimensional array columns without native php array_column()
+     *
+     * @param  array|object  $src
+     * @param  string        $column
+     * @param  ?string       $keyName
+     * @param  bool          $invasive
+     *
+     * @return  array
+     */
+    public static function getColumn(
+        array|object $src,
+        string $column,
+        ?string $keyName = null,
+        bool $invasive = true
+    ): array {
+        $result = [];
+
+        foreach (TypeCast::toIterable($src) as $key => $item) {
+            if (is_object($item) && $invasive) {
+                $ref = new ReflectionObject($item);
+
+                if (!$ref->hasProperty($column)) {
+                    continue;
+                }
+
+                $prop = $ref->getProperty($column);
+                $prop->setAccessible(true);
+                $value = $prop->getValue($item);
+
+                if ($keyName !== null) {
+                    if ($ref->hasProperty($keyName)) {
+                        $prop = $ref->getProperty($keyName);
+                        $prop->setAccessible(true);
+                        $keyName = $prop->getValue($item);
+                    } else {
+                        $keyName = null;
+                    }
+                }
+            } else {
+                if (!static::has($src, $column, '')) {
+                    continue;
+                }
+
+                $value = static::get($value, $column, '');
+
+                if ($keyName !== null) {
+                    $keyName = static::get($value, $keyName, '');
+                }
+            }
+
+            if ($keyName) {
+                $result[$keyName] = $item;
+            } else {
+                $result[] = $value;
+            }
+        }
+
+        return $result;
     }
 
     /**
@@ -941,8 +1002,8 @@ abstract class Arr
      *                                        'id'          => 6,   // Get all elements where id=6
      *                                        'published >' => 0    // Get all elements where published>0
      *                                        );
-     * @param  boolean       $strict          Use strict to compare equals.
-     * @param  boolean       $keepKey         Keep origin array keys.
+     * @param  bool          $strict          Use strict to compare equals.
+     * @param  bool          $keepKey         Keep origin array keys.
      *
      * @return  array|object  An new two-dimensional array queried.
      *
@@ -990,7 +1051,7 @@ abstract class Arr
      *                                        'id'          => 6,   // Get all elements where id=6
      *                                        'published >' => 0    // Get all elements where published>0
      *                                        );
-     * @param  boolean       $strict          Use strict to compare equals.
+     * @param  bool          $strict          Use strict to compare equals.
      *
      * @return mixed
      *
@@ -1006,9 +1067,9 @@ abstract class Arr
     /**
      * Check an array match our query.
      *
-     * @param  array    $array    An array to query.
-     * @param  array    $queries  Query strings or callback, may contain Comparison Operators: '>', '>=', '<', '<='.
-     * @param  boolean  $strict   Use strict to compare equals.
+     * @param  array  $array    An array to query.
+     * @param  array  $queries  Query strings or callback, may contain Comparison Operators: '>', '>=', '<', '<='.
+     * @param  bool   $strict   Use strict to compare equals.
      *
      * @return  bool
      */
@@ -1032,21 +1093,19 @@ abstract class Arr
                 $results[] = (static::get($array, trim(substr($key, 0, -1))) < $val);
             } elseif (is_array($val)) {
                 $results[] = in_array(static::get($array, $key), $val, $strict);
+            } elseif ($strict) {
+                $results[] = static::get($array, $key) === $val;
             } else {
-                if ($strict) {
-                    $results[] = static::get($array, $key) === $val;
-                } else {
-                    // Workaround for PHP object compare bug, see: https://bugs.php.net/bug.php?id=62976
-                    $compare1 = is_object(static::get($array, $key)) ? get_object_vars(
-                        static::get(
-                            $array,
-                            $key
-                        )
-                    ) : static::get($array, $key);
-                    $compare2 = is_object($val) ? get_object_vars($val) : $val;
+                // Workaround for PHP object compare bug, see: https://bugs.php.net/bug.php?id=62976
+                $compare1 = is_object(static::get($array, $key)) ? get_object_vars(
+                    static::get(
+                        $array,
+                        $key
+                    )
+                ) : static::get($array, $key);
+                $compare2 = is_object($val) ? get_object_vars($val) : $val;
 
-                    $results[] = ($compare1 == $compare2);
-                }
+                $results[] = ($compare1 == $compare2);
             }
         }
 
@@ -1067,12 +1126,10 @@ abstract class Arr
         foreach ($array as $key => & $value) { // mind the reference
             if (is_array($value)) {
                 $value = static::filterRecursive($value, $callback);
-            } else {
-                if ($callback !== null && !$callback($value, $key)) {
-                    unset($array[$key]);
-                } elseif (!(bool) $value) {
-                    unset($array[$key]);
-                }
+            } elseif ($callback !== null && !$callback($value, $key)) {
+                unset($array[$key]);
+            } elseif (!(bool) $value) {
+                unset($array[$key]);
             }
         }
 

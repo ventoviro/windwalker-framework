@@ -26,7 +26,7 @@ class ReflectAccessor
 {
     use RuntimeCacheTrait;
 
-    public static function getProperties(
+    public static function getPropertiesValues(
         object|string $object,
         int $filters = ReflectionProperty::IS_PUBLIC | ReflectionProperty::IS_PRIVATE | ReflectionProperty::IS_PROTECTED
     ): array {
