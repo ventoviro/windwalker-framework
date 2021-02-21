@@ -9,18 +9,29 @@
 
 declare(strict_types=1);
 
-namespace Windwalker\ORM\Relation\Steategy;
+namespace Windwalker\ORM\Relation\Strategy;
+
+use Windwalker\ORM\Relation\RelationProxies;
 
 /**
- * The ManyToMany class.
+ * The ManyToOne class.
  */
-class ManyToMany extends AbstractRelation
+class ManyToOne extends AbstractRelation
 {
     /**
      * @inheritDoc
      */
     public function load(array $data, object $entity): array
     {
+        $getter = fn() => $this->getORM()
+            ->findOne(
+                $this->targetTable,
+                $this->createLoadConditions($data)
+            );
+
+        RelationProxies::set($entity, $this->getPropName(), $getter);
+
+        return $data;
     }
 
     /**
@@ -28,6 +39,7 @@ class ManyToMany extends AbstractRelation
      */
     public function save(array $data, object $entity, ?array $oldData = null): void
     {
+        // Many to one does not support save
     }
 
     /**
@@ -35,5 +47,6 @@ class ManyToMany extends AbstractRelation
      */
     public function delete(array $data, object $entity): void
     {
+        // Many to one does not support delete
     }
 }

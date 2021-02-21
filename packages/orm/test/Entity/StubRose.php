@@ -12,16 +12,22 @@ declare(strict_types=1);
 namespace Windwalker\ORM\Test\Entity;
 
 use Windwalker\ORM\Attributes\AutoIncrement;
+use Windwalker\ORM\Attributes\Cast;
 use Windwalker\ORM\Attributes\Column;
 use Windwalker\ORM\Attributes\PK;
 use Windwalker\ORM\Attributes\Table;
+use Windwalker\ORM\EntityInterface;
+use Windwalker\ORM\EntityTrait;
+use Windwalker\ORM\Relation\RelationCollection;
 
 /**
  * The StubRose class.
  */
 #[Table('roses')]
-class StubRose
+class StubRose implements EntityInterface
 {
+    use EntityTrait;
+
     #[PK, AutoIncrement]
     #[Column('id')]
     protected ?int $id = null;
@@ -40,6 +46,12 @@ class StubRose
 
     #[Column('state')]
     protected int $state = 0;
+
+    protected ?RelationCollection $sakuras = null;
+
+    #[Column('sakura_rose_map')]
+    #[Cast(StubSakuraRoseMap::class)]
+    protected StubSakuraRoseMap $map;
 
     /**
      * @return int|null
@@ -157,6 +169,26 @@ class StubRose
     public function setNo(string $no): static
     {
         $this->no = $no;
+
+        return $this;
+    }
+
+    /**
+     * @return RelationCollection|null
+     */
+    public function getSakuras(): RelationCollection
+    {
+        return $this->loadCollection('skuras');
+    }
+
+    /**
+     * @param  RelationCollection|null  $sakuras
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setSakuras(?RelationCollection $sakuras): static
+    {
+        $this->sakuras = $sakuras;
 
         return $this;
     }

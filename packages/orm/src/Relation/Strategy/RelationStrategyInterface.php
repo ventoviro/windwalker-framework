@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace Windwalker\ORM\Relation\Steategy;
+namespace Windwalker\ORM\Relation\Strategy;
 
 /**
  * The RelationStrategyInterface class.

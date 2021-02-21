@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace Windwalker\ORM\Relation\Steategy;
+namespace Windwalker\ORM\Relation\Strategy;
 
 use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\ORM\Metadata\EntityMetadata;
@@ -71,11 +71,15 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
         return $this->getORM()->getEntityMetadata($this->targetTable);
     }
 
-    public function createLoadConditions(array $data): array
+    public function createLoadConditions(array $data, ?string $alias = null): array
     {
         $conditions = [];
 
         foreach ($this->fks as $field => $foreign) {
+            if ($alias) {
+                $foreign = $alias . '.' . $foreign;
+            }
+
             $conditions[$foreign] = $data[$field];
         }
 
@@ -213,9 +217,9 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
         ) : false;
     }
 
-    public function target(?string $table, array|string $selfKey, ?string $foreignKey = null): static
+    public function target(?string $table, array|string $ownerKey, ?string $foreignKey = null): static
     {
-        $fks = $selfKey;
+        $fks = $ownerKey;
 
         if (is_string($fks)) {
             TypeAssert::assert(
@@ -226,7 +230,7 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
 
             $fks = [$fks => $foreignKey];
         } else {
-            $fks = $selfKey;
+            $fks = $ownerKey;
         }
 
         $this->targetTable = $table;

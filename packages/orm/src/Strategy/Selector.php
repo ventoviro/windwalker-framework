@@ -16,6 +16,7 @@ use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\Database\Event\HydrateEvent;
 use Windwalker\Database\Event\ItemFetchedEvent;
 use Windwalker\ORM\Hydrator\EntityHydrator;
+use Windwalker\ORM\Metadata\EntityMetadata;
 use Windwalker\Query\Clause\AsClause;
 use Windwalker\Query\Query;
 use Windwalker\Utilities\Arr;
@@ -127,10 +128,12 @@ class Selector extends AbstractQueryStrategy
 
                 $object = $orm->hydrateEntity($item, $object);
 
-                // Prepare relations
-                $orm->getEntityMetadata($object)
-                    ->getRelationManager()
-                    ->load($item, $object);
+                if (EntityMetadata::isEntity($object)) {
+                    // Prepare relations
+                    $orm->getEntityMetadata($object)
+                        ->getRelationManager()
+                        ->load($item, $object);
+                }
 
                 $event->setItem($object);
             }

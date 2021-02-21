@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace Windwalker\ORM\Relation\Steategy;
+namespace Windwalker\ORM\Relation\Strategy;
 
 use Windwalker\ORM\ORM;
 
@@ -18,7 +18,7 @@ use Windwalker\ORM\ORM;
  */
 interface RelationConfigureInterface
 {
-    public function target(?string $table, array|string $selfKey, ?string $foreignKey = null): static;
+    public function target(?string $table, array|string $ownerKey, ?string $foreignKey = null): static;
 
     public function foreignKeys(array $fks): static;
 

@@ -20,6 +20,7 @@ use Windwalker\ORM\EntityInterface;
 use Windwalker\ORM\EntityTrait;
 use Windwalker\ORM\Event\AfterSaveEvent;
 use Windwalker\ORM\Metadata\EntityMetadata;
+use Windwalker\ORM\Relation\RelationCollection;
 
 /**
  * The Sakura class.
@@ -49,6 +50,8 @@ class StubSakura implements EntityInterface
     protected int $state = 0;
 
     protected ?StubLocation $location = null;
+
+    protected RelationCollection|null $roses = null;
 
     #[EntitySetup]
     public static function setup(EntityMetadata $metadata)
@@ -214,6 +217,26 @@ class StubSakura implements EntityInterface
     public function setLocation(?StubLocation $location): static
     {
         $this->location = $location;
+
+        return $this;
+    }
+
+    /**
+     * @return RelationCollection|null
+     */
+    public function getRoses(): ?RelationCollection
+    {
+        return $this->loadCollection('roses');
+    }
+
+    /**
+     * @param  RelationCollection|null  $roses
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setRoses(?RelationCollection $roses): static
+    {
+        $this->roses = $roses;
 
         return $this;
     }

@@ -23,13 +23,13 @@ class ListenersQueue implements \IteratorAggregate, \Countable
     /**
      * @var ListenerCallable[]
      */
-    protected $queue = [];
+    protected array $queue = [];
 
     /**
      * Add a listener with the given priority only if not already present.
      *
      * @param  callable  $listener  The listener.
-     * @param  integer   $priority  The listener priority.
+     * @param  ?int      $priority  The listener priority.
      *
      * @return  ListenersQueue  This method is chainable.
      *

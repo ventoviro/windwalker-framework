@@ -12,10 +12,12 @@ declare(strict_types=1);
 namespace Windwalker\ORM\Test\Entity;
 
 use Windwalker\ORM\Attributes\Column;
+use Windwalker\ORM\Attributes\Table;
 
 /**
  * The StubSakuraRoseMap class.
  */
+#[Table('sakura_rose_maps')]
 class StubSakuraRoseMap
 {
     #[Column('sakura_no')]

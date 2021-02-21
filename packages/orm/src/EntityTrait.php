@@ -14,7 +14,7 @@ namespace Windwalker\ORM;
 use Windwalker\Data\Collection;
 use Windwalker\ORM\Relation\RelationCollection;
 use Windwalker\ORM\Relation\RelationProxies;
-use Windwalker\ORM\Relation\Steategy\RelationStrategyInterface;
+use Windwalker\ORM\Relation\Strategy\RelationStrategyInterface;
 use Windwalker\Utilities\Contract\DumpableInterface;
 use Windwalker\Utilities\TypeCast;
 
@@ -30,7 +30,7 @@ trait EntityTrait
 
     protected function loadCollection(string $propName)
     {
-        return RelationProxies::call($this, $propName) ?? new RelationCollection(static::class);
+        return $this->$propName ?? RelationProxies::call($this, $propName) ?? new RelationCollection(static::class);
     }
 
     public function loadAllRelations(): void

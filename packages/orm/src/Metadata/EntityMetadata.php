@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\ORM\Metadata;
 
 use Windwalker\ORM\Attributes\{AutoIncrement, Cast, Column, EntitySetup, PK, Table};
+use Windwalker\Attributes\AttributesResolver;
 use Windwalker\ORM\Cast\CastManager;
 use Windwalker\ORM\ORM;
 use Windwalker\ORM\Relation\RelationManager;
@@ -28,6 +29,8 @@ class EntityMetadata
     protected string $className;
 
     protected ?string $tableName = null;
+
+    protected ?string $tableAlias = null;
 
     protected ?Column $aiColumn = null;
 
@@ -96,6 +99,21 @@ class EntityMetadata
 
     public function setup(): static
     {
+        /** @var ?Table $tableAttr */
+        $tableAttr = AttributesResolver::getFirstAttributeInstance($this->className, Table::class);
+
+        if (!$tableAttr) {
+            throw new \InvalidArgumentException(
+                sprintf(
+                    '%s has no table info.',
+                    $this->className
+                )
+            );
+        }
+
+        $this->tableName = $tableAttr->getName();
+        $this->tableAlias = $tableAttr->getAlias();
+
         // Loop all properties
         foreach ($this->getProperties() as $prop) {
             $attributes  = $prop->getAttributes();
@@ -422,5 +440,13 @@ class EntityMetadata
         $this->relationManager = $relationManager;
 
         return $this;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getTableAlias(): ?string
+    {
+        return $this->tableAlias;
     }
 }

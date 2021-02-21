@@ -12,11 +12,12 @@ declare(strict_types=1);
 namespace Windwalker\ORM\Relation;
 
 use Windwalker\ORM\Metadata\EntityMetadata;
-use Windwalker\ORM\Relation\Steategy\AbstractRelation;
-use Windwalker\ORM\Relation\Steategy\ManyToOne;
-use Windwalker\ORM\Relation\Steategy\OneToMany;
-use Windwalker\ORM\Relation\Steategy\OneToOne;
-use Windwalker\ORM\Relation\Steategy\RelationStrategyInterface;
+use Windwalker\ORM\Relation\Strategy\AbstractRelation;
+use Windwalker\ORM\Relation\Strategy\ManyToMany;
+use Windwalker\ORM\Relation\Strategy\ManyToOne;
+use Windwalker\ORM\Relation\Strategy\OneToMany;
+use Windwalker\ORM\Relation\Strategy\OneToOne;
+use Windwalker\ORM\Relation\Strategy\RelationStrategyInterface;
 
 /**
  * The Relation class.
@@ -77,7 +78,7 @@ class RelationManager implements RelationStrategyInterface
         string $onUpdate = Action::NO_ACTION,
         string $onDelete = Action::NO_ACTION,
         array $options = [],
-    ) {
+    ): OneToOne {
         $rel = new OneToOne(
             $this->getMetadata(),
             $field,
@@ -98,7 +99,7 @@ class RelationManager implements RelationStrategyInterface
         string $onUpdate = Action::NO_ACTION,
         string $onDelete = Action::NO_ACTION,
         array $options = [],
-    ) {
+    ): OneToMany {
         $rel = new OneToMany(
             $this->getMetadata(),
             $field,
@@ -119,10 +120,35 @@ class RelationManager implements RelationStrategyInterface
         string $onUpdate = Action::NO_ACTION,
         string $onDelete = Action::NO_ACTION,
         array $options = [],
-    ) {
+    ): ManyToOne {
         $rel = new ManyToOne(
             $this->getMetadata(),
             $field,
+            $targetTable,
+            $fks,
+            $onUpdate,
+            $onDelete,
+            $options
+        );
+
+        return $this->relations[$field] = $rel;
+    }
+
+    public function manyToMany(
+        string $field,
+        ?string $intermediate = null,
+        array $mapFks = [],
+        ?string $targetTable = null,
+        array $fks = [],
+        string $onUpdate = Action::NO_ACTION,
+        string $onDelete = Action::NO_ACTION,
+        array $options = []
+    ): ManyToMany {
+        $rel = new ManyToMany(
+            $this->getMetadata(),
+            $field,
+            $intermediate,
+            $mapFks,
             $targetTable,
             $fks,
             $onUpdate,
