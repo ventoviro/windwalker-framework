@@ -13,16 +13,22 @@ namespace Windwalker\ORM\Test\Entity;
 
 use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Column;
+use Windwalker\ORM\Attributes\EntitySetup;
 use Windwalker\ORM\Attributes\PK;
 use Windwalker\ORM\Attributes\Table;
+use Windwalker\ORM\EntityInterface;
+use Windwalker\ORM\EntityTrait;
 use Windwalker\ORM\Event\AfterSaveEvent;
+use Windwalker\ORM\Metadata\EntityMetadata;
 
 /**
  * The Sakura class.
  */
 #[Table('sakuras')]
-class StubSakura
+class StubSakura implements EntityInterface
 {
+    use EntityTrait;
+
     #[PK, AutoIncrement]
     #[Column('id')]
     protected ?int $id = null;
@@ -41,6 +47,17 @@ class StubSakura
 
     #[Column('state')]
     protected int $state = 0;
+
+    protected ?StubLocation $location = null;
+
+    #[EntitySetup]
+    public static function setup(EntityMetadata $metadata)
+    {
+        $rm = $metadata->getRelationManager();
+
+        $rm->manyToOne('location')
+            ->target(StubLocation::class, 'location_no', 'no');
+    }
 
     #[AfterSaveEvent]
     public static function afterSave(AfterSaveEvent $event)
@@ -177,6 +194,26 @@ class StubSakura
     public function setNo(string $no): static
     {
         $this->no = $no;
+
+        return $this;
+    }
+
+    /**
+     * @return StubLocation|null
+     */
+    public function getLocation(): ?StubLocation
+    {
+        return $this->loadRelation('location');
+    }
+
+    /**
+     * @param  StubLocation|null  $location
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setLocation(?StubLocation $location): static
+    {
+        $this->location = $location;
 
         return $this;
     }

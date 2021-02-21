@@ -16,6 +16,7 @@ use Windwalker\ORM\Metadata\EntityMetadata;
 use Windwalker\ORM\ORM;
 use Windwalker\ORM\Relation\Action;
 use Windwalker\Utilities\Arr;
+use Windwalker\Utilities\Assert\TypeAssert;
 use Windwalker\Utilities\Options\OptionAccessTrait;
 
 /**
@@ -25,22 +26,11 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
 {
     use OptionAccessTrait;
 
-    protected string $propName;
-
     protected ?string $targetTable;
 
     protected array $fks;
 
-    protected string $onUpdate;
-
-    protected string $onDelete;
-
     protected bool $flush;
-
-    /**
-     * @var EntityMetadata
-     */
-    protected EntityMetadata $metadata;
 
     /**
      * AbstractRelationStrategy constructor.
@@ -54,21 +44,17 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
      * @param  array           $options
      */
     public function __construct(
-        EntityMetadata $metadata,
-        string $propName,
+        protected EntityMetadata $metadata,
+        protected string $propName,
         ?string $targetTable = null,
         array $fks = [],
-        string $onUpdate = Action::NO_ACTION,
-        string $onDelete = Action::NO_ACTION,
+        protected string $onUpdate = Action::NO_ACTION,
+        protected string $onDelete = Action::NO_ACTION,
         array $options = [],
     ) {
         $this->target($targetTable, $fks);
 
-        $this->metadata = $metadata;
-        $this->propName = $propName;
-        $this->onUpdate = $onUpdate;
-        $this->onDelete = $onDelete;
-        $this->options  = $options;
+        $this->prepareOptions([], $options);
         $this->flush((bool) $this->getOption('flush'));
     }
 
@@ -125,20 +111,20 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
     /**
      * Handle update relation and set matched value to child table.
      *
-     * @param  array  $selfData  The self entity.
-     * @param  array  $foreignData   The relative entity to be handled.
+     * @param  array  $ownerData    The owner entity.
+     * @param  array  $foreignData  The relative entity to be handled.
      *
      * @return  array  Return table if you need.
      */
-    public function handleUpdateRelations(array $selfData, array $foreignData): array
+    public function handleUpdateRelations(array $ownerData, array $foreignData): array
     {
         if ($this->onUpdate === Action::CASCADE) {
             // Handle Cascade
-            return $this->syncValuesToForeign($selfData, $foreignData);
+            return $this->syncValuesToForeign($ownerData, $foreignData);
         }
 
         // Handle Set NULL
-        if ($this->onUpdate === Action::SET_NULL && $this->isForeignDataDifferent($selfData, $foreignData)) {
+        if ($this->onUpdate === Action::SET_NULL && $this->isForeignDataDifferent($ownerData, $foreignData)) {
             return $this->clearRelativeFields($foreignData);
         }
 
@@ -149,12 +135,12 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
      * Handle delete relation, if is CASCADE, mark child table to delete. If is SET NULL, set all children fields to
      * NULL.
      *
-     * @param  array  $selfData  The self entity.
+     * @param  array  $ownerData  The self entity.
      * @param  array  $foreignData   The relative entity to be handled.
      *
      * @return array Return table if you need.
      */
-    public function handleDeleteRelations(array $selfData, array $foreignData): array
+    public function handleDeleteRelations(array $ownerData, array $foreignData): array
     {
         return $this->clearRelativeFields($foreignData);
     }
@@ -162,15 +148,15 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
     /**
      * Sync parent fields value to child table.
      *
-     * @param  array  $selfData
+     * @param  array  $ownerData
      * @param  array  $foreignData  The child table to be handled.
      *
      * @return  array  Return rel data if you need.
      */
-    protected function syncValuesToForeign(array $selfData, array $foreignData): array
+    protected function syncValuesToForeign(array $ownerData, array $foreignData): array
     {
         foreach ($this->fks as $field => $foreign) {
-            $foreignData[$foreign] = $selfData[$field];
+            $foreignData[$foreign] = $ownerData[$field];
         }
 
         return $foreignData;
@@ -202,16 +188,16 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
     /**
      * Is fields changed. If any field changed, means we have to do something to children.
      *
-     * @param  array  $selfData
+     * @param  array  $ownerData
      * @param  array  $foreignData  The child data to be handled.
      *
      * @return  bool  Something changed of not.
      */
-    public function isForeignDataDifferent(array $selfData, array $foreignData): bool
+    public function isForeignDataDifferent(array $ownerData, array $foreignData): bool
     {
         // If any key changed, set all fields as NULL.
         foreach ($this->fks as $field => $foreign) {
-            if ($foreignData[$foreign] != $selfData[$field]) {
+            if ($foreignData[$foreign] != $ownerData[$field]) {
                 return true;
             }
         }
@@ -227,8 +213,22 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
         ) : false;
     }
 
-    public function target(?string $table, array $fks): static
+    public function target(?string $table, array|string $selfKey, ?string $foreignKey = null): static
     {
+        $fks = $selfKey;
+
+        if (is_string($fks)) {
+            TypeAssert::assert(
+                $foreignKey !== null,
+                '{caller} argument #2 and #3, should have a foreign key pair, the foreign key is {value}.',
+                $foreignKey
+            );
+
+            $fks = [$fks => $foreignKey];
+        } else {
+            $fks = $selfKey;
+        }
+
         $this->targetTable = $table;
         $this->foreignKeys($fks);
 
@@ -370,5 +370,10 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
     public function getForeignKeys(): array
     {
         return $this->fks;
+    }
+
+    public function getOwnerKeys(): array
+    {
+        return array_keys($this->fks);
     }
 }

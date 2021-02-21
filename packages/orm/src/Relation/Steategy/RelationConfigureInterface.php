@@ -18,7 +18,7 @@ use Windwalker\ORM\ORM;
  */
 interface RelationConfigureInterface
 {
-    public function target(?string $table, array $fks): static;
+    public function target(?string $table, array|string $selfKey, ?string $foreignKey = null): static;
 
     public function foreignKeys(array $fks): static;
 

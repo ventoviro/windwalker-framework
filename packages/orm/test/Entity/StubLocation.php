@@ -11,7 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Test\Entity;
 
-use Windwalker\ORM\AbstractEntity;
+use Windwalker\ORM\EntityInterface;
+use Windwalker\ORM\EntityTrait;
 use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Column;
 use Windwalker\ORM\Attributes\EntitySetup;
@@ -19,14 +20,15 @@ use Windwalker\ORM\Attributes\PK;
 use Windwalker\ORM\Attributes\Table;
 use Windwalker\ORM\Metadata\EntityMetadata;
 use Windwalker\ORM\Relation\RelationCollection;
-use Windwalker\ORM\Strategy\Selector;
 
 /**
  * The Location class.
  */
 #[Table('locations')]
-class StubLocation extends AbstractEntity
+class StubLocation implements EntityInterface
 {
+    use EntityTrait;
+
     #[PK, AutoIncrement]
     #[Column('id')]
     protected ?int $id = null;
@@ -100,7 +102,7 @@ class StubLocation extends AbstractEntity
      */
     public function getData(): ?StubLocationData
     {
-        return $this->data ??= $this->loadChild('data');
+        return $this->data ??= $this->loadRelation('data');
     }
 
     /**

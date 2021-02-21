@@ -11,7 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Test\Entity;
 
-use Windwalker\ORM\AbstractEntity;
+use Windwalker\ORM\EntityInterface;
+use Windwalker\ORM\EntityTrait;
 use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Column;
 use Windwalker\ORM\Attributes\PK;
@@ -21,8 +22,9 @@ use Windwalker\ORM\Attributes\Table;
  * The LocationData class.
  */
 #[Table('location_data')]
-class StubLocationData extends AbstractEntity
+class StubLocationData  implements EntityInterface
 {
+    use EntityTrait;
     #[PK, AutoIncrement]
     #[Column('id')]
     protected ?int $id = null;

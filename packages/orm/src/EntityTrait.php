@@ -21,11 +21,11 @@ use Windwalker\Utilities\TypeCast;
 /**
  * The AbstractEntity class.
  */
-class AbstractEntity implements \JsonSerializable, DumpableInterface
+trait EntityTrait
 {
-    protected function loadChild(string $propName): mixed
+    protected function loadRelation(string $propName): mixed
     {
-        return RelationProxies::call($this, $propName);
+        return $this->$propName ?? RelationProxies::call($this, $propName);
     }
 
     protected function loadCollection(string $propName)
@@ -37,7 +37,7 @@ class AbstractEntity implements \JsonSerializable, DumpableInterface
     {
         foreach ($this->dump() as $prop => $value) {
             if ($value === null && RelationProxies::has($this, $prop)) {
-                $this->$prop = $this->loadChild($prop);
+                $this->$prop = $this->loadRelation($prop);
             }
         }
     }

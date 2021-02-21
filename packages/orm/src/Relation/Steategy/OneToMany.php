@@ -190,7 +190,7 @@ class OneToMany extends AbstractRelation
         );
     }
 
-    protected function getDetachDiff(iterable $items, array $oldItems, array $compareKeys, array $selfData): array
+    protected function getDetachDiff(iterable $items, array $oldItems, array $compareKeys, array $ownerData): array
     {
         $keep    = [];
         $detaches = [];
@@ -213,7 +213,7 @@ class OneToMany extends AbstractRelation
         return [$detaches, $keep];
     }
 
-    protected function getAttachDiff(iterable $items, array $oldItems, array $compareKeys, array $selfData): array
+    protected function getAttachDiff(iterable $items, array $oldItems, array $compareKeys, array $ownerData): array
     {
         $keep    = [];
         $creates = [];
