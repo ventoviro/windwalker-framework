@@ -147,69 +147,65 @@ class EntityMapper implements EventAwareInterface
 
     public function createOne(array|object $item = []): array|object
     {
-        $items = $this->createMultiple(
-            [$item]
-        );
-
-        return $items[0];
-    }
-
-    public function createMultiple(iterable $items): iterable
-    {
         $pk        = $this->getMainKey();
         $metadata  = $this->getMetadata();
         $aiColumn  = $this->getAutoIncrementColumn();
         $className = $metadata->getClassName();
 
-        /** @var array|object $item */
-        foreach ($items as $k => $item) {
-            TypeAssert::assert(
-                is_object($item) || is_array($item),
-                '{caller} item must be array or object, {value} given',
-                $item
-            );
+        TypeAssert::assert(
+            is_object($item) || is_array($item),
+            '{caller} item must be array or object, {value} given',
+            $item
+        );
 
-            $data = $this->extractForSave($item);
+        $data = $this->extractForSave($item);
 
-            if ($aiColumn && isset($data[$aiColumn]) && !$data[$aiColumn]) {
-                unset($data[$aiColumn]);
-            }
-
-            $type = AbstractSaveEvent::TYPE_CREATE;
-            $event = $this->emitEvent(
-                BeforeSaveEvent::class,
-                compact('data', 'type', 'metadata')
-            );
-
-            $data = $this->getDb()->getWriter()->insertOne(
-                $metadata->getTableName(),
-                $data = $event->getData(),
-                $pk,
-                [
-                    'incrementField' => $aiColumn && isset($data[$aiColumn]),
-                ]
-            );
-
-            if (is_array($item)) {
-                $item = $this->getORM()->getAttributesResolver()->createObject($className);
-            }
-
-            $entity = $item;
-
-            $event = $this->emitEvent(
-                AfterSaveEvent::class,
-                compact('data', 'type', 'metadata', 'entity')
-            );
-
-            $items[$k] = $entity = $this->hydrate(
-                $event->getData(),
-                $event->getEntity()
-            );
-
-            $metadata->getRelationManager()->save($event->getData(), $entity);
+        if ($aiColumn && isset($data[$aiColumn]) && !$data[$aiColumn]) {
+            unset($data[$aiColumn]);
         }
 
-        // Event
+        $type = AbstractSaveEvent::TYPE_CREATE;
+        $event = $this->emitEvent(
+            BeforeSaveEvent::class,
+            compact('data', 'type', 'metadata')
+        );
+
+        $data = $this->getDb()->getWriter()->insertOne(
+            $metadata->getTableName(),
+            $data = $event->getData(),
+            $pk,
+            [
+                'incrementField' => $aiColumn && isset($data[$aiColumn]),
+            ]
+        );
+
+        if (is_array($item)) {
+            $item = $this->getORM()->getAttributesResolver()->createObject($className);
+        }
+
+        $entity = $item;
+
+        $event = $this->emitEvent(
+            AfterSaveEvent::class,
+            compact('data', 'type', 'metadata', 'entity')
+        );
+
+        $item = $entity = $this->hydrate(
+            $event->getData(),
+            $event->getEntity()
+        );
+
+        $metadata->getRelationManager()->save($event->getData(), $entity);
+
+        return $item;
+    }
+
+    public function createMultiple(iterable $items): iterable
+    {
+        /** @var array|object $item */
+        foreach ($items as $k => $item) {
+            $items[$k] = $this->createOne($item);
+        }
 
         return $items;
     }
@@ -218,8 +214,72 @@ class EntityMapper implements EventAwareInterface
         array|object $item = [],
         array|string $condFields = null,
         bool $updateNulls = false
-    ): StatementInterface {
-        return $this->updateMultiple([$item], $condFields, $updateNulls)[0];
+    ): ?StatementInterface {
+        $metadata = $this->getMetadata();
+
+        if (!$condFields) {
+            $condFields = $this->getKeys();
+        }
+
+        TypeAssert::assert(
+            is_object($item) || is_array($item),
+            '{caller} item must be array or object, {value} given',
+            $item
+        );
+
+        $data = $this->extractForSave($item, $updateNulls);
+
+        // Get old data
+        $oldData = null;
+
+        if ($this->getKeys() && !empty($data[$this->getMainKey()])) {
+            $oldData = $this->getDb()->select('*')
+                ->from($metadata->getTableName())
+                ->where(Arr::only($data, $this->getKeys()))
+                ->get()
+                ?->dump();
+        }
+
+        $type = AbstractSaveEvent::TYPE_UPDATE;
+        $event = $this->emitEvent(
+            BeforeSaveEvent::class,
+            compact('data', 'type', 'metadata', 'oldData')
+        );
+
+        $metadata = $event->getMetadata();
+
+        $writeData = $data = $event->getData();
+
+        $keyValues = Arr::only($writeData, (array) $condFields);
+        if ($oldData !== null) {
+            $writeData = array_diff_assoc($writeData, $oldData);
+        }
+
+        if ($writeData !== []) {
+            $writeData = $keyValues + $writeData;
+
+            $result = $this->getDb()->getWriter()->updateOne(
+                $metadata->getTableName(),
+                $writeData,
+                $condFields,
+                [
+                    'updateNulls' => $updateNulls,
+                ]
+            );
+        }
+
+        $entity = $this->toEntity($item);
+
+        $event = $this->emitEvent(
+            AfterSaveEvent::class,
+            compact('data', 'type', 'metadata', 'entity', 'oldData')
+        );
+
+        $metadata->getRelationManager()->save($event->getData(), $entity, $oldData);
+
+        // Event
+
+        return $result ?? null;
     }
 
     /**
@@ -235,70 +295,10 @@ class EntityMapper implements EventAwareInterface
      */
     public function updateMultiple(iterable $items, array|string $condFields = null, $updateNulls = false): array
     {
-        $metadata = $this->getMetadata();
-
-        if (!$condFields) {
-            $condFields = $this->getKeys();
-        }
-
         $results = [];
 
         foreach ($items as $k => $item) {
-            TypeAssert::assert(
-                is_object($item) || is_array($item),
-                '{caller} item must be array or object, {value} given',
-                $item
-            );
-
-            $data = $this->extractForSave($item, $updateNulls);
-
-            // Get old data
-            $oldData = null;
-
-            if ($this->getKeys() && !empty($data[$this->getMainKey()])) {
-                $oldData = $this->getDb()->select('*')
-                    ->from($metadata->getTableName())
-                    ->where(Arr::only($data, $this->getKeys()))
-                    ->get()
-                    ?->dump();
-            }
-
-            $type = AbstractSaveEvent::TYPE_UPDATE;
-            $event = $this->emitEvent(
-                BeforeSaveEvent::class,
-                compact('data', 'type', 'metadata', 'oldData')
-            );
-
-            $metadata = $event->getMetadata();
-
-            $writeData = $data = $event->getData();
-
-            if ($oldData !== null) {
-                $keyValues = Arr::only($writeData, $condFields);
-                $writeData = array_diff($writeData, $oldData);
-
-                $writeData = $keyValues + $writeData;
-            }
-
-            if ($writeData !== []) {
-                $results[] = $this->getDb()->getWriter()->updateOne(
-                    $metadata->getTableName(),
-                    $writeData,
-                    $condFields,
-                    [
-                        'updateNulls' => $updateNulls,
-                    ]
-                );
-            }
-
-            $entity = $this->toEntity($item);
-
-            $event = $this->emitEvent(
-                AfterSaveEvent::class,
-                compact('data', 'type', 'metadata', 'entity', 'oldData')
-            );
-
-            $metadata->getRelationManager()->save($event->getData(), $entity, $oldData);
+            $results[$k] = $this->updateOne($item, $condFields, $updateNulls);
         }
 
         // Event
@@ -325,7 +325,11 @@ class EntityMapper implements EventAwareInterface
     public function updateBatch(array|object $data, mixed $conditions = null): StatementInterface
     {
         $metadata = $this->getMetadata();
-        $data = $this->extractForSave($data);
+
+        $data = $this->extract($data);
+        $fields = array_keys($data);
+        $data = $this->castForSave($data);
+        $data = Arr::only($data, $fields);
 
         // Event
         $event = $this->emitEvent(

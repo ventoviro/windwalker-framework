@@ -15,6 +15,7 @@ use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Cast;
 use Windwalker\ORM\Attributes\Column;
 use Windwalker\ORM\Attributes\MapFor;
+use Windwalker\ORM\Attributes\Mapping;
 use Windwalker\ORM\Attributes\PK;
 use Windwalker\ORM\Attributes\Table;
 use Windwalker\ORM\EntityInterface;
@@ -50,7 +51,7 @@ class StubRose implements EntityInterface
 
     protected ?RelationCollection $sakuras = null;
 
-    #[Column('sakura_rose_map')]
+    #[Mapping('sakura_rose_map')]
     #[Cast(StubSakuraRoseMap::class, strategy: Cast::HYDRATOR)]
     protected ?StubSakuraRoseMap $map = null;
 

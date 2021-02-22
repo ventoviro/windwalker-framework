@@ -185,10 +185,12 @@ class OneToManyTest extends AbstractORMTestCase
         $rose1 = new StubRose();
         $rose1->setTitle('Rose Create 1');
         $rose1->setState(1);
+        $rose1->setNo('R20001');
 
         $rose2 = new StubRose();
         $rose2->setTitle('Rose Create 2');
         $rose2->setState(1);
+        $rose2->setNo('R20002');
 
         $roses->attach(compact('rose1', 'rose2'));
 

@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Metadata;
 
-use Windwalker\ORM\Attributes\{AutoIncrement, Cast, Column, EntitySetup, PK, Table};
+use Windwalker\ORM\Attributes\{AutoIncrement, Cast, Column, EntitySetup, Mapping, PK, Table};
 use Windwalker\Attributes\AttributesResolver;
 use Windwalker\ORM\Cast\CastManager;
 use Windwalker\ORM\EntityMapper;
@@ -124,13 +124,14 @@ class EntityMetadata
             foreach ($attributes as $attribute) {
                 if (!$attribute->isRepeated()) {
                     $this->attributeMaps[$attribute->getName()]['props'][$prop->getName()] = $prop;
-                    $singleAttrs[$attribute->getName()]                                    = $attribute;
+
+                    $singleAttrs[$attribute->getName()] = $attribute;
                 }
             }
 
-            if ($singleAttrs[Column::class] ?? null) {
+            if ($columnAttr = ($singleAttrs[Column::class] ?? $singleAttrs[Mapping::class] ?? null)) {
                 /** @var Column $column */
-                $column = $singleAttrs[Column::class]->newInstance();
+                $column = $columnAttr->newInstance();
                 $column->setProperty($prop);
 
                 $this->columns[$column->getName()] = $column;

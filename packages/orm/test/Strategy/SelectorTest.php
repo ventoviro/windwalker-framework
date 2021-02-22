@@ -87,7 +87,7 @@ class SelectorTest extends AbstractDatabaseTestCase
         );
     }
 
-    public function testGroupWithEtity()
+    public function testGroupWithEntity()
     {
         $this->instance->select('*')
             ->from(Article::class, 'a')
@@ -104,7 +104,7 @@ class SelectorTest extends AbstractDatabaseTestCase
                 'id' => 2,
                 'title' => 'Bar',
                 'ordering' => 2,
-                'params' => ''
+                'params' => '""'
             ],
             $this->instance->getORM()->extractEntity($item->c)
         );

@@ -14,6 +14,7 @@ namespace Windwalker\ORM\Hydrator;
 use Windwalker\Attributes\AttributesResolver;
 use Windwalker\Database\Hydrator\HydratorInterface;
 use Windwalker\ORM\Attributes\Column;
+use Windwalker\ORM\Attributes\Mapping;
 use Windwalker\ORM\Metadata\EntityMetadata;
 use Windwalker\ORM\ORM;
 
@@ -44,20 +45,19 @@ class EntityHydrator implements HydratorInterface
         $metadata = $this->orm->getEntityMetadata($object);
 
         $item    = [];
-        $columns = [];
-        $props   = [];
-
-        foreach ($metadata->getProperties() as $prop) {
-            $props[$prop->getName()] = $prop;
-            $column = $metadata->getColumnByPropertyName($prop->getName());
-
-            if ($column) {
-                $columns[$column->getName()] = $prop;
-            }
-        }
+        $props   = $metadata->getProperties();
+        $columns = $metadata->getColumns();
 
         foreach ($data as $colName => $value) {
-            $prop = $columns[$colName] ?? $props[$colName] ?? null;
+            if ($column = $columns[$colName] ?? null) {
+                if ($column instanceof Mapping && is_scalar($value)) {
+                    continue;
+                }
+
+                $prop = $column->getProperty();
+            } else {
+                $prop = $props[$colName] ?? null;
+            }
 
             if (!$prop) {
                 $item[$colName] = $value;
