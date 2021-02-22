@@ -490,14 +490,13 @@ class EntityMapper implements EventAwareInterface
 
         $metadata = $this->getMetadata();
         $writer   = $this->getDb()->getWriter();
-        $entity   = null;
+        $entityObject = null;
 
         // Handle Entity
         if (is_object($conditions) && EntityMetadata::isEntity($conditions)) {
-            $entity = $conditions;
-            $data = $this->extract($conditions);
+            $entityObject = $conditions;
 
-            $conditions = Arr::only($data, $this->getKeys());
+            $conditions = Arr::only($this->extract($conditions), $this->getKeys());
 
             if (in_array(null, $conditions, true) || in_array('', $conditions, true)) {
                 throw new \InvalidArgumentException(
@@ -514,8 +513,8 @@ class EntityMapper implements EventAwareInterface
         if (!$keys) {
             // If Entity has no keys, just use conditions to delete batch.
             $delItems = [$conditions];
-        } elseif ($entity !== null) {
-            $delItems = [$entity];
+        } elseif ($entityObject !== null) {
+            $delItems = [$entityObject];
         } else {
             // If Entity has keys, use this keys to delete once per item.
             $delItems = $this->getORM()
@@ -530,8 +529,10 @@ class EntityMapper implements EventAwareInterface
             if (!$keys) {
                 $conditions = $this->conditionsToWheres($item);
                 $data       = null;
-            } elseif ($entity !== null) {
-                $data = $this->extract($entity);
+                $entity     = null;
+            } elseif ($entityObject !== null) {
+                $entity = $entityObject;
+                $data = $this->extract($entityObject);
                 $conditions = Arr::only($data, $keys);
             } else {
                 /** @var object $item */
