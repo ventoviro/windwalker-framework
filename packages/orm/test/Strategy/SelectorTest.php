@@ -14,14 +14,18 @@ namespace Windwalker\ORM\Test\Strategy;
 use Windwalker\Database\Test\AbstractDatabaseTestCase;
 use Windwalker\ORM\Strategy\Selector;
 use Windwalker\ORM\ORM;
+use Windwalker\ORM\Test\AbstractORMTestCase;
 use Windwalker\ORM\Test\Entity\Article;
 use Windwalker\ORM\Test\Entity\Category;
 use Windwalker\ORM\Test\Entity\Flower;
+use Windwalker\ORM\Test\Entity\StubRose;
+use Windwalker\ORM\Test\Entity\StubSakura;
+use Windwalker\ORM\Test\Entity\StubSakuraRoseMap;
 
 /**
  * The SelectActionTest class.
  */
-class SelectorTest extends AbstractDatabaseTestCase
+class SelectorTest extends AbstractORMTestCase
 {
     protected Selector $instance;
 
@@ -87,6 +91,59 @@ class SelectorTest extends AbstractDatabaseTestCase
         );
     }
 
+    public function testAutoJoin()
+    {
+        self::importFromFile(__DIR__ . '/../Stub/relations.sql');
+
+        $mapper = self::$orm->mapper(StubSakura::class);
+
+        $mapper->getMetadata()
+            ->getRelationManager()
+            ->manyToMany('roses')
+            ->mapBy(
+                StubSakuraRoseMap::class,
+                'no',
+                'sakura_no',
+            )
+            ->target(
+                StubRose::class,
+                'rose_no',
+                'no'
+            );
+
+        $this->instance->from(StubSakura::class)
+            ->leftJoin(StubSakuraRoseMap::class)
+            ->leftJoin(StubRose::class)
+            ->where('sakura.no', 'S00001')
+            ->groupByJoins();
+
+        self::assertSqlFormatEquals(
+            <<<SQL
+            SELECT `sakura`.`id`                 AS `id`,
+                   `sakura`.`no`                 AS `no`,
+                   `sakura`.`location_no`        AS `location_no`,
+                   `sakura`.`rose_no`            AS `rose_no`,
+                   `sakura`.`title`              AS `title`,
+                   `sakura`.`state`              AS `state`,
+                   `sakura_rose_map`.`sakura_no` AS `sakura_rose_map.sakura_no`,
+                   `sakura_rose_map`.`rose_no`   AS `sakura_rose_map.rose_no`,
+                   `sakura_rose_map`.`type`      AS `sakura_rose_map.type`,
+                   `sakura_rose_map`.`created`   AS `sakura_rose_map.created`,
+                   `rose`.`id`                   AS `rose.id`,
+                   `rose`.`no`                   AS `rose.no`,
+                   `rose`.`location_no`          AS `rose.location_no`,
+                   `rose`.`sakura_no`            AS `rose.sakura_no`,
+                   `rose`.`title`                AS `rose.title`,
+                   `rose`.`state`                AS `rose.state`
+            FROM `sakuras` AS `sakura`
+                     LEFT JOIN `sakura_rose_maps` AS `sakura_rose_map` ON `sakura`.`no` = `sakura_rose_map`.`sakura_no`
+                     LEFT JOIN `roses` AS `rose` ON `sakura_rose_map`.`rose_no` = `rose`.`no`
+            WHERE `sakura`.`no` = 'S00001'
+            SQL,
+            $this->instance->debug(false, false, true)
+        );
+    }
+
     public function testGroupWithEntity()
     {
         $this->instance->select('*')
@@ -143,6 +200,6 @@ class SelectorTest extends AbstractDatabaseTestCase
 
     protected function setUp(): void
     {
-        $this->instance = new Selector(new ORM(self::$db));
+        $this->instance = new Selector(self::$orm);
     }
 }

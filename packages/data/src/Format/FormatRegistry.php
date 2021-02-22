@@ -66,14 +66,18 @@ class FormatRegistry
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function parse(string $string, string $format, array $options = []): array
+    public function parse(string $string, ?string $format = null, array $options = []): array
     {
+        $format ??= $this->defaultFormat;
+
         return $this->getFormatHandler($this->resolveFormatAlias($format))
             ->parse($string, $options);
     }
 
-    public function dump(array $data, string $format, array $options = []): string
+    public function dump(array $data, ?string $format = null, array $options = []): string
     {
+        $format ??= $this->defaultFormat;
+
         return $this->getFormatHandler($this->resolveFormatAlias($format))
             ->dump($data, $options);
     }
@@ -91,7 +95,7 @@ class FormatRegistry
             return require $file;
         }
 
-        return $this->parse(file_get_contents($file), $format ?: $this->defaultFormat, $options);
+        return $this->parse(file_get_contents($file), $format ?? $this->defaultFormat, $options);
     }
 
     public function load(string $string, ?string $format = null, array $options = [])

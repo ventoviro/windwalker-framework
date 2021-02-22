@@ -139,7 +139,7 @@ trait StructureTrait
      */
     public function toString(?string $format = null, array $options = []): string
     {
-        return $this->getFormatRegistry()->dump($this->storage, $format, $options);
+        return $this->getFormatRegistry()->dump($this->storage, $format ?? 'json', $options);
     }
 
     /**

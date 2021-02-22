@@ -71,10 +71,10 @@ use function Windwalker\value;
  * @method Clause|null getSuffix()
  * @method string|null getSql()
  * @method bool getIncrementField()
- * @method $this leftJoin($table, ?string $alias, ...$on)
- * @method $this rightJoin($table, ?string $alias, ...$on)
- * @method $this outerJoin($table, ?string $alias, ...$on)
- * @method $this innerJoin($table, ?string $alias, ...$on)
+ * @method $this leftJoin($table, ?string $alias = null, ...$on)
+ * @method $this rightJoin($table, ?string $alias = null, ...$on)
+ * @method $this outerJoin($table, ?string $alias = null, ...$on)
+ * @method $this innerJoin($table, ?string $alias = null, ...$on)
  * @method $this whereIn($column, array $values)
  * @method $this whereNotIn($column, array $values)
  * @method $this whereBetween($column, $start, $end)
@@ -301,7 +301,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
      *
      * @return  static
      */
-    public function join(string $type, mixed $table, ?string $alias, ...$on): static
+    public function join(string $type, mixed $table, ?string $alias = null, ...$on): static
     {
         if (!$this->join) {
             $this->join = $this->clause('', [], ' ');

@@ -17,9 +17,12 @@ use Windwalker\Database\Event\HydrateEvent;
 use Windwalker\Database\Event\ItemFetchedEvent;
 use Windwalker\ORM\Hydrator\EntityHydrator;
 use Windwalker\ORM\Metadata\EntityMetadata;
+use Windwalker\ORM\Relation\Strategy\ManyToMany;
 use Windwalker\Query\Clause\AsClause;
+use Windwalker\Query\Clause\JoinClause;
 use Windwalker\Query\Query;
 use Windwalker\Utilities\Arr;
+use Windwalker\Utilities\Assert\ArgumentsAssert;
 
 /**
  * The SelectAction class.
@@ -39,13 +42,13 @@ class Selector extends AbstractQueryStrategy
 
         foreach ($tables as $i => $clause) {
             $tbm = $db->getTable(
-                Query::convertClassToTable($clause->getValue())
+                Query::convertClassToTable($clause->getValue(), $alias)
             );
 
             $cols = $tbm->getColumnNames();
 
             foreach ($cols as $col) {
-                $alias = $clause->getAlias();
+                $alias = $clause->getAlias() ?? $alias;
 
                 if ($i === 0) {
                     $as = $col;
@@ -96,6 +99,70 @@ class Selector extends AbstractQueryStrategy
         }
 
         return $item;
+    }
+
+    public function join(string $type, mixed $table, ?string $alias = null, ...$on): static
+    {
+        if (!$on && class_exists($table)) {
+            $on = $this->handleAutoJoin($type, $table, $alias, $on);
+        }
+
+        return parent::join($type, $table, $alias, ...$on);
+    }
+
+    private function handleAutoJoin(string $type, string $table, ?string &$alias, array $on): array
+    {
+        /** @var AsClause|null $fromClause */
+        $fromClause = $this->getFrom()?->getElements()[0] ?? null;
+        $from = $fromClause?->getValue();
+
+        if (!$from) {
+            return $on;
+        }
+
+        $fromMetadata = $this->getORM()->getEntityMetadata($from);
+        $joinMetadata = $this->getORM()->getEntityMetadata($table);
+        $relation = null;
+
+        $fromAlias = $fromMetadata->getTableAlias();
+        $alias ??= $joinMetadata->getTableAlias();
+
+        foreach ($fromMetadata->getRelationManager()->getRelations() as $relation) {
+            if ($relation instanceof ManyToMany) {
+                if ($relation->getMapTable() === $table) {
+                    foreach ($relation->getMapForeignKeys() as $ok => $mfk) {
+                        $on[] = "$fromAlias.$ok";
+                        $on[] = '=';
+                        $on[] = "$alias.$mfk";
+                    }
+                    return $on;
+                }
+
+                if ($relation->getTargetTable() === $table) {
+                    $mapMetadata = $relation->getMapMetadata();
+                    $mapAlias = $mapMetadata->getTableAlias();
+
+                    foreach ($relation->getForeignKeys() as $mk => $fk) {
+                        $on[] = "$mapAlias.$mk";
+                        $on[] = '=';
+                        $on[] = "$alias.$fk";
+                    }
+
+                    return $on;
+                }
+            }
+
+            if ($relation->getTargetTable() === $table) {
+                foreach ($relation->getForeignKeys() as $ok => $fk) {
+                    $on[] = "$fromAlias.$ok";
+                    $on[] = '=';
+                    $on[] = "$alias.$fk";
+                }
+                return $on;
+            }
+        }
+
+        return $on;
     }
 
     protected function registerEvents(StatementInterface $stmt): StatementInterface

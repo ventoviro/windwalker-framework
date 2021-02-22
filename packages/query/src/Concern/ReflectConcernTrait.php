@@ -49,16 +49,16 @@ trait ReflectConcernTrait
         return $tables;
     }
 
-    public static function convertClassToTable(string $name): string
+    public static function convertClassToTable(string $name, ?string &$alias = null): string
     {
         if (!str_contains($name, '\\') || !class_exists($name)) {
             return $name;
         }
 
         $ref = new \ReflectionClass($name);
-        $table = $ref->getAttributes( Table::class)[0] ?? null;
+        $tableAttr = $ref->getAttributes( Table::class)[0] ?? null;
 
-        if (!$table) {
+        if (!$tableAttr) {
             throw new DatabaseQueryException(
                 sprintf(
                     'Value or column is class name but %s Attribute not assigned.',
@@ -67,6 +67,10 @@ trait ReflectConcernTrait
             );
         }
 
-        return $table->newInstance()->getName();
+        /** @var Table $table */
+        $table = $tableAttr->newInstance();
+        $alias = $table->getAlias();
+
+        return $table->getName();
     }
 }

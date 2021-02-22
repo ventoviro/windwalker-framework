@@ -71,7 +71,9 @@ class AsClause implements ClauseInterface
                 Query::convertClassToTable((string) $v)
             ));
         } else {
-            $column = $this->query->$quoteMethod(Query::convertClassToTable((string) $column));
+            $column = $this->query->$quoteMethod(Query::convertClassToTable((string) $column, $entityAlias));
+
+            $alias ??= $entityAlias;
         }
 
         if ($alias !== false && (string) $alias !== '') {
@@ -84,9 +86,9 @@ class AsClause implements ClauseInterface
     /**
      * Method to get property Alias
      *
-     * @return  string
+     * @return string|null
      */
-    public function getAlias(): string
+    public function getAlias(): mixed
     {
         return $this->alias;
     }
@@ -94,11 +96,11 @@ class AsClause implements ClauseInterface
     /**
      * Method to set property alias
      *
-     * @param  string  $alias
+     * @param  string|null  $alias
      *
      * @return  static  Return self to support chaining.
      */
-    public function alias(string $alias): static
+    public function alias(mixed $alias): static
     {
         $this->alias = $alias;
 

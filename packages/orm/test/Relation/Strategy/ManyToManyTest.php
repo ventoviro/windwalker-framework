@@ -15,6 +15,7 @@ use Windwalker\Data\Collection;
 use Windwalker\ORM\Relation\Action;
 use Windwalker\ORM\Relation\RelationCollection;
 use Windwalker\ORM\Test\AbstractORMTestCase;
+use Windwalker\ORM\Test\Entity\StubLocation;
 use Windwalker\ORM\Test\Entity\StubRose;
 use Windwalker\ORM\Test\Entity\StubSakura;
 use Windwalker\ORM\Test\Entity\StubSakuraRoseMap;
@@ -319,6 +320,66 @@ class ManyToManyTest extends AbstractORMTestCase
             ],
             $newSakuras->column('no', null, true)
                 ->dump()
+        );
+    }
+
+    public function testDeleteSetNull()
+    {
+        $sakuraMapper = $this->createSakuraMapper(Action::CASCADE, Action::SET_NULL);
+
+        /** @var StubSakura $sakura */
+        $sakura = $sakuraMapper->findOne(['no' => 'S00004']);
+        $roses = $sakura->getRoses();
+
+        $nos = $roses->all(Collection::class)->column('no')->dump();
+
+        $sakuraMapper->delete($sakura);
+
+        self::assertCount(
+            0,
+            $roses->clearCache()->all()
+        );
+
+        $roses = self::$orm->mapper(StubRose::class)
+            ->select()
+            ->where(['no' => $nos])
+            ->all();
+
+        self::assertCount(
+            3,
+            $roses
+        );
+    }
+
+    public function testDeleteCascade()
+    {
+        $sakuraMapper = $this->createSakuraMapper();
+
+        /** @var StubSakura $sakura */
+        $sakura = $sakuraMapper->findOne(['no' => 'S00003']);
+        $roses = $sakura->getRoses();
+
+        $nos = $roses->all(Collection::class)->column('no')->dump();
+
+        $logs = $this->logQueries(
+            fn () => $sakuraMapper->delete($sakura)
+        );
+
+        show($logs);
+
+        self::assertCount(
+            0,
+            $roses->clearCache()->all()
+        );
+
+        $roses = self::$orm->mapper(StubRose::class)
+            ->select()
+            ->where(['no' => $nos])
+            ->all();
+
+        self::assertCount(
+            0,
+            $roses
         );
     }
 

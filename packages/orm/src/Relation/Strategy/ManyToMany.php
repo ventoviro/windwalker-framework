@@ -19,7 +19,6 @@ use Windwalker\ORM\Relation\RelationCollection;
 use Windwalker\ORM\Relation\RelationProxies;
 use Windwalker\ORM\Strategy\Selector;
 use Windwalker\Query\Clause\JoinClause;
-use Windwalker\Query\Query;
 use Windwalker\Utilities\Arr;
 use Windwalker\Utilities\Assert\TypeAssert;
 use Windwalker\Utilities\Reflection\ReflectAccessor;
@@ -131,6 +130,25 @@ class ManyToMany extends AbstractRelation
      */
     public function delete(array $data, object $entity): void
     {
+        if ($this->onDelete === Action::NO_ACTION || $this->onDelete === Action::RESTRICT) {
+            return;
+        }
+
+        $mapMetadata = $this->getMapMetadata();
+
+        foreach ($this->createCollection($data) as $foreignEntity) {
+            // CASCADE
+            if ($this->onDelete === Action::CASCADE) {
+                $this->getORM()->mapper($this->targetTable)->delete($foreignEntity);
+            }
+
+            // SET NULL
+            $foreignData = $this->getORM()->extractEntity($foreignEntity);
+
+            $mapData = $this->syncMapData([], $data, $foreignData);
+
+            $mapMetadata->getMapper()->delete($mapData);
+        }
     }
 
     /**
@@ -142,9 +160,21 @@ class ManyToMany extends AbstractRelation
      */
     public function deleteAllRelatives(array $data): array
     {
-        return $this->getORM()
-            ->mapper($this->targetTable)
-            ->delete($this->createLoadConditions($data));
+        $mapMetadata = $this->getMapMetadata();
+
+        $results = [];
+
+        foreach ($this->createCollectionQuery($data) as $foreignEntity) {
+            $results[] = $this->getORM()->mapper($this->targetTable)->delete($foreignEntity);
+
+            $foreignData = $this->getORM()->extractEntity($foreignEntity);
+
+            $mapData = $this->syncMapData([], $data, $foreignData);
+
+            $mapMetadata->getMapper()->delete($mapData);
+        }
+
+        return $results;
     }
 
     protected function createCollectionQuery(array $data): Selector

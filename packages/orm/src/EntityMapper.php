@@ -514,6 +514,8 @@ class EntityMapper implements EventAwareInterface
         if (!$keys) {
             // If Entity has no keys, just use conditions to delete batch.
             $delItems = [$conditions];
+        } elseif ($entity !== null) {
+            $delItems = [$entity];
         } else {
             // If Entity has keys, use this keys to delete once per item.
             $delItems = $this->getORM()
@@ -528,6 +530,9 @@ class EntityMapper implements EventAwareInterface
             if (!$keys) {
                 $conditions = $this->conditionsToWheres($item);
                 $data       = null;
+            } elseif ($entity !== null) {
+                $data = $this->extract($entity);
+                $conditions = Arr::only($data, $keys);
             } else {
                 /** @var object $item */
                 $entity = $item;
