@@ -36,12 +36,12 @@ trait EntityTrait
 
     protected function loadRelation(string $propName): mixed
     {
-        return $this->$propName ?? RelationProxies::call($this, $propName);
+        return $this->$propName ??= RelationProxies::call($this, $propName);
     }
 
     protected function loadCollection(string $propName)
     {
-        return $this->$propName ?? RelationProxies::call($this, $propName) ?? new RelationCollection(static::class, null);
+        return $this->$propName ??= RelationProxies::call($this, $propName) ?? new RelationCollection(static::class, null);
     }
 
     public function loadAllRelations(): void

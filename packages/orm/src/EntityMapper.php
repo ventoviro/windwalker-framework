@@ -33,6 +33,7 @@ use Windwalker\ORM\Event\{
 use Windwalker\ORM\Metadata\EntityMetadata;
 use Windwalker\ORM\Strategy\Selector;
 use Windwalker\Utilities\Arr;
+use Windwalker\Utilities\Assert\ArgumentsAssert;
 use Windwalker\Utilities\Assert\TypeAssert;
 use Windwalker\Utilities\Reflection\ReflectAccessor;
 use Windwalker\Utilities\TypeCast;
@@ -270,14 +271,25 @@ class EntityMapper implements EventAwareInterface
 
             $metadata = $event->getMetadata();
 
-            $results[] = $this->getDb()->getWriter()->updateOne(
-                $metadata->getTableName(),
-                $data = $event->getData(),
-                $condFields,
-                [
-                    'updateNulls' => $updateNulls,
-                ]
-            );
+            $writeData = $data = $event->getData();
+
+            if ($oldData !== null) {
+                $keyValues = Arr::only($writeData, $condFields);
+                $writeData = array_diff($writeData, $oldData);
+
+                $writeData = $keyValues + $writeData;
+            }
+
+            if ($writeData !== []) {
+                $results[] = $this->getDb()->getWriter()->updateOne(
+                    $metadata->getTableName(),
+                    $writeData,
+                    $condFields,
+                    [
+                        'updateNulls' => $updateNulls,
+                    ]
+                );
+            }
 
             $entity = $this->toEntity($item);
 
@@ -313,7 +325,7 @@ class EntityMapper implements EventAwareInterface
     public function updateBatch(array|object $data, mixed $conditions = null): StatementInterface
     {
         $metadata = $this->getMetadata();
-        $data = $this->extract($data);
+        $data = $this->extractForSave($data);
 
         // Event
         $event = $this->emitEvent(
@@ -341,46 +353,52 @@ class EntityMapper implements EventAwareInterface
     public function saveMultiple(iterable $items, string|array $condFields = null, bool $updateNulls = false): iterable
     {
         // Event
-
-        $aiColumnName = $this->getAutoIncrementColumn(true);
-
-        $metadata = $this->getMetadata();
-
-        TypeAssert::assert(
-            $aiColumnName !== null,
-            '{caller} must has an auto-increment column in Entity to separate update and create.'
-        );
-
         foreach ($items as $k => $item) {
-            if (
-                $aiColumnName
-                && is_object($item)
-                && $metadata::isEntity($item)
-                && $aiColumn = $metadata->getColumn($aiColumnName)
-            ) {
-                // If is Entity
-                $aiPropName = $aiColumn->getName();
-                $keyValue = ReflectAccessor::getValue($item, $aiPropName);
-            } else {
-                // Is array, object or Collection
-                $keyValue = Arr::get($item, $aiColumnName);
-            }
-
-            $update = !empty($keyValue);
-
             // Do save
-            if ($update) {
+            if ($this->isNew($item)) {
+                $items[$k] = $this->createOne($item);
+            } else {
                 $this->updateOne($item, $condFields, $updateNulls);
 
                 $items[$k] = $this->toEntity($item);
-            } else {
-                $items[$k] = $this->createOne($item);
             }
         }
 
         // Event
 
         return $items;
+    }
+
+    public function isNew(array|object $item): bool
+    {
+        $aiColumnName = $this->getAutoIncrementColumn(true);
+
+        if ($aiColumnName === null) {
+            throw new \LogicException(
+                sprintf(
+                    '%s must has an auto-increment column in Entity to check isNew.',
+                    $this->getMetadata()->getClassName()
+                )
+            );
+        }
+
+        $metadata = $this->getMetadata();
+
+        if (
+            $aiColumnName
+            && is_object($item)
+            && $metadata::isEntity($item)
+            && $aiColumn = $metadata->getColumn($aiColumnName)
+        ) {
+            // If is Entity
+            $aiPropName = $aiColumn->getName();
+            $keyValue = ReflectAccessor::getValue($item, $aiPropName);
+        } else {
+            // Is array, object or Collection
+            $keyValue = Arr::get($item, $aiColumnName);
+        }
+
+        return empty($keyValue);
     }
 
     public function saveOne(array|object $item, array|string $condFields = null, bool $updateNulls = false)
@@ -529,7 +547,9 @@ class EntityMapper implements EventAwareInterface
 
             $results[] = $event->getStatement();
 
-            $metadata->getRelationManager()->delete($event->getData(), $entity);
+            if ($event->getData() !== null) {
+                $metadata->getRelationManager()->delete($event->getData(), $entity);
+            }
         }
 
         // Event
@@ -720,6 +740,11 @@ class EntityMapper implements EventAwareInterface
     {
         $data = $this->extract($data);
 
+        return $this->castForSave($data, $updateNulls);
+    }
+
+    protected function castForSave(array $data, bool $updateNulls = true): array
+    {
         $metadata = $this->getMetadata();
 
         $item = [];

@@ -14,6 +14,7 @@ namespace Windwalker\ORM\Test\Entity;
 use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Cast;
 use Windwalker\ORM\Attributes\Column;
+use Windwalker\ORM\Attributes\MapFor;
 use Windwalker\ORM\Attributes\PK;
 use Windwalker\ORM\Attributes\Table;
 use Windwalker\ORM\EntityInterface;
@@ -178,7 +179,7 @@ class StubRose implements EntityInterface
      */
     public function getSakuras(): RelationCollection
     {
-        return $this->loadCollection('skuras');
+        return $this->loadCollection('sakuras');
     }
 
     /**

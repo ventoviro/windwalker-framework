@@ -11,12 +11,16 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Relation\Strategy;
 
+use Windwalker\Data\Collection;
+use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\ORM\Metadata\EntityMetadata;
 use Windwalker\ORM\Relation\Action;
 use Windwalker\ORM\Relation\RelationCollection;
 use Windwalker\ORM\Relation\RelationProxies;
 use Windwalker\ORM\Strategy\Selector;
 use Windwalker\Query\Clause\JoinClause;
+use Windwalker\Query\Query;
+use Windwalker\Utilities\Arr;
 use Windwalker\Utilities\Assert\TypeAssert;
 use Windwalker\Utilities\Reflection\ReflectAccessor;
 
@@ -25,6 +29,8 @@ use Windwalker\Utilities\Reflection\ReflectAccessor;
  */
 class ManyToMany extends AbstractRelation
 {
+    use HasManyTrait;
+
     /**
      * @inheritDoc
      */
@@ -79,52 +85,45 @@ class ManyToMany extends AbstractRelation
             return;
         }
 
-        $collection = ReflectAccessor::getValue($entity, $this->getPropName())
-            ?? $this->createCollection($data);
+        $metadata        = $this->getMetadata();
+        $foreignMetadata = $this->getForeignMetadata();
+        $mapMetadata     = $this->getMapMetadata();
 
-        $changed = $this->isChanged($data, $oldData);
-        $attachEntities = null;
-        $detachEntities = null;
-        $keepEntities = null;
+        [$attachEntities, $detachEntities, $keepEntities] = $this->diffRelated($data, $entity, $oldData);
 
-        if ($collection->isSync()) {
-            // $conditions = $this->syncValuesToForeign($oldData, []);
-            //
-            // $entities = $collection->all()
-            //     ->map(fn ($entity) => $this->getORM()->extractEntity($entity));
-            //
-            // if ($this->isFlush()) {
-            //     // If is flush, let's delete all relations and make all attaches
-            //     $this->deleteAllRelatives($conditions);
-            //
-            //     $attachEntities = $entities;
-            // } else {
-            //     // If not flush let's make attach and detach diff
-            //     $oldItems = $this->getORM()
-            //         ->from($this->getForeignMetadata()->getClassName())
-            //         ->where($conditions)
-            //         ->all()
-            //         ->dump(true);
-            //
-            //     [$detachEntities,] = $this->getDetachDiff(
-            //         $entities,
-            //         $oldItems,
-            //         $this->getForeignMetadata()->getKeys(),
-            //         $data
-            //     );
-            //     [$attachEntities, $keepEntities] = $this->getAttachDiff(
-            //         $entities,
-            //         $oldItems,
-            //         $this->getForeignMetadata()->getKeys(),
-            //         $data
-            //     );
-            // }
-        } else {
-            // Not sync, manually set attach/detach
-            $attachEntities = $collection->getAttachedEntities();
-            $detachEntities = $collection->getDetachedEntities();
+        // $mapProp = $foreignMetadata->getColumn($mapMetadata->getTableAlias())?->getProperty();
+        //
+        // $updateCondFields = [
+        //     ...$metadata->getKeys(),
+        //     ...$foreignMetadata->getKeys()
+        // ];
+
+        // Handle Attach
+        if ($attachEntities) {
+            $this->attachEntities($attachEntities, $data);
         }
-        
+
+        // Handle Detach
+        if ($detachEntities) {
+            $this->detachEntities($detachEntities, $oldData);
+        }
+
+        // Handle changed
+        if ($this->isChanged($data, $oldData)) {
+            if ($keepEntities === null) {
+                $keepEntities = $this->createCollectionQuery($oldData);
+            }
+
+            $this->changeEntities($keepEntities, $data, $oldData);
+        }
+    }
+
+    protected function isChanged(array $data, ?array $oldData): bool
+    {
+        return $oldData ? !Arr::arrayEquals(
+            Arr::only($data, array_keys($this->mapFks)),
+            Arr::only($oldData, array_keys($this->mapFks)),
+        ) : false;
     }
 
     /**
@@ -132,6 +131,20 @@ class ManyToMany extends AbstractRelation
      */
     public function delete(array $data, object $entity): void
     {
+    }
+
+    /**
+     * deleteAllRelatives
+     *
+     * @param  array  $data
+     *
+     * @return  StatementInterface[]
+     */
+    public function deleteAllRelatives(array $data): array
+    {
+        return $this->getORM()
+            ->mapper($this->targetTable)
+            ->delete($this->createLoadConditions($data));
     }
 
     protected function createCollectionQuery(array $data): Selector
@@ -166,12 +179,12 @@ class ManyToMany extends AbstractRelation
     {
         $conditions = [];
 
-        foreach ($this->mapFks as $field => $foreign) {
+        foreach ($this->mapFks as $field => $mapFk) {
             if ($alias) {
-                $foreign = $alias . '.' . $foreign;
+                $mapFk = $alias . '.' . $mapFk;
             }
 
-            $conditions[$foreign] = $data[$field];
+            $conditions[$mapFk] = $data[$field];
         }
 
         return $conditions;
@@ -238,5 +251,241 @@ class ManyToMany extends AbstractRelation
         $this->mapFks = $mapFks;
 
         return $this;
+    }
+
+    /**
+     * syncMapData
+     *
+     * @param  array  $mapData
+     * @param  array  $ownerData
+     * @param  array  $foreignData
+     *
+     * @return  array|object
+     */
+    protected function syncMapData(array $mapData, array $ownerData, array $foreignData): array|object
+    {
+        // Prepare parent table and map table mapping
+        foreach ($this->mapFks as $field => $foreign) {
+            $mapData[$foreign] = $ownerData[$field];
+        }
+
+        // Prepare map table and target table mapping
+        foreach ($this->fks as $field => $foreign) {
+            $mapData[$field] = $foreignData[$foreign];
+        }
+
+        return $mapData;
+    }
+
+    protected function getDetachDiff(iterable $items, array $oldItems, array $compareKeys, array $ownerData): array
+    {
+        $keep    = [];
+        $detaches = [];
+
+        foreach ($oldItems as $old) {
+            $oldValues = Arr::only($old, $compareKeys);
+
+            foreach ($items as $item) {
+                // Check this old item has at-least 1 new item matched.
+                if (Arr::arrayEquals($oldValues, Arr::only($item, $compareKeys))) {
+                    $keep[] = $old;
+                    continue 2;
+                }
+            }
+
+            // If no matched, mark this old item to be delete.
+            $detaches[] = $old;
+        }
+
+        return [$detaches, $keep];
+    }
+
+    protected function getAttachDiff(iterable $items, array $oldItems, array $compareKeys, array $ownerData): array
+    {
+        $keep    = [];
+        $creates = [];
+
+        foreach ($items as $item) {
+            $values = Arr::only($item, $compareKeys);
+
+            foreach ($oldItems as $old) {
+                // Check this new item has at-least 1 old item matched.
+                if (Arr::arrayEquals(Arr::only($old, $compareKeys), $values)) {
+                    $keep[] = $item;
+                    continue 2;
+                }
+            }
+
+            // If no matched, mark this new item to be create.
+            $creates[] = $item;
+        }
+
+        return [$creates, $keep];
+    }
+
+    public function attachEntities(iterable $entities, array $data): void
+    {
+        $mapMetadata = $this->getMapMetadata();
+        $foreignMetadata = $this->getForeignMetadata();
+        $mapAlias = $mapMetadata->getTableAlias();
+        $prop = $foreignMetadata->getColumn($mapAlias)?->getProperty()?->getName();
+
+        if ($prop === null) {
+            throw new \LogicException(
+                sprintf(
+                    "Please add '%s' column with type %s to entity %s",
+                    $mapAlias,
+                    RelationCollection::class,
+                    $foreignMetadata->getClassName()
+                )
+            );
+        }
+
+        foreach ($entities as $foreignEntity) {
+            $foreignData = $this->getORM()->extractEntity($foreignEntity);
+
+            // Attempt to get map data if exists
+            if (is_object($foreignEntity)) {
+                $mapEntity = ReflectAccessor::getValue($foreignEntity, $prop);
+            } else {
+                $mapEntity = $foreignEntity[$mapAlias] ?? null;
+            }
+
+            // Otherwise create new one
+            $mapData = $mapEntity ? $this->getORM()->extractEntity($mapEntity) : [];
+
+            // Create Foreign data
+            if ($foreignMetadata->getMapper()->isNew($foreignData)) {
+                $foreignEntity = $foreignMetadata->getMapper()
+                    ->createOne($foreignData);
+
+                $foreignData = $this->getORM()->extractEntity($foreignEntity);
+            }
+
+            // After get foreign data AI id, now can create map
+            $mapData = $this->syncMapData($mapData, $data, $foreignData);
+
+            $mapEntity = $this->getORM()
+                ->hydrateEntity(
+                    $mapData,
+                    $mapMetadata->getMapper()->toEntity($mapEntity ?? [])
+                );
+
+            $mapMetadata->getMapper()->createOne($mapEntity);
+        }
+    }
+
+    public function detachEntities(iterable $entities, ?array $oldData): void
+    {
+        if ($oldData === null) {
+            return;
+        }
+
+        $mapMetadata = $this->getMapMetadata();
+
+        foreach ($entities as $foreignEntity) {
+            $foreignData = $this->getORM()->extractEntity($foreignEntity);
+
+            $mapData = $this->syncMapData([], $oldData, $foreignData);
+
+            $mapMetadata->getMapper()->delete($mapData);
+        }
+    }
+
+    public function changeEntities(iterable $entities, array $data, ?array $oldData): void
+    {
+        if ($oldData === null) {
+            return;
+        }
+
+        $mapMetadata = $this->getMapMetadata();
+        $mapAlias = $mapMetadata->getTableAlias();
+
+        foreach ($entities as $foreignEntity) {
+            $foreignData = $this->getORM()->extractEntity($foreignEntity);
+
+            // Attempt to get map data if exists
+            $mapEntity = $foreignData[$mapAlias] ?? null;
+
+            // Otherwise create new one
+            $oldMapData = $mapEntity ? $this->getORM()->extractEntity($mapEntity) : [];
+            $mapEntity ??= $mapMetadata->getMapper()->toEntity([]);
+
+            // Sync old values to map data
+            $oldMapData = $this->syncMapData($oldMapData, $oldData, $foreignData);
+            $oldMapConditions = $this->syncMapData([], $oldData, $foreignData);
+
+            if ($this->onUpdate === Action::CASCADE) {
+                // Try get DB map if exists
+                $mapData = $mapMetadata->getMapper()
+                    ->select()
+                    ->where($oldMapConditions)
+                    ->get()
+                    ?->dump();
+
+                $mapData ??= [];
+
+                // $this->handleUpdateRelations($data, $oldMapConditions);
+
+                foreach ($this->mapFks as $field => $mapFk) {
+                    $mapData[$mapFk] = $data[$field];
+                }
+
+                if ($mapMetadata->getMainKey()) {
+                    $mapMetadata->getMapper()
+                        ->updateOne(
+                            $mapData,
+                            null,
+                            true
+                        );
+                } else {
+                    $mapMetadata->getMapper()
+                        ->updateBatch(
+                            $mapData,
+                            $oldMapConditions
+                        );
+                }
+
+                $this->getORM()->hydrateEntity($mapData, $mapEntity);
+            }
+
+            // Handle Set NULL
+            if ($this->onUpdate === Action::SET_NULL && $this->isMapDataDifferent($data, $oldMapData)) {
+                $mapMetadata->getMapper()->delete($oldMapConditions);
+            }
+        }
+    }
+
+    /**
+     * @inheritDoc
+     */
+    // public function handleUpdateRelations(array $ownerData, array $mapData): array
+    // {
+    //     if ($this->onUpdate === Action::CASCADE) {
+    //         // Handle Cascade
+    //         return $this->syncValuesToForeign($ownerData, $mapData);
+    //     }
+    //
+    //     // Handle Set NULL
+    //     if ($this->onUpdate === Action::SET_NULL && $this->isForeignDataDifferent($ownerData, $foreignData)) {
+    //         return $this->clearRelativeFields($mapData);
+    //     }
+    //
+    //     return $mapData;
+    // }
+
+    /**
+     * @inheritDoc
+     */
+    public function isMapDataDifferent(array $ownerData, array $mapData): bool
+    {
+        // If any key changed, set all fields as NULL.
+        foreach ($this->mapFks as $field => $mapFk) {
+            if ($mapData[$mapFk] != $ownerData[$field]) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

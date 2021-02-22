@@ -24,6 +24,8 @@ use Windwalker\Utilities\Reflection\ReflectAccessor;
  */
 class OneToMany extends AbstractRelation
 {
+    use HasManyTrait;
+
     /**
      * @inheritDoc
      */
@@ -38,6 +40,7 @@ class OneToMany extends AbstractRelation
 
     /**
      * @inheritDoc
+     * @throws \ReflectionException
      */
     public function save(array $data, object $entity, ?array $oldData = null): void
     {
@@ -45,98 +48,25 @@ class OneToMany extends AbstractRelation
             return;
         }
 
-        $collection = ReflectAccessor::getValue($entity, $this->getPropName())
-            ?? $this->createCollection($data);
-
-        $changed = $this->isChanged($data, $oldData);
-        $attachEntities = null;
-        $detachEntities = null;
-        $keepEntities = null;
-
-        if ($collection->isSync()) {
-            $conditions = $this->syncValuesToForeign($oldData, []);
-
-            $entities = $collection->all()
-                ->map(fn ($entity) => $this->getORM()->extractEntity($entity));
-
-            if ($this->isFlush()) {
-                // If is flush, let's delete all relations and make all attaches
-                $this->deleteAllRelatives($conditions);
-
-                $attachEntities = $entities;
-            } else {
-                // If not flush let's make attach and detach diff
-                $oldItems = $this->getORM()
-                    ->from($this->getForeignMetadata()->getClassName())
-                    ->where($conditions)
-                    ->all()
-                    ->dump(true);
-
-                [$detachEntities,] = $this->getDetachDiff(
-                    $entities,
-                    $oldItems,
-                    $this->getForeignMetadata()->getKeys(),
-                    $data
-                );
-                [$attachEntities, $keepEntities] = $this->getAttachDiff(
-                    $entities,
-                    $oldItems,
-                    $this->getForeignMetadata()->getKeys(),
-                    $data
-                );
-            }
-        } else {
-            // Not sync, manually set attach/detach
-            $attachEntities = $collection->getAttachedEntities();
-            $detachEntities = $collection->getDetachedEntities();
-        }
+        [$attachEntities, $detachEntities, $keepEntities] = $this->diffRelated($data, $entity, $oldData);
 
         // Handle Attach
         if ($attachEntities) {
-            foreach ($attachEntities as $foreignEntity) {
-                $foreignData = $this->getORM()->extractEntity($foreignEntity);
-                $foreignData = $this->syncValuesToForeign($data, $foreignData);
-
-                $this->getORM()
-                    ->mapper($this->targetTable)
-                    ->saveOne($foreignData);
-            }
+            $this->attachEntities($attachEntities, $data);
         }
 
         // Handle Detach
         if ($detachEntities) {
-            foreach ($detachEntities as $foreignEntity) {
-                $foreignData = $this->getORM()->extractEntity($foreignEntity);
-
-                $foreignData = $this->clearRelativeFields($foreignData);
-                $this->getORM()
-                    ->mapper($this->targetTable)
-                    ->updateOne($foreignData, null, true);
-            }
+            $this->detachEntities($detachEntities, $oldData);
         }
 
         // Handle changed
-        if ($changed) {
-            if (!isset($keepEntities)) {
-                $conditions = $this->syncValuesToForeign($oldData, []);
-
-                $keepEntities = $this->getORM()
-                    ->from($this->getForeignMetadata()->getClassName())
-                    ->where($conditions);
+        if ($this->isChanged($data, $oldData)) {
+            if ($keepEntities === null) {
+                $keepEntities = $this->createCollectionQuery($oldData);
             }
 
-            foreach ($keepEntities as $keepEntity) {
-                $keepData = $this->getORM()->extractEntity($keepEntity);
-
-                $keepData = $this->handleUpdateRelations($data, $keepData);
-
-                $this->getORM()->updateOne(
-                    $this->getForeignMetadata()->getClassName(),
-                    $keepData,
-                    null,
-                    true
-                );
-            }
+            $this->changeEntities($keepEntities, $data, $oldData);
         }
     }
 
@@ -234,5 +164,53 @@ class OneToMany extends AbstractRelation
         }
 
         return [$creates, $keep];
+    }
+
+    public function attachEntities(iterable $entities, array $data): void
+    {
+        foreach ($entities as $foreignEntity) {
+            $foreignData = $this->getORM()->extractEntity($foreignEntity);
+            $foreignData = $this->syncValuesToForeign($data, $foreignData);
+
+            $this->getORM()
+                ->mapper($this->targetTable)
+                ->saveOne($foreignData);
+        }
+    }
+
+    public function detachEntities(iterable $entities, ?array $oldData): void
+    {
+        if ($oldData === null) {
+            return;
+        }
+
+        foreach ($entities as $foreignEntity) {
+            $foreignData = $this->getORM()->extractEntity($foreignEntity);
+
+            $foreignData = $this->clearRelativeFields($foreignData);
+            $this->getORM()
+                ->mapper($this->targetTable)
+                ->updateOne($foreignData, null, true);
+        }
+    }
+
+    public function changeEntities(iterable $entities, array $data, ?array $oldData): void
+    {
+        if ($oldData === null) {
+            return;
+        }
+
+        foreach ($entities as $keepEntity) {
+            $keepData = $this->getORM()->extractEntity($keepEntity);
+
+            $keepData = $this->handleUpdateRelations($data, $keepData);
+
+            $this->getORM()->updateOne(
+                $this->getForeignMetadata()->getClassName(),
+                $keepData,
+                null,
+                true
+            );
+        }
     }
 }

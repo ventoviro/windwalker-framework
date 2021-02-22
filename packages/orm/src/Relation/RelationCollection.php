@@ -159,7 +159,7 @@ class RelationCollection implements \IteratorAggregate, \JsonSerializable, \Arra
      */
     public function getQuery(): ?Selector
     {
-        return $this->query;
+        return clone $this->query;
     }
 
     /**

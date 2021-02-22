@@ -14,13 +14,18 @@ namespace Windwalker\ORM\Test\Entity;
 use Windwalker\ORM\Attributes\Cast;
 use Windwalker\ORM\Attributes\Column;
 use Windwalker\ORM\Attributes\Table;
+use Windwalker\ORM\Cast\DateTimeCast;
+use Windwalker\ORM\EntityInterface;
+use Windwalker\ORM\EntityTrait;
 
 /**
  * The StubSakuraRoseMap class.
  */
 #[Table('sakura_rose_maps')]
-class StubSakuraRoseMap
+class StubSakuraRoseMap implements EntityInterface
 {
+    use EntityTrait;
+
     #[Column('sakura_no')]
     protected string $sakuraNo = '';
 
@@ -31,8 +36,8 @@ class StubSakuraRoseMap
     protected string $type = '';
 
     #[Column('created')]
-    #[Cast(\DateTimeImmutable::class)]
-    protected \DateTimeImmutable $created;
+    #[Cast(DateTimeCast::class)]
+    protected ?\DateTimeImmutable $created = null;
 
     /**
      * @return string

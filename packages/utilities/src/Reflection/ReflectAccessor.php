@@ -114,12 +114,12 @@ class ReflectAccessor
         }
 
         foreach ($types as $type) {
-            if (!$type->isBuiltin()) {
-                continue;
-            }
-
             if ($value === null && $type->allowsNull()) {
                 return null;
+            }
+
+            if (!$type->isBuiltin()) {
+                continue;
             }
 
             $value = TypeCast::try($value, $type->getName());

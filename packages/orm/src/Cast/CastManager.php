@@ -85,7 +85,7 @@ class CastManager
                     [$cast, $extract, $hydrateStrategy] = $castControl;
 
                     if (!$extract) {
-                        if ($cast instanceof CastInterface || is_subclass_of($extract, CastInterface::class)) {
+                        if ($cast instanceof CastInterface || is_subclass_of($cast, CastInterface::class)) {
                             $extract = $cast;
                         } else {
                             $extract = [TypeCast::class, 'tryString'];

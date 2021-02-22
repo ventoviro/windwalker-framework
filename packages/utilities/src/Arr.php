@@ -710,7 +710,7 @@ abstract class Arr
         $result = [];
 
         foreach (TypeCast::toIterable($src) as $key => $item) {
-            if (is_object($item) && $invasive) {
+            if (is_object($item) && !isset($item->$column) && $invasive) {
                 $ref = new ReflectionObject($item);
 
                 if (!$ref->hasProperty($column)) {
@@ -731,14 +731,14 @@ abstract class Arr
                     }
                 }
             } else {
-                if (!static::has($src, $column, '')) {
+                if (!static::has($item, $column, '')) {
                     continue;
                 }
 
-                $value = static::get($value, $column, '');
+                $value = static::get($item, $column, '');
 
                 if ($keyName !== null) {
-                    $keyName = static::get($value, $keyName, '');
+                    $keyName = static::get($item, $keyName, '');
                 }
             }
 

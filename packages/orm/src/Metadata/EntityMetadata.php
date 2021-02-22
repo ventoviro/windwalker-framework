@@ -14,6 +14,7 @@ namespace Windwalker\ORM\Metadata;
 use Windwalker\ORM\Attributes\{AutoIncrement, Cast, Column, EntitySetup, PK, Table};
 use Windwalker\Attributes\AttributesResolver;
 use Windwalker\ORM\Cast\CastManager;
+use Windwalker\ORM\EntityMapper;
 use Windwalker\ORM\ORM;
 use Windwalker\ORM\Relation\RelationManager;
 use Windwalker\Utilities\Cache\RuntimeCacheTrait;
@@ -408,6 +409,11 @@ class EntityMetadata
     public function getORM(): ORM
     {
         return $this->orm;
+    }
+
+    public function getMapper(): EntityMapper
+    {
+        return $this->getORM()->mapper($this->getClassName());
     }
 
     /**

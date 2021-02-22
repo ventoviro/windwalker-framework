@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\ORM\Test\Entity;
 
 use Windwalker\ORM\Attributes\AutoIncrement;
+use Windwalker\ORM\Attributes\Cast;
 use Windwalker\ORM\Attributes\Column;
 use Windwalker\ORM\Attributes\EntitySetup;
 use Windwalker\ORM\Attributes\PK;
@@ -52,6 +53,10 @@ class StubSakura implements EntityInterface
     protected ?StubLocation $location = null;
 
     protected RelationCollection|null $roses = null;
+
+    #[Column('sakura_rose_map')]
+    #[Cast(StubSakuraRoseMap::class, strategy: Cast::HYDRATOR)]
+    protected ?StubSakuraRoseMap $map = null;
 
     #[EntitySetup]
     public static function setup(EntityMetadata $metadata)
@@ -237,6 +242,26 @@ class StubSakura implements EntityInterface
     public function setRoses(?RelationCollection $roses): static
     {
         $this->roses = $roses;
+
+        return $this;
+    }
+
+    /**
+     * @return StubSakuraRoseMap|null
+     */
+    public function getMap(): ?StubSakuraRoseMap
+    {
+        return $this->map;
+    }
+
+    /**
+     * @param  StubSakuraRoseMap|null  $map
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setMap(?StubSakuraRoseMap $map): static
+    {
+        $this->map = $map;
 
         return $this;
     }
