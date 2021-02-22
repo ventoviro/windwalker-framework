@@ -57,7 +57,11 @@ class RelationCollection implements \IteratorAggregate, \JsonSerializable
         }
 
         foreach ($entities as $entity) {
-            $this->attachedEntities[spl_object_hash($entity)] = $entity;
+            $hash = spl_object_hash($entity);
+
+            unset($this->detachedEntities[$hash]);
+
+            $this->attachedEntities[$hash] = $entity;
         }
 
         return $this;
@@ -70,9 +74,19 @@ class RelationCollection implements \IteratorAggregate, \JsonSerializable
         return $this;
     }
 
-    public function detach(object $entity): static
+    public function detach(object|array $entities): static
     {
-        $this->detachedEntities[spl_object_hash($entity)] = $entity;
+        if (is_object($entities)) {
+            $entities = [$entities];
+        }
+
+        foreach ($entities as $entity) {
+            $hash = spl_object_hash($entity);
+
+            unset($this->attachedEntities[$hash]);
+
+            $this->detachedEntities[$hash] = $entity;
+        }
 
         return $this;
     }
