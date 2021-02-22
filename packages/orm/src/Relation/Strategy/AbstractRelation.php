@@ -32,6 +32,8 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
 
     protected bool $flush;
 
+    protected array $morphs = [];
+
     /**
      * AbstractRelationStrategy constructor.
      *
@@ -283,11 +285,11 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
     }
 
     // Todo: Try use column name to get value
+
     public function getColumnName(): string
     {
         //
     }
-
     /**
      * @param  string  $propName
      *
@@ -379,5 +381,20 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
     public function getOwnerKeys(): array
     {
         return array_keys($this->fks);
+    }
+
+    public function morphBy(...$columns): static
+    {
+        $this->morphs = $columns;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMorphs(): array
+    {
+        return $this->morphs;
     }
 }
