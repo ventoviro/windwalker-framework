@@ -18,6 +18,7 @@ use Windwalker\ORM\Relation\RelationProxies;
 use Windwalker\ORM\Strategy\Selector;
 use Windwalker\Query\Clause\JoinClause;
 use Windwalker\Utilities\Assert\TypeAssert;
+use Windwalker\Utilities\Reflection\ReflectAccessor;
 
 /**
  * The ManyToMany class.
@@ -30,7 +31,7 @@ class ManyToMany extends AbstractRelation
     public function __construct(
         EntityMetadata $metadata,
         string $propName,
-        protected ?string $intermediate = null,
+        protected ?string $mapTable = null,
         protected array $mapFks = [],
         ?string $targetTable = null,
         array $fks = [],
@@ -69,31 +70,95 @@ class ManyToMany extends AbstractRelation
         );
     }
 
+    /**
+     * @inheritDoc
+     */
+    public function save(array $data, object $entity, ?array $oldData = null): void
+    {
+        if ($this->onUpdate === Action::NO_ACTION || $this->onUpdate === Action::RESTRICT) {
+            return;
+        }
+
+        $collection = ReflectAccessor::getValue($entity, $this->getPropName())
+            ?? $this->createCollection($data);
+
+        $changed = $this->isChanged($data, $oldData);
+        $attachEntities = null;
+        $detachEntities = null;
+        $keepEntities = null;
+
+        if ($collection->isSync()) {
+            // $conditions = $this->syncValuesToForeign($oldData, []);
+            //
+            // $entities = $collection->all()
+            //     ->map(fn ($entity) => $this->getORM()->extractEntity($entity));
+            //
+            // if ($this->isFlush()) {
+            //     // If is flush, let's delete all relations and make all attaches
+            //     $this->deleteAllRelatives($conditions);
+            //
+            //     $attachEntities = $entities;
+            // } else {
+            //     // If not flush let's make attach and detach diff
+            //     $oldItems = $this->getORM()
+            //         ->from($this->getForeignMetadata()->getClassName())
+            //         ->where($conditions)
+            //         ->all()
+            //         ->dump(true);
+            //
+            //     [$detachEntities,] = $this->getDetachDiff(
+            //         $entities,
+            //         $oldItems,
+            //         $this->getForeignMetadata()->getKeys(),
+            //         $data
+            //     );
+            //     [$attachEntities, $keepEntities] = $this->getAttachDiff(
+            //         $entities,
+            //         $oldItems,
+            //         $this->getForeignMetadata()->getKeys(),
+            //         $data
+            //     );
+            // }
+        } else {
+            // Not sync, manually set attach/detach
+            $attachEntities = $collection->getAttachedEntities();
+            $detachEntities = $collection->getDetachedEntities();
+        }
+        
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function delete(array $data, object $entity): void
+    {
+    }
+
     protected function createCollectionQuery(array $data): Selector
     {
         $foreignMetadata = $this->getForeignMetadata();
-        $intermediateMetadata = $this->getIntermediateMetadata();
+        $foreignTable    = $foreignMetadata->getTableName();
+        $foreignAlias    = $foreignMetadata->getTableAlias();
+
+        $mapMetadata = $this->getMapMetadata();
+        $mapTable    = $mapMetadata->getTableName();
+        $mapAlias    = $mapMetadata->getTableAlias();
 
         return $this->getORM()
-            ->from($foreignMetadata->getTableName(), $foreignMetadata->getTableAlias())
+            ->from($foreignTable, $foreignAlias)
             ->leftJoin(
-                $intermediateMetadata->getTableName(),
-                $intermediateMetadata->getTableAlias(),
-                function (JoinClause $joinClause) use ($foreignMetadata, $intermediateMetadata) {
+                $mapTable,
+                $mapMetadata->getTableAlias(),
+                function (JoinClause $joinClause) use ($foreignAlias, $mapAlias) {
                     foreach ($this->getForeignKeys() as $mapKey => $foreignKey) {
                         $joinClause->on(
-                            $foreignMetadata->getTableAlias() . '.' . $foreignKey,
-                            $intermediateMetadata->getTableAlias() . '.' . $mapKey
+                            "$foreignAlias.$foreignKey",
+                            "$mapAlias.$mapKey"
                         );
                     }
                 }
             )
-            ->where(
-                $this->createLoadConditions(
-                    $data,
-                    $intermediateMetadata->getTableAlias()
-                )
-            )
+            ->where($this->createLoadConditions($data, $mapAlias))
             ->groupByJoins();
     }
 
@@ -112,23 +177,9 @@ class ManyToMany extends AbstractRelation
         return $conditions;
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function save(array $data, object $entity, ?array $oldData = null): void
+    public function getMapMetadata(): EntityMetadata
     {
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function delete(array $data, object $entity): void
-    {
-    }
-
-    public function getIntermediateMetadata(): EntityMetadata
-    {
-        return $this->getORM()->getEntityMetadata($this->intermediate);
+        return $this->getORM()->getEntityMetadata($this->mapTable);
     }
 
     /**
@@ -142,19 +193,19 @@ class ManyToMany extends AbstractRelation
     /**
      * @return string|null
      */
-    public function getIntermediate(): ?string
+    public function getMapTable(): ?string
     {
-        return $this->intermediate;
+        return $this->mapTable;
     }
 
     /**
-     * @param  string|null   $intermediate
+     * @param  string|null   $mapTable
      * @param  array|string  $ownerKey
      * @param  string|null   $mapKey
      *
      * @return  static  Return self to support chaining.
      */
-    public function through(?string $intermediate, array|string $ownerKey, ?string $mapKey = null): static
+    public function mapBy(?string $mapTable, array|string $ownerKey, ?string $mapKey = null): static
     {
         $fks = $ownerKey;
 
@@ -170,7 +221,7 @@ class ManyToMany extends AbstractRelation
             $fks = $ownerKey;
         }
 
-        $this->intermediate = $intermediate;
+        $this->mapTable = $mapTable;
 
         $this->setMapForeignKeys($fks);
 

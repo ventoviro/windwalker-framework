@@ -50,8 +50,8 @@ class StubRose implements EntityInterface
     protected ?RelationCollection $sakuras = null;
 
     #[Column('sakura_rose_map')]
-    #[Cast(StubSakuraRoseMap::class)]
-    protected StubSakuraRoseMap $map;
+    #[Cast(StubSakuraRoseMap::class, strategy: Cast::HYDRATOR)]
+    protected ?StubSakuraRoseMap $map = null;
 
     /**
      * @return int|null
@@ -189,6 +189,26 @@ class StubRose implements EntityInterface
     public function setSakuras(?RelationCollection $sakuras): static
     {
         $this->sakuras = $sakuras;
+
+        return $this;
+    }
+
+    /**
+     * @return StubSakuraRoseMap|null
+     */
+    public function getMap(): ?StubSakuraRoseMap
+    {
+        return $this->map;
+    }
+
+    /**
+     * @param  StubSakuraRoseMap|null  $map
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setMap(?StubSakuraRoseMap $map): static
+    {
+        $this->map = $map;
 
         return $this;
     }

@@ -222,13 +222,18 @@ class ArrayObject implements AccessibleInterface
      *
      * @param  string|int   $name
      * @param  string|null  $key
+     * @param  bool         $invasive
      *
      * @return  static
      *
      * @since  3.5
      */
-    public function column(mixed $name, ?string $key = null): static
+    public function column(mixed $name, ?string $key = null, bool $invasive = false): static
     {
+        if ($invasive) {
+            return new static(Arr::getColumn($this->storage, $name, $key, $invasive));
+        }
+
         return new static(array_column($this->storage, $name, $key));
     }
 

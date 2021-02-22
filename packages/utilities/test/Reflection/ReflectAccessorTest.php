@@ -76,7 +76,7 @@ class ReflectAccessorTest extends TestCase
     }
 
     /**
-     * @see  ReflectAccessor::getProperties
+     * @see  ReflectAccessor::getPropertiesValues
      */
     public function testGetProperties(): void
     {

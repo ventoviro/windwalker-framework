@@ -11,7 +11,9 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Test\Relation\Strategy;
 
+use Windwalker\Data\Collection;
 use Windwalker\ORM\Relation\Action;
+use Windwalker\ORM\Relation\RelationCollection;
 use Windwalker\ORM\Test\AbstractORMTestCase;
 use Windwalker\ORM\Test\Entity\StubRose;
 use Windwalker\ORM\Test\Entity\StubSakura;
@@ -30,9 +32,62 @@ class ManyToManyTest extends AbstractORMTestCase
         $sakura = $sakuraMapper->findOne(1);
         $roses = $sakura->getRoses();
 
-        $roses->getQuery()->debug();
+        self::assertEquals(
+            [
+                'S00015',
+                'S00013',
+                'S00014',
+                'S00008',
+                'S00018',
+                'S00025'
+            ],
+            $roses->all()->column('sakuraNo', null, true)->dump()
+        );
+    }
 
-        show($roses->all());
+    public function testLoadWithMap()
+    {
+        $sakuraMapper = $this->createSakuraMapper();
+
+        /** @var StubSakura $sakura */
+        $sakura = $sakuraMapper->findOne(1);
+        /** @var StubRose[]|RelationCollection $roses */
+        $roses = $sakura->getRoses();
+
+        $date = $roses[0]->getMap()->getCreated()->format(self::$db->getDateFormat());
+
+        self::assertEquals(
+            '2020-11-01 00:37:05',
+            $date
+        );
+    }
+
+    public function testCreate()
+    {
+        $sakuraMapper = $this->createSakuraMapper();
+
+        $sakura = new StubSakura();
+        $sakura->setTitle('New Sakura 1');
+        $sakura->setNo('S10001');
+        $sakura->setState(1);
+
+        $roses = $sakura->getRoses();
+
+        $roses->attach(
+            StubRose::newInstance()
+                ->setTitle('New Rose 1')
+                ->setNo('R10001')
+        );
+
+        $roses->attach(
+            $this->createRoseMapper()->findOne(2)
+        );
+
+        $sakuraMapper->createOne($sakura);
+
+        /** @var StubSakura $newSakura */
+        $newSakura = $sakuraMapper->findOne(['no' => 'S10001']);
+        show($newSakura->getRoses()->all());
     }
 
     public function createRoseMapper(
@@ -45,7 +100,7 @@ class ManyToManyTest extends AbstractORMTestCase
         $mapper->getMetadata()
             ->getRelationManager()
             ->manyToMany('sakuras')
-            ->through(
+            ->mapBy(
                 StubSakuraRoseMap::class,
                 'no',
                 'rose_no',
@@ -71,7 +126,7 @@ class ManyToManyTest extends AbstractORMTestCase
         $mapper->getMetadata()
             ->getRelationManager()
             ->manyToMany('roses')
-            ->through(
+            ->mapBy(
                 StubSakuraRoseMap::class,
                 'no',
                 'sakura_no',
