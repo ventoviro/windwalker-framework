@@ -61,6 +61,7 @@ class OneToOne extends AbstractRelation
 
         $foreignData = $this->getORM()->extractEntity($foreignEntity);
         $foreignData = $this->handleUpdateRelations($data, $foreignData);
+        $foreignData = $this->mergeMorphValues($foreignData);
 
         if ($this->isFlush()) {
             $this->deleteAllRelatives($foreignData);
@@ -99,7 +100,7 @@ class OneToOne extends AbstractRelation
         }
 
         $foreignData = $this->getORM()->extractEntity($foreignEntity);
-        $foreignData = $this->handleDeleteRelations($data, $foreignData);
+        $foreignData = $this->clearRelativeFields($foreignData);
 
         $this->getORM()
             ->mapper($this->targetTable)

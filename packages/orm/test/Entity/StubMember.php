@@ -67,7 +67,7 @@ class StubMember implements EntityInterface
 
         $rm->oneToOne('teacherLicense')
             ->target(StubLicense::class, 'no', 'target_no')
-            ->morphBy('type');
+            ->morphBy(type: 'teacher');
     }
 
     /**

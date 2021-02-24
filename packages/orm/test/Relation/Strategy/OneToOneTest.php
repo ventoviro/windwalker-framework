@@ -37,7 +37,7 @@ class OneToOneTest extends AbstractORMTestCase
         );
     }
 
-    public function testLoadAll()
+    public function testAutoLoadRelations()
     {
         $mapper = $this->createTestMapper();
 

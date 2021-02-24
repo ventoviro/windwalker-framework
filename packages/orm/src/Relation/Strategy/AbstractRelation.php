@@ -85,6 +85,8 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
             $conditions[$foreign] = $data[$field];
         }
 
+        $conditions = array_merge($this->morphs, $conditions);
+
         return $conditions;
     }
 
@@ -104,10 +106,9 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
 
     public function clearKeysValues(array $foreignData): array
     {
-        $relMetadata = $this->getORM()->getEntityMetadata($this->targetTable);
+        $foreignMetadata = $this->getForeignMetadata();
 
-        foreach ($relMetadata->getKeys() as $key)
-        {
+        foreach ($foreignMetadata->getKeys() as $key) {
             $foreignData[$key] = null;
         }
 
@@ -135,20 +136,6 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
         }
 
         return $foreignData;
-    }
-
-    /**
-     * Handle delete relation, if is CASCADE, mark child table to delete. If is SET NULL, set all children fields to
-     * NULL.
-     *
-     * @param  array  $ownerData  The self entity.
-     * @param  array  $foreignData   The relative entity to be handled.
-     *
-     * @return array Return table if you need.
-     */
-    public function handleDeleteRelations(array $ownerData, array $foreignData): array
-    {
-        return $this->clearRelativeFields($foreignData);
     }
 
     /**
@@ -245,6 +232,8 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
     {
         $this->fks = $fks;
 
+        $this->checkMorphConflict();
+
         return $this;
     }
 
@@ -290,6 +279,7 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
     {
         //
     }
+
     /**
      * @param  string  $propName
      *
@@ -385,7 +375,9 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
 
     public function morphBy(...$columns): static
     {
-        $this->morphs = $columns;
+        $this->morphs = Arr::collapse($columns, true);
+
+        $this->checkMorphConflict();
 
         return $this;
     }
@@ -396,5 +388,29 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
     public function getMorphs(): array
     {
         return $this->morphs;
+    }
+
+    /**
+     * checkMorphConflict
+     *
+     * @return  void
+     */
+    public function checkMorphConflict(): void
+    {
+        $conflict = array_intersect(array_keys($this->morphs), $this->fks);
+
+        if ($conflict !== []) {
+            throw new \LogicException(
+                sprintf(
+                    'Morph key nad Foreign key conflict: (%s).',
+                    implode(',', $conflict)
+                )
+            );
+        }
+    }
+
+    protected function mergeMorphValues(array $data): array
+    {
+        return array_merge($data, $this->morphs);
     }
 }

@@ -123,7 +123,11 @@ abstract class AbstractDatabaseDriverTestCase extends TestCase
             throw new \RuntimeException('File not found: ' . $file);
         }
 
-        self::importIterator(SqlSplitter::splitFromFile($file));
+        self::importIterator(
+            SqlSplitter::splitSqlString(
+                file_get_contents($file)
+            )
+        );
     }
 
     /**
