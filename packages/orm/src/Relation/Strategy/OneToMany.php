@@ -171,6 +171,7 @@ class OneToMany extends AbstractRelation
         foreach ($entities as $foreignEntity) {
             $foreignData = $this->getORM()->extractEntity($foreignEntity);
             $foreignData = $this->syncValuesToForeign($data, $foreignData);
+            $foreignData = $this->mergeMorphValues($foreignData);
 
             $this->getORM()
                 ->mapper($this->targetTable)
@@ -204,6 +205,7 @@ class OneToMany extends AbstractRelation
             $keepData = $this->getORM()->extractEntity($keepEntity);
 
             $keepData = $this->handleUpdateRelations($data, $keepData);
+            $keepData = $this->mergeMorphValues($keepData);
 
             $this->getORM()->updateOne(
                 $this->getForeignMetadata()->getClassName(),
