@@ -217,6 +217,8 @@ class ManyToMany extends AbstractRelation
             $conditions[$mapFk] = $data[$field];
         }
 
+        $conditions = array_merge($this->morphs, $conditions);
+
         return $conditions;
     }
 

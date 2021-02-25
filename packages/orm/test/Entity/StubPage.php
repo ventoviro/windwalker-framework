@@ -11,18 +11,24 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Test\Entity;
 
+use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Column;
+use Windwalker\ORM\Attributes\Mapping;
+use Windwalker\ORM\Attributes\PK;
+use Windwalker\ORM\Attributes\Table;
 use Windwalker\ORM\EntityInterface;
 use Windwalker\ORM\EntityTrait;
+use Windwalker\ORM\Relation\RelationCollection;
 
 /**
  * The StubPage class.
  */
+#[Table('pages')]
 class StubPage implements EntityInterface
 {
     use EntityTrait;
 
-    #[Column('id')]
+    #[Column('id'), PK, AutoIncrement]
     protected ?int $id = null;
 
     #[Column('no')]
@@ -33,6 +39,10 @@ class StubPage implements EntityInterface
 
     #[Column('content')]
     protected string $content = '';
+
+    protected ?RelationCollection $pageAttachments = null;
+
+    protected ?RelationCollection $articleAttachments = null;
 
     /**
      * @return int|null
@@ -110,6 +120,46 @@ class StubPage implements EntityInterface
     public function setContent(string $content): static
     {
         $this->content = $content;
+
+        return $this;
+    }
+
+    /**
+     * @return RelationCollection|null
+     */
+    public function getPageAttachments(): ?RelationCollection
+    {
+        return $this->loadCollection('pageAttachments');
+    }
+
+    /**
+     * @param  RelationCollection|null  $pageAttachments
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setPageAttachments(?RelationCollection $pageAttachments): static
+    {
+        $this->pageAttachments = $pageAttachments;
+
+        return $this;
+    }
+
+    /**
+     * @return RelationCollection|null
+     */
+    public function getArticleAttachments(): ?RelationCollection
+    {
+        return $this->loadCollection('articleAttachments');
+    }
+
+    /**
+     * @param  RelationCollection|null  $articleAttachments
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setArticleAttachments(?RelationCollection $articleAttachments): static
+    {
+        $this->articleAttachments = $articleAttachments;
 
         return $this;
     }
