@@ -86,7 +86,7 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
         }
 
         $conditions = array_merge($this->morphs, $conditions);
-show($conditions);
+
         return $conditions;
     }
 

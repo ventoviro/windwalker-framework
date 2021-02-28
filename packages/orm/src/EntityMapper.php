@@ -221,6 +221,12 @@ class EntityMapper implements EventAwareInterface
             $condFields = $this->getKeys();
         }
 
+        if (!$condFields) {
+            throw new \InvalidArgumentException(
+                'Condition fields empty or Entity has no keys when updating data.'
+            );
+        }
+
         TypeAssert::assert(
             is_object($item) || is_array($item),
             '{caller} item must be array or object, {value} given',
@@ -256,7 +262,7 @@ class EntityMapper implements EventAwareInterface
         }
 
         if ($writeData !== []) {
-            $writeData = $keyValues + $writeData;
+            $writeData = array_merge($keyValues, $writeData);
 
             $result = $this->getDb()->getWriter()->updateOne(
                 $metadata->getTableName(),

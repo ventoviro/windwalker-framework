@@ -137,6 +137,12 @@ class WriterManager
 
         $key = (array) $key;
 
+        if ($key === []) {
+            throw new \InvalidArgumentException(
+                'Condition fields cannot be empty array when updating data.'
+            );
+        }
+
         // Create the base update statement.
         $query = $this->db->update($table);
 
