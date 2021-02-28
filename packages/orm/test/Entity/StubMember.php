@@ -68,6 +68,10 @@ class StubMember implements EntityInterface
         $rm->oneToOne('teacherLicense')
             ->target(StubLicense::class, 'no', 'target_no')
             ->morphBy(type: 'teacher');
+
+        $rm->manyToMany('actions')
+            ->mapBy(StubMemberActionMap::class, 'no', 'member_no')
+            ->target(Action::class, 'action_no', 'no');
     }
 
     /**

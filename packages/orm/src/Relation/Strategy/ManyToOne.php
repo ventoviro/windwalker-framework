@@ -25,7 +25,7 @@ class ManyToOne extends AbstractRelation
     {
         $getter = fn() => $this->getORM()
             ->findOne(
-                $this->targetTable,
+                $this->getTargetTable(),
                 $this->createLoadConditions($data)
             );
 

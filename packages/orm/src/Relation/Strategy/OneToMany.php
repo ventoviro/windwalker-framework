@@ -108,14 +108,14 @@ class OneToMany extends AbstractRelation
     protected function createCollectionQuery(array $data): Selector
     {
         return $this->getORM()
-            ->from($this->targetTable)
+            ->from($this->getTargetTable())
             ->where($this->createLoadConditions($data));
     }
 
     protected function createCollection(array $data): RelationCollection
     {
         return new RelationCollection(
-            $this->targetTable,
+            $this->getTargetTable(),
             $this->createCollectionQuery($data)
         );
     }
@@ -174,7 +174,7 @@ class OneToMany extends AbstractRelation
             $foreignData = $this->mergeMorphValues($foreignData);
 
             $this->getORM()
-                ->mapper($this->targetTable)
+                ->mapper($this->getTargetTable())
                 ->saveOne($foreignData);
         }
     }
@@ -190,7 +190,7 @@ class OneToMany extends AbstractRelation
 
             $foreignData = $this->clearRelativeFields($foreignData);
             $this->getORM()
-                ->mapper($this->targetTable)
+                ->mapper($this->getTargetTable())
                 ->updateOne($foreignData, null, true);
         }
     }

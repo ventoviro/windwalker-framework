@@ -27,7 +27,7 @@ class OneToOne extends AbstractRelation
     {
         $getter = fn() => $this->getORM()
             ->findOne(
-                $this->targetTable,
+                $this->getTargetTable(),
                 $this->createLoadConditions($data)
             );
 
@@ -69,7 +69,7 @@ class OneToOne extends AbstractRelation
         }
 
         $this->getORM()
-            ->mapper($this->targetTable)
+            ->mapper($this->getTargetTable())
             ->saveOne(
                 $foreignData,
                 null,
@@ -103,7 +103,7 @@ class OneToOne extends AbstractRelation
         $foreignData = $this->clearRelativeFields($foreignData);
 
         $this->getORM()
-            ->mapper($this->targetTable)
+            ->mapper($this->getTargetTable())
             ->updateOne(
                 $foreignData,
                 null,

@@ -370,9 +370,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
             $clause->value($value);
         }
 
-        if ($alias !== false && (string) $alias !== '') {
-            $clause->alias($alias);
-        }
+        $clause->alias($alias);
 
         return $clause;
     }
@@ -905,7 +903,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
     public function insert(string $table, bool $incrementField = false): static
     {
         $this->type           = static::TYPE_INSERT;
-        $this->insert         = $this->clause('INSERT INTO', $this->quoteName($table));
+        $this->insert         = $this->clause('INSERT INTO', $this->as($table, false));
         $this->incrementField = $incrementField;
 
         return $this;
@@ -922,7 +920,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
     public function update(string $table, ?string $alias = null): static
     {
         $this->type   = static::TYPE_UPDATE;
-        $this->update = $this->clause('UPDATE', $this->as($table, $alias));
+        $this->update = $this->clause('UPDATE', $this->as($table, $alias ?? false));
 
         return $this;
     }

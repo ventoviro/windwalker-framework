@@ -15,6 +15,7 @@ use Windwalker\Data\Collection;
 use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\ORM\Metadata\EntityMetadata;
 use Windwalker\ORM\Relation\Action;
+use Windwalker\ORM\Relation\ForeignTable;
 use Windwalker\ORM\Relation\RelationCollection;
 use Windwalker\ORM\Relation\RelationProxies;
 use Windwalker\ORM\Strategy\Selector;
@@ -30,14 +31,16 @@ class ManyToMany extends AbstractRelation
 {
     use HasManyTrait;
 
+    protected ForeignTable $map;
+
     /**
      * @inheritDoc
      */
     public function __construct(
         EntityMetadata $metadata,
         string $propName,
-        protected ?string $mapTable = null,
-        protected array $mapFks = [],
+        ?string $mapTable = null,
+        array $mapFks = [],
         ?string $targetTable = null,
         array $fks = [],
         string $onUpdate = Action::NO_ACTION,
@@ -53,6 +56,10 @@ class ManyToMany extends AbstractRelation
             $onDelete,
             $options
         );
+
+        $this->map = new ForeignTable();
+
+        $this->mapBy($mapTable, $mapFks);
     }
 
     /**
@@ -70,7 +77,7 @@ class ManyToMany extends AbstractRelation
     protected function createCollection(array $data): RelationCollection
     {
         return new RelationCollection(
-            $this->targetTable,
+            $this->getTargetTable(),
             $this->createCollectionQuery($data)
         );
     }
@@ -120,8 +127,8 @@ class ManyToMany extends AbstractRelation
     protected function isChanged(array $data, ?array $oldData): bool
     {
         return $oldData ? !Arr::arrayEquals(
-            Arr::only($data, array_keys($this->mapFks)),
-            Arr::only($oldData, array_keys($this->mapFks)),
+            Arr::only($data, array_keys($this->getMapForeignKeys())),
+            Arr::only($oldData, array_keys($this->getMapForeignKeys())),
         ) : false;
     }
 
@@ -139,7 +146,9 @@ class ManyToMany extends AbstractRelation
         foreach ($this->createCollection($data) as $foreignEntity) {
             // CASCADE
             if ($this->onDelete === Action::CASCADE) {
-                $this->getORM()->mapper($this->targetTable)->delete($foreignEntity);
+                $this->getORM()
+                    ->mapper($this->getTargetTable())
+                    ->delete($foreignEntity);
             }
 
             // SET NULL
@@ -165,7 +174,7 @@ class ManyToMany extends AbstractRelation
         $results = [];
 
         foreach ($this->createCollectionQuery($data) as $foreignEntity) {
-            $results[] = $this->getORM()->mapper($this->targetTable)->delete($foreignEntity);
+            $results[] = $this->getORM()->mapper($this->getTargetTable())->delete($foreignEntity);
 
             $foreignData = $this->getORM()->extractEntity($foreignEntity);
 
@@ -209,7 +218,7 @@ class ManyToMany extends AbstractRelation
     {
         $conditions = [];
 
-        foreach ($this->mapFks as $field => $mapFk) {
+        foreach ($this->getMapForeignKeys() as $field => $mapFk) {
             if ($alias) {
                 $mapFk = $alias . '.' . $mapFk;
             }
@@ -217,14 +226,14 @@ class ManyToMany extends AbstractRelation
             $conditions[$mapFk] = $data[$field];
         }
 
-        $conditions = array_merge($this->morphs, $conditions);
+        $conditions = array_merge($this->getMorphs(), $conditions);
 
         return $conditions;
     }
 
     public function getMapMetadata(): EntityMetadata
     {
-        return $this->getORM()->getEntityMetadata($this->mapTable);
+        return $this->getORM()->getEntityMetadata($this->getMapTable());
     }
 
     /**
@@ -232,7 +241,7 @@ class ManyToMany extends AbstractRelation
      */
     public function getMapForeignKeys(): array
     {
-        return $this->mapFks;
+        return $this->map->getFks();
     }
 
     /**
@@ -240,7 +249,7 @@ class ManyToMany extends AbstractRelation
      */
     public function getMapTable(): ?string
     {
-        return $this->mapTable;
+        return $this->map->getName();
     }
 
     /**
@@ -266,12 +275,17 @@ class ManyToMany extends AbstractRelation
             $fks = $ownerKey;
         }
 
-        $this->mapTable = $mapTable;
+        $this->map->setName($mapTable);
 
         $this->setMapForeignKeys($fks);
 
         return $this;
     }
+
+    // public function mapMorthBy(...$columns)
+    // {
+    //
+    // }
 
     /**
      * @param  array  $mapFks
@@ -280,7 +294,7 @@ class ManyToMany extends AbstractRelation
      */
     public function setMapForeignKeys(array $mapFks): static
     {
-        $this->mapFks = $mapFks;
+        $this->map->setFks($mapFks);
 
         return $this;
     }
@@ -297,16 +311,24 @@ class ManyToMany extends AbstractRelation
     protected function syncMapData(array $mapData, array $ownerData, array $foreignData): array|object
     {
         // Prepare parent table and map table mapping
-        foreach ($this->mapFks as $field => $foreign) {
+        foreach ($this->getMapForeignKeys() as $field => $foreign) {
             $mapData[$foreign] = $ownerData[$field];
         }
 
         // Prepare map table and target table mapping
-        foreach ($this->fks as $field => $foreign) {
+        foreach ($this->getForeignKeys() as $field => $foreign) {
             $mapData[$field] = $foreignData[$foreign];
         }
 
         return $mapData;
+    }
+
+    /**
+     * @return ForeignTable
+     */
+    public function getMap(): ForeignTable
+    {
+        return $this->map;
     }
 
     protected function getDetachDiff(iterable $items, array $oldItems, array $compareKeys, array $ownerData): array
@@ -459,7 +481,7 @@ class ManyToMany extends AbstractRelation
 
                 // $this->handleUpdateRelations($data, $oldMapConditions);
 
-                foreach ($this->mapFks as $field => $mapFk) {
+                foreach ($this->getMapForeignKeys() as $field => $mapFk) {
                     $mapData[$mapFk] = $data[$field];
                 }
 
@@ -491,28 +513,10 @@ class ManyToMany extends AbstractRelation
     /**
      * @inheritDoc
      */
-    // public function handleUpdateRelations(array $ownerData, array $mapData): array
-    // {
-    //     if ($this->onUpdate === Action::CASCADE) {
-    //         // Handle Cascade
-    //         return $this->syncValuesToForeign($ownerData, $mapData);
-    //     }
-    //
-    //     // Handle Set NULL
-    //     if ($this->onUpdate === Action::SET_NULL && $this->isForeignDataDifferent($ownerData, $foreignData)) {
-    //         return $this->clearRelativeFields($mapData);
-    //     }
-    //
-    //     return $mapData;
-    // }
-
-    /**
-     * @inheritDoc
-     */
     public function isMapDataDifferent(array $ownerData, array $mapData): bool
     {
         // If any key changed, set all fields as NULL.
-        foreach ($this->mapFks as $field => $mapFk) {
+        foreach ($this->getMapForeignKeys() as $field => $mapFk) {
             if ($mapData[$mapFk] != $ownerData[$field]) {
                 return true;
             }

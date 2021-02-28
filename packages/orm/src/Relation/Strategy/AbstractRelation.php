@@ -15,6 +15,7 @@ use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\ORM\Metadata\EntityMetadata;
 use Windwalker\ORM\ORM;
 use Windwalker\ORM\Relation\Action;
+use Windwalker\ORM\Relation\ForeignTable;
 use Windwalker\Utilities\Arr;
 use Windwalker\Utilities\Assert\TypeAssert;
 use Windwalker\Utilities\Options\OptionAccessTrait;
@@ -26,13 +27,9 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
 {
     use OptionAccessTrait;
 
-    protected ?string $targetTable;
-
-    protected array $fks;
+    protected ForeignTable $target;
 
     protected bool $flush;
-
-    protected array $morphs = [];
 
     /**
      * AbstractRelationStrategy constructor.
@@ -54,6 +51,8 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
         protected string $onDelete = Action::NO_ACTION,
         array $options = [],
     ) {
+        $this->target = new ForeignTable();
+
         $this->target($targetTable, $fks);
 
         $this->prepareOptions([], $options);
@@ -70,14 +69,14 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
 
     public function getForeignMetadata(): EntityMetadata
     {
-        return $this->getORM()->getEntityMetadata($this->targetTable);
+        return $this->getORM()->getEntityMetadata($this->getTargetTable());
     }
 
     public function createLoadConditions(array $data, ?string $alias = null): array
     {
         $conditions = [];
 
-        foreach ($this->fks as $field => $foreign) {
+        foreach ($this->getForeignKeys() as $field => $foreign) {
             if ($alias) {
                 $foreign = $alias . '.' . $foreign;
             }
@@ -85,7 +84,7 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
             $conditions[$foreign] = $data[$field];
         }
 
-        $conditions = array_merge($this->morphs, $conditions);
+        $conditions = array_merge($this->getMorphs(), $conditions);
 
         return $conditions;
     }
@@ -100,7 +99,7 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
     public function deleteAllRelatives(array $data): array
     {
         return $this->getORM()
-            ->mapper($this->targetTable)
+            ->mapper($this->getTargetTable())
             ->delete($this->createLoadConditions($data));
     }
 
@@ -148,7 +147,7 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
      */
     protected function syncValuesToForeign(array $ownerData, array $foreignData): array
     {
-        foreach ($this->fks as $field => $foreign) {
+        foreach ($this->getForeignKeys() as $field => $foreign) {
             $foreignData[$foreign] = $ownerData[$field];
         }
 
@@ -157,7 +156,9 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
 
     protected function getRelativeValues(array $data, bool $foreign = false): array
     {
-        $keys = $foreign ? array_values($this->fks) : array_keys($this->fks);
+        $keys = $foreign
+            ? array_values($this->getForeignKeys())
+            : array_keys($this->getForeignKeys());
 
         return Arr::only($data, $keys);
     }
@@ -171,7 +172,7 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
      */
     protected function clearRelativeFields(array $foreignData): array
     {
-        foreach ($this->fks as $field => $foreign) {
+        foreach ($this->getForeignKeys() as $field => $foreign) {
             $foreignData[$foreign] = null;
         }
 
@@ -189,7 +190,7 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
     public function isForeignDataDifferent(array $ownerData, array $foreignData): bool
     {
         // If any key changed, set all fields as NULL.
-        foreach ($this->fks as $field => $foreign) {
+        foreach ($this->getForeignKeys() as $field => $foreign) {
             if ($foreignData[$foreign] != $ownerData[$field]) {
                 return true;
             }
@@ -200,9 +201,11 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
 
     protected function isChanged(array $data, ?array $oldData): bool
     {
+        $fks = $this->getForeignKeys();
+
         return $oldData ? !Arr::arrayEquals(
-            Arr::only($data, array_keys($this->fks)),
-            Arr::only($oldData, array_keys($this->fks)),
+            Arr::only($data, array_keys($fks)),
+            Arr::only($oldData, array_keys($fks)),
         ) : false;
     }
 
@@ -222,7 +225,8 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
             $fks = $ownerKey;
         }
 
-        $this->targetTable = $table;
+        $this->target->setName($table);
+
         $this->foreignKeys($fks);
 
         return $this;
@@ -230,9 +234,7 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
 
     public function foreignKeys(array $fks): static
     {
-        $this->fks = $fks;
-
-        $this->checkMorphConflict();
+        $this->target->setFks($fks);
 
         return $this;
     }
@@ -297,7 +299,15 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
      */
     public function getTargetTable(): string
     {
-        return $this->targetTable;
+        return $this->target->getName();
+    }
+
+    /**
+     * @return ForeignTable
+     */
+    public function getTarget(): ForeignTable
+    {
+        return $this->target;
     }
 
     /**
@@ -365,19 +375,19 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
      */
     public function getForeignKeys(): array
     {
-        return $this->fks;
+        return $this->target->getFks();
     }
 
     public function getOwnerKeys(): array
     {
-        return array_keys($this->fks);
+        return array_keys($this->getForeignKeys());
     }
 
     public function morphBy(...$columns): static
     {
-        $this->morphs = Arr::collapse($columns, true);
+        $morphs = Arr::collapse($columns, true);
 
-        $this->checkMorphConflict();
+        $this->target->setMorphs($morphs);
 
         return $this;
     }
@@ -387,30 +397,11 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
      */
     public function getMorphs(): array
     {
-        return $this->morphs;
-    }
-
-    /**
-     * checkMorphConflict
-     *
-     * @return  void
-     */
-    public function checkMorphConflict(): void
-    {
-        $conflict = array_intersect(array_keys($this->morphs), $this->fks);
-
-        if ($conflict !== []) {
-            throw new \LogicException(
-                sprintf(
-                    'Morph key nad Foreign key conflict: (%s).',
-                    implode(',', $conflict)
-                )
-            );
-        }
+        return $this->target->getMorphs();
     }
 
     protected function mergeMorphValues(array $data): array
     {
-        return array_merge($data, $this->morphs);
+        return array_merge($data, $this->getMorphs());
     }
 }
