@@ -26,7 +26,16 @@ class ManyMorphManyTest extends AbstractORMTestCase
 {
     public function testLoad()
     {
+        $memberMapper = $this->createMemberMapper();
 
+        /** @var StubMember $member */
+        $member = $memberMapper->findOne(1);
+
+        $actions = $member->getActions();
+
+        $actions->getQuery()->debug(false, true);
+
+        show($actions->all());
     }
 
     public function createMemberMapper(

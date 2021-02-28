@@ -91,18 +91,7 @@ class ManyToMany extends AbstractRelation
             return;
         }
 
-        $metadata        = $this->getMetadata();
-        $foreignMetadata = $this->getForeignMetadata();
-        $mapMetadata     = $this->getMapMetadata();
-
         [$attachEntities, $detachEntities, $keepEntities] = $this->diffRelated($data, $entity, $oldData);
-
-        // $mapProp = $foreignMetadata->getColumn($mapMetadata->getTableAlias())?->getProperty();
-        //
-        // $updateCondFields = [
-        //     ...$metadata->getKeys(),
-        //     ...$foreignMetadata->getKeys()
-        // ];
 
         // Handle Attach
         if ($attachEntities) {
@@ -198,18 +187,7 @@ class ManyToMany extends AbstractRelation
 
         return $this->getORM()
             ->from($foreignTable, $foreignAlias)
-            ->leftJoin(
-                $mapTable,
-                $mapMetadata->getTableAlias(),
-                function (JoinClause $joinClause) use ($foreignAlias, $mapAlias) {
-                    foreach ($this->getForeignKeys() as $mapKey => $foreignKey) {
-                        $joinClause->on(
-                            "$foreignAlias.$foreignKey",
-                            "$mapAlias.$mapKey"
-                        );
-                    }
-                }
-            )
+            ->leftJoin($mapMetadata->getClassName())
             ->where($this->createLoadConditions($data, $mapAlias))
             ->groupByJoins();
     }
@@ -226,7 +204,13 @@ class ManyToMany extends AbstractRelation
             $conditions[$mapFk] = $data[$field];
         }
 
-        $conditions = array_merge($this->getMorphs(), $conditions);
+        // foreach ($this->getMorphs() as $field => $value) {
+        //     if ($alias) {
+        //         $field = $alias . '.' . $field;
+        //     }
+        //
+        //     $conditions[$field] = $value;
+        // }
 
         return $conditions;
     }
@@ -282,10 +266,14 @@ class ManyToMany extends AbstractRelation
         return $this;
     }
 
-    // public function mapMorthBy(...$columns)
-    // {
-    //
-    // }
+    public function mapMorphBy(...$columns): static
+    {
+        $morphs = Arr::collapse($columns, true);
+
+        $this->map->setMorphs($morphs);
+
+        return $this;
+    }
 
     /**
      * @param  array  $mapFks

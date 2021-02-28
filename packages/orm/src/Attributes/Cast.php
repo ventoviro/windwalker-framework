@@ -36,7 +36,7 @@ class Cast
      * @param  mixed|null  $extract
      * @param  int|null    $strategy
      */
-    public function __construct(mixed $cast, mixed $extract = null, ?int $strategy = self::CONSTRUCTOR)
+    public function __construct(mixed $cast, mixed $extract = null, ?int $strategy = null)
     {
         $this->cast     = $cast;
         $this->strategy = $strategy;

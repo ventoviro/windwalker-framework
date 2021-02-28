@@ -189,7 +189,7 @@ class JoinClause implements ClauseInterface
 
             foreach ($origin as $col) {
                 // Append every value as ValueObject so that we can make placeholders as `IN(?, ?, ?...)`
-                $value->append($vc = $this->query->quote($col));
+                $value->append($vc = new ValueClause($col));
 
                 $this->query->bind(null, $vc);
             }

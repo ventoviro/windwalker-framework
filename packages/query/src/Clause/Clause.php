@@ -185,8 +185,8 @@ class Clause implements \Countable, ClauseInterface
     public function __clone()
     {
         foreach (get_object_vars($this) as $k => $v) {
-            if (is_object($v) || is_array($v)) {
-                $this->{$k} = unserialize(serialize($v));
+            if (is_object($v)) {
+                $this->$k = clone $v;
             }
         }
     }

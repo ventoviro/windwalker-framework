@@ -57,7 +57,7 @@ class CastManager
         string $field,
         mixed $cast,
         mixed $extract = null,
-        ?int $strategy = Cast::CONSTRUCTOR
+        ?int $strategy = null
     ): static {
         $this->castGroups[$field] ??= [];
 
@@ -175,6 +175,12 @@ class CastManager
 
                 // Pure class
                 return static function (mixed $value, ORM $orm) use ($hydrateStrategy, $cast) {
+                    if ($hydrateStrategy === null) {
+                        $hydrateStrategy = EntityMetadata::isEntity($cast)
+                            ? Cast::HYDRATOR
+                            : Cast::CONSTRUCTOR;
+                    }
+
                     if ($hydrateStrategy === Cast::HYDRATOR) {
                         $object = $orm->getAttributesResolver()->createObject($cast);
 

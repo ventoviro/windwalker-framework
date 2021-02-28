@@ -12,13 +12,16 @@ declare(strict_types=1);
 namespace Windwalker\ORM\Test\Entity;
 
 use Windwalker\ORM\Attributes\AutoIncrement;
+use Windwalker\ORM\Attributes\Cast;
 use Windwalker\ORM\Attributes\Column;
 use Windwalker\ORM\Attributes\EntitySetup;
+use Windwalker\ORM\Attributes\Mapping;
 use Windwalker\ORM\Attributes\PK;
 use Windwalker\ORM\Attributes\Table;
 use Windwalker\ORM\EntityInterface;
 use Windwalker\ORM\EntityTrait;
 use Windwalker\ORM\Metadata\EntityMetadata;
+use Windwalker\ORM\Relation\RelationCollection;
 
 /**
  * The StubAction class.
@@ -37,6 +40,12 @@ class StubAction implements EntityInterface
     #[Column('title')]
     protected string $title = '';
 
+    protected ?RelationCollection $members = null;
+
+    #[Mapping('member_action_map')]
+    #[Cast(StubMemberActionMap::class)]
+    protected ?StubMemberActionMap $map = null;
+
     #[EntitySetup]
     public static function setup(EntityMetadata $metadata)
     {
@@ -44,6 +53,7 @@ class StubAction implements EntityInterface
 
         $rm->manyToMany('members')
             ->mapBy(StubMemberActionMap::class, 'no', 'action_no')
+            ->mapMorphBy(type: 'student')
             ->target(StubMember::class, 'member_no', 'no');
     }
 
@@ -103,6 +113,46 @@ class StubAction implements EntityInterface
     public function setId(?int $id): static
     {
         $this->id = $id;
+
+        return $this;
+    }
+
+    /**
+     * @return RelationCollection|null
+     */
+    public function getMembers(): ?RelationCollection
+    {
+        return $this->loadCollection('members');
+    }
+
+    /**
+     * @param  RelationCollection|null  $members
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setMembers(?RelationCollection $members): static
+    {
+        $this->members = $members;
+
+        return $this;
+    }
+
+    /**
+     * @return StubMemberActionMap|null
+     */
+    public function getMap(): ?StubMemberActionMap
+    {
+        return $this->map;
+    }
+
+    /**
+     * @param  StubMemberActionMap|null  $map
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setMap(?StubMemberActionMap $map): static
+    {
+        $this->map = $map;
 
         return $this;
     }

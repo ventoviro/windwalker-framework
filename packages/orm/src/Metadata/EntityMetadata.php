@@ -266,7 +266,7 @@ class EntityMetadata
         string $field,
         mixed $cast,
         mixed $extract = null,
-        int $strategy = Cast::CONSTRUCTOR
+        ?int $strategy = null
     ): static {
         $this->getCastManager()->addCast(
             $field,

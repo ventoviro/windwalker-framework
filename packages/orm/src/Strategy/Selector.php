@@ -158,6 +158,11 @@ class Selector extends AbstractQueryStrategy
                     $on[] = '=';
                     $on[] = "$alias.$fk";
                 }
+                foreach ($relation->getMorphs() as $field => $value) {
+                    $on[] = "$fromAlias.$field";
+                    $on[] = '=';
+                    $on[] = $value;
+                }
                 return $on;
             }
         }

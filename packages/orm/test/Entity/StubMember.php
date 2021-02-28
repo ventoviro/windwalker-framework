@@ -15,13 +15,14 @@ use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Cast;
 use Windwalker\ORM\Attributes\Column;
 use Windwalker\ORM\Attributes\EntitySetup;
+use Windwalker\ORM\Attributes\Mapping;
 use Windwalker\ORM\Attributes\PK;
 use Windwalker\ORM\Attributes\Table;
 use Windwalker\ORM\Cast\DateTimeCast;
 use Windwalker\ORM\EntityInterface;
 use Windwalker\ORM\EntityTrait;
 use Windwalker\ORM\Metadata\EntityMetadata;
-use Windwalker\ORM\Relation\Action;
+use Windwalker\ORM\Relation\RelationCollection;
 
 /**
  * The StubMember class.
@@ -56,6 +57,12 @@ class StubMember implements EntityInterface
     protected ?StubLicense $studentLicense = null;
     protected ?StubLicense $teacherLicense = null;
 
+    protected ?RelationCollection $actions = null;
+
+    #[Mapping('member_action_map')]
+    #[Cast(StubMemberActionMap::class, strategy: Cast::HYDRATOR)]
+    protected ?StubMemberActionMap $map = null;
+
     #[EntitySetup]
     public static function setup(EntityMetadata $metadata): void
     {
@@ -71,7 +78,9 @@ class StubMember implements EntityInterface
 
         $rm->manyToMany('actions')
             ->mapBy(StubMemberActionMap::class, 'no', 'member_no')
-            ->target(Action::class, 'action_no', 'no');
+            ->mapMorphBy(type: 'student')
+            ->target(StubAction::class, 'action_no', 'no')
+            ->morphBy(type: 'member');
     }
 
     /**
@@ -250,6 +259,46 @@ class StubMember implements EntityInterface
     public function setTeacherLicense(?StubLicense $teacherLicense): static
     {
         $this->teacherLicense = $teacherLicense;
+
+        return $this;
+    }
+
+    /**
+     * @return RelationCollection|null
+     */
+    public function getActions(): RelationCollection
+    {
+        return $this->loadCollection('actions');
+    }
+
+    /**
+     * @param  RelationCollection|null  $actions
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setActions(?RelationCollection $actions): static
+    {
+        $this->actions = $actions;
+
+        return $this;
+    }
+
+    /**
+     * @return StubMemberActionMap|null
+     */
+    public function getMap(): ?StubMemberActionMap
+    {
+        return $this->map;
+    }
+
+    /**
+     * @param  StubMemberActionMap|null  $map
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setMap(?StubMemberActionMap $map): static
+    {
+        $this->map = $map;
 
         return $this;
     }
