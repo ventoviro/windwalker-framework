@@ -404,4 +404,15 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
     {
         return array_merge($data, $this->getMorphs());
     }
+
+    protected function isMorphChanged(array $data): bool
+    {
+        foreach ($this->getMorphs() as $field => $value) {
+            if (($data[$field] ?? null) !== $value) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }

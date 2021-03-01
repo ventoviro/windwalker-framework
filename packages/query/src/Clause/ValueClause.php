@@ -25,9 +25,9 @@ class ValueClause implements ClauseInterface
     protected mixed $value;
 
     /**
-     * @var string
+     * @var string|null
      */
-    protected string $placeholder;
+    protected ?string $placeholder = null;
 
     /**
      * AsClause constructor.
@@ -90,11 +90,11 @@ class ValueClause implements ClauseInterface
     /**
      * Method to set property placeholder
      *
-     * @param  string  $placeholder
+     * @param  string|null  $placeholder
      *
      * @return  static  Return self to support chaining.
      */
-    public function setPlaceholder(string $placeholder): static
+    public function setPlaceholder(?string $placeholder): static
     {
         $this->placeholder = $placeholder;
 

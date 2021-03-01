@@ -128,7 +128,7 @@ trait BaseAssertionTrait
         }
     }
 
-    public static function dumpArray($array, array $options = [], bool $asString = false): ?string
+    public static function dumpArray(mixed $array, array $options = [], bool $asString = false): ?string
     {
         $options['return'] = false;
 

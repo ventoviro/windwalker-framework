@@ -26,9 +26,6 @@ class StubMemberActionMap implements EntityInterface
 {
     use EntityTrait;
 
-    #[Column('id')]
-    protected ?int $id = null;
-
     #[Column('member_no')]
     protected string $memberNo = '';
 

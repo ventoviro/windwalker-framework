@@ -24,6 +24,8 @@ use Windwalker\Query\Query;
 use Windwalker\Utilities\Arr;
 use Windwalker\Utilities\Assert\ArgumentsAssert;
 
+use function Windwalker\Query\val;
+
 /**
  * The SelectAction class.
  *
@@ -129,41 +131,44 @@ class Selector extends AbstractQueryStrategy
 
         foreach ($fromMetadata->getRelationManager()->getRelations() as $relation) {
             if ($relation instanceof ManyToMany) {
+                $mapMetadata = $relation->getMapMetadata();
+                $mapAlias = $mapMetadata->getTableAlias();
+
                 if ($relation->getMapTable() === $table) {
                     foreach ($relation->getMapForeignKeys() as $ok => $mfk) {
-                        $on[] = "$fromAlias.$ok";
-                        $on[] = '=';
-                        $on[] = "$alias.$mfk";
+                        $on[] = ["$fromAlias.$ok", '=', "$alias.$mfk"];
                     }
-                    return $on;
+
+                    foreach ($relation->getMap()->getMorphs() as $field => $value) {
+                        $on[] = ["$mapAlias.$field", '=', val($value)];
+                    }
+
+                    return [$on];
                 }
 
                 if ($relation->getTargetTable() === $table) {
-                    $mapMetadata = $relation->getMapMetadata();
-                    $mapAlias = $mapMetadata->getTableAlias();
-
                     foreach ($relation->getForeignKeys() as $mk => $fk) {
-                        $on[] = "$mapAlias.$mk";
-                        $on[] = '=';
-                        $on[] = "$alias.$fk";
+                        $on[] = ["$mapAlias.$mk", '=', "$alias.$fk"];
                     }
 
-                    return $on;
+                    foreach ($relation->getTarget()->getMorphs() as $field => $value) {
+                        $on[] = ["$alias.$field", '=', val($value)];
+                    }
+
+                    return [$on];
                 }
             }
 
             if ($relation->getTargetTable() === $table) {
                 foreach ($relation->getForeignKeys() as $ok => $fk) {
-                    $on[] = "$fromAlias.$ok";
-                    $on[] = '=';
-                    $on[] = "$alias.$fk";
+                    $on[] = ["$fromAlias.$ok", '=', "$alias.$fk"];
                 }
+
                 foreach ($relation->getMorphs() as $field => $value) {
-                    $on[] = "$fromAlias.$field";
-                    $on[] = '=';
-                    $on[] = $value;
+                    $on[] = ["$alias.$field", '=', val($value)];
                 }
-                return $on;
+
+                return [$on];
             }
         }
 

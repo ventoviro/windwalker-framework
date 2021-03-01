@@ -133,6 +133,22 @@ class RelationCollection implements \IteratorAggregate, \JsonSerializable, \Arra
     }
 
     /**
+     * loadColumn
+     *
+     * @param  int|string  $offset
+     *
+     * @return  Collection
+     */
+    public function loadColumn(int|string $offset = 0): Collection
+    {
+        if ($this->query === null) {
+            return \Windwalker\collect();
+        }
+
+        return $this->query->loadColumn($offset);
+    }
+
+    /**
      * @inheritDoc
      */
     public function getIterator(?string $class = null): \Generator

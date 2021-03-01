@@ -24,6 +24,8 @@ use Windwalker\Utilities\Arr;
 use Windwalker\Utilities\Assert\TypeAssert;
 use Windwalker\Utilities\Reflection\ReflectAccessor;
 
+use function Windwalker\Query\val;
+
 /**
  * The ManyToMany class.
  */
@@ -178,16 +180,26 @@ class ManyToMany extends AbstractRelation
     protected function createCollectionQuery(array $data): Selector
     {
         $foreignMetadata = $this->getForeignMetadata();
-        $foreignTable    = $foreignMetadata->getTableName();
-        $foreignAlias    = $foreignMetadata->getTableAlias();
+        $alias = $foreignMetadata->getTableAlias();
 
         $mapMetadata = $this->getMapMetadata();
-        $mapTable    = $mapMetadata->getTableName();
         $mapAlias    = $mapMetadata->getTableAlias();
 
         return $this->getORM()
-            ->from($foreignTable, $foreignAlias)
-            ->leftJoin($mapMetadata->getClassName())
+            ->from($foreignMetadata->getClassName(), $alias)
+            ->leftJoin(
+                $mapMetadata->getClassName(),
+                $mapAlias,
+                function (JoinClause $joinClause) use ($alias, $mapAlias) {
+                    foreach ($this->getForeignKeys() as $mk => $fk) {
+                        $joinClause->on("$mapAlias.$mk", '=', "$alias.$fk");
+                    }
+
+                    foreach ($this->getMap()->getMorphs() as $field => $value) {
+                        $joinClause->on("$mapAlias.$field", '=', val($value));
+                    }
+                }
+            )
             ->where($this->createLoadConditions($data, $mapAlias))
             ->groupByJoins();
     }
@@ -204,13 +216,25 @@ class ManyToMany extends AbstractRelation
             $conditions[$mapFk] = $data[$field];
         }
 
-        // foreach ($this->getMorphs() as $field => $value) {
-        //     if ($alias) {
-        //         $field = $alias . '.' . $field;
-        //     }
-        //
-        //     $conditions[$field] = $value;
-        // }
+        $mapAlias = $this->getMapMetadata()->getTableAlias();
+
+        foreach ($this->getMap()->getMorphs() as $field => $value) {
+            if ($mapAlias) {
+                $field = $mapAlias . '.' . $field;
+            }
+
+            $conditions[$field] = $value;
+        }
+
+        $foreignAlias = $this->getForeignMetadata()->getTableAlias();
+
+        foreach ($this->getMorphs() as $field => $value) {
+            if ($foreignAlias) {
+                $field = $foreignAlias . '.' . $field;
+            }
+
+            $conditions[$field] = $value;
+        }
 
         return $conditions;
     }
@@ -398,6 +422,8 @@ class ManyToMany extends AbstractRelation
 
             // Create Foreign data
             if ($foreignMetadata->getMapper()->isNew($foreignData)) {
+                $foreignData = $this->mergeMorphValues($foreignData);
+
                 $foreignEntity = $foreignMetadata->getMapper()
                     ->createOne($foreignData);
 
@@ -406,6 +432,7 @@ class ManyToMany extends AbstractRelation
 
             // After get foreign data AI id, now can create map
             $mapData = $this->syncMapData($mapData, $data, $foreignData);
+            $mapData = $this->mergeMapMorphValues($mapData);
 
             $mapEntity = $this->getORM()
                 ->hydrateEntity(
@@ -511,5 +538,15 @@ class ManyToMany extends AbstractRelation
         }
 
         return false;
+    }
+
+    protected function mergeMorphValues(array $data): array
+    {
+        return array_merge($data, $this->getMorphs());
+    }
+
+    protected function mergeMapMorphValues(array $data): array
+    {
+        return array_merge($data, $this->getMap()->getMorphs());
     }
 }

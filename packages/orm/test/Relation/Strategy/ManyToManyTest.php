@@ -27,6 +27,9 @@ class ManyToManyTest extends AbstractORMTestCase
 {
     public function testLoad()
     {
+        // Prepare Entity relations
+        $this->createRoseMapper();
+
         $sakuraMapper = $this->createSakuraMapper();
 
         /** @var StubSakura $sakura */

@@ -22,6 +22,7 @@ use Windwalker\Test\Traits\QueryTestTrait;
 use Windwalker\Utilities\Reflection\ReflectAccessor;
 
 use function Windwalker\Query\clause;
+use function Windwalker\Query\val;
 use function Windwalker\raw;
 
 /**
@@ -35,6 +36,8 @@ class QueryTest extends TestCase
      * @var Query
      */
     protected Query $instance;
+
+    protected static mixed $escaper;
 
     /**
      * @param  array        $args
@@ -341,6 +344,20 @@ class QueryTest extends TestCase
                     'bar.flower',
                     '=',
                     ['rose', 'sakura'],
+                ],
+            ],
+            'Join with value' => [
+                'LEFT JOIN "bars" AS "bar" ON "bar"."id" = "foo"."bar_id" AND "bar"."flower" = \'rose\'',
+                [
+                    'LEFT',
+                    'bars',
+                    'bar',
+                    'bar.id',
+                    '=',
+                    'foo.bar_id',
+                    'bar.flower',
+                    '=',
+                    val('rose'),
                 ],
             ],
             'Join with callback on' => [
@@ -1436,7 +1453,7 @@ SQL
     public function testQuote(): void
     {
         $q = new Query(
-            static function (string $value) {
+            $func = static function (string $value) {
                 return addslashes($value);
             }
         );
@@ -1446,7 +1463,7 @@ SQL
         self::assertEquals("'These are Simon\'s items'", $s);
 
         $q = new Query(
-            new class {
+            $obj = new class {
                 public function escape(string $value): string
                 {
                     return addslashes($value);
@@ -1465,7 +1482,7 @@ SQL
     public function testEscape(): void
     {
         $q = new Query(
-            static function (string $value) {
+            $escaper = static function (string $value) {
                 return addslashes($value);
             }
         );
@@ -1475,7 +1492,7 @@ SQL
         self::assertEquals("These are Simon\'s items", $s);
 
         $q = new Query(
-            new class {
+            $escaper = new class {
                 public function escape(string $value): string
                 {
                     return addslashes($value);
@@ -1691,7 +1708,9 @@ SQL
 
     public static function createQuery($conn = null): Query
     {
-        return new Query($conn ?: new MockEscaper(), static::createGrammar());
+        $connection = $conn ?? (static::$escaper ??= new MockEscaper());
+
+        return new Query($connection, static::createGrammar());
     }
 
     public static function createGrammar(): AbstractGrammar

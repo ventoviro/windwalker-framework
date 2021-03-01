@@ -189,6 +189,12 @@ class Clause implements \Countable, ClauseInterface
                 $this->$k = clone $v;
             }
         }
+
+        foreach ($this->elements as $k => $element) {
+            if (is_object($element) && !$element instanceof ValueClause) {
+                $this->elements[$k] = clone $element;
+            }
+        }
     }
 
     /**

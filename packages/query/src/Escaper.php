@@ -164,9 +164,17 @@ class Escaper
      */
     public function getConnection(): mixed
     {
-        $conn = $this->connection?->get();
+        if ($this->connection instanceof \WeakReference) {
+            $conn = $this->connection->get();
 
-        return $conn ?: [$this->query->getGrammar(), 'localEscape'];
+            if ($conn === null) {
+                throw new \UnexpectedValueException(
+                    'Escaper connection is NULL, the reference object has been destroyed.'
+                );
+            }
+        }
+
+        return $conn ?? [$this->query->getGrammar(), 'localEscape'];
     }
 
     /**

@@ -173,7 +173,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
      * @param  mixed|\PDO|Escaper|AbstractDriver  $escaper
      * @param  AbstractGrammar|string|null        $grammar
      */
-    public function __construct($escaper = null, mixed $grammar = null)
+    public function __construct(mixed $escaper = null, mixed $grammar = null)
     {
         $this->grammar = $grammar instanceof AbstractGrammar
             ? $grammar

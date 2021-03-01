@@ -15,6 +15,8 @@ use Windwalker\Query\Query;
 use Windwalker\Utilities\Assert\ArgumentsAssert;
 use Windwalker\Utilities\Wrapper\RawWrapper;
 
+use function Windwalker\Query\val;
+
 /**
  * The JoinClause class.
  *
@@ -189,7 +191,7 @@ class JoinClause implements ClauseInterface
 
             foreach ($origin as $col) {
                 // Append every value as ValueObject so that we can make placeholders as `IN(?, ?, ?...)`
-                $value->append($vc = new ValueClause($col));
+                $value->append($vc = val($col));
 
                 $this->query->bind(null, $vc);
             }
@@ -197,6 +199,9 @@ class JoinClause implements ClauseInterface
             $value = $this->query->as($origin, false);
         } elseif ($value instanceof RawWrapper) {
             $value = $value();
+        } elseif ($value instanceof ValueClause) {
+            $value = clone $value;
+            $this->query->bind(null, $value);
         } else {
             $value = $this->query->quoteName($value);
         }

@@ -211,10 +211,15 @@ abstract class AbstractStatement implements StatementInterface
      */
     public function loadColumn(int|string $offset = 0): Collection
     {
-        return $this->all()
-            ->mapProxy()
-            ->values()
-            ->column($offset);
+        $all = $this->all();
+
+        if (is_numeric($offset)) {
+            return $all->mapProxy()
+                ->values()
+                ->column($offset);
+        }
+
+        return $all->column($offset);
     }
 
     /**
