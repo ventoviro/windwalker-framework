@@ -509,7 +509,7 @@ class ManyToMany extends AbstractRelation
                         );
                 } else {
                     $mapMetadata->getMapper()
-                        ->updateBatch(
+                        ->updateWhere(
                             $mapData,
                             $oldMapConditions
                         );

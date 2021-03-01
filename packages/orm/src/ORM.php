@@ -22,6 +22,23 @@ use Windwalker\ORM\Strategy\Selector;
 
 /**
  * The ORM class.
+ *
+ * @method  object|null   findOne(string $entityClass, mixed $conditions)
+ * @method  \Generator    findList(string $entityClass, mixed $conditions = [])
+ * @method  string|null   findResult(string $entityClass, mixed $conditions)
+ * @method  object|object[]  createOne(string $entityClass, array|object $item = [])
+ * @method  iterable      createMultiple(string $entityClass, iterable $items)
+ * @method  StatementInterface|null  updateOne(string $entityClass, array|object $item = [], array|string $condFields = null, bool $updateNulls = false)
+ * @method  object[]      updateMultiple(string $entityClass, iterable $items, array|string $condFields = null, $updateNulls = false)
+ * @method  StatementInterface  updateWhere(string $entityClass, array|object $data, mixed $conditions = null)
+ * @method  StatementInterface[]  updateBatch(string $entityClass, array|object $data, mixed $conditions = null, $updateNulls = false)
+ * @method  iterable|object[] saveMultiple(string $entityClass, iterable $items, string|array $condFields = null, bool $updateNulls = false)
+ * @method  object        saveOne(string $entityClass, array|object $item, array|string $condFields = null, bool $updateNulls = false)
+ * @method  object        findOneOrCreate(string $entityClass, mixed $conditions, mixed $initData = null, bool $mergeConditions = true)
+ * @method  object        updateOneOrCreate(string $entityClass, array|object $item, mixed $initData = null, ?array $condFields = null, bool $updateNulls = false)
+ * @method  StatementInterface[]  delete(string $entityClass, mixed $conditions)
+ * @method  iterable|object[]     flush(string $entityClass, iterable $items, mixed $conditions = [])
+ * @method  StatementInterface[]  sync(string $entityClass, iterable $items, mixed $conditions = [], ?array $compareKeys = null)
  */
 class ORM
 {
@@ -107,75 +124,6 @@ class ORM
     }
 
     /**
-     * findOne
-     *
-     * @param  string  $entity
-     * @param  mixed   $conditions
-     *
-     * @return  object|null
-     *
-     * @throws \ReflectionException
-     */
-    public function findOne(string $entity, mixed $conditions): ?object
-    {
-        return $this->mapper($entity)->findOne($conditions);
-    }
-
-    public function findList(string $entity, mixed $conditions = []): \Generator
-    {
-        return $this->mapper($entity)->findList($conditions);
-    }
-
-    public function createOne(string $entity, array|object $data = []): array|object
-    {
-        return $this->mapper($entity)->createOne($data);
-    }
-
-    public function updateOne(
-        string $entity,
-        array|object $item = [],
-        array|string $condFields = null,
-        bool $updateNulls = false
-    ): array|object {
-        return $this->mapper($entity)->updateOne($item, $condFields, $updateNulls);
-    }
-
-    public function updateBatch(
-        string $entity,
-        array|object $data,
-        mixed $conditions = null,
-    ): StatementInterface {
-        return $this->mapper($entity)->updateBatch($data, $conditions);
-    }
-
-    public function deleteOne(
-        string $entity,
-        array|object $data = [],
-    ): array|object {
-        return $this->mapper($entity)->updateOne($data);
-    }
-
-    public static function conditionsToWheres(EntityMetadata $metadata, mixed $conditions): array
-    {
-        if (!is_array($conditions)) {
-            $key = $metadata->getMainKey();
-
-            if ($key) {
-                $conditions = [$key => $conditions];
-            } else {
-                throw new \LogicException(
-                    sprintf(
-                        'Conditions cannot be scalars since %s has no keys',
-                        $metadata->getClassName()
-                    )
-                );
-            }
-        }
-
-        return $conditions;
-    }
-
-    /**
      * @return DatabaseAdapter
      */
     public function getDb(): DatabaseAdapter
@@ -238,5 +186,22 @@ class ORM
         $this->hydrator = $hydrator;
 
         return $this;
+    }
+
+    public function __call(string $name, array $args = []): mixed
+    {
+        if (method_exists(EntityMapper::class, $name)) {
+            $entity = array_shift($args);
+
+            return $this->mapper($entity)->$name(...$args);
+        }
+
+        throw new \BadMethodCallException(
+            sprintf(
+                'Call to undefined method %s::%s()',
+                static::class,
+                $name
+            )
+        );
     }
 }

@@ -16,7 +16,7 @@ use Windwalker\Event\AbstractEvent;
 /**
  * The AbstractUpdateBatchEvent class.
  */
-abstract class AbstractUpdateBatchEvent extends AbstractEntityEvent
+abstract class AbstractUpdateWhereEvent extends AbstractEntityEvent
 {
     protected mixed $conditions;
 

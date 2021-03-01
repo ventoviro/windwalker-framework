@@ -13,7 +13,6 @@ namespace Windwalker\ORM;
 
 use Windwalker\Attributes\AttributesResolver;
 use Windwalker\Cache\Serializer\JsonSerializer;
-use Windwalker\Data\Collection;
 use Windwalker\Database\DatabaseAdapter;
 use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\Database\Schema\Ddl\Column as DbColumn;
@@ -25,15 +24,14 @@ use Windwalker\ORM\Event\{
     AbstractSaveEvent,
     AfterDeleteEvent,
     AfterSaveEvent,
-    AfterUpdateBatchEvent,
+    AfterUpdateWhereEvent,
     BeforeDeleteEvent,
     BeforeSaveEvent,
-    BeforeUpdateBatchEvent
+    BeforeUpdateWhereEvent
 };
 use Windwalker\ORM\Metadata\EntityMetadata;
 use Windwalker\ORM\Strategy\Selector;
 use Windwalker\Utilities\Arr;
-use Windwalker\Utilities\Assert\ArgumentsAssert;
 use Windwalker\Utilities\Assert\TypeAssert;
 use Windwalker\Utilities\Reflection\ReflectAccessor;
 use Windwalker\Utilities\TypeCast;
@@ -299,7 +297,7 @@ class EntityMapper implements EventAwareInterface
      *
      * @throws \JsonException
      */
-    public function updateMultiple(iterable $items, array|string $condFields = null, $updateNulls = false): array
+    public function updateMultiple(iterable $items, array|string $condFields = null, bool $updateNulls = false): array
     {
         $results = [];
 
@@ -315,20 +313,16 @@ class EntityMapper implements EventAwareInterface
     /**
      * Using one data to update multiple rows, filter by where conditions.
      * Example:
-     * `$mapper->updateAll(new Data(array('published' => 0)), array('date' => '2014-03-02'))`
+     * `$mapper->updateWhere(new Data(array('published' => 0)), array('date' => '2014-03-02'))`
      * Means we make every records which date is 2014-03-02 unpublished.
      *
      * @param  mixed  $data        The data we want to update to every rows.
      * @param  mixed  $conditions  Where conditions, you can use array or Compare object.
-     *                             Example:
-     *                             - `array('id' => 5)` => id = 5
-     *                             - `new GteCompare('id', 20)` => 'id >= 20'
-     *                             - `new Compare('id', '%Flower%', 'LIKE')` => 'id LIKE "%Flower%"'
      *
      * @return  boolean
      * @throws \InvalidArgumentException
      */
-    public function updateBatch(array|object $data, mixed $conditions = null): StatementInterface
+    public function updateWhere(array|object $data, mixed $conditions = null): StatementInterface
     {
         $metadata = $this->getMetadata();
 
@@ -339,13 +333,13 @@ class EntityMapper implements EventAwareInterface
 
         // Event
         $event = $this->emitEvent(
-            BeforeUpdateBatchEvent::class,
+            BeforeUpdateWhereEvent::class,
             compact('data', 'metadata', 'conditions')
         );
 
         $metadata = $event->getMetadata();
 
-        $statement = $this->getDb()->getWriter()->updateBatch(
+        $statement = $this->getDb()->getWriter()->updateWhere(
             $metadata->getTableName(),
             $data = $event->getData(),
             $conditions = $event->getConditions()
@@ -353,11 +347,35 @@ class EntityMapper implements EventAwareInterface
 
         // Event
         $event = $this->emitEvent(
-            AfterUpdateBatchEvent::class,
+            AfterUpdateWhereEvent::class,
             compact('data', 'metadata', 'conditions', 'statement')
         );
 
         return $event->getStatement();
+    }
+
+    /**
+     * updateWhere
+     *
+     * @param  array|object  $data
+     * @param  mixed|null    $conditions
+     * @param  bool          $updateNulls
+     *
+     * @return  StatementInterface[]
+     */
+    public function updateBatch(array|object $data, mixed $conditions = null, bool $updateNulls = false): array
+    {
+        $dataToSave = $this->extractForSave($data);
+
+        $results = [];
+
+        foreach ($this->findList($conditions) as $item) {
+            $item = $this->hydrate($dataToSave, $item);
+
+            $results[] = $this->updateOne($item, null, $updateNulls);
+        }
+
+        return $results;
     }
 
     public function saveMultiple(iterable $items, string|array $condFields = null, bool $updateNulls = false): iterable
@@ -411,7 +429,7 @@ class EntityMapper implements EventAwareInterface
         return empty($keyValue);
     }
 
-    public function saveOne(array|object $item, array|string $condFields = null, bool $updateNulls = false)
+    public function saveOne(array|object $item, array|string $condFields = null, bool $updateNulls = false): object
     {
         return $this->saveMultiple([$item], $condFields, $updateNulls)[0];
     }

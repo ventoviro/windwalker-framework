@@ -15,6 +15,6 @@ namespace Windwalker\ORM\Event;
  * The BeforeUpdateBatchEvent class.
  */
 #[\Attribute]
-class BeforeUpdateBatchEvent extends AbstractUpdateBatchEvent
+class BeforeUpdateWhereEvent extends AbstractUpdateWhereEvent
 {
 }

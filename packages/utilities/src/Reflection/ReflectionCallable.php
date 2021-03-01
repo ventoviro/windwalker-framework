@@ -61,7 +61,7 @@ class ReflectionCallable implements \Reflector
             // If method is not exists, could be a magic method, wrap it with closure.
             if (!method_exists($target, $this->function)) {
                 $callable = [$target, $this->function];
-                return function ($args) use ($callable) {
+                return function (...$args) use ($callable) {
                     return $callable(...$args);
                 };
             }

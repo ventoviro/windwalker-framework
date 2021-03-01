@@ -176,9 +176,9 @@ class MySQLTableManagerTest extends AbstractDatabaseTestCase
             WHERE `TABLE_NAME` = 'enterprise'
               AND `TABLE_SCHEMA` = (SELECT DATABASE());
             ALTER TABLE `enterprise`
-                ADD COLUMN `captain` varchar(512) NOT NULL DEFAULT '';
+                ADD COLUMN `captain` varchar(512) NOT NULL DEFAULT '' AFTER `catid`;
             ALTER TABLE `enterprise`
-                ADD COLUMN `first_officer` varchar(512) NOT NULL DEFAULT '';
+                ADD COLUMN `first_officer` varchar(512) NOT NULL DEFAULT '' AFTER `captain`;
             ALTER TABLE `enterprise`
                 MODIFY COLUMN `alias` char(25) DEFAULT '';
             SELECT `TABLE_SCHEMA`,

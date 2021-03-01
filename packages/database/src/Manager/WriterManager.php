@@ -293,7 +293,7 @@ class WriterManager
      *
      * @return StatementInterface|null
      */
-    public function updateBatch(string $table, array $data, $conditions = [], array $options = []): ?StatementInterface
+    public function updateWhere(string $table, array $data, $conditions = [], array $options = []): ?StatementInterface
     {
         $options = array_merge(
             [

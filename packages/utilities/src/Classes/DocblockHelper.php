@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Utilities\Classes;
 
+use Windwalker\Utilities\Str;
+
 /**
  * The DocblockHelper class.
  *
@@ -46,44 +48,87 @@ class DocblockHelper
      * listMethods
      *
      * @param  mixed  $class
-     * @param  int    $type
+     * @param  int    $flags
      *
      * @return  string
      */
     public static function listMethods(
         mixed $class,
-        int $type = \ReflectionMethod::IS_PUBLIC | \ReflectionMethod::IS_STATIC
+        int $flags = \ReflectionMethod::IS_PUBLIC | \ReflectionMethod::IS_STATIC
     ): string {
         $ref = new \ReflectionClass($class);
 
-        $methods = $ref->getMethods($type);
+        $methods = $ref->getMethods($flags);
 
         $lines = [];
 
         /** @var \ReflectionMethod $method */
         foreach ($methods as $method) {
-            preg_match('/\s+\*\s+@return\s+([\w]+)\s*[\w ]*/', (string) $method->getDocComment(), $matches);
+            $type = $method->getReturnType();
 
-            $return = $matches[1] ?? 'void';
+            if (!$type) {
+                preg_match('/\s+\*\s+@return\s+([\w]+)\s*[\w ]*/', (string) $method->getDocComment(), $matches);
 
-            if ($return === 'static' || $return === 'self' || $return === '$this') {
-                $return = $method->getDeclaringClass()->getName();
-            }
+                $return = $matches[1] ?? 'void';
 
-            if (class_exists($return)) {
-                $return = '\\' . $return;
+                if ($return === 'static' || $return === 'self' || $return === '$this') {
+                    $return = $method->getDeclaringClass()->getName();
+                }
+
+                if (class_exists($return)) {
+                    $return = '\\' . $return;
+                }
+            } else {
+                $return = self::typeToString($type);
             }
 
             $source = file($method->getFileName());
-            $body   = implode("", array_slice($source, $method->getStartLine() - 1, 1));
+            $body   = implode(
+                "",
+                array_slice(
+                    $source,
+                    $method->getStartLine() - 1,
+                    $method->getEndLine() - $method->getStartLine()
+                )
+            );
 
-            preg_match('/\s+public\s+[static]*\s*function\s+(.*)/', $body, $matches);
-            $body = $matches[1];
+            preg_match('/\s+public\s+[static]*\s*function\s+(\w+)\((.*?)\)/ms', $body, $matches);
+            $func = $matches[1];
+            $body = $matches[2];
+            $body = trim(Str::collapseWhitespaces(str_replace("\n", ' ', $body)));
 
-            $lines[] = sprintf(' * @method  %s  %s', $return, $body);
+            $lines[] = sprintf(' * @method  %s  %s(%s)', $return, $func, $body);
         }
 
         return static::renderDocblock(implode("\n", $lines));
+    }
+
+    public static function typeToString(\ReflectionType $type): string
+    {
+        if ($type instanceof \ReflectionUnionType) {
+            $types = $type->getTypes();
+        } else {
+            $types = [$type];
+        }
+
+        $types = array_map(
+            function (\ReflectionType $type) {
+                $name = $type->getName();
+
+                if (class_exists($name) || interface_exists($name)) {
+                    $name = '\\' . trim($name, '\\');
+                }
+
+                return $name;
+            },
+            $types
+        );
+
+        if ($type->allowsNull()) {
+            $types[] = 'null';
+        }
+
+        return implode('|', $types);
     }
 
     /**

@@ -17,7 +17,7 @@ use Windwalker\Database\Driver\StatementInterface;
  * The AfterUpdateBatchEvent class.
  */
 #[\Attribute]
-class AfterUpdateBatchEvent extends AbstractUpdateBatchEvent
+class AfterUpdateWhereEvent extends AbstractUpdateWhereEvent
 {
     protected StatementInterface $statement;
 

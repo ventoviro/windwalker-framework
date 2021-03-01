@@ -121,7 +121,7 @@ class DatabaseQueueDriver implements QueueDriverInterface
 
                 $values = ['reserved' => $now, 'attempts' => $data['attempts']];
 
-                $this->db->getWriter()->updateBatch($this->table, $values, ['id' => $data['id']]);
+                $this->db->getWriter()->updateWhere($this->table, $values, ['id' => $data['id']]);
 
                 return $data;
             }
@@ -181,7 +181,7 @@ class DatabaseQueueDriver implements QueueDriverInterface
             'visibility' => $time,
         ];
 
-        $this->db->getWriter()->updateBatch(
+        $this->db->getWriter()->updateWhere(
             $this->table,
             $values,
             [

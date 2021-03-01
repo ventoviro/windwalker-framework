@@ -20,7 +20,6 @@ use Windwalker\Database\Schema\Schema;
 use Windwalker\Query\Clause\AlterClause;
 use Windwalker\Query\Clause\Clause;
 use Windwalker\Query\Escaper;
-use Windwalker\Query\Mysql\MysqlGrammar;
 use Windwalker\Query\Query;
 use Windwalker\Utilities\Str;
 
@@ -481,6 +480,12 @@ class MySQLPlatform extends AbstractPlatform
 
     public function getColumnExpression(Column $column): Clause
     {
+        $pos = $column->getOption('position') ?? [];
+
+        if ($pos[1] ?? null) {
+            $pos[1] = $this->db->quoteName($pos[1]);
+        }
+
         return $this->getGrammar()::build(
             $column->getTypeExpression(),
             $column->getNumericUnsigned() ? 'UNSIGNED' : '',
@@ -491,7 +496,7 @@ class MySQLPlatform extends AbstractPlatform
             $column->isAutoIncrement() ? 'AUTO_INCREMENT' : null,
             $column->getOption('on_update') ? 'ON UPDATE CURRENT_TIMESTAMP' : null,
             $column->getComment() ? 'COMMENT ' . $this->db->quote($column->getComment()) : '',
-            implode(' ', $column->getOption('position') ?? []),
+            implode(' ', $pos),
             $column->getOption('suffix'),
         );
     }

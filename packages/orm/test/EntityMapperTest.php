@@ -343,15 +343,26 @@ class EntityMapperTest extends AbstractORMTestCase
      *
      * @return void
      */
-    public function testUpdateBatch()
+    public function testUpdateWhere()
     {
         $data = ['state' => 0];
 
-        $this->instance->updateBatch($data, ['id' => [4, 5, 6]]);
+        $this->instance->updateWhere($data, ['id' => [4, 5, 6]]);
 
         $dataset = static::$db->prepare('SELECT * FROM ww_flower WHERE id IN(4, 5, 6)')->all();
 
         self::assertEquals([0, 0, 0], $dataset->column('state')->dump());
+    }
+
+    public function testUpdateBatch()
+    {
+        $data = ['state' => 2];
+
+        $this->instance->updateWhere($data, ['id' => [4, 5, 6]]);
+
+        $dataset = static::$db->prepare('SELECT * FROM ww_flower WHERE id IN(4, 5, 6)')->all();
+
+        self::assertEquals([2, 2, 2], $dataset->column('state')->dump());
     }
 
     /**
