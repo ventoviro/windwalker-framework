@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Metadata;
 
-use Windwalker\ORM\Attributes\{AutoIncrement, Cast, Column, EntitySetup, Mapping, PK, Table};
+use Windwalker\ORM\Attributes\{AutoIncrement, Cast, Column, EntitySetup, MapperClass, Mapping, PK, Table};
 use Windwalker\Attributes\AttributesResolver;
 use Windwalker\ORM\Cast\CastManager;
 use Windwalker\ORM\EntityMapper;
@@ -32,6 +32,8 @@ class EntityMetadata
     protected ?string $tableName = null;
 
     protected ?string $tableAlias = null;
+
+    protected string $mapperClass = EntityMapper::class;
 
     protected ?Column $aiColumn = null;
 
@@ -114,6 +116,16 @@ class EntityMetadata
 
         $this->tableName = $tableAttr->getName();
         $this->tableAlias = $tableAttr->getAlias();
+
+        $mapperClass = AttributesResolver::getFirstAttributeInstance(
+            $this->className,
+            MapperClass::class,
+            \ReflectionAttribute::IS_INSTANCEOF
+        );
+
+        if ($mapperClass) {
+            $this->mapperClass = $mapperClass->getClassName();
+        }
 
         // Loop all properties
         foreach ($this->getProperties() as $prop) {
@@ -412,9 +424,23 @@ class EntityMetadata
         return $this->orm;
     }
 
-    public function getMapper(): EntityMapper
+    public function getMapper(?string $mapperClass = null): EntityMapper
     {
-        return $this->getORM()->mapper($this->getClassName());
+        $args = [
+            $this,
+            $orm = $this->getORM()
+        ];
+
+        $mapperClass ??= $this->getMapperClass();
+
+        if ($mapperClass === EntityMapper::class) {
+            return new EntityMapper(...$args);
+        }
+
+        return $orm->getAttributesResolver()->createObject(
+            $mapperClass,
+            ...$args
+        );
     }
 
     /**
@@ -455,5 +481,13 @@ class EntityMetadata
     public function getTableAlias(): ?string
     {
         return $this->tableAlias;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMapperClass(): string
+    {
+        return $this->mapperClass;
     }
 }

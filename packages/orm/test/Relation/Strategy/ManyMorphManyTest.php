@@ -245,7 +245,7 @@ class ManyMorphManyTest extends AbstractORMTestCase
                 ->dump()
         );
 
-        self::assertEquals(
+        self::assertArraySimilar(
             $aids,
             self::$orm->mapper(StubAction::class)
                 ->select()

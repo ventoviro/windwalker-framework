@@ -15,9 +15,9 @@ use Windwalker\Database\Test\AbstractDatabaseTestCase;
 use Windwalker\ORM\Strategy\Selector;
 use Windwalker\ORM\ORM;
 use Windwalker\ORM\Test\AbstractORMTestCase;
-use Windwalker\ORM\Test\Entity\Article;
-use Windwalker\ORM\Test\Entity\Category;
-use Windwalker\ORM\Test\Entity\Flower;
+use Windwalker\ORM\Test\Entity\StubArticle;
+use Windwalker\ORM\Test\Entity\StubCategory;
+use Windwalker\ORM\Test\Entity\StubFlower;
 use Windwalker\ORM\Test\Entity\StubRose;
 use Windwalker\ORM\Test\Entity\StubSakura;
 use Windwalker\ORM\Test\Entity\StubSakuraRoseMap;
@@ -32,8 +32,8 @@ class SelectorTest extends AbstractORMTestCase
     public function testGroupByJoins()
     {
         $this->instance->select('*')
-            ->from(Flower::class, 'f')
-            ->leftJoin(Category::class, 'c', 'c.id', 'f.catid')
+            ->from(StubFlower::class, 'f')
+            ->leftJoin(StubCategory::class, 'c', 'c.id', 'f.catid')
             ->limit(3)
             ->groupByJoins();
 
@@ -147,14 +147,14 @@ class SelectorTest extends AbstractORMTestCase
     public function testGroupWithEntity()
     {
         $this->instance->select('*')
-            ->from(Article::class, 'a')
-            ->leftJoin(Category::class, 'c', 'c.id', 'a.category_id')
+            ->from(StubArticle::class, 'a')
+            ->leftJoin(StubCategory::class, 'c', 'c.id', 'a.category_id')
             ->limit(1)
             ->groupByJoins();
 
-        $item = $this->instance->all(Article::class)->first();
+        $item = $this->instance->all(StubArticle::class)->first();
 
-        self::assertInstanceOf(Article::class, $item);
+        self::assertInstanceOf(StubArticle::class, $item);
 
         self::assertEquals(
             [
@@ -169,13 +169,13 @@ class SelectorTest extends AbstractORMTestCase
 
     public function testSelectOne()
     {
-        /** @var Article $item */
-        $item = $this->instance->from(Article::class)
+        /** @var StubArticle $item */
+        $item = $this->instance->from(StubArticle::class)
             ->order('id', 'DESC')
-            ->get(Article::class);
+            ->get(StubArticle::class);
 
         self::assertInstanceOf(
-            Article::class,
+            StubArticle::class,
             $item
         );
 

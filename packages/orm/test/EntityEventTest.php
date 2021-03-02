@@ -13,7 +13,7 @@ namespace Windwalker\ORM\Test;
 
 use Windwalker\Database\Test\AbstractDatabaseTestCase;
 use Windwalker\ORM\EntityMapper;
-use Windwalker\ORM\Test\Entity\Article;
+use Windwalker\ORM\Test\Entity\StubArticle;
 
 /**
  * The EntityEventTest class.
@@ -24,25 +24,25 @@ class EntityEventTest extends AbstractORMTestCase
 
     public function testSaveEvent()
     {
-        Article::$counter = 0;
+        StubArticle::$counter = 0;
 
-        $article = new Article();
+        $article = new StubArticle();
         $article->setTitle('Hello');
         $article->setCategoryId(1);
         $article->setContent('World');
         $article->setCreated(new \DateTimeImmutable('now'));
         $article->setState(1);
 
-        /** @var Article $article */
-        $article = self::$orm->mapper(Article::class)->createOne($article);
+        /** @var StubArticle $article */
+        $article = self::$orm->mapper(StubArticle::class)->createOne($article);
 
         self::assertEquals(
             1,
-            Article::$counter,
+            StubArticle::$counter,
         );
         self::assertEquals(2, $article->getCategoryId());
 
-        Article::$counter = 0;
+        StubArticle::$counter = 0;
     }
 
     protected function setUp(): void

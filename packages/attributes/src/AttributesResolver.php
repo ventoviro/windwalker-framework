@@ -399,8 +399,9 @@ class AttributesResolver extends ObjectBuilder
     public static function getFirstAttributeInstance(
         mixed $value,
         string $attributeClass,
+        int $flags = 0
     ): ?object {
-        $attr = static::getFirstAttribute($value, $attributeClass);
+        $attr = static::getFirstAttribute($value, $attributeClass, $flags);
 
         return $attr?->newInstance();
     }
@@ -408,8 +409,9 @@ class AttributesResolver extends ObjectBuilder
     public static function getFirstAttribute(
         mixed $value,
         string $attributeClass,
+        int $flags = 0
     ): ?\ReflectionAttribute {
-        $attrs = static::getAttributesFromAny($value, $attributeClass);
+        $attrs = static::getAttributesFromAny($value, $attributeClass, $flags);
 
         return $attrs ? $attrs[0] : null;
     }

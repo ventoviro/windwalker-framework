@@ -26,7 +26,7 @@ use Windwalker\ORM\TableAwareInterface;
  * The User class.
  */
 #[Table('users')]
-class User
+class StubUser
 {
     #[Column('id')]
     #[PK]

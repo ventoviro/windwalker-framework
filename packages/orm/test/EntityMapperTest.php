@@ -11,9 +11,9 @@ namespace Windwalker\ORM\Test;
 use Windwalker\Data\Collection;
 use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\ORM\EntityMapper;
-use Windwalker\ORM\Test\Entity\Comment;
-use Windwalker\ORM\Test\Entity\Flower;
-use Windwalker\ORM\Test\Entity\User;
+use Windwalker\ORM\Test\Entity\StubComment;
+use Windwalker\ORM\Test\Entity\StubFlower;
+use Windwalker\ORM\Test\Entity\StubUser;
 use Windwalker\Utilities\Arr;
 
 /**
@@ -41,7 +41,7 @@ class EntityMapperTest extends AbstractORMTestCase
     {
         parent::setUp();
 
-        $this->instance = self::$orm->mapper(Flower::class);
+        $this->instance = self::$orm->mapper(StubFlower::class);
     }
 
     /**
@@ -114,11 +114,11 @@ class EntityMapperTest extends AbstractORMTestCase
     public function testFindOne()
     {
         // Find by primary key
-        /** @var Flower $data */
+        /** @var StubFlower $data */
         $data = $this->instance->findOne(7);
 
         self::assertInstanceOf(
-            Flower::class,
+            StubFlower::class,
             $data
         );
         self::assertEquals('Baby\'s Breath', $data->getTitle());
@@ -164,7 +164,7 @@ class EntityMapperTest extends AbstractORMTestCase
             ['title' => 'Sunflower', 'anim' => 'bird', 'meaning' => '', 'params' => ''],
         ];
 
-        /** @var Flower[] $returns */
+        /** @var StubFlower[] $returns */
         $returns = $this->instance->createMultiple($items);
 
         $newItems = self::$db->prepare(
@@ -176,7 +176,7 @@ class EntityMapperTest extends AbstractORMTestCase
 
         self::assertEquals(86, $returns[0]->id, 'Inserted id not matched.');
 
-        self::assertInstanceOf(Flower::class, $returns[0]);
+        self::assertInstanceOf(StubFlower::class, $returns[0]);
 
         // Create from Collection
         $items = new Collection(
@@ -221,7 +221,7 @@ class EntityMapperTest extends AbstractORMTestCase
             static::$db->prepare('SELECT * FROM ww_flower ORDER BY id DESC LIMIT 1')->get()->id
         );
 
-        self::assertInstanceOf(Flower::class, $newData);
+        self::assertInstanceOf(StubFlower::class, $newData);
 
         // Create from Collection
         $data = new Collection(
@@ -317,10 +317,10 @@ class EntityMapperTest extends AbstractORMTestCase
 
     public function testUpdateCurrentTime()
     {
-        $mapper = static::$orm->mapper(Comment::class);
+        $mapper = static::$orm->mapper(StubComment::class);
 
-        /** @var Comment $comment */
-        /** @var Comment $comment2 */
+        /** @var StubComment $comment */
+        /** @var StubComment $comment2 */
         $comment = $mapper->findOne(10);
 
         $mapper->updateOne($comment);
@@ -446,7 +446,7 @@ class EntityMapperTest extends AbstractORMTestCase
 
         self::assertNull(static::$db->prepare('SELECT * FROM ww_flower WHERE id = 16')->get());
 
-        $flower = new Flower();
+        $flower = new StubFlower();
         $flower->id = 17;
         $this->instance->delete($flower);
 
@@ -455,7 +455,7 @@ class EntityMapperTest extends AbstractORMTestCase
 
     public function testSync()
     {
-        $comments = static::$orm->from(Comment::class)
+        $comments = static::$orm->from(StubComment::class)
             ->where('type', 'article')
             ->where('user_id', 1)
             ->where('target_id', 1)
@@ -465,7 +465,7 @@ class EntityMapperTest extends AbstractORMTestCase
 
         $comments[0]->user_id = 10;
 
-        $comment = new Comment();
+        $comment = new StubComment();
         $comment->setType('article');
         $comment->setUserId(1);
         $comment->setTargetId(1);
@@ -473,7 +473,7 @@ class EntityMapperTest extends AbstractORMTestCase
 
         $comments[] = $comment;
 
-        $comment = new Comment();
+        $comment = new StubComment();
         $comment->setType('article');
         $comment->setUserId(1);
         $comment->setTargetId(1);
@@ -483,7 +483,7 @@ class EntityMapperTest extends AbstractORMTestCase
 
         $comments = $comments->values();
 
-        $syncResult = self::$orm->mapper(Comment::class)
+        $syncResult = self::$orm->mapper(StubComment::class)
             ->sync(
                 $comments,
                 [
@@ -497,11 +497,11 @@ class EntityMapperTest extends AbstractORMTestCase
         $syncResult = Arr::collapse($syncResult);
 
         self::assertContainsOnlyInstancesOf(
-            Comment::class,
+            StubComment::class,
             $syncResult
         );
 
-        $newComments = static::$orm->from(Comment::class)
+        $newComments = static::$orm->from(StubComment::class)
             ->where('type', 'article')
             ->where('user_id', 1)
             ->where('target_id', 1)
@@ -515,7 +515,7 @@ class EntityMapperTest extends AbstractORMTestCase
 
     public function testFindOneOrCreate()
     {
-        /** @var Flower $flower */
+        /** @var StubFlower $flower */
         $flower = $this->instance->findOneOrCreate(
             ['title' => 'Fire Flower'],
             [
@@ -526,12 +526,12 @@ class EntityMapperTest extends AbstractORMTestCase
             ]
         );
 
-        self::assertInstanceOf(Flower::class, $flower);
+        self::assertInstanceOf(StubFlower::class, $flower);
         self::assertEquals(99, $flower->id);
         self::assertEquals('Fire Flower', $flower->getTitle());
         self::assertEquals('Hot', $flower->getMeaning());
 
-        /** @var Flower $flower */
+        /** @var StubFlower $flower */
         $flower = $this->instance->findOneOrCreate(
             ['title' => 'Ice Flower'],
             fn(array $item) => $item += [
@@ -542,7 +542,7 @@ class EntityMapperTest extends AbstractORMTestCase
             ]
         );
 
-        self::assertInstanceOf(Flower::class, $flower);
+        self::assertInstanceOf(StubFlower::class, $flower);
         self::assertEquals(100, $flower->id);
         self::assertEquals('Ice Flower', $flower->getTitle());
         self::assertEquals('Cold', $flower->getMeaning());
@@ -550,7 +550,7 @@ class EntityMapperTest extends AbstractORMTestCase
 
     public function testUpdateOneOrCreate()
     {
-        /** @var Flower $flower */
+        /** @var StubFlower $flower */
         $flower = $this->instance->updateOneOrCreate(
             ['title' => 'Stone Flower', 'meaning' => 'Strong'],
             [
@@ -561,12 +561,12 @@ class EntityMapperTest extends AbstractORMTestCase
             ['meaning'],
         );
 
-        self::assertInstanceOf(Flower::class, $flower);
+        self::assertInstanceOf(StubFlower::class, $flower);
         self::assertEquals(101, $flower->id);
         self::assertEquals('Stone Flower', $flower->getTitle());
         self::assertEquals('Strong', $flower->getMeaning());
 
-        /** @var Flower $flower */
+        /** @var StubFlower $flower */
         $flower = $this->instance->updateOneOrCreate(
             ['title' => 'Lisianthus', 'meaning' => 'calming2'],
             [
@@ -577,13 +577,13 @@ class EntityMapperTest extends AbstractORMTestCase
             ['title'],
         );
 
-        self::assertInstanceOf(Flower::class, $flower);
+        self::assertInstanceOf(StubFlower::class, $flower);
         self::assertEquals(50, $flower->id);
         self::assertEquals('Lisianthus', $flower->getTitle());
         self::assertEquals('calming2', $flower->getMeaning());
 
         $flower = $this->instance->select()->where('id', 50)
-            ->get(Flower::class);
+            ->get(StubFlower::class);
 
         self::assertEquals(50, $flower->id);
         self::assertEquals('Lisianthus', $flower->getTitle());

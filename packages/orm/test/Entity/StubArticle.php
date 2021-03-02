@@ -25,7 +25,7 @@ use Windwalker\ORM\Event\AfterSaveEvent;
  * The Article class.
  */
 #[Table('articles')]
-class Article
+class StubArticle
 {
     #[PK, AutoIncrement]
     #[Column('id')]
@@ -58,8 +58,8 @@ class Article
     #[Cast('array')]
     protected ?array $params = [];
 
-    #[Cast(Category::class, strategy: Cast::HYDRATOR)]
-    public ?Category $c = null;
+    #[Cast(StubCategory::class, strategy: Cast::HYDRATOR)]
+    public ?StubCategory $c = null;
 
     public static int $counter = 0;
 

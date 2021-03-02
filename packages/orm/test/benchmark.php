@@ -13,7 +13,7 @@ use Windwalker\Database\DatabaseFactory;
 use Windwalker\ORM\Attributes\Column;
 use Windwalker\ORM\Event\AfterSaveEvent;
 use Windwalker\ORM\ORM;
-use Windwalker\ORM\Test\Entity\Article;
+use Windwalker\ORM\Test\Entity\StubArticle;
 
 include __DIR__ . '/../../../vendor/autoload.php';
 
@@ -21,7 +21,7 @@ $orm = new ORM(
     (new DatabaseFactory())->create('pdo_mysql', [])
 );
 
-$meta = $orm->getEntityMetadata(Article::class);
+$meta = $orm->getEntityMetadata(StubArticle::class);
 
 const NUM_TESTS = 100000;
 

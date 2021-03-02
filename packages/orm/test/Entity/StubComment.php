@@ -21,7 +21,7 @@ use Windwalker\ORM\Attributes\Table;
  * The Comment class.
  */
 #[Table('comments')]
-class Comment
+class StubComment
 {
     #[Column('id')]
     #[PK(true)]

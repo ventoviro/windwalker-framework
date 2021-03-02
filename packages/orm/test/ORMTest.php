@@ -14,7 +14,7 @@ namespace Windwalker\ORM\Test;
 use PHPUnit\Framework\TestCase;
 use Windwalker\Database\Test\AbstractDatabaseTestCase;
 use Windwalker\ORM\ORM;
-use Windwalker\ORM\Test\Entity\Article;
+use Windwalker\ORM\Test\Entity\StubArticle;
 
 /**
  * The ORMTest class.
@@ -28,9 +28,9 @@ class ORMTest extends AbstractDatabaseTestCase
      */
     public function testFindOne(): void
     {
-        $article = $this->instance->findOne(Article::class, 1);
+        $article = $this->instance->findOne(StubArticle::class, 1);
 
-        self::assertInstanceOf(Article::class, $article);
+        self::assertInstanceOf(StubArticle::class, $article);
         self::assertEquals(1, $article->getId());
         self::assertEquals('Corrupti illum.', $article->getTitle());
         self::assertEquals('2009-05-14 17:45:24', $article->getCreated()->format(self::$db->getDateFormat()));

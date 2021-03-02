@@ -21,7 +21,7 @@ use Windwalker\ORM\Cast\JsonCast;
  * The Category class.
  */
 #[Table('ww_categories')]
-class Category
+class StubCategory
 {
     #[PK]
     #[Column('id')]

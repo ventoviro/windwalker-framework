@@ -65,16 +65,15 @@ class ORM
     /**
      * entity
      *
-     * @param  string  $entityClass
+     * @param  string       $entityClass
+     * @param  string|null  $mapperClass
      *
      * @return  EntityMapper
+     * @throws \ReflectionException
      */
-    public function mapper(string $entityClass): EntityMapper
+    public function mapper(string $entityClass, ?string $mapperClass = null): EntityMapper
     {
-        return new EntityMapper(
-            $this->entityMetadataCollection->get($entityClass),
-            $this
-        );
+        return $this->getEntityMetadata($entityClass)->getMapper($mapperClass);
     }
 
     public function from(mixed $tables, ?string $alias = null): Selector

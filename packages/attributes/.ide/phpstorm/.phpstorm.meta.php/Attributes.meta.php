@@ -14,4 +14,9 @@ namespace PHPSTORM_META {
         \Windwalker\Attributes\AttributesResolver::getFirstAttributeInstance(1),
         type(1)
     );
+
+    override(
+        \Windwalker\Attributes\AttributesResolver::createObject(0),
+        type(0)
+    );
 }
