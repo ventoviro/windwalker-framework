@@ -12,27 +12,42 @@ declare(strict_types=1);
 namespace Windwalker\ORM;
 
 use Windwalker\Data\Collection;
-use Windwalker\ORM\Metadata\EntityMetadata;
+use Windwalker\ORM\Exception\NestedHandleException;
+use Windwalker\Utilities\Arr;
+use Windwalker\Utilities\Assert\ArgumentsAssert;
+use Windwalker\Utilities\Str;
 
 /**
  * The NestedSetMapper class.
  */
 class NestedSetMapper extends EntityMapper
 {
+    protected const PARENT = 'parent';
+    protected const LEFT = 'left';
+    protected const RIGHT = 'right';
+
     /**
      * getAncestors
      *
-     * @param  mixed  $pk
+     * @param  mixed  $pkOrEntity
      *
      * @return  Collection
      */
-    public function getAncestors(mixed $pk): Collection
+    public function getAncestors(mixed $pkOrEntity): Collection
     {
+        ArgumentsAssert::assert(
+            is_object($pkOrEntity) || is_scalar($pkOrEntity),
+            '{caller} conditions should be object or scalar, {value} given',
+            $pkOrEntity
+        );
+
         $metadata = $this->getMetadata();
         $key = $metadata->getMainKey();
 
+        $pk = $this->entityToPk($pkOrEntity);
+
         return $this->getORM()
-            ->select()
+            ->select('p.*')
             ->from(
                 [
                     [$metadata->getClassName(), 'n'],
@@ -42,6 +57,97 @@ class NestedSetMapper extends EntityMapper
             ->where('n.lft', 'between', ['p.lft', 'p.rgt'])
             ->where('n.' . $key, '=', $pk)
             ->order('p.lft')
-            ->all();
+            ->all($metadata->getClassName());
+    }
+
+    public function getTree(mixed $pkOrEntity): Collection
+    {
+        ArgumentsAssert::assert(
+            is_object($pkOrEntity) || is_scalar($pkOrEntity),
+            '{caller} conditions should be object or scalar, {value} given',
+            $pkOrEntity
+        );
+
+        $metadata = $this->getMetadata();
+        $key = $metadata->getMainKey();
+
+        $pk = $this->entityToPk($pkOrEntity);
+
+        return $this->getORM()
+            ->select('n.*')
+            ->from(
+                [
+                    [$metadata->getClassName(), 'n'],
+                    [$metadata->getClassName(), 'p']
+                ]
+            )
+            ->where('n.lft', 'between', ['p.lft', 'p.rgt'])
+            ->where('p.' . $key, '=', $pk)
+            ->order('n.lft')
+            ->all($metadata->getClassName());
+    }
+
+    public function isLeaf(mixed $pkOrEntity): bool
+    {
+        ArgumentsAssert::assert(
+            is_object($pkOrEntity) || is_scalar($pkOrEntity),
+            '{caller} conditions should be object or scalar, {value} given',
+            $pkOrEntity
+        );
+
+        $pk = $this->entityToPk($pkOrEntity);
+
+        $node = $this->getNode($pk);
+
+        if ($node === null) {
+            return false;
+        }
+
+        return ($node->rgt - $node->lft) === 1;
+    }
+
+    private function entityToPk(mixed $entity): mixed
+    {
+        $metadata = $this->getMetadata();
+
+        if (is_object($entity) && $metadata::isEntity($entity)) {
+            return $this->extract($entity)[$this->getMainKey()];
+        }
+
+        return $entity;
+    }
+
+    protected function getNode(mixed $value, ?string $key = null): ?Collection
+    {
+        $metadata = $this->getMetadata();
+
+        // Determine which key to get the node base on.
+        $k = match ($key) {
+            static::PARENT => 'parent_id',
+            static::LEFT => 'lft',
+            static::RIGHT => 'rgt',
+            default => $this->getMainKey(),
+        };
+
+        // Get the node data.
+        $row = $this->getORM()
+            ->select($this->getMainKey(), 'parent_id', 'level', 'lft', 'rgt')
+            ->from($metadata->getClassName())
+            ->where($k, '=', $value)
+            ->limit(1)
+            ->get();
+
+        // Check for no $row returned
+        if ($row === null) {
+            throw new NestedHandleException(
+                sprintf('%s::getNode(%d, %s) failed.', static::class, $value, $key)
+            );
+        }
+
+        // Do some simple calculations.
+        $row->numChildren = (int) ($row->rgt - $row->lft - 1) / 2;
+        $row->width = (int) $row->rgt - $row->lft + 1;
+
+        return $row;
     }
 }

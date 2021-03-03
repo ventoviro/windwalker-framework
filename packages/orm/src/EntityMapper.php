@@ -748,7 +748,7 @@ class EntityMapper implements EventAwareInterface
         return $this->getORM()->extractEntity($entity);
     }
 
-    public function conditionsToWheres(mixed $conditions): array
+    public function conditionsToWheres(mixed $conditions, ?string $alias = null): array
     {
         if (!is_array($conditions)) {
             $metadata = $this->getMetadata();
