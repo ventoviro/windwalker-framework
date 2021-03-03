@@ -19,11 +19,6 @@ use Windwalker\ORM\NestedSetMapper;
 #[\Attribute]
 class NestedSet extends MapperClass
 {
-    public const POSITION_BEFORE = 1;
-    public const POSITION_AFTER = 2;
-    public const POSITION_FIRST_CHILD = 4;
-    public const POSITION_LAST_CHILD = 6;
-
     /**
      * @inheritDoc
      */

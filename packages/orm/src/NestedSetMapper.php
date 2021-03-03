@@ -13,9 +13,8 @@ namespace Windwalker\ORM;
 
 use Windwalker\Data\Collection;
 use Windwalker\ORM\Exception\NestedHandleException;
-use Windwalker\Utilities\Arr;
+use Windwalker\ORM\Nested\NestedEntityInterface;
 use Windwalker\Utilities\Assert\ArgumentsAssert;
-use Windwalker\Utilities\Str;
 
 /**
  * The NestedSetMapper class.
@@ -23,7 +22,9 @@ use Windwalker\Utilities\Str;
 class NestedSetMapper extends EntityMapper
 {
     protected const PARENT = 'parent';
+
     protected const LEFT = 'left';
+
     protected const RIGHT = 'right';
 
     /**
@@ -42,7 +43,7 @@ class NestedSetMapper extends EntityMapper
         );
 
         $metadata = $this->getMetadata();
-        $key = $metadata->getMainKey();
+        $key      = $metadata->getMainKey();
 
         $pk = $this->entityToPk($pkOrEntity);
 
@@ -51,7 +52,7 @@ class NestedSetMapper extends EntityMapper
             ->from(
                 [
                     [$metadata->getClassName(), 'n'],
-                    [$metadata->getClassName(), 'p']
+                    [$metadata->getClassName(), 'p'],
                 ]
             )
             ->where('n.lft', 'between', ['p.lft', 'p.rgt'])
@@ -69,7 +70,7 @@ class NestedSetMapper extends EntityMapper
         );
 
         $metadata = $this->getMetadata();
-        $key = $metadata->getMainKey();
+        $key      = $metadata->getMainKey();
 
         $pk = $this->entityToPk($pkOrEntity);
 
@@ -78,7 +79,7 @@ class NestedSetMapper extends EntityMapper
             ->from(
                 [
                     [$metadata->getClassName(), 'n'],
-                    [$metadata->getClassName(), 'p']
+                    [$metadata->getClassName(), 'p'],
                 ]
             )
             ->where('n.lft', 'between', ['p.lft', 'p.rgt'])
@@ -117,6 +118,30 @@ class NestedSetMapper extends EntityMapper
         return $entity;
     }
 
+    public function setPosition(
+        NestedEntityInterface $entity,
+        mixed $referenceId,
+        int $position = Nested\Position::AFTER
+    ): void {
+        $allow = [
+            Nested\Position::AFTER,
+            Nested\Position::BEFORE,
+            Nested\Position::FIRST_CHILD,
+            Nested\Position::LAST_CHILD,
+        ];
+
+        // Make sure the location is valid.
+        ArgumentsAssert::assert(
+            !in_array($position, $allow, true),
+            '{caller} position: {value} is invalid.',
+            $position
+        );
+
+        $entity->getPosition()
+            ->setReferenceId($referenceId)
+            ->setPosition($position);
+    }
+
     protected function getNode(mixed $value, ?string $key = null): ?Collection
     {
         $metadata = $this->getMetadata();
@@ -146,7 +171,7 @@ class NestedSetMapper extends EntityMapper
 
         // Do some simple calculations.
         $row->numChildren = (int) ($row->rgt - $row->lft - 1) / 2;
-        $row->width = (int) $row->rgt - $row->lft + 1;
+        $row->width       = (int) $row->rgt - $row->lft + 1;
 
         return $row;
     }
