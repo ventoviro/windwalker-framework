@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Query\Bounded;
 
+use Windwalker\Query\Clause\QuoteNameClause;
 use Windwalker\Query\Clause\ValueClause;
 
 /**
@@ -45,6 +46,11 @@ trait BindableTrait
         int $length = 0,
         $driverOptions = null
     ): static {
+        // No action if value is QuoteNameClause
+        if ($value instanceof QuoteNameClause) {
+            return $this;
+        }
+
         // If is array, loop for all elements.
         if (is_array($key)) {
             foreach ($key as $k => &$v) {

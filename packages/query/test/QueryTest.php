@@ -22,6 +22,7 @@ use Windwalker\Test\Traits\QueryTestTrait;
 use Windwalker\Utilities\Reflection\ReflectAccessor;
 
 use function Windwalker\Query\clause;
+use function Windwalker\Query\qn;
 use function Windwalker\Query\val;
 use function Windwalker\raw;
 
@@ -823,6 +824,10 @@ SQL
             'Where between' => [
                 'SELECT * FROM "a" WHERE "foo" BETWEEN 1 AND 100',
                 ['foo', 'between', [1, 100]],
+            ],
+            'Where between with column name' => [
+                'SELECT * FROM "a" WHERE "foo" BETWEEN "a"."lft" AND "b"."rgt"',
+                ['foo', 'between', [qn('a.lft'), qn('b.rgt')]],
             ],
             'Where not between' => [
                 'SELECT * FROM "a" WHERE "foo" NOT BETWEEN 1 AND 100',

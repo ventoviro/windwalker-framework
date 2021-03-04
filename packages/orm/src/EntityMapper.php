@@ -37,6 +37,8 @@ use Windwalker\Utilities\Assert\TypeAssert;
 use Windwalker\Utilities\Reflection\ReflectAccessor;
 use Windwalker\Utilities\TypeCast;
 
+use function DI\string;
+
 /**
  * EntityMapper is an entity & database mapping object.
  *
@@ -179,7 +181,7 @@ class EntityMapper implements EventAwareInterface
             $source
         );
 
-        $data = $this->extractForSave($source);
+        $data = $this->extract($source);
 
         if ($aiColumn && isset($data[$aiColumn]) && !$data[$aiColumn]) {
             unset($data[$aiColumn]);
@@ -191,12 +193,14 @@ class EntityMapper implements EventAwareInterface
             compact('data', 'type', 'metadata', 'source')
         );
 
+        $data = $this->castForSave($event->getData());
+
         $data = $this->getDb()->getWriter()->insertOne(
             $metadata->getTableName(),
-            $data = $event->getData(),
+            $data,
             $pk,
             [
-                'incrementField' => $aiColumn && isset($data[$aiColumn]),
+                'incrementField' => $aiColumn && !empty($data[$aiColumn]),
             ]
         );
 
@@ -254,7 +258,7 @@ class EntityMapper implements EventAwareInterface
             $source
         );
 
-        $data = $this->extractForSave($source, $updateNulls);
+        $data = $this->extract($source);
 
         // Get old data
         $oldData = null;
@@ -273,9 +277,11 @@ class EntityMapper implements EventAwareInterface
             compact('data', 'type', 'metadata', 'oldData', 'source')
         );
 
+        $data = $this->castForSave($event->getData(), $updateNulls);
+
         $metadata = $event->getMetadata();
 
-        $writeData = $data = $event->getData();
+        $writeData = $data;
 
         $keyValues = Arr::only($writeData, (array) $condFields);
         if ($oldData !== null) {
@@ -342,7 +348,7 @@ class EntityMapper implements EventAwareInterface
      * @param  mixed  $source      The data we want to update to every rows.
      * @param  mixed  $conditions  Where conditions, you can use array or Compare object.
      *
-     * @return  boolean
+     * @return  bool
      * @throws \InvalidArgumentException
      */
     public function updateWhere(array|object $source, mixed $conditions = null): StatementInterface

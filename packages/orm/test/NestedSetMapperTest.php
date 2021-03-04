@@ -65,7 +65,7 @@ class NestedSetMapperTest extends AbstractORMTestCase
         $child->setAlias('flower');
 
         $this->instance->setPosition($child, 1, Position::FIRST_CHILD);
-        $this->instance->saveOne($child);
+        $this->instance->createOne($child);
 
         $child = new StubNestedSet();
         $child->setTitle('Sakura');
@@ -73,7 +73,6 @@ class NestedSetMapperTest extends AbstractORMTestCase
 
         $this->instance->setPosition($child, 2, Position::FIRST_CHILD);
         $this->instance->saveOne($child);
-        $this->instance->rebuildPath($child);
 
         // First child
         $child = new StubNestedSet();
@@ -109,6 +108,17 @@ class NestedSetMapperTest extends AbstractORMTestCase
                 $ent->getRgt()
             ]
         );
+    }
+
+    public function testGetPath()
+    {
+        $path = $this->instance->getPath(5);
+
+        $ids = $path->column('id', null, true)->dump();
+        $paths = $path->column('path', null, true)->dump();
+
+        self::assertEquals([1, 2, 5], $ids);
+        self::assertEquals(['', 'flower', 'flower/sunflower'], $paths);
     }
 
     /**

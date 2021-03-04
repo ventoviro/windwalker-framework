@@ -29,6 +29,7 @@ use Windwalker\Query\Clause\AsClause;
 use Windwalker\Query\Clause\Clause;
 use Windwalker\Query\Clause\ClauseInterface;
 use Windwalker\Query\Clause\JoinClause;
+use Windwalker\Query\Clause\QuoteNameClause;
 use Windwalker\Query\Clause\ValueClause;
 use Windwalker\Query\Concern\QueryConcernTrait;
 use Windwalker\Query\Concern\ReflectConcernTrait;
@@ -503,8 +504,12 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
         return $this;
     }
 
-    private function val($value): ValueClause
+    private function val(mixed $value): ValueClause|QuoteNameClause
     {
+        if ($value instanceof QuoteNameClause) {
+            return $value->setQuery($this);
+        }
+
         return new ValueClause($value);
     }
 

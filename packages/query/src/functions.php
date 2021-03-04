@@ -12,9 +12,10 @@ declare(strict_types=1);
 namespace Windwalker\Query;
 
 use Windwalker\Query\Clause\Clause;
+use Windwalker\Query\Clause\QuoteNameClause;
 use Windwalker\Query\Clause\ValueClause;
 
-if (!function_exists('clause')) {
+if (!function_exists(__NAMESPACE__ . '\clause')) {
     /**
      * clause
      *
@@ -30,7 +31,7 @@ if (!function_exists('clause')) {
     }
 }
 
-if (!function_exists('val')) {
+if (!function_exists(__NAMESPACE__ . '\val')) {
     /**
      * val
      *
@@ -49,5 +50,28 @@ if (!function_exists('val')) {
         }
 
         return new ValueClause($value);
+    }
+}
+
+if (!function_exists(__NAMESPACE__ . '\qn')) {
+    /**
+     * qn
+     *
+     * @param  mixed       $value
+     * @param  Query|null  $query
+     *
+     * @return  QuoteNameClause|array
+     */
+    function qn(mixed $value, ?Query $query = null): QuoteNameClause|array
+    {
+        if ($value instanceof QuoteNameClause) {
+            return $value;
+        }
+
+        if (is_array($value)) {
+            return array_map(fn ($v) => new QuoteNameClause($v, $query), $value);
+        }
+
+        return new QuoteNameClause($value, $query);
     }
 }

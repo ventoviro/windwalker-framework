@@ -24,6 +24,7 @@ use Windwalker\Query\Query;
 use Windwalker\Utilities\Assert\ArgumentsAssert;
 use Windwalker\Utilities\Cache\InstanceCacheTrait;
 
+use function Windwalker\Query\qn;
 use function Windwalker\raw;
 
 /**
@@ -73,6 +74,33 @@ class NestedSetMapper extends EntityMapper
      *
      * @return  Collection
      */
+    public function getPath(string|int|NestedEntityInterface $pkOrEntity): Collection
+    {
+        ArgumentsAssert::assert(
+            is_object($pkOrEntity) || is_scalar($pkOrEntity),
+            '{caller} conditions should be object or scalar, {value} given',
+            $pkOrEntity
+        );
+
+        $metadata = $this->getMetadata();
+        $key      = $metadata->getMainKey();
+
+        $pk = $this->entityToPk($pkOrEntity);
+
+        return $this->getORM()
+            ->select('p.*')
+            ->from(
+                [
+                    [$metadata->getClassName(), 'n'],
+                    [$metadata->getClassName(), 'p'],
+                ]
+            )
+            ->where('n.lft', 'between', [qn('p.lft'), qn('p.rgt')])
+            ->where('n.' . $key, '=', $pk)
+            ->order('p.lft')
+            ->all($metadata->getClassName());
+    }
+
     public function getAncestors(string|int|NestedEntityInterface $pkOrEntity): Collection
     {
         ArgumentsAssert::assert(
@@ -94,8 +122,9 @@ class NestedSetMapper extends EntityMapper
                     [$metadata->getClassName(), 'p'],
                 ]
             )
-            ->where('n.lft', 'between', ['p.lft', 'p.rgt'])
+            ->where('n.lft', 'between', [qn('p.lft'), qn('p.rgt')])
             ->where('n.' . $key, '=', $pk)
+            ->where('p.' . $key, '!=', $pk)
             ->order('p.lft')
             ->all($metadata->getClassName());
     }
@@ -120,7 +149,7 @@ class NestedSetMapper extends EntityMapper
                     [$metadata->getClassName(), 'p'],
                 ]
             )
-            ->where('n.lft', 'between', ['p.lft', 'p.rgt'])
+            ->where('n.lft', 'between', [qn('p.lft'), qn('p.rgt')])
             ->where('p.' . $key, '=', $pk)
             ->order('n.lft')
             ->all($metadata->getClassName());
@@ -282,6 +311,10 @@ class NestedSetMapper extends EntityMapper
                 ->execute();
 
             $data = array_merge($data, $newData);
+
+            if ($this->isPathable()) {
+                $data['path'] = $this->calculatePath($data);
+            }
 
             $event->setData($data);
         } elseif ($position->getReferenceId()) {
@@ -573,12 +606,13 @@ class NestedSetMapper extends EntityMapper
         return $root;
     }
 
-    public function rebuild(mixed $source, int $lft = null, int $level = 0, string $path = ''): int
+    public function rebuild(mixed $source, int $lft = null, int $level = 0, ?string $path = null): int
     {
         $parent   = $this->sourceToEntity($source, Collection::class);
         $parentId = $parent[$this->getMainKey()];
+        $path     = $path ?? $parent['path'];
 
-        $buildPath = is_subclass_of($this->getMetadata()->getClassName(), NestedPathableInterface::class);
+        $buildPath = $this->isPathable();
 
         // Build the structure of the recursive query.
         $query = $this->cacheStorage['rebuild.sql'] ??= $this->select()
@@ -630,8 +664,27 @@ class NestedSetMapper extends EntityMapper
         );
     }
 
+    public function calculatePath(array|object $entity): ?string
+    {
+        if (is_object($entity)) {
+            if (!$entity instanceof NestedPathableInterface) {
+                return null;
+            }
+
+            $data = $this->extract($entity);
+        } else {
+            $data = $entity;
+        }
+
+        // Build the path.
+        $path = $this->preparePath($data['parent_id'] ?? null);
+
+        return ltrim($path . '/' . $data['alias'], '/');
+    }
+
     public function rebuildPath(mixed $source): void
     {
+        // todo: recursive to children
         $entity = $this->sourceToEntity($source);
 
         if (!$entity instanceof NestedPathableInterface) {
@@ -641,15 +694,35 @@ class NestedSetMapper extends EntityMapper
         $data = $this->extract($entity);
         $pk = $data[$this->getMainKey()];
 
+        // Build the path.
+        $path = $this->preparePath($pk);
+
+        // Update the path field for the node.
+        $this->update()
+            ->set('path', $path)
+            ->where($this->getMainKey(), $pk)
+            ->execute();
+
+        // Update the current record's path to the new one:
+        $entity->setPath((string) $path);
+    }
+
+    protected function preparePath(mixed $pk): ?string
+    {
+        if (!$pk) {
+            return null;
+        }
+
         // Get the aliases for the path from the node to the root node.
-        $segments = $this->select('p.alias')
+        $segments = $this->getORM()
+            ->select('p.alias')
             ->from(
                 [
                     [$this->getMetadata()->getClassName(), 'n'],
                     [$this->getMetadata()->getClassName(), 'p'],
                 ]
             )
-            ->where('n.lft', 'between', ['p.lft', 'p.rgt'])
+            ->where('n.lft', 'between', [qn('p.lft'), qn('p.rgt')])
             ->where('n.' . $this->getMainKey(), $pk)
             ->order('p.lft')
             ->loadColumn();
@@ -660,16 +733,7 @@ class NestedSetMapper extends EntityMapper
         }
 
         // Build the path.
-        $path = (string) $segments->implode('/')->trim('/\\');
-
-        // Update the path field for the node.
-        $this->update()
-            ->set('path', $path)
-            ->where($this->getMainKey(), $pk)
-            ->execute();
-
-        // Update the current record's path to the new one:
-        $entity->setPath($path);
+        return (string) $segments->implode('/')->trim('/\\');
     }
 
     public function createRoot(array $data = []): NestedEntityInterface
