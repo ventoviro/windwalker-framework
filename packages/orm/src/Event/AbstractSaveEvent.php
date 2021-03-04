@@ -27,6 +27,8 @@ abstract class AbstractSaveEvent extends AbstractEntityEvent
 
     protected ?array $oldData;
 
+    protected array|object $source = [];
+
     /**
      * @return array
      */
@@ -83,6 +85,26 @@ abstract class AbstractSaveEvent extends AbstractEntityEvent
     public function setOldData(?array $oldData): static
     {
         $this->oldData = $oldData;
+
+        return $this;
+    }
+
+    /**
+     * @return array|object
+     */
+    public function getSource(): object|array
+    {
+        return $this->source;
+    }
+
+    /**
+     * @param  array|object  $source
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setSource(object|array $source): static
+    {
+        $this->source = $source;
 
         return $this;
     }

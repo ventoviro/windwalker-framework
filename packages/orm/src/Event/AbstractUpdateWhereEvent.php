@@ -22,6 +22,8 @@ abstract class AbstractUpdateWhereEvent extends AbstractEntityEvent
 
     protected array $data;
 
+    protected array|object $source = [];
+
     /**
      * @return mixed
      */
@@ -58,6 +60,26 @@ abstract class AbstractUpdateWhereEvent extends AbstractEntityEvent
     public function setData(array $data): static
     {
         $this->data = $data;
+
+        return $this;
+    }
+
+    /**
+     * @return array|object
+     */
+    public function getSource(): object|array
+    {
+        return $this->source;
+    }
+
+    /**
+     * @param  array|object  $source
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setSource(object|array $source): static
+    {
+        $this->source = $source;
 
         return $this;
     }

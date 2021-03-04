@@ -38,4 +38,33 @@ namespace PHPSTORM_META {
             ]
         )
     );
+
+    // Compares
+    registerArgumentsSet(
+        'compare_operators',
+        '=',
+        '!=',
+        '<',
+        '<=',
+        '>',
+        '>=',
+        'between',
+        'not between',
+        'in',
+        'not in',
+        'is',
+        'is not',
+    );
+
+    expectedArguments(
+        \Windwalker\ORM\Strategy\Selector::where(),
+        1,
+        argumentsSet('compare_operators')
+    );
+
+    expectedArguments(
+        \Windwalker\ORM\Strategy\Selector::having(),
+        1,
+        argumentsSet('compare_operators')
+    );
 }

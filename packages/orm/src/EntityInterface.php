@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM;
 
+use Windwalker\Data\Collection;
 use Windwalker\Utilities\Contract\DumpableInterface;
 
 /**
@@ -18,4 +19,13 @@ use Windwalker\Utilities\Contract\DumpableInterface;
  */
 interface EntityInterface extends \JsonSerializable, DumpableInterface
 {
+    public static function table(): ?string;
+
+    public static function newInstance(array $data = []): static;
+
+    public function loadAllRelations(): void;
+
+    public function clearRelations(): void;
+
+    public function toCollection(): Collection;
 }

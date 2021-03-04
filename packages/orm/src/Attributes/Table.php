@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Attributes;
 
+use Windwalker\ORM\EntityMapper;
 use Windwalker\Utilities\StrInflector;
 
 /**
@@ -19,20 +20,19 @@ use Windwalker\Utilities\StrInflector;
 #[\Attribute]
 class Table
 {
-    protected string $name;
-
-    protected ?string $alias = null;
-
     /**
      * Table constructor.
      *
      * @param  string       $name
      * @param  string|null  $alias
+     * @param  string       $mapperClass
      */
-    public function __construct(string $name, ?string $alias = null)
-    {
-        $this->name = $name;
-        $this->alias = $alias;
+    public function __construct(
+        protected string $name,
+        protected ?string $alias = null,
+        protected string $mapperClass = EntityMapper::class
+    ) {
+        //
     }
 
     /**
@@ -49,5 +49,13 @@ class Table
     public function getAlias(): string
     {
         return $this->alias ?? StrInflector::toSingular($this->name);
+    }
+
+    /**
+     * @return string
+     */
+    public function getMapperClass(): string
+    {
+        return $this->mapperClass;
     }
 }

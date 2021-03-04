@@ -31,6 +31,7 @@ use Windwalker\ORM\Event\{
 };
 use Windwalker\ORM\Metadata\EntityMetadata;
 use Windwalker\ORM\Strategy\Selector;
+use Windwalker\Query\Query;
 use Windwalker\Utilities\Arr;
 use Windwalker\Utilities\Assert\TypeAssert;
 use Windwalker\Utilities\Reflection\ReflectAccessor;
@@ -65,6 +66,13 @@ class EntityMapper implements EventAwareInterface
     {
         $this->orm      = $orm;
         $this->metadata = $metadata;
+
+        $this->init();
+    }
+
+    protected function init(): void
+    {
+        //
     }
 
     /**
@@ -95,6 +103,21 @@ class EntityMapper implements EventAwareInterface
         return $this->createSelectorQuery()
             ->from($this->getMetadata()->getClassName())
             ->select(...$columns);
+    }
+
+    public function insert(bool $incrementField = false): Selector
+    {
+        return $this->createSelectorQuery()->insert($this->getMetadata()->getClassName(), $incrementField);
+    }
+
+    public function update(?string $alias = null): Selector
+    {
+        return $this->createSelectorQuery()->update($this->getMetadata()->getClassName() ,$alias);
+    }
+
+    public function delete(?string $alias = null): Selector
+    {
+        return $this->createSelectorQuery()->delete($this->getMetadata()->getClassName(), $alias);
     }
 
     /**
@@ -143,7 +166,7 @@ class EntityMapper implements EventAwareInterface
             ->result();
     }
 
-    public function createOne(array|object $item = []): array|object
+    public function createOne(array|object $source = []): object
     {
         $pk        = $this->getMainKey();
         $metadata  = $this->getMetadata();
@@ -151,12 +174,12 @@ class EntityMapper implements EventAwareInterface
         $className = $metadata->getClassName();
 
         TypeAssert::assert(
-            is_object($item) || is_array($item),
+            is_object($source) || is_array($source),
             '{caller} item must be array or object, {value} given',
-            $item
+            $source
         );
 
-        $data = $this->extractForSave($item);
+        $data = $this->extractForSave($source);
 
         if ($aiColumn && isset($data[$aiColumn]) && !$data[$aiColumn]) {
             unset($data[$aiColumn]);
@@ -165,7 +188,7 @@ class EntityMapper implements EventAwareInterface
         $type = AbstractSaveEvent::TYPE_CREATE;
         $event = $this->emitEvent(
             BeforeSaveEvent::class,
-            compact('data', 'type', 'metadata')
+            compact('data', 'type', 'metadata', 'source')
         );
 
         $data = $this->getDb()->getWriter()->insertOne(
@@ -177,25 +200,25 @@ class EntityMapper implements EventAwareInterface
             ]
         );
 
-        if (is_array($item)) {
-            $item = $this->getORM()->getAttributesResolver()->createObject($className);
+        if (is_array($source)) {
+            $source = $this->getORM()->getAttributesResolver()->createObject($className);
         }
 
-        $entity = $item;
+        $entity = $source;
 
         $event = $this->emitEvent(
             AfterSaveEvent::class,
-            compact('data', 'type', 'metadata', 'entity')
+            compact('data', 'type', 'metadata', 'entity', 'source')
         );
 
-        $item = $entity = $this->hydrate(
+        $entity = $this->hydrate(
             $event->getData(),
             $event->getEntity()
         );
 
         $metadata->getRelationManager()->save($event->getData(), $entity);
 
-        return $item;
+        return $entity;
     }
 
     public function createMultiple(iterable $items): iterable
@@ -209,7 +232,7 @@ class EntityMapper implements EventAwareInterface
     }
 
     public function updateOne(
-        array|object $item = [],
+        array|object $source = [],
         array|string $condFields = null,
         bool $updateNulls = false
     ): ?StatementInterface {
@@ -226,12 +249,12 @@ class EntityMapper implements EventAwareInterface
         }
 
         TypeAssert::assert(
-            is_object($item) || is_array($item),
+            is_object($source) || is_array($source),
             '{caller} item must be array or object, {value} given',
-            $item
+            $source
         );
 
-        $data = $this->extractForSave($item, $updateNulls);
+        $data = $this->extractForSave($source, $updateNulls);
 
         // Get old data
         $oldData = null;
@@ -247,7 +270,7 @@ class EntityMapper implements EventAwareInterface
         $type = AbstractSaveEvent::TYPE_UPDATE;
         $event = $this->emitEvent(
             BeforeSaveEvent::class,
-            compact('data', 'type', 'metadata', 'oldData')
+            compact('data', 'type', 'metadata', 'oldData', 'source')
         );
 
         $metadata = $event->getMetadata();
@@ -272,11 +295,11 @@ class EntityMapper implements EventAwareInterface
             );
         }
 
-        $entity = $this->toEntity($item);
+        $entity = $this->toEntity($source);
 
         $event = $this->emitEvent(
             AfterSaveEvent::class,
-            compact('data', 'type', 'metadata', 'entity', 'oldData')
+            compact('data', 'type', 'metadata', 'entity', 'oldData', 'source')
         );
 
         $metadata->getRelationManager()->save($event->getData(), $entity, $oldData);
@@ -316,17 +339,17 @@ class EntityMapper implements EventAwareInterface
      * `$mapper->updateWhere(new Data(array('published' => 0)), array('date' => '2014-03-02'))`
      * Means we make every records which date is 2014-03-02 unpublished.
      *
-     * @param  mixed  $data        The data we want to update to every rows.
+     * @param  mixed  $source      The data we want to update to every rows.
      * @param  mixed  $conditions  Where conditions, you can use array or Compare object.
      *
      * @return  boolean
      * @throws \InvalidArgumentException
      */
-    public function updateWhere(array|object $data, mixed $conditions = null): StatementInterface
+    public function updateWhere(array|object $source, mixed $conditions = null): StatementInterface
     {
         $metadata = $this->getMetadata();
 
-        $data = $this->extract($data);
+        $data = $this->extract($source);
         $fields = array_keys($data);
         $data = $this->castForSave($data);
         $data = Arr::only($data, $fields);
@@ -334,7 +357,7 @@ class EntityMapper implements EventAwareInterface
         // Event
         $event = $this->emitEvent(
             BeforeUpdateWhereEvent::class,
-            compact('data', 'metadata', 'conditions')
+            compact('data', 'metadata', 'conditions', 'source')
         );
 
         $metadata = $event->getMetadata();
@@ -508,7 +531,7 @@ class EntityMapper implements EventAwareInterface
         return $this->createOne($data);
     }
 
-    public function delete(mixed $conditions): array
+    public function deleteWhere(mixed $conditions): array
     {
         // Event
 
@@ -568,7 +591,7 @@ class EntityMapper implements EventAwareInterface
             // Event
             $event = $this->emitEvent(
                 BeforeDeleteEvent::class,
-                compact('data', 'conditions', 'metadata')
+                compact('data', 'conditions', 'metadata', 'entity')
             );
 
             $statement = $writer->delete($metadata->getTableName(), $conditions = $event->getConditions());
@@ -576,7 +599,7 @@ class EntityMapper implements EventAwareInterface
             // Event
             $event = $this->emitEvent(
                 AfterDeleteEvent::class,
-                compact('data', 'conditions', 'metadata', 'statement')
+                compact('data', 'conditions', 'metadata', 'statement', 'entity')
             );
 
             $results[] = $event->getStatement();
@@ -598,7 +621,7 @@ class EntityMapper implements EventAwareInterface
 
         // Event
 
-        $this->delete($conditions);
+        $this->deleteWhere($conditions);
 
         $items = $this->createMultiple($items);
 
@@ -635,7 +658,7 @@ class EntityMapper implements EventAwareInterface
 
         // Delete
         foreach ($delItems as $k => $delItem) {
-            $this->delete(Arr::only($delItem, $compareKeys));
+            $this->deleteWhere(Arr::only($delItem, $compareKeys));
 
             $delItems[$k] = $this->toEntity($delItem);
         }
@@ -924,5 +947,22 @@ class EntityMapper implements EventAwareInterface
         }
 
         return $event;
+    }
+
+    protected function hasEvents(...$events): bool
+    {
+        foreach ($events as $event) {
+            foreach ($this->getDispatcher()->getListeners($event) as $listener) {
+                return true;
+            }
+
+            $methods = $this->getMetadata()->getMethodsOfAttribute($event);
+
+            if ($methods !== []) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

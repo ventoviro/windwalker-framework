@@ -442,13 +442,13 @@ class EntityMapperTest extends AbstractORMTestCase
      */
     public function testDelete()
     {
-        $this->instance->delete(['id' => 16]);
+        $this->instance->deleteWhere(['id' => 16]);
 
         self::assertNull(static::$db->prepare('SELECT * FROM ww_flower WHERE id = 16')->get());
 
         $flower = new StubFlower();
         $flower->id = 17;
-        $this->instance->delete($flower);
+        $this->instance->deleteWhere($flower);
 
         self::assertNull(static::$db->prepare('SELECT * FROM ww_flower WHERE id = 17')->get());
     }

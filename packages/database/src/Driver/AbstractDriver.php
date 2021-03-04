@@ -105,7 +105,7 @@ abstract class AbstractDriver implements HydratorAwareInterface
         $this->lastQuery = $query;
 
         if ($query instanceof Query) {
-            return $query->render($emulated, $bounded);
+            return $this->replacePrefix($query->render($emulated, $bounded));
         }
 
         $bounded = $bounded ?? [];

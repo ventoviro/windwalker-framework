@@ -11,11 +11,31 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Nested;
 
+use Windwalker\ORM\Attributes\Column;
+use Windwalker\ORM\EntityTrait;
+
 /**
  * The NestedEntityTrait class.
  */
 trait NestedEntityTrait
 {
+    use EntityTrait;
+
+    #[Column('parent_id')]
+    protected mixed $parentId = null;
+
+    #[Column('lft')]
+    protected int $lft = 0;
+
+    #[Column('rgt')]
+    protected int $rgt = 0;
+
+    #[Column('level')]
+    protected int $level = 0;
+
+    // #[Column('path')]
+    // protected string $path = '';
+
     protected ?Position $position = null;
 
     /**
@@ -24,5 +44,98 @@ trait NestedEntityTrait
     public function getPosition(): Position
     {
         return $this->position ??= new Position();
+    }
+
+    /**
+     * @return int
+     */
+    public function getWidth(): int
+    {
+        return $this->getRgt() - $this->getLft() + 1;
+    }
+
+    public function childrenCount(): int
+    {
+        return ($this->getRgt() - $this->getLft() - 1) / 2;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLft(): int
+    {
+        return $this->lft;
+    }
+
+    /**
+     * @param  int  $lft
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setLft(int $lft): static
+    {
+        $this->lft = $lft;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRgt(): int
+    {
+        return $this->rgt;
+    }
+
+    /**
+     * @param  int  $rgt
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setRgt(int $rgt): static
+    {
+        $this->rgt = $rgt;
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLevel(): int
+    {
+        return $this->level;
+    }
+
+    /**
+     * @param  int  $level
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setLevel(int $level): static
+    {
+        $this->level = $level;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed|null
+     */
+    public function getParentId(): mixed
+    {
+        return $this->parentId;
+    }
+
+    /**
+     * @param  mixed|null  $parentId
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setParentId(mixed $parentId): static
+    {
+        $this->parentId = $parentId;
+
+        return $this;
     }
 }

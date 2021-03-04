@@ -351,7 +351,7 @@ class OneToManyTest extends AbstractORMTestCase
         /** @var StubLocation $location */
         $location = $mapper->findOne(1);
 
-        $mapper->delete($location);
+        $mapper->deleteWhere($location);
 
         $sakuras = $location->getSakuras()->all();
 
@@ -374,7 +374,7 @@ class OneToManyTest extends AbstractORMTestCase
         /** @var StubLocation $location */
         $location = $mapper->findOne(2);
 
-        $mapper->delete($location);
+        $mapper->deleteWhere($location);
 
         self::assertEquals(
             [7, 8, 9, 10, 29],
@@ -400,7 +400,7 @@ class OneToManyTest extends AbstractORMTestCase
 
         $location->clearRelations();
 
-        $mapper->delete($location);
+        $mapper->deleteWhere($location);
 
         self::assertEquals(
             [null, null, null, null, null],

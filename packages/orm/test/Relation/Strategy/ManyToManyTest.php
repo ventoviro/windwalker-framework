@@ -336,7 +336,7 @@ class ManyToManyTest extends AbstractORMTestCase
 
         $nos = $roses->all(Collection::class)->column('no')->dump();
 
-        $sakuraMapper->delete($sakura);
+        $sakuraMapper->deleteWhere($sakura);
 
         self::assertCount(
             0,
@@ -364,7 +364,7 @@ class ManyToManyTest extends AbstractORMTestCase
 
         $nos = $roses->all(Collection::class)->column('no')->dump();
 
-        $sakuraMapper->delete($sakura);
+        $sakuraMapper->deleteWhere($sakura);
 
         self::assertCount(
             0,

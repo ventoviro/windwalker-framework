@@ -179,7 +179,7 @@ class OneToOneTest extends AbstractORMTestCase
 
         $dataId = $location->getData()->getId();
 
-        $mapper->delete($location);
+        $mapper->deleteWhere($location);
 
         self::assertEquals(8, $dataId);
         self::assertNull(
@@ -199,7 +199,7 @@ class OneToOneTest extends AbstractORMTestCase
 
         $dataId = $location->getData()->getId();
 
-        $mapper->delete($location);
+        $mapper->deleteWhere($location);
 
         self::assertEquals(9, $dataId);
         self::assertNull(
@@ -224,7 +224,7 @@ class OneToOneTest extends AbstractORMTestCase
 
         $dataId = $location->getData()->getId();
 
-        $mapper->delete($location);
+        $mapper->deleteWhere($location);
 
         self::assertEquals(10, $dataId);
         self::assertNull(

@@ -16,6 +16,7 @@ use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
 use ReflectionProperty;
+use Windwalker\Utilities\Assert\Assert;
 use Windwalker\Utilities\Cache\RuntimeCacheTrait;
 use Windwalker\Utilities\TypeCast;
 
@@ -114,6 +115,10 @@ class ReflectAccessor
         }
 
         foreach ($types as $type) {
+            if ($type->getName() === 'mixed') {
+                return $value;
+            }
+
             if ($value === null && $type->allowsNull()) {
                 return null;
             }

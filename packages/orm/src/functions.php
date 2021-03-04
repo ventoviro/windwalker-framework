@@ -32,7 +32,11 @@ if (!function_exists('entity_table')) {
             $entity = $entity::class;
         }
 
-        $tableAttr = AttributesResolver::getFirstAttributeInstance($entity, Table::class);
+        $tableAttr = AttributesResolver::getFirstAttributeInstance(
+            $entity,
+            Table::class,
+            \ReflectionAttribute::IS_INSTANCEOF
+        );
 
         if (!$tableAttr) {
             throw new \UnexpectedValueException(

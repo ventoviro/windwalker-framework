@@ -91,10 +91,10 @@ use function Windwalker\value;
  * @method string|array q($text)
  *
  * @see AbstractStatement
- * @method Collection|null get(string $class = Collection::class, array $args = [])
- * @method Collection|Collection[] all(string $class = Collection::class, array $args = [])
+ * @method Collection|object|null get(?string $class = null, array $args = [])
+ * @method Collection|Collection[]|object[] all(?string $class = null, array $args = [])
  * @method Collection loadColumn(int|string $offset = 0)
- * @method string|null result()
+ * @method mixed result()
  * @method StatementInterface execute(?array $params = null)
  */
 class Query implements QueryInterface, BindableInterface, \IteratorAggregate

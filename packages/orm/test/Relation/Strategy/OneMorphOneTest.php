@@ -139,7 +139,7 @@ class OneMorphOneTest extends AbstractORMTestCase
         $studentLicId = $member->getStudentLicense()->getId();
         $teacherLicId = $member->getTeacherLicense()->getId();
 
-        $mapper->delete($member);
+        $mapper->deleteWhere($member);
 
         self::assertEquals(6, $studentLicId);
         self::assertEquals(5, $teacherLicId);

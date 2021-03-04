@@ -139,7 +139,7 @@ class ManyToMany extends AbstractRelation
             if ($this->onDelete === Action::CASCADE) {
                 $this->getORM()
                     ->mapper($this->getTargetTable())
-                    ->delete($foreignEntity);
+                    ->deleteWhere($foreignEntity);
             }
 
             // SET NULL
@@ -147,7 +147,7 @@ class ManyToMany extends AbstractRelation
 
             $mapData = $this->syncMapData([], $data, $foreignData);
 
-            $mapMetadata->getMapper()->delete($mapData);
+            $mapMetadata->getMapper()->deleteWhere($mapData);
         }
     }
 
@@ -165,13 +165,13 @@ class ManyToMany extends AbstractRelation
         $results = [];
 
         foreach ($this->createCollectionQuery($data) as $foreignEntity) {
-            $results[] = $this->getORM()->mapper($this->getTargetTable())->delete($foreignEntity);
+            $results[] = $this->getORM()->mapper($this->getTargetTable())->deleteWhere($foreignEntity);
 
             $foreignData = $this->getORM()->extractEntity($foreignEntity);
 
             $mapData = $this->syncMapData([], $data, $foreignData);
 
-            $mapMetadata->getMapper()->delete($mapData);
+            $mapMetadata->getMapper()->deleteWhere($mapData);
         }
 
         return $results;
@@ -457,7 +457,7 @@ class ManyToMany extends AbstractRelation
 
             $mapData = $this->syncMapData([], $oldData, $foreignData);
 
-            $mapMetadata->getMapper()->delete($mapData);
+            $mapMetadata->getMapper()->deleteWhere($mapData);
         }
     }
 
@@ -520,7 +520,7 @@ class ManyToMany extends AbstractRelation
 
             // Handle Set NULL
             if ($this->onUpdate === Action::SET_NULL && $this->isMapDataDifferent($data, $oldMapData)) {
-                $mapMetadata->getMapper()->delete($oldMapConditions);
+                $mapMetadata->getMapper()->deleteWhere($oldMapConditions);
             }
         }
     }

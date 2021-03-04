@@ -59,6 +59,41 @@ namespace PHPSTORM_META {
         argumentsSet('query_union_types')
     );
 
+    // Compares
+    registerArgumentsSet(
+        'compare_operators',
+        '=',
+        '!=',
+        '<',
+        '<=',
+        '>',
+        '>=',
+        'between',
+        'not between',
+        'in',
+        'not in',
+        'is',
+        'is not',
+    );
+
+    expectedArguments(
+        \Windwalker\Query\Query::where(),
+        1,
+        argumentsSet('compare_operators')
+    );
+
+    expectedArguments(
+        \Windwalker\Query\Query::having(),
+        1,
+        argumentsSet('compare_operators')
+    );
+
+    expectedArguments(
+        \Windwalker\Query\Clause\JoinClause::on(),
+        2,
+        argumentsSet('compare_operators')
+    );
+
     registerArgumentsSet(
         'order_directions',
         'ASC',

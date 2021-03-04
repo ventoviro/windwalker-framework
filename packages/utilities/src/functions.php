@@ -155,6 +155,10 @@ namespace Windwalker {
      */
     function count(mixed $value, int $mode = COUNT_NORMAL): int
     {
+        if ($value instanceof \Traversable) {
+            return iterator_count($value);
+        }
+
         return $value !== null ? \count($value, $mode) : 0;
     }
 

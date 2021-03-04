@@ -17,13 +17,13 @@ use Windwalker\ORM\NestedSetMapper;
  * The NestedSet class.
  */
 #[\Attribute]
-class NestedSet extends MapperClass
+class NestedSet extends Table
 {
     /**
      * @inheritDoc
      */
-    public function __construct(string $className = NestedSetMapper::class)
+    public function __construct(string $name, ?string $alias = null, ?string $mapperClass = NestedSetMapper::class)
     {
-        parent::__construct($className);
+        parent::__construct($name, $alias, $mapperClass);
     }
 }

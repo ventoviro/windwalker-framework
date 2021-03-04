@@ -151,7 +151,7 @@ class OneMorphManyTest extends AbstractORMTestCase
         /** @var StubPage $page */
         $page = $mapper->findOne(3);
 
-        $mapper->delete($page);
+        $mapper->deleteWhere($page);
 
         $att2 = self::$db->select()
             ->from($att::class)

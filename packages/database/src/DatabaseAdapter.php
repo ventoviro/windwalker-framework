@@ -36,7 +36,7 @@ use Windwalker\Utilities\Cache\InstanceCacheTrait;
  * @method Query select(...$columns)
  * @method Query update(string $table, ?string $alias = null)
  * @method Query delete(string $table, ?string $alias = null)
- * @method Query insert(string $table, ?string $incrementField = null)
+ * @method Query insert(string $table, bool $incrementField = false)
  */
 class DatabaseAdapter implements EventListenableInterface, HydratorAwareInterface
 {

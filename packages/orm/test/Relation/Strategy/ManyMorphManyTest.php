@@ -268,7 +268,7 @@ class ManyMorphManyTest extends AbstractORMTestCase
         $nos = $actions1->column('no')->unique()->values()->dump();
 
         /** @var StubMember $member */
-        $memberMapper->delete(['no' =>'U00005']);
+        $memberMapper->deleteWhere(['no' =>'U00005']);
 
         $actions2 = self::$orm->select()
             ->from(StubAction::class)
@@ -311,7 +311,7 @@ class ManyMorphManyTest extends AbstractORMTestCase
         $nos = $actions1->column('no')->unique()->values()->dump();
 
         /** @var StubMember $member */
-        $memberMapper->delete(['no' =>'U00006']);
+        $memberMapper->deleteWhere(['no' =>'U00006']);
 
         $actions2 = self::$orm->select()
             ->from(StubAction::class)

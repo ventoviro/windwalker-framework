@@ -12,6 +12,8 @@ declare(strict_types=1);
 namespace Windwalker\ORM;
 
 use Windwalker\Data\Collection;
+use Windwalker\ORM\Attributes\MapperClass;
+use Windwalker\ORM\Attributes\Table;
 use Windwalker\ORM\Relation\RelationCollection;
 use Windwalker\ORM\Relation\RelationProxies;
 use Windwalker\ORM\Relation\Strategy\RelationStrategyInterface;
@@ -23,6 +25,14 @@ use Windwalker\Utilities\TypeCast;
  */
 trait EntityTrait
 {
+    public static function table(): ?string
+    {
+        return (new \ReflectionClass(static::class))
+            ->getAttributes(Table::class, \ReflectionAttribute::IS_INSTANCEOF)[0]
+            ?->newInstance()
+            ?->getName();
+    }
+
     public static function newInstance(array $data = []): static
     {
         $instance = new static();

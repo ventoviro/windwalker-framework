@@ -97,13 +97,17 @@ class EntityMetadata
     {
         $class = new \ReflectionClass($object);
 
-        return $class->getAttributes(Table::class) !== [];
+        return $class->getAttributes(Table::class, \ReflectionAttribute::IS_INSTANCEOF) !== [];
     }
 
     public function setup(): static
     {
         /** @var ?Table $tableAttr */
-        $tableAttr = AttributesResolver::getFirstAttributeInstance($this->className, Table::class);
+        $tableAttr = AttributesResolver::getFirstAttributeInstance(
+            $this->className,
+            Table::class,
+            \ReflectionAttribute::IS_INSTANCEOF
+        );
 
         if (!$tableAttr) {
             throw new \InvalidArgumentException(
@@ -116,16 +120,7 @@ class EntityMetadata
 
         $this->tableName = $tableAttr->getName();
         $this->tableAlias = $tableAttr->getAlias();
-
-        $mapperClass = AttributesResolver::getFirstAttributeInstance(
-            $this->className,
-            MapperClass::class,
-            \ReflectionAttribute::IS_INSTANCEOF
-        );
-
-        if ($mapperClass) {
-            $this->mapperClass = $mapperClass->getClassName();
-        }
+        $this->mapperClass = $tableAttr->getMapperClass();
 
         // Loop all properties
         foreach ($this->getProperties() as $prop) {
@@ -260,7 +255,8 @@ class EntityMetadata
             return $this->tableName;
         }
 
-        $tableAttr = $this->getReflector()->getAttributes(Table::class)[0]?->newInstance();
+        $tableAttr = $this->getReflector()
+            ->getAttributes(Table::class, \ReflectionAttribute::IS_INSTANCEOF)[0]?->newInstance();
 
         if (!$tableAttr) {
             throw new \InvalidArgumentException(

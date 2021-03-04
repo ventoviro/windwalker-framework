@@ -19,6 +19,7 @@ use Windwalker\ORM\Hydrator\EntityHydrator;
 use Windwalker\ORM\Metadata\EntityMetadata;
 use Windwalker\ORM\Metadata\EntityMetadataCollection;
 use Windwalker\ORM\Strategy\Selector;
+use Windwalker\Query\Query;
 
 /**
  * The ORM class.
@@ -36,7 +37,7 @@ use Windwalker\ORM\Strategy\Selector;
  * @method  object        saveOne(string $entityClass, array|object $item, array|string $condFields = null, bool $updateNulls = false)
  * @method  object        findOneOrCreate(string $entityClass, mixed $conditions, mixed $initData = null, bool $mergeConditions = true)
  * @method  object        updateOneOrCreate(string $entityClass, array|object $item, mixed $initData = null, ?array $condFields = null, bool $updateNulls = false)
- * @method  StatementInterface[]  delete(string $entityClass, mixed $conditions)
+ * @method  StatementInterface[]  deleteWhere(string $entityClass, mixed $conditions)
  * @method  iterable|object[]     flush(string $entityClass, iterable $items, mixed $conditions = [])
  * @method  StatementInterface[]  sync(string $entityClass, iterable $items, mixed $conditions = [], ?array $compareKeys = null)
  */
@@ -93,6 +94,33 @@ class ORM
     protected function createSelectorQuery(): Selector
     {
         return new Selector($this);
+    }
+
+    public function insert(string $table, bool $incrementField = false): Query
+    {
+        if (is_string($table) && class_exists($table)) {
+            return $this->mapper($table)->insert($incrementField);
+        }
+
+        return $this->createSelectorQuery()->insert($table, $incrementField);
+    }
+
+    public function update(string $table, ?string $alias = null): Query
+    {
+        if (is_string($table) && class_exists($table)) {
+            return $this->mapper($table)->update($alias);
+        }
+
+        return $this->createSelectorQuery()->update($table, $alias);
+    }
+
+    public function delete(string $table, ?string $alias = null): Query
+    {
+        if (is_string($table) && class_exists($table)) {
+            return $this->mapper($table)->delete($alias);
+        }
+
+        return $this->createSelectorQuery()->delete($table, $alias);
     }
 
     /**

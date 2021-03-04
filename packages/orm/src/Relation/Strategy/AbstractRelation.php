@@ -100,7 +100,7 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
     {
         return $this->getORM()
             ->mapper($this->getTargetTable())
-            ->delete($this->createLoadConditions($data));
+            ->deleteWhere($this->createLoadConditions($data));
     }
 
     public function clearKeysValues(array $foreignData): array

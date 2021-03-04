@@ -28,6 +28,7 @@ class ForeignTable
         protected array $fks = [],
         protected array $morphs = []
     ) {
+        //
     }
 
     /**

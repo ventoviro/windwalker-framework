@@ -16,39 +16,26 @@ use Windwalker\ORM\Attributes\Column;
 use Windwalker\ORM\Attributes\NestedSet;
 use Windwalker\ORM\Attributes\PK;
 use Windwalker\ORM\Attributes\Table;
+use Windwalker\ORM\Nested\NestedEntityTrait;
+use Windwalker\ORM\Nested\NestedPathableInterface;
+use Windwalker\ORM\Nested\NestedPathableTrait;
 
 /**
  * The StubNestedset class.
  */
-#[Table('#__nestedsets'), NestedSet]
-class StubNestedSet
+#[NestedSet('#__nestedsets')]
+class StubNestedSet implements NestedPathableInterface
 {
+    use NestedPathableTrait;
+
     #[Column('id'), PK, AutoIncrement]
     protected ?int $id = null;
-
-    #[Column('parent_id')]
-    protected int $parentId = 0;
-
-    #[Column('lft')]
-    protected int $lft = 0;
-
-    #[Column('rgt')]
-    protected int $rgt = 0;
-
-    #[Column('level')]
-    protected int $level = 0;
 
     #[Column('title')]
     protected string $title = '';
 
-    #[Column('alias')]
-    protected string $alias = '';
-
     #[Column('access')]
     protected int $access = 0;
-
-    #[Column('path')]
-    protected string $path = '';
 
     /**
      * @return int|null
@@ -66,86 +53,6 @@ class StubNestedSet
     public function setId(?int $id): static
     {
         $this->id = $id;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getParentId(): int
-    {
-        return $this->parentId;
-    }
-
-    /**
-     * @param  int  $parentId
-     *
-     * @return  static  Return self to support chaining.
-     */
-    public function setParentId(int $parentId): static
-    {
-        $this->parentId = $parentId;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getLft(): int
-    {
-        return $this->lft;
-    }
-
-    /**
-     * @param  int  $lft
-     *
-     * @return  static  Return self to support chaining.
-     */
-    public function setLft(int $lft): static
-    {
-        $this->lft = $lft;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getRgt(): int
-    {
-        return $this->rgt;
-    }
-
-    /**
-     * @param  int  $rgt
-     *
-     * @return  static  Return self to support chaining.
-     */
-    public function setRgt(int $rgt): static
-    {
-        $this->rgt = $rgt;
-
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getLevel(): int
-    {
-        return $this->level;
-    }
-
-    /**
-     * @param  int  $level
-     *
-     * @return  static  Return self to support chaining.
-     */
-    public function setLevel(int $level): static
-    {
-        $this->level = $level;
 
         return $this;
     }
@@ -171,26 +78,6 @@ class StubNestedSet
     }
 
     /**
-     * @return string
-     */
-    public function getAlias(): string
-    {
-        return $this->alias;
-    }
-
-    /**
-     * @param  string  $alias
-     *
-     * @return  static  Return self to support chaining.
-     */
-    public function setAlias(string $alias): static
-    {
-        $this->alias = $alias;
-
-        return $this;
-    }
-
-    /**
      * @return int
      */
     public function getAccess(): int
@@ -210,23 +97,8 @@ class StubNestedSet
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getPath(): string
+    public function getPrimaryKeyValue(): int
     {
-        return $this->path;
-    }
-
-    /**
-     * @param  string  $path
-     *
-     * @return  static  Return self to support chaining.
-     */
-    public function setPath(string $path): static
-    {
-        $this->path = $path;
-
-        return $this;
+        return $this->getId();
     }
 }
