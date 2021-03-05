@@ -369,6 +369,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
                 $this->injectSubQuery($value, $alias);
             }
 
+            // todo: try use qnAtr() handle all jsonSelector and make quoteName handle only one string.
             if (is_string($value) && str_contains($value, '->')) {
                 if (stripos($value, ' as ') !== false) {
                     [$value, $alias] = preg_split('/ as /i', $value);
