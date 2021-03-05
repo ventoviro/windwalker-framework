@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\ORM\Attributes;
 
 use Windwalker\ORM\EntityMapper;
+use Windwalker\Utilities\Options\OptionAccessTrait;
 use Windwalker\Utilities\StrInflector;
 
 /**
@@ -20,19 +21,25 @@ use Windwalker\Utilities\StrInflector;
 #[\Attribute]
 class Table
 {
+    use OptionAccessTrait;
+
+    protected array $defaultOptions = [];
+
     /**
      * Table constructor.
      *
      * @param  string       $name
      * @param  string|null  $alias
      * @param  string       $mapperClass
+     * @param  array        $options
      */
     public function __construct(
         protected string $name,
         protected ?string $alias = null,
-        protected string $mapperClass = EntityMapper::class
+        protected string $mapperClass = EntityMapper::class,
+        array $options = [],
     ) {
-        //
+        $this->prepareOptions($this->defaultOptions, $options);
     }
 
     /**
@@ -57,5 +64,13 @@ class Table
     public function getMapperClass(): string
     {
         return $this->mapperClass;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOptions(): array
+    {
+        return $this->options;
     }
 }

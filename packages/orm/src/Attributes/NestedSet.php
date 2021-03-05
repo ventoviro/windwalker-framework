@@ -19,11 +19,23 @@ use Windwalker\ORM\NestedSetMapper;
 #[\Attribute]
 class NestedSet extends Table
 {
+    protected array $defaultOptions = [
+        'props' => [
+            'children' => 'children',
+            'ancestors' => 'ancestors',
+            'tree' => 'tree',
+        ]
+    ];
+
     /**
      * @inheritDoc
      */
-    public function __construct(string $name, ?string $alias = null, ?string $mapperClass = NestedSetMapper::class)
-    {
-        parent::__construct($name, $alias, $mapperClass);
+    public function __construct(
+        string $name,
+        ?string $alias = null,
+        ?string $mapperClass = NestedSetMapper::class,
+        array $options = []
+    ) {
+        parent::__construct($name, $alias, $mapperClass, $options);
     }
 }

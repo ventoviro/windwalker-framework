@@ -12,14 +12,19 @@ declare(strict_types=1);
 namespace Windwalker\ORM;
 
 use Windwalker\Data\Collection;
+use Windwalker\Database\Event\HydrateEvent;
 use Windwalker\Event\EventInterface;
 use Windwalker\ORM\Event\AfterDeleteEvent;
 use Windwalker\ORM\Event\BeforeDeleteEvent;
 use Windwalker\ORM\Event\BeforeSaveEvent;
 use Windwalker\ORM\Exception\NestedHandleException;
+use Windwalker\ORM\Metadata\EntityMetadata;
 use Windwalker\ORM\Nested\NestedEntityInterface;
 use Windwalker\ORM\Nested\NestedPathableInterface;
 use Windwalker\ORM\Nested\Position;
+use Windwalker\ORM\Relation\RelationCollection;
+use Windwalker\ORM\Relation\RelationProxies;
+use Windwalker\ORM\Strategy\Selector;
 use Windwalker\Query\Query;
 use Windwalker\Utilities\Assert\ArgumentsAssert;
 use Windwalker\Utilities\Cache\InstanceCacheTrait;
@@ -65,6 +70,80 @@ class NestedSetMapper extends EntityMapper
                 $this->postProcessDelete($event);
             }
         );
+
+        $this->on(
+            HydrateEvent::class,
+            function (HydrateEvent $event) {
+                $this->postProcessFindHydration($event);
+            }
+        );
+    }
+
+    protected function postProcessFindHydration(HydrateEvent $event)
+    {
+        $item = $event->getItem();
+
+        if ($item === null) {
+            return;
+        }
+
+        if (!$item instanceof NestedEntityInterface) {
+            return;
+        }
+
+        $metadata = $this->getMetadata();
+        $pk = $this->extractField($item, $this->getMainKey());
+
+        // Children
+        $getter = fn() => new RelationCollection(
+            $this->getMetadata()->getClassName(),
+            $this->select()
+                ->where('parent_id', $pk)
+                ->order('lft')
+        );
+
+        RelationProxies::set($item, $metadata->getOption('props')['children'], $getter);
+
+        // Ancestors
+        $key = $this->getMainKey();
+
+        $getter = fn() => new RelationCollection(
+            $this->getMetadata()->getClassName(),
+            $this->getORM()
+                ->select('p.*')
+                ->from(
+                    [
+                        [$metadata->getClassName(), 'n'],
+                        [$metadata->getClassName(), 'p'],
+                    ]
+                )
+                ->where('n.lft', 'between', [qn('p.lft'), qn('p.rgt')])
+                ->where('n.' . $key, '=', $pk)
+                ->where('p.' . $key, '!=', $pk)
+                ->order('p.lft')
+        );
+
+        RelationProxies::set($item, $metadata->getOption('props')['ancestors'], $getter);
+
+        // Tree
+        $key = $this->getMainKey();
+
+        $getter = fn() => new RelationCollection(
+            $this->getMetadata()->getClassName(),
+            $this->getORM()
+                ->select('n.*')
+                ->from(
+                    [
+                        [$metadata->getClassName(), 'n'],
+                        [$metadata->getClassName(), 'p'],
+                    ]
+                )
+                ->where('n.lft', 'between', [qn('p.lft'), qn('p.rgt')])
+                ->where('p.' . $key, '=', $pk)
+                ->order('n.lft')
+        );
+
+        RelationProxies::set($item, $metadata->getOption('props')['tree'], $getter);
     }
 
     /**
@@ -142,7 +221,8 @@ class NestedSetMapper extends EntityMapper
 
         $pk = $this->entityToPk($pkOrEntity);
 
-        return $this->select('n.*')
+        return $this->getORM()
+            ->select('n.*')
             ->from(
                 [
                     [$metadata->getClassName(), 'n'],
@@ -174,9 +254,7 @@ class NestedSetMapper extends EntityMapper
 
     private function entityToPk(string|int|NestedEntityInterface $entity): mixed
     {
-        $metadata = $this->getMetadata();
-
-        if (is_object($entity) && $metadata::isEntity($entity)) {
+        if (is_object($entity) && EntityMetadata::isEntity($entity)) {
             return $this->extract($entity)[$this->getMainKey()];
         }
 
@@ -186,25 +264,42 @@ class NestedSetMapper extends EntityMapper
     public function setPosition(
         NestedEntityInterface $entity,
         mixed $referenceId,
-        int $position = Nested\Position::AFTER
-    ): void {
-        $allow = [
-            Nested\Position::AFTER,
-            Nested\Position::BEFORE,
-            Nested\Position::FIRST_CHILD,
-            Nested\Position::LAST_CHILD,
-        ];
-
+        int $position = Position::AFTER
+    ): static {
         // Make sure the location is valid.
         ArgumentsAssert::assert(
-            in_array($position, $allow, true),
+            in_array($position, Position::POSITIONS, true),
             '{caller} position: {value} is invalid.',
             $position
         );
 
+        $referenceId = $this->entityToPk($referenceId);
+
         $entity->getPosition()
             ->setReferenceId($referenceId)
             ->setPosition($position);
+
+        return $this;
+    }
+
+    public function setPositionAppendTo(NestedEntityInterface $entity, mixed $referenceId): static
+    {
+        return $this->setPosition($entity, $referenceId, Position::LAST_CHILD);
+    }
+
+    public function setPositionPrependTo(NestedEntityInterface $entity, mixed $referenceId): static
+    {
+        return $this->setPosition($entity, $referenceId, Position::FIRST_CHILD);
+    }
+
+    public function setPositionAfterOf(NestedEntityInterface $entity, mixed $referenceId): static
+    {
+        return $this->setPosition($entity, $referenceId, Position::AFTER);
+    }
+
+    public function setPositionBeforeOf(NestedEntityInterface $entity, mixed $referenceId): static
+    {
+        return $this->setPosition($entity, $referenceId, Position::BEFORE);
     }
 
     /**
@@ -345,7 +440,6 @@ class NestedSetMapper extends EntityMapper
         $parentId = $data['parent_id'] ?? null;
         $source = $event->getSource();
 
-        // Only check not root node.
         if (is_array($source) && $source['is_root'] ?? null) {
             $root = $this->select('id')
                 ->where('parent_id', $this->getEmptyParentId())
@@ -557,7 +651,43 @@ class NestedSetMapper extends EntityMapper
         return $node;
     }
 
-    public function postProcessDelete(AfterDeleteEvent $event): void
+    public function prependTo(mixed $source, mixed $referenceId): NestedEntityInterface
+    {
+        $entity = $this->sourceToEntity($source);
+
+        $this->setPositionPrependTo($source, $referenceId)->saveOne($entity);
+
+        return $entity;
+    }
+
+    public function appendTo(mixed $source, mixed $referenceId): NestedEntityInterface
+    {
+        $entity = $this->sourceToEntity($source);
+
+        $this->setPositionAppendTo($source, $referenceId)->saveOne($entity);
+
+        return $entity;
+    }
+
+    public function putBefore(mixed $source, mixed $referenceId): NestedEntityInterface
+    {
+        $entity = $this->sourceToEntity($source);
+
+        $this->setPositionBeforeOf($source, $referenceId)->saveOne($entity);
+
+        return $entity;
+    }
+
+    public function putAfter(mixed $source, mixed $referenceId): NestedEntityInterface
+    {
+        $entity = $this->sourceToEntity($source);
+
+        $this->setPositionAfterOf($source, $referenceId)->saveOne($entity);
+
+        return $entity;
+    }
+
+    protected function postProcessDelete(AfterDeleteEvent $event): void
     {
         /** @var ?NestedEntityInterface $entity */
         $entity = $event->getEntity();
@@ -608,17 +738,22 @@ class NestedSetMapper extends EntityMapper
 
     public function rebuild(mixed $source, int $lft = null, int $level = 0, ?string $path = null): int
     {
-        $parent   = $this->sourceToEntity($source, Collection::class);
-        $parentId = $parent[$this->getMainKey()];
-        $path     = $path ?? $parent['path'];
-
         $buildPath = $this->isPathable();
+
+        $parent   = $this->sourceToEntity($source);
+        $parentData = $this->extract($parent);
+        $parentId = $parentData[$this->getMainKey()];
+        $lft      = $lft ?? $parentData['lft'];
+
+        if ($buildPath) {
+            $path = $path ?? $parentData['path'];
+        }
 
         // Build the structure of the recursive query.
         $query = $this->cacheStorage['rebuild.sql'] ??= $this->select()
             ->whereRaw('parent_id = :parent_id')
-            ->order('parent_id', 'lft')
-            ->pipeIf($buildPath, fn(Query $query) => $query->select('alias'));
+            ->order('parent_id')
+            ->order('lft');
 
         // Assemble the query to find all children of this node.
         $children = $query->bind('parent_id', $parentId)
@@ -638,7 +773,9 @@ class NestedSetMapper extends EntityMapper
                 $child,
                 $rgt,
                 $level + 1,
-                ltrim($path . '/' . $child->getAlias(), '/')
+                $buildPath
+                    ? ltrim($path . '/' . $child->getAlias(), '/')
+                    : null
             );
         }
 
@@ -666,36 +803,32 @@ class NestedSetMapper extends EntityMapper
 
     public function calculatePath(array|object $entity): ?string
     {
-        if (is_object($entity)) {
-            if (!$entity instanceof NestedPathableInterface) {
-                return null;
-            }
-
-            $data = $this->extract($entity);
-        } else {
-            $data = $entity;
+        if (is_object($entity) && !$entity instanceof NestedPathableInterface) {
+            return null;
         }
 
-        // Build the path.
-        $path = $this->preparePath($data['parent_id'] ?? null);
+        $parentId = $this->extractField($entity, 'parent_id');
+        $alias = $this->extractField($entity, 'alias');
 
-        return ltrim($path . '/' . $data['alias'], '/');
+        // Build the path.
+        $path = $this->preparePath($parentId);
+
+        return ltrim($path . '/' . $alias, '/');
     }
 
-    public function rebuildPath(mixed $source): void
+    public function rebuildPath(mixed $source, ?string $path = null): static
     {
         // todo: recursive to children
         $entity = $this->sourceToEntity($source);
 
         if (!$entity instanceof NestedPathableInterface) {
-            return;
+            return $this;
         }
 
-        $data = $this->extract($entity);
-        $pk = $data[$this->getMainKey()];
+        $pk = $this->extractField($entity, $this->getMainKey());
 
         // Build the path.
-        $path = $this->preparePath($pk);
+        $path = $path ?? $this->preparePath($pk);
 
         // Update the path field for the node.
         $this->update()
@@ -703,8 +836,33 @@ class NestedSetMapper extends EntityMapper
             ->where($this->getMainKey(), $pk)
             ->execute();
 
+        // Build the structure of the recursive query.
+        $query = $this->cacheStorage['rebuild.sql'] ??= $this->select()
+            ->whereRaw('parent_id = :parent_id')
+            ->order('parent_id')
+            ->order('lft');
+
+        // Assemble the query to find all children of this node.
+        $children = $query->bind('parent_id', $pk)
+            ->all($this->getMetadata()->getClassName());
+
+        /** @var NestedPathableInterface $child */
+        foreach ($children as $child) {
+            /*
+             * $rgt is the current right value, which is incremented on recursion return.
+             * Increment the level for the children.
+             * Add this item's alias to the path (but avoid a leading /)
+             */
+            $this->rebuildPath(
+                $child,
+                ltrim($path . '/' . $child->getAlias(), '/')
+            );
+        }
+
         // Update the current record's path to the new one:
         $entity->setPath((string) $path);
+
+        return $this;
     }
 
     protected function preparePath(mixed $pk): ?string
@@ -764,11 +922,10 @@ class NestedSetMapper extends EntityMapper
      * sourceToEntity
      *
      * @param  mixed        $source
-     * @param  string|null  $className
      *
      * @return  object|NestedEntityInterface
      */
-    private function sourceToEntity(mixed $source, ?string $className = null): object
+    private function sourceToEntity(mixed $source): object
     {
         if (is_object($source)) {
             return $source;
@@ -781,7 +938,16 @@ class NestedSetMapper extends EntityMapper
         }
 
         // Get the node by id.
-        return $this->getNode($pk, $className);
+        return $this->getNode($pk);
+    }
+
+    private function sourceToPk(mixed $source): mixed
+    {
+        if (is_object($source) || is_array($source)) {
+            return $this->extractField($source, $this->getMainKey());
+        }
+
+        return $source;
     }
 
     protected function getEmptyParentId(): mixed

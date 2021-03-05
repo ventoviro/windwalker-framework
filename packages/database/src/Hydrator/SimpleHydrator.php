@@ -18,7 +18,7 @@ use Windwalker\Utilities\Reflection\ReflectAccessor;
 /**
  * The SimpleHydrator class.
  */
-class SimpleHydrator implements HydratorInterface
+class SimpleHydrator implements HydratorInterface, FieldHydratorInterface
 {
     /**
      * @inheritDoc
@@ -60,5 +60,25 @@ class SimpleHydrator implements HydratorInterface
         }
 
         return $object;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function extractField(object $object, string $field): mixed
+    {
+        if ($object instanceof AccessorAccessibleInterface) {
+            return $object->$field;
+        }
+
+        if (ReflectAccessor::hasProperty($object, $field)) {
+            return ReflectAccessor::getValue($object, $field);
+        }
+
+        if ($object instanceof \Traversable) {
+            return iterator_to_array($object)[$field] ?? null;
+        }
+
+        return null;
     }
 }

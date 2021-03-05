@@ -18,6 +18,7 @@ use Windwalker\ORM\EntityMapper;
 use Windwalker\ORM\ORM;
 use Windwalker\ORM\Relation\RelationManager;
 use Windwalker\Utilities\Cache\RuntimeCacheTrait;
+use Windwalker\Utilities\Options\OptionAccessTrait;
 use Windwalker\Utilities\Reflection\ReflectAccessor;
 
 /**
@@ -26,6 +27,7 @@ use Windwalker\Utilities\Reflection\ReflectAccessor;
 class EntityMetadata
 {
     use RuntimeCacheTrait;
+    use OptionAccessTrait;
 
     protected string $className;
 
@@ -121,6 +123,8 @@ class EntityMetadata
         $this->tableName = $tableAttr->getName();
         $this->tableAlias = $tableAttr->getAlias();
         $this->mapperClass = $tableAttr->getMapperClass();
+
+        $this->prepareOptions([], $tableAttr->getOptions());
 
         // Loop all properties
         foreach ($this->getProperties() as $prop) {

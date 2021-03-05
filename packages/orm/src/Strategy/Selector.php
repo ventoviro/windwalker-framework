@@ -15,14 +15,12 @@ use Windwalker\Data\Collection;
 use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\Database\Event\HydrateEvent;
 use Windwalker\Database\Event\ItemFetchedEvent;
-use Windwalker\ORM\Hydrator\EntityHydrator;
+use Windwalker\Event\EventAwareTrait;
 use Windwalker\ORM\Metadata\EntityMetadata;
 use Windwalker\ORM\Relation\Strategy\ManyToMany;
 use Windwalker\Query\Clause\AsClause;
-use Windwalker\Query\Clause\JoinClause;
 use Windwalker\Query\Query;
 use Windwalker\Utilities\Arr;
-use Windwalker\Utilities\Assert\ArgumentsAssert;
 
 use function Windwalker\Query\val;
 
@@ -33,7 +31,53 @@ use function Windwalker\Query\val;
  */
 class Selector extends AbstractQueryStrategy
 {
+    use EventAwareTrait;
+
     protected ?string $groupDivider = null;
+
+    protected function init(): void
+    {
+        parent::init();
+
+        $this->on(
+            ItemFetchedEvent::class,
+            function (ItemFetchedEvent $event) {
+                if ($this->groupDivider !== null) {
+                    $item = $this->groupItem($event->getItem());
+                    $event->setItem($item);
+                }
+            }
+        );
+
+        $this->on(
+            HydrateEvent::class,
+            function (HydrateEvent $event) {
+                $orm  = $this->getORM();
+                $item = $event->getItem();
+
+                if ($item === null) {
+                    return;
+                }
+
+                $object = $event->getClass();
+
+                if (is_string($object)) {
+                    $object = $orm->getAttributesResolver()->createObject($object);
+                }
+
+                $object = $orm->hydrateEntity($item, $object);
+
+                if (EntityMetadata::isEntity($object)) {
+                    // Prepare relations
+                    $orm->getEntityMetadata($object)
+                        ->getRelationManager()
+                        ->load($item, $object);
+                }
+
+                $event->setItem($object);
+            }
+        );
+    }
 
     public function autoSelections(string $divider = '.'): static
     {
@@ -116,7 +160,7 @@ class Selector extends AbstractQueryStrategy
     {
         /** @var AsClause|null $fromClause */
         $fromClause = $this->getFrom()?->getElements()[0] ?? null;
-        $from = $fromClause?->getValue();
+        $from       = $fromClause?->getValue();
 
         if (!$from) {
             return $on;
@@ -124,15 +168,15 @@ class Selector extends AbstractQueryStrategy
 
         $fromMetadata = $this->getORM()->getEntityMetadata($from);
         $joinMetadata = $this->getORM()->getEntityMetadata($table);
-        $relation = null;
+        $relation     = null;
 
         $fromAlias = $fromMetadata->getTableAlias();
-        $alias ??= $joinMetadata->getTableAlias();
+        $alias     ??= $joinMetadata->getTableAlias();
 
         foreach ($fromMetadata->getRelationManager()->getRelations() as $relation) {
             if ($relation instanceof ManyToMany) {
                 $mapMetadata = $relation->getMapMetadata();
-                $mapAlias = $mapMetadata->getTableAlias();
+                $mapAlias    = $mapMetadata->getTableAlias();
 
                 if ($relation->getMapTable() === $table) {
                     foreach ($relation->getMapForeignKeys() as $ok => $mfk) {
@@ -177,44 +221,7 @@ class Selector extends AbstractQueryStrategy
 
     protected function registerEvents(StatementInterface $stmt): StatementInterface
     {
-        if ($this->groupDivider !== null) {
-            $stmt->on(
-                ItemFetchedEvent::class,
-                function (ItemFetchedEvent $event) {
-                    $item = $this->groupItem($event->getItem());
-                    $event->setItem($item);
-                }
-            );
-        }
-
-        $stmt->on(
-            HydrateEvent::class,
-            function (HydrateEvent $event) {
-                $orm  = $this->getORM();
-                $item = $event->getItem();
-
-                if ($item === null) {
-                    return;
-                }
-
-                $object = $event->getClass();
-
-                if (is_string($object)) {
-                    $object = $orm->getAttributesResolver()->createObject($object);
-                }
-
-                $object = $orm->hydrateEntity($item, $object);
-
-                if (EntityMetadata::isEntity($object)) {
-                    // Prepare relations
-                    $orm->getEntityMetadata($object)
-                        ->getRelationManager()
-                        ->load($item, $object);
-                }
-
-                $event->setItem($object);
-            }
-        );
+        $stmt->addDispatcherDealer($this->getDispatcher());
 
         return $stmt;
     }

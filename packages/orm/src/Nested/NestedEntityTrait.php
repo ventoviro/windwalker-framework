@@ -13,6 +13,7 @@ namespace Windwalker\ORM\Nested;
 
 use Windwalker\ORM\Attributes\Column;
 use Windwalker\ORM\EntityTrait;
+use Windwalker\ORM\Relation\RelationCollection;
 
 /**
  * The NestedEntityTrait class.
@@ -37,6 +38,12 @@ trait NestedEntityTrait
     // protected string $path = '';
 
     protected ?Position $position = null;
+
+    protected ?RelationCollection $children = null;
+
+    protected ?RelationCollection $ancestors = null;
+
+    protected ?RelationCollection $tree = null;
 
     /**
      * @return Position
@@ -135,6 +142,70 @@ trait NestedEntityTrait
     public function setParentId(mixed $parentId): static
     {
         $this->parentId = $parentId;
+
+        return $this;
+    }
+
+    public function isLeaf(): bool
+    {
+        return \Windwalker\count($this->getChildren()) === 0;
+    }
+
+    public function isRoot(): bool
+    {
+        return $this->getLevel() === 0;
+    }
+
+    public function getChildren(): RelationCollection
+    {
+        return $this->loadCollection('children');
+    }
+
+    /**
+     * @param  RelationCollection  $children
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setChildren(RelationCollection $children): static
+    {
+        $this->children = $children;
+
+        return $this;
+    }
+
+    public function getAncestors(): RelationCollection
+    {
+        return $this->loadCollection('ancestors');
+    }
+
+    /**
+     * @param  RelationCollection  $ancestors
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setAncestors(RelationCollection $ancestors): static
+    {
+        $this->ancestors = $ancestors;
+
+        return $this;
+    }
+
+    /**
+     * @return RelationCollection
+     */
+    public function getTree(): RelationCollection
+    {
+        return $this->loadCollection('tree');
+    }
+
+    /**
+     * @param  RelationCollection  $tree
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setTree(RelationCollection $tree): static
+    {
+        $this->tree = $tree;
 
         return $this;
     }

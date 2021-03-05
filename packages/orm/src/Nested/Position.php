@@ -16,13 +16,24 @@ namespace Windwalker\ORM\Nested;
  */
 class Position
 {
-    public const AFTER = 2;
+    public const MOVE_UP = -1;
 
-    public const LAST_CHILD = 6;
+    public const MOVE_DOWN = 1;
 
-    public const FIRST_CHILD = 4;
+    public const BEFORE = 2;
 
-    public const BEFORE = 1;
+    public const AFTER = 4;
+
+    public const FIRST_CHILD = 6;
+
+    public const LAST_CHILD = 8;
+
+    public const POSITIONS = [
+        self::BEFORE,
+        self::AFTER,
+        self::FIRST_CHILD,
+        self::LAST_CHILD,
+    ];
 
     /**
      * Position constructor.

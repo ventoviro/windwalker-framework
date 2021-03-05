@@ -129,7 +129,11 @@ class EntityMapper implements EventAwareInterface
      */
     public function createSelectorQuery(): Selector
     {
-        return (new Selector($this->getORM()));
+        $selector = new Selector($this->getORM());
+
+        $selector->getDispatcher()->registerDealer($this->getDispatcher());
+
+        return $selector;
     }
 
     /**
@@ -775,6 +779,11 @@ class EntityMapper implements EventAwareInterface
         }
 
         return $this->getORM()->extractEntity($entity);
+    }
+
+    public function extractField(object|array $entity, string $field): mixed
+    {
+        return $this->getORM()->extractField($entity, $field);
     }
 
     public function conditionsToWheres(mixed $conditions, ?string $alias = null): array

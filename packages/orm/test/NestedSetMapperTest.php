@@ -108,6 +108,36 @@ class NestedSetMapperTest extends AbstractORMTestCase
                 $ent->getRgt()
             ]
         );
+
+        // Before
+        $child = new StubNestedSet();
+        $child->setTitle('Rose');
+        $child->setAlias('rose');
+
+        $ent = $this->instance->putBefore($child, 2);
+
+        self::assertEquals(
+            [1, 2],
+            [
+                $ent->getLft(),
+                $ent->getRgt()
+            ]
+        );
+
+        // After
+        $child = new StubNestedSet();
+        $child->setTitle('Orchid');
+        $child->setAlias('orchid');
+
+        $ent = $this->instance->putAfter($child, 2);
+
+        self::assertEquals(
+            [11, 12],
+            [
+                $ent->getLft(),
+                $ent->getRgt()
+            ]
+        );
     }
 
     public function testGetPath()
@@ -121,52 +151,15 @@ class NestedSetMapperTest extends AbstractORMTestCase
         self::assertEquals(['', 'flower', 'flower/sunflower'], $paths);
     }
 
-    /**
-     * @see  NestedSetMapper::move
-     */
-    public function testMove(): void
+    public function testGetAncestors()
     {
-        self::markTestIncomplete(); // TODO: Complete this test
-    }
+        $path = $this->instance->getAncestors(5);
 
-    /**
-     * @see  NestedSetMapper::getRoot
-     */
-    public function testGetRoot(): void
-    {
-        self::markTestIncomplete(); // TODO: Complete this test
-    }
+        $ids = $path->column('id', null, true)->dump();
+        $paths = $path->column('path', null, true)->dump();
 
-    /**
-     * @see  NestedSetMapper::getAncestors
-     */
-    public function testGetAncestors(): void
-    {
-        self::markTestIncomplete(); // TODO: Complete this test
-    }
-
-    /**
-     * @see  NestedSetMapper::postProcessDelete
-     */
-    public function testPostProcessDelete(): void
-    {
-        self::markTestIncomplete(); // TODO: Complete this test
-    }
-
-    /**
-     * @see  NestedSetMapper::rebuild
-     */
-    public function testRebuild(): void
-    {
-        self::markTestIncomplete(); // TODO: Complete this test
-    }
-
-    /**
-     * @see  NestedSetMapper::emitEvent
-     */
-    public function testEmitEvent(): void
-    {
-        self::markTestIncomplete(); // TODO: Complete this test
+        self::assertEquals([1, 2], $ids);
+        self::assertEquals(['', 'flower'], $paths);
     }
 
     /**
@@ -174,15 +167,26 @@ class NestedSetMapperTest extends AbstractORMTestCase
      */
     public function testGetTree(): void
     {
-        self::markTestIncomplete(); // TODO: Complete this test
-    }
+        $tree = $this->instance->getTree(1);
+        $ids = $tree->column('id', null, true)->dump();
+        $paths = $tree->column('path', null, true)->dump();
 
-    /**
-     * @see  NestedSetMapper::setPosition
-     */
-    public function testSetPosition(): void
-    {
-        self::markTestIncomplete(); // TODO: Complete this test
+        self::assertEquals(
+            [1, 6, 2, 4, 3, 5, 7],
+            $ids,
+        );
+        self::assertEquals(
+            [
+                '',
+                'rose',
+                'flower',
+                'flower/olive',
+                'flower/sakura',
+                'flower/sunflower',
+                'orchid',
+            ],
+            $paths
+        );
     }
 
     /**
@@ -190,23 +194,21 @@ class NestedSetMapperTest extends AbstractORMTestCase
      */
     public function testIsLeaf(): void
     {
-        self::markTestIncomplete(); // TODO: Complete this test
+        self::assertTrue($this->instance->isLeaf(5));
+        self::assertFalse($this->instance->isLeaf(2));
     }
 
     /**
-     * @see  NestedSetMapper::createRoot
+     * @see  NestedSetMapper::move
      */
-    public function testCreateRoot(): void
+    public function testMove(): void
     {
-        self::markTestIncomplete(); // TODO: Complete this test
-    }
+        /** @var NestedEntityInterface $item */
+        $item = $this->instance->findOne(5);
 
-    /**
-     * @see  NestedSetMapper::rebuildPath
-     */
-    public function testRebuildPath(): void
-    {
-        self::markTestIncomplete(); // TODO: Complete this test
+        $this->instance->move($item, Position::MOVE_UP);
+
+        self::assertEquals([6, 7], [$item->getLft(), $item->getRgt()]);
     }
 
     /**
@@ -214,15 +216,132 @@ class NestedSetMapperTest extends AbstractORMTestCase
      */
     public function testMoveByReference(): void
     {
-        self::markTestIncomplete(); // TODO: Complete this test
+        /** @var NestedEntityInterface $item */
+        $item = $this->instance->findOne(5);
+
+        $this->instance->moveByReference($item, 1, Position::LAST_CHILD);
+
+        self::assertEquals([11, 12], [$item->getLft(), $item->getRgt()]);
+    }
+
+    public function testEntityGetChildrenAndAncestors(): void
+    {
+        /** @var NestedEntityInterface $item */
+        $item = $this->instance->findOne(2);
+
+        self::assertEquals(
+            [4, 3],
+            $item->getChildren()->all()->column('id', null, true)->dump()
+        );
+
+        /** @var NestedEntityInterface $item */
+        $item = $this->instance->findOne(3);
+
+        self::assertEquals(
+            [1, 2],
+            $item->getAncestors()->all()->column('id', null, true)->dump()
+        );
+
+        /** @var NestedEntityInterface $item */
+        $item = $this->instance->getRoot();
+
+        self::assertEquals(
+            [1, 6, 2, 4, 3, 7, 5],
+            $item->getTree()->all()->column('id', null, true)->dump()
+        );
     }
 
     /**
-     * @see  NestedSetMapper::isPathable
+     * @see  NestedSetMapper::rebuild
      */
-    public function testIsPathable(): void
+    public function testRebuild(): void
     {
-        self::markTestIncomplete(); // TODO: Complete this test
+        $this->instance->update()
+            ->set('lft', 0)
+            ->set('rgt', 0)
+            ->execute();
+
+        $this->instance->rebuild(1);
+
+        $lfts = $this->instance->select('lft')
+            ->loadColumn()
+            ->dump();
+
+        self::assertEquals(
+            [0, 1, 2, 4, 7, 9, 11],
+            $lfts
+        );
+    }
+
+    /**
+     * @see  NestedSetMapper::rebuildPath
+     */
+    public function testRebuildPath(): void
+    {
+        $this->instance->update()
+            ->set('path', '')
+            ->execute();
+
+        $this->instance->rebuild(1);
+
+        $paths = $this->instance->select('path')
+            ->loadColumn()
+            ->dump();
+
+        self::dumpArray($paths);
+
+        self::assertEquals(
+            [
+                '',
+                'flower',
+                'flower/sakura',
+                'flower/olive',
+                'sunflower',
+                'rose',
+                'orchid'
+            ],
+            $paths
+        );
+    }
+
+    public function testDelete(): void
+    {
+        $newChild = new StubNestedSet();
+        $newChild->setTitle('Kapok');
+        $newChild->setAlias('kapok');
+
+        $this->instance->putBefore($newChild, 2);
+
+        $this->instance->deleteWhere(8);
+
+        self::assertNull(
+            $this->instance->findOne(8)
+        );
+
+        // Delete children
+        $this->instance->deleteWhere(2);
+
+        self::assertNull($this->instance->findOne(3));
+        self::assertNull($this->instance->findOne(4));
+    }
+
+    /**
+     * @see  NestedSetMapper::getRoot
+     */
+    public function testGetRoot(): void
+    {
+        /** @var StubNestedSet $root */
+        $root = $this->instance->getRoot();
+
+        self::assertEquals(
+            1,
+            $root->getId()
+        );
+
+        self::assertEquals(
+            'root',
+            $root->getAlias()
+        );
     }
 
     protected function setUp(): void

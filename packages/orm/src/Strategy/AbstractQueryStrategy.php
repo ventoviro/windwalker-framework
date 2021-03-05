@@ -31,6 +31,13 @@ abstract class AbstractQueryStrategy extends Query
     public function __construct(ORM $orm, $grammar = null)
     {
         parent::__construct($orm, $grammar ?? $orm->getDb()->getPlatform()->getGrammar());
+
+        $this->init();
+    }
+
+    protected function init(): void
+    {
+        //
     }
 
     public function getDb(): DatabaseAdapter

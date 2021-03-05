@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\ORM\Hydrator;
 
 use Windwalker\Attributes\AttributesResolver;
+use Windwalker\Database\Hydrator\FieldHydratorInterface;
 use Windwalker\Database\Hydrator\HydratorInterface;
 use Windwalker\ORM\Attributes\Column;
 use Windwalker\ORM\Attributes\Mapping;
@@ -21,15 +22,15 @@ use Windwalker\ORM\ORM;
 /**
  * The EntityHydrator class.
  */
-class EntityHydrator implements HydratorInterface
+class EntityHydrator implements FieldHydratorInterface
 {
     /**
      * EntityHydrator constructor.
      *
-     * @param  HydratorInterface  $hydrator
-     * @param  ORM                $orm
+     * @param  FieldHydratorInterface  $hydrator
+     * @param  ORM                     $orm
      */
-    public function __construct(protected HydratorInterface $hydrator, protected ORM $orm)
+    public function __construct(protected FieldHydratorInterface $hydrator, protected ORM $orm)
     {
     }
 
@@ -134,5 +135,31 @@ class EntityHydrator implements HydratorInterface
         }
 
         return $item;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function extractField(object $object, string $field): mixed
+    {
+        if (!EntityMetadata::isEntity($object)) {
+            return $this->hydrator->extractField($object, $field);
+        }
+
+        if ($object instanceof \stdClass) {
+            return $object->$field;
+        }
+
+        $metadata = $this->orm->getEntityMetadata($object);
+
+        $column = $metadata->getColumn($field);
+
+        if (!$column) {
+            $prop = $field;
+        } else {
+            $prop = $column->getProperty()->getName();
+        }
+
+        return $this->hydrator->extractField($object, $prop);
     }
 }

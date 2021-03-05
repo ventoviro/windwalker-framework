@@ -14,6 +14,7 @@ namespace Windwalker\ORM;
 use Windwalker\Attributes\AttributesAwareTrait;
 use Windwalker\Database\DatabaseAdapter;
 use Windwalker\Database\Driver\StatementInterface;
+use Windwalker\Database\Hydrator\FieldHydratorInterface;
 use Windwalker\Database\Hydrator\HydratorInterface;
 use Windwalker\ORM\Hydrator\EntityHydrator;
 use Windwalker\ORM\Metadata\EntityMetadata;
@@ -47,7 +48,7 @@ class ORM
 
     protected DatabaseAdapter $db;
 
-    protected ?HydratorInterface $hydrator = null;
+    protected ?FieldHydratorInterface $hydrator = null;
 
     protected EntityMetadataCollection $entityMetadataCollection;
 
@@ -145,6 +146,15 @@ class ORM
         return $this->getEntityHydrator()->extract($entity);
     }
 
+    public function extractField(array|object $entity, string $field): mixed
+    {
+        if (is_array($entity)) {
+            return $entity[$field];
+        }
+
+        return $this->getEntityHydrator()->extractField($entity, $field);
+    }
+
     public function getEntityMetadata(string|object $entity): EntityMetadata
     {
         return $this->getEntityMetadataCollection()->get($entity);
@@ -191,9 +201,9 @@ class ORM
     }
 
     /**
-     * @return HydratorInterface
+     * @return FieldHydratorInterface
      */
-    public function getEntityHydrator(): HydratorInterface
+    public function getEntityHydrator(): FieldHydratorInterface
     {
         return $this->hydrator ??= $this->getAttributesResolver()
             ->createObject(
@@ -204,11 +214,11 @@ class ORM
     }
 
     /**
-     * @param  HydratorInterface|null  $hydrator
+     * @param  FieldHydratorInterface|null  $hydrator
      *
      * @return  static  Return self to support chaining.
      */
-    public function setEntityHydrator(?HydratorInterface $hydrator): static
+    public function setEntityHydrator(?FieldHydratorInterface $hydrator): static
     {
         $this->hydrator = $hydrator;
 

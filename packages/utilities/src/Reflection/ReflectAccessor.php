@@ -137,6 +137,25 @@ class ReflectAccessor
         return $value ?? settype($value, $types[0]->getName());
     }
 
+    public static function hasProperty(object $object, string $propertyName): bool
+    {
+        $refl = new ReflectionClass($object);
+
+        // First check if the property is easily accessible.
+        $exists = $refl->hasProperty($propertyName);
+
+        // Check parent private
+        if (!$exists) {
+            $parent = get_parent_class($object);
+
+            $refl = new ReflectionClass($parent);
+
+            $exists = $refl->hasProperty($propertyName);
+        }
+
+        return $exists;
+    }
+
     /**
      * Helper method that gets a protected or private property in a class by relfection.
      *
