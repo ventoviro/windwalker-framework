@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Query\Test;
 
+use Windwalker\Query\Bounded\BoundedHelper;
 use Windwalker\Query\Grammar\AbstractGrammar;
 use Windwalker\Query\Grammar\SQLServerGrammar;
 
@@ -31,6 +32,65 @@ class SQLServerQueryTest extends QueryTest
     public static function createGrammar(): AbstractGrammar
     {
         return new SQLServerGrammar();
+    }
+
+    /**
+     * testParseJsonSelector
+     *
+     * @param  string  $selector
+     * @param  bool    $unQuoteLast
+     * @param  string  $expected
+     *
+     * @return  void
+     *
+     * @dataProvider parseJsonSelectorProvider
+     */
+    public function testParseJsonSelector(string $selector, bool $unQuoteLast, string $expected)
+    {
+        $parsed = $this->instance->jsonSelector($selector);
+
+        $bounded = $this->instance->getMergedBounded();
+
+        self::assertEquals(
+            $expected,
+            BoundedHelper::emulatePrepared(
+                $this->instance->getEscaper(),
+                (string) $parsed,
+                $bounded
+            )
+        );
+        $this->instance->render(true);
+    }
+
+    public function parseJsonSelectorProvider(): array
+    {
+        return [
+            [
+                'foo ->> bar',
+                true,
+                'JSON_VALUE([foo], \'$.bar\')'
+            ],
+            [
+                'foo->bar[1]->>yoo',
+                true,
+                'JSON_VALUE([foo], \'$.bar[1].yoo\')'
+            ],
+            [
+                'foo->bar[1]->>\'yoo\'',
+                true,
+                'JSON_VALUE([foo], \'$.bar[1].yoo\')'
+            ],
+            [
+                'foo->bar[1]->>"yoo"',
+                true,
+                'JSON_VALUE([foo], \'$.bar[1]."yoo"\')'
+            ],
+            [
+                'foo->bar[1]->\'yoo\'',
+                false,
+                'JSON_QUERY([foo], \'$.bar[1].yoo\')'
+            ],
+        ];
     }
 
     public function testInsert(): void

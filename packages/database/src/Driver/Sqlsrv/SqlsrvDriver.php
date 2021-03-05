@@ -13,6 +13,7 @@ namespace Windwalker\Database\Driver\Sqlsrv;
 
 use Windwalker\Database\Driver\AbstractDriver;
 use Windwalker\Database\Driver\StatementInterface;
+use Windwalker\Query\Grammar\SQLiteGrammar;
 
 /**
  * The SqlsrvDriver class.
@@ -44,7 +45,7 @@ class SqlsrvDriver extends AbstractDriver
      */
     public function escape(string $value): string
     {
-        return $this->getPlatform()->getGrammar()->localEscape($value);
+        return SQLiteGrammar::localEscape($value);
     }
 
     /**

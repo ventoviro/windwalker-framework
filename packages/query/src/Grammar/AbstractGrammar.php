@@ -20,6 +20,9 @@ use Windwalker\Utilities\TypeCast;
 use Windwalker\Utilities\Wrapper\RawWrapper;
 use Windwalker\Utilities\Wrapper\WrapperInterface;
 
+use function Windwalker\Query\clause;
+use function Windwalker\Query\qn;
+use function Windwalker\Query\val;
 use function Windwalker\value;
 
 /**
@@ -304,14 +307,16 @@ abstract class AbstractGrammar
         return $sql;
     }
 
+    abstract public function compileJsonSelector(Query $query, string $column, array $paths, bool $unQuoteLast = true): Clause;
+
     /**
      * If no connection set, we escape it with default function.
      *
-     * @param string $text
+     * @param  string  $text
      *
      * @return  string
      */
-    public function localEscape(string $text): string
+    public static function localEscape(string $text): string
     {
         $text = str_replace("'", "''", $text);
 

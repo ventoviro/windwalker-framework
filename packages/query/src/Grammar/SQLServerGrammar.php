@@ -14,6 +14,10 @@ namespace Windwalker\Query\Grammar;
 use Windwalker\Query\Clause\Clause;
 use Windwalker\Query\Query;
 
+use function Windwalker\Query\clause;
+use function Windwalker\Query\qn;
+use function Windwalker\Query\val;
+
 /**
  * The SqlsrvGrammar class.
  */
@@ -95,16 +99,26 @@ class SQLServerGrammar extends AbstractGrammar
         );
     }
 
+    public function compileJsonSelector(Query $query, string $column, array $paths, bool $unQuoteLast = true): Clause
+    {
+        $vc = val('$.' . implode('.', $paths));
+        $query->bind(null, $vc);
+
+        $expr = $unQuoteLast
+            ? clause('JSON_VALUE()', $vc, ', ')
+            : clause('JSON_QUERY()', $vc, ', ');
+
+        return $expr->prepend(qn($column, $query));
+    }
+
     /**
      * If no connection set, we escape it with default function.
-     *
-     * @see https://stackoverflow.com/a/2526717
      *
      * @param  string  $text
      *
      * @return  string
      */
-    public function localEscape(string $text): string
+    public static function localEscape(string $text): string
     {
         if ($text === '') {
             return $text;

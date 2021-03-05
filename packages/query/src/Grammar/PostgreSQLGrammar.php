@@ -14,6 +14,9 @@ namespace Windwalker\Query\Grammar;
 use Windwalker\Query\Clause\Clause;
 use Windwalker\Query\Query;
 
+use function Windwalker\Query\clause;
+use function Windwalker\Query\qn;
+use function Windwalker\Query\val;
 use function Windwalker\raw;
 
 /**
@@ -50,53 +53,31 @@ class PostgreSQLGrammar extends AbstractGrammar
         return $sql;
     }
 
-    // /**
-    //  * @inheritDoc
-    //  */
-    // public function listTables(?string $schema = null): Query
-    // {
-    //     $query = $this->createQuery()
-    //         ->select('table_name AS Name')
-    //         ->from('information_schema.tables')
-    //         ->where('table_type', 'BASE TABLE')
-    //         ->order('table_name', 'ASC');
-    //
-    //     if ($schema) {
-    //         $query->where('table_schema', $schema);
-    //     } else {
-    //         $query->whereNotIn('table_schema', ['pg_catalog', 'information_schema']);
-    //     }
-    //
-    //     return $query;
-    // }
-    //
-    // /**
-    //  * @inheritDoc
-    //  */
-    // public function listViews(?string $schema = null): Query
-    // {
-    //     $query = $this->createQuery()
-    //         ->select('table_name AS Name')
-    //         ->from('information_schema.tables')
-    //         ->where('table_type', 'VIEW')
-    //         ->order('table_name', 'ASC');
-    //
-    //     if ($schema) {
-    //         $query->where('table_schema', $schema);
-    //     } else {
-    //         $query->whereNotIn('table_schema', ['pg_catalog', 'information_schema']);
-    //     }
-    //
-    //     return $query;
-    // }
-    //
-    // /**
-    //  * @inheritDoc
-    //  */
-    // public function dropTable(string $table, bool $ifExists = false, ...$options): Clause
-    // {
-    //     $options[] = 'CASCADE';
-    //
-    //     return parent::dropTable($table, $ifExists, ...$options);
-    // }
+    public function compileJsonSelector(Query $query, string $column, array $paths, bool $unQuoteLast = true): Clause
+    {
+        $newPaths = [];
+
+        foreach ($paths as $path) {
+            preg_match('/([\w.]+)\[(\d)\]/', $path, $matches);
+
+            if (count($matches) >= 3) {
+                $newPaths[] = $vc = val($matches[1]);
+                $newPaths[] = (int) $matches[2];
+            } else {
+                $newPaths[] = $vc = val($path);
+            }
+
+            $query->bind(null, $vc);
+        }
+
+        $last = array_pop($newPaths);
+        $lastArrow = $unQuoteLast ? '->>' : '->';
+        array_unshift($newPaths, qn($column, $query));
+
+        return clause(
+            '',
+            [clause('', $newPaths, '->'), $last],
+            $lastArrow
+        );
+    }
 }

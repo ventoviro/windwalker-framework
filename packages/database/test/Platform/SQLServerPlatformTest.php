@@ -552,7 +552,7 @@ CREATE VIEW ww_articles_view AS SELECT * FROM ww_articles;'),
 
     protected function setUp(): void
     {
-        $this->instance = static::$db->getDriver()->getPlatform();
+        $this->instance = static::$db->getPlatform();
     }
 
     protected function tearDown(): void

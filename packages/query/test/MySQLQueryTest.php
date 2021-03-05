@@ -11,8 +11,11 @@ declare(strict_types=1);
 
 namespace Windwalker\Query\Test;
 
+use Windwalker\Query\Bounded\BoundedHelper;
 use Windwalker\Query\Grammar\AbstractGrammar;
 use Windwalker\Query\Grammar\MySQLGrammar;
+
+use function Windwalker\Query\qn;
 
 /**
  * The MySQLQueryTest class.
@@ -20,6 +23,73 @@ use Windwalker\Query\Grammar\MySQLGrammar;
 class MySQLQueryTest extends QueryTest
 {
     protected static array $nameQuote = ['`', '`'];
+
+    /**
+     * testParseJsonSelector
+     *
+     * @param  string  $selector
+     * @param  string  $expected
+     *
+     * @return  void
+     *
+     * @dataProvider parseJsonSelectorProvider
+     */
+    public function testParseJsonSelector(string $selector, string $expected)
+    {
+        $parsed = $this->instance->jsonSelector($selector);
+
+        $bounded = $this->instance->getMergedBounded();
+
+        self::assertEquals(
+            $expected,
+            BoundedHelper::emulatePrepared(
+                $this->instance->getEscaper(),
+                (string) $parsed,
+                $bounded
+            )
+        );
+        $this->instance->render(true);
+    }
+
+    public function parseJsonSelectorProvider(): array
+    {
+        return [
+            [
+                'foo ->> bar',
+                'JSON_UNQUOTE(JSON_EXTRACT(`foo`, \'$.bar\'))'
+            ],
+            [
+                'foo->bar[1]->>yoo',
+                'JSON_UNQUOTE(JSON_EXTRACT(`foo`, \'$.bar[1].yoo\'))'
+            ],
+            [
+                'foo->bar[1]->>\'yoo\'',
+                'JSON_UNQUOTE(JSON_EXTRACT(`foo`, \'$.bar[1].yoo\'))'
+            ],
+            [
+                'foo->bar[1]->\'yoo\'',
+                'JSON_EXTRACT(`foo`, \'$.bar[1].yoo\')'
+            ],
+        ];
+    }
+
+    public function testJsonQuote()
+    {
+        $query = $this->instance->select('foo -> bar ->> yoo AS yoo')
+            // ->selectRaw('%n AS l', 'foo -> bar -> loo')
+            ->from('test')
+            // ->where('foo -> bar ->> yoo', 'www')
+            // // ->having('foo -> bar', '=', qn('hoo -> joo ->> moo'))
+            // ->order('foo -> bar ->> yoo', 'DESC')
+        ;
+show($query);
+        self::assertEquals(
+            <<<SQL
+            ddd
+            SQL,
+            $query->render(true)
+        );
+    }
 
     protected function setUp(): void
     {

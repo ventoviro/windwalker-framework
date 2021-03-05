@@ -11,8 +11,12 @@ declare(strict_types=1);
 
 namespace Windwalker\Query\Grammar;
 
+use Windwalker\Query\Clause\Clause;
 use Windwalker\Query\Query;
 
+use function Windwalker\Query\clause;
+use function Windwalker\Query\qn;
+use function Windwalker\Query\val;
 use function Windwalker\raw;
 
 /**
@@ -42,11 +46,11 @@ class MySQLGrammar extends AbstractGrammar
      * Please see:
      * http://stackoverflow.com/questions/4892882/mysql-real-escape-string-for-multibyte-without-a-connection
      *
-     * @param string $text
+     * @param  string  $text
      *
      * @return  string
      */
-    public function localEscape(string $text): string
+    public static function localEscape(string $text): string
     {
         return str_replace(
             ['\\', "\0", "\n", "\r", "'", '"', "\x1a"],
@@ -72,5 +76,21 @@ class MySQLGrammar extends AbstractGrammar
         }
 
         return $query;
+    }
+
+    public function compileJsonSelector(Query $query, string $column, array $paths, bool $unQuoteLast = true): Clause
+    {
+        $expr = clause('JSON_EXTRACT()', [], ', ');
+
+        $expr->append(qn($column, $query))
+            ->append($vc = val('$.' . implode('.', $paths)));
+
+        $query->bind(null, $vc);
+
+        if ($unQuoteLast) {
+            $expr = clause('JSON_UNQUOTE()', $expr, ', ');
+        }
+
+        return $expr;
     }
 }

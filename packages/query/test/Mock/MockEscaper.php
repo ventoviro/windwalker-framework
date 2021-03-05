@@ -18,6 +18,8 @@ class MockEscaper
 {
     public function escape(string $value): string
     {
-        return addslashes($value);
+        $text = str_replace("'", "''", $value);
+
+        return addcslashes($text, "\000\n\r\\\032");
     }
 }

@@ -1007,7 +1007,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
                 $clause = $this->clause('()', [], ', ');
 
                 foreach ($value as $val) {
-                    $clause->append($this->handleWriteValue($val));
+                    $clause->append($this->castWriteValue($val));
                 }
 
                 ArgumentsAssert::assert(
@@ -1047,14 +1047,14 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
         $this->set->append(
             $this->clause(
                 '',
-                [$this->quoteName($column), '=', $this->handleWriteValue($value)]
+                [$this->quoteName($column), '=', $this->castWriteValue($value)]
             )
         );
 
         return $this;
     }
 
-    private function handleWriteValue($value): ValueClause
+    private function castWriteValue($value): ValueClause
     {
         $origin = $value;
 
@@ -1094,6 +1094,27 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
         $alias = $alias ?: $query->getAlias() ?: uniqid('sq');
 
         $this->subQueries[$alias] = $query;
+    }
+
+    /**
+     * parseJsonExtract
+     *
+     * @param  string  $expr
+     *
+     * @return  Clause
+     *
+     * @since  3.5.21
+     */
+    public function jsonSelector(string $expr): Clause
+    {
+        $unQuoteLast = str_contains($expr, '->>');
+
+        $paths = array_filter(array_map('trim', preg_split('/->+/', $expr)), 'strlen');
+        $paths = array_map(fn($segment) => trim($segment, "'"), $paths);
+
+        $column = array_shift($paths);
+
+        return $this->getGrammar()->compileJsonSelector($this, $column, $paths, $unQuoteLast);
     }
 
     /**
@@ -1168,7 +1189,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
             return (string) $value;
         }
 
-        return $this->getEscaper()->quote((string) $value);
+        return $this->getEscaper()?->quote((string) $value);
     }
 
     /**
@@ -1182,6 +1203,17 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
     public function quoteName(mixed $name, bool $ignoreDot = false): mixed
     {
         return $this->getGrammar()::quoteNameMultiple($name, $ignoreDot);
+    }
+
+    public function qnStr(string $name, bool $ignoreDot = false): Clause|string
+    {
+        if (str_contains($name, '->')) {
+            $j = $this->jsonSelector($name);
+            show($j);
+            return $j;
+        }
+
+        return $this->quoteName($name);
     }
 
     /**
