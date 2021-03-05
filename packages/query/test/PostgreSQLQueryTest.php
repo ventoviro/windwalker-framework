@@ -88,13 +88,12 @@ class PostgreSQLQueryTest extends QueryTest
             ->from('test')
             ->where('foo -> bar ->> yoo', 'www')
             ->having('foo -> bar', '=', qn('hoo -> joo ->> moo'))
-            ->order('foo -> bar ->> yoo', 'DESC')
-        ;
+            ->order('foo -> bar ->> yoo', 'DESC');
 
         self::assertSqlEquals(
             <<<SQL
             SELECT "foo"->'bar'->>'yoo' AS "yoo", "foo"->'bar'->'loo' AS l
-            FROM "test" 
+            FROM "test"
             WHERE "foo"->'bar'->>'yoo' = 'www'
             HAVING "foo"->'bar' = "hoo"->'joo'->>'moo'
             ORDER BY "foo"->'bar'->>'yoo' DESC

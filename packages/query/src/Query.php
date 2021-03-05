@@ -443,11 +443,11 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
      *
      * @param  mixed  $query  The Query object or string to union.
      *
-     * @return  mixed   The Query object on success or boolean false on failure.
+     * @return  static   The Query object on success or boolean false on failure.
      *
      * @since   2.0
      */
-    public function unionDistinct(mixed $query): mixed
+    public function unionDistinct(mixed $query): static
     {
         // Apply the distinct flag to the union.
         return $this->union($query, 'DISTINCT');
@@ -697,7 +697,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
         return $this->where($wheres, 'OR');
     }
 
-    public function having($column, ...$args): static
+    public function having(mixed $column, mixed ...$args): static
     {
         if ($column instanceof \Closure) {
             $this->handleNestedWheres($column, (string) ($args[0] ?? 'AND'), 'having');
@@ -734,12 +734,12 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
     /**
      * havingRaw
      *
-     * @param  string|Clause  $string
-     * @param  array          ...$args
+     * @param  mixed  $string
+     * @param  array  ...$args
      *
      * @return  static
      */
-    public function havingRaw($string, ...$args): static
+    public function havingRaw(mixed $string, mixed ...$args): static
     {
         if (!$this->having) {
             $this->having = $this->clause('HAVING', [], ' AND ');
@@ -840,7 +840,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
             return $this;
         }
 
-        $order = [$this->qnStr($column)];
+        $order = [$this->quoteName($column)];
 
         if ($dir !== null) {
             ArgumentsAssert::assert(
@@ -871,7 +871,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
         }
 
         $this->group->append(
-            $this->quoteName(
+            $this->qnMultiple(
                 array_values(Arr::flatten($columns))
             )
         );
@@ -967,7 +967,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
         }
 
         $this->columns->append(
-            $this->quoteName(
+            $this->qnMultiple(
                 array_values(Arr::flatten($columns))
             )
         );
@@ -1232,14 +1232,41 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
     /**
      * quoteName
      *
-     * @param  string|iterable|WrapperInterface  $name
-     * @param  bool                              $ignoreDot
+     * @param  string|\Stringable  $name
+     * @param  int                 $flags
      *
      * @return mixed
      */
-    public function quoteName(mixed $name, bool $ignoreDot = false): mixed
+    public function quoteName(string|\Stringable $name, int $flags = 0): string
     {
-        return $this->getGrammar()::quoteNameMultiple($name, $ignoreDot);
+        if ($name instanceof RawWrapper) {
+            return $name();
+        }
+
+        if (str_contains($name, '->')) {
+            return (string) $this->jsonSelector($name, (bool) ($flags & QN_JSON_INSTANT));
+        }
+
+        return $this->getGrammar()::quoteName($name, (bool) ($flags & QN_IGNORE_DOTS));
+    }
+
+    public function qnMultiple(iterable|Clause|WrapperInterface $names, int $flags = 0): mixed
+    {
+        if ($names instanceof RawWrapper) {
+            return $names();
+        }
+
+        if ($names instanceof Clause) {
+            return $names->mapElements(fn ($item) => $this->quoteName($item, $flags));
+        }
+
+        $quoted = [];
+
+        foreach ($names as $k => $name) {
+            $quoted[$k] = $this->quoteName($name, $flags);
+        }
+
+        return $quoted;
     }
 
     public function qnStr(string|\Stringable $name, bool $ignoreDot = false): string
@@ -1492,86 +1519,26 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
                 $replacement = $args[$index];
             }
 
-            switch ($match[5]) {
-                case 'a':
-                    return 0 + $replacement;
-                    break;
-
-                case 'e':
-                    return $query->escape($replacement);
-                    break;
-
-                // case 'E':
-                //     return $query->escape($replacement, true);
-                //     break;
-
-                case 'n':
-                    return $query->qnStr($replacement);
-                    break;
-
-                case 'q':
-                    return $query->quote($replacement);
-                    break;
-
-                // case 'Q':
-                //     return $query->quote($replacement, false);
-                //     break;
-
-                case 'r':
-                    return $replacement;
-                    break;
-
-                // Dates
-                case 'y':
-                    return $expression->year($query->quote($replacement));
-                    break;
-
-                case 'Y':
-                    return $expression->year($query->quoteName($replacement));
-                    break;
-
-                case 'm':
-                    return $expression->month($query->quote($replacement));
-                    break;
-
-                case 'M':
-                    return $expression->month($query->quoteName($replacement));
-                    break;
-
-                case 'd':
-                    return $expression->day($query->quote($replacement));
-                    break;
-
-                case 'D':
-                    return $expression->day($query->quoteName($replacement));
-                    break;
-
-                case 'h':
-                    return $expression->hour($query->quote($replacement));
-                    break;
-
-                case 'H':
-                    return $expression->hour($query->quoteName($replacement));
-                    break;
-
-                case 'i':
-                    return $expression->minute($query->quote($replacement));
-                    break;
-
-                case 'I':
-                    return $expression->minute($query->quoteName($replacement));
-                    break;
-
-                case 's':
-                    return $expression->second($query->quote($replacement));
-                    break;
-
-                case 'S':
-                    return $expression->second($query->quoteName($replacement));
-                    break;
-            }
-
-            return '';
+            return match ($match[5]) {
+                'a' => 0 + $replacement,
+                'e' => $query->escape($replacement),
+                'n' => $query->quoteName($replacement, QN_JSON_INSTANT),
+                'q' => $query->quote($replacement),
+                'r' => $replacement,
+                'y' => $expression->year($query->quote($replacement)),
+                'Y' => $expression->year($query->quoteName($replacement, QN_JSON_INSTANT)),
+                'm' => $expression->month($query->quote($replacement)),
+                'M' => $expression->month($query->quoteName($replacement, QN_JSON_INSTANT)),
+                'd' => $expression->day($query->quote($replacement)),
+                'D' => $expression->day($query->quoteName($replacement, QN_JSON_INSTANT)),
+                'h' => $expression->hour($query->quote($replacement)),
+                'H' => $expression->hour($query->quoteName($replacement, QN_JSON_INSTANT)),
+                'i' => $expression->minute($query->quote($replacement)),
+                'I' => $expression->minute($query->quoteName($replacement, QN_JSON_INSTANT)),
+                's' => $expression->second($query->quote($replacement)),
+                'S' => $expression->second($query->quoteName($replacement, QN_JSON_INSTANT)),
+                default => '',
+            };
         };
 
         /**

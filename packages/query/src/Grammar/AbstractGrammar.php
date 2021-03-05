@@ -254,8 +254,12 @@ abstract class AbstractGrammar
         return static::quoteName((string) $name, $ignoreDot);
     }
 
-    public static function quoteName(string $name, bool $ignoreDot = false): string
+    public static function quoteName(string|\Stringable $name, bool $ignoreDot = false): string
     {
+        if ($name instanceof RawWrapper) {
+            return value($name);
+        }
+
         if ($name === '*') {
             return $name;
         }
@@ -307,7 +311,8 @@ abstract class AbstractGrammar
         return $sql;
     }
 
-    abstract public function compileJsonSelector(Query $query,
+    abstract public function compileJsonSelector(
+        Query $query,
         string $column,
         array $paths,
         bool $unQuoteLast = true,

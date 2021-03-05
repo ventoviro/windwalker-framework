@@ -14,6 +14,8 @@ namespace Windwalker\Query\Clause;
 use Windwalker\Query\Query;
 use Windwalker\Utilities\Wrapper\RawWrapper;
 
+use const Windwalker\Query\QN_IGNORE_DOTS;
+
 /**
  * The AsClause class.
  */
@@ -83,7 +85,7 @@ class AsClause implements ClauseInterface
         }
 
         if ($alias !== false && (string) $alias !== '') {
-            $column .= ' AS ' . $this->query->quoteName($alias);
+            $column .= ' AS ' . $this->query->quoteName($alias, QN_IGNORE_DOTS);
         }
 
         return (string) $column;

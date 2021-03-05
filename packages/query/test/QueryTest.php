@@ -1450,7 +1450,7 @@ SQL
     public function testQuoteName(): void
     {
         $this->assertEquals(self::replaceQn('"foo"'), $this->instance->quoteName('foo'));
-        $this->assertEquals([self::replaceQn('"foo"')], $this->instance->quoteName(['foo']));
+        $this->assertEquals([self::replaceQn('"foo"')], $this->instance->qnMultiple(['foo']));
     }
 
     /**

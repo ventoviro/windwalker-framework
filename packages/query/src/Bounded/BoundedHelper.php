@@ -90,14 +90,10 @@ class BoundedHelper
         $values = [];
 
         foreach ($params as $param) {
-            switch ($param['dataType']) {
-                case ParamType::STRING:
-                    $v = Escaper::tryQuote($escaper, (string) $param['value']);
-                    break;
-                default:
-                    $v = $param['value'];
-                    break;
-            }
+            $v = match ($param['dataType']) {
+                ParamType::STRING => Escaper::tryQuote($escaper, (string) $param['value']),
+                default => $param['value'],
+            };
 
             $values[] = $v;
         }
@@ -106,8 +102,7 @@ class BoundedHelper
             return $sql;
         }
 
-        $sql = str_replace('%', '%%', $sql);
-        $sql = str_replace('?', '%s', $sql);
+        $sql = str_replace(['%', '?'], ['%%', '%s'], $sql);
 
         return sprintf($sql, ...$values);
     }

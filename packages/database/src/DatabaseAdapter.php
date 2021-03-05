@@ -160,9 +160,9 @@ class DatabaseAdapter implements EventListenableInterface, HydratorAwareInterfac
      *
      * @return  array|string
      */
-    public function quoteName(mixed $value, bool $ignoreDot = false): array|string
+    public function quoteName(string|\Stringable $value, bool $ignoreDot = false): array|string
     {
-        return $this->getPlatform()->getGrammar()::quoteNameMultiple($value, $ignoreDot);
+        return $this->getPlatform()->getGrammar()::quoteName($value, $ignoreDot);
     }
 
     public function quote(mixed $value): array|string

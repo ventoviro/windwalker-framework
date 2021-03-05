@@ -80,8 +80,7 @@ class MySQLQueryTest extends QueryTest
             ->from('test')
             ->where('foo -> bar ->> yoo', 'www')
             ->having('foo -> bar', '=', qn('hoo -> joo ->> moo'))
-            ->order('foo -> bar ->> yoo', 'DESC')
-        ;
+            ->order('foo -> bar ->> yoo', 'DESC');
 
         self::assertSqlEquals(
             <<<SQL
