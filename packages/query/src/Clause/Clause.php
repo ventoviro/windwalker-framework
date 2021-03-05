@@ -143,9 +143,10 @@ class Clause implements \Countable, ClauseInterface
      */
     public function mapElements(callable $callable): static
     {
-        $this->elements = array_map($callable, $this->elements);
+        $new = clone $this;
+        $new->elements = array_map($callable, $this->elements);
 
-        return $this;
+        return $new;
     }
 
     /**
@@ -157,9 +158,10 @@ class Clause implements \Countable, ClauseInterface
      */
     public function filterElements(callable $callable): static
     {
-        $this->elements = array_filter($this->elements, $callable);
+        $new = clone $this;
+        $new->elements = array_filter($this->elements, $callable);
 
-        return $this;
+        return $new;
     }
 
     /**

@@ -368,6 +368,14 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
                 $this->injectSubQuery($value, $alias);
             }
 
+            if (is_string($value) && str_contains($value, '->')) {
+                if (stripos($value, ' as ') !== false) {
+                    [$value, $alias] = preg_split('/ as /i', $value);
+                }
+
+                $value = $this->jsonSelector($value);
+            }
+
             $clause->value($value);
         }
 
@@ -1203,17 +1211,6 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
     public function quoteName(mixed $name, bool $ignoreDot = false): mixed
     {
         return $this->getGrammar()::quoteNameMultiple($name, $ignoreDot);
-    }
-
-    public function qnStr(string $name, bool $ignoreDot = false): Clause|string
-    {
-        if (str_contains($name, '->')) {
-            $j = $this->jsonSelector($name);
-            show($j);
-            return $j;
-        }
-
-        return $this->quoteName($name);
     }
 
     /**

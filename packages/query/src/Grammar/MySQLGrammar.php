@@ -88,7 +88,7 @@ class MySQLGrammar extends AbstractGrammar
         $query->bind(null, $vc);
 
         if ($unQuoteLast) {
-            $expr = clause('JSON_UNQUOTE()', $expr, ', ');
+            $expr = clause('JSON_UNQUOTE()', raw($expr), ', ');
         }
 
         return $expr;

@@ -82,7 +82,7 @@ class MySQLQueryTest extends QueryTest
             // // ->having('foo -> bar', '=', qn('hoo -> joo ->> moo'))
             // ->order('foo -> bar ->> yoo', 'DESC')
         ;
-show($query);
+show($query->getBounded());
         self::assertEquals(
             <<<SQL
             ddd

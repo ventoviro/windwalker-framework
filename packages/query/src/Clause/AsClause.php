@@ -58,7 +58,7 @@ class AsClause implements ClauseInterface
 
     public function __toString(): string
     {
-        $quoteMethod = $this->isColumn ? 'qnStr' : 'quote';
+        $quoteMethod = $this->isColumn ? 'quoteName' : 'quote';
         $column = $this->value;
         $alias  = $this->alias;
 
