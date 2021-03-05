@@ -67,9 +67,13 @@ class AsClause implements ClauseInterface
         } elseif ($column instanceof Query) {
             $column = '(' . $column . ')';
         } elseif ($column instanceof Clause) {
-            $column = $column->mapElements(fn($v) => $this->query->$quoteMethod(
-                Query::convertClassToTable((string) $v)
-            ));
+            $column = $column->mapElements(function ($ele) {
+               if ($ele instanceof QuoteNameClause) {
+                   $ele->setQuery($this->query);
+               }
+
+               return $ele;
+            });
         } else {
             $column = $this->query->$quoteMethod(
                 Query::convertClassToTable((string) $column, $entityAlias)

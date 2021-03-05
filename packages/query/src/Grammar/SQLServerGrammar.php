@@ -15,6 +15,7 @@ use Windwalker\Query\Clause\Clause;
 use Windwalker\Query\Query;
 
 use function Windwalker\Query\clause;
+use function Windwalker\Query\expr;
 use function Windwalker\Query\qn;
 use function Windwalker\Query\val;
 
@@ -99,14 +100,18 @@ class SQLServerGrammar extends AbstractGrammar
         );
     }
 
-    public function compileJsonSelector(Query $query, string $column, array $paths, bool $unQuoteLast = true): Clause
+    public function compileJsonSelector(Query $query,
+        string $column,
+        array $paths,
+        bool $unQuoteLast = true,
+        bool $instant = false
+    ): Clause
     {
-        $vc = val('$.' . implode('.', $paths));
-        $query->bind(null, $vc);
+        $vc = $query->quoteOrVal('$.' . implode('.', $paths), $instant);
 
         $expr = $unQuoteLast
-            ? clause('JSON_VALUE()', $vc, ', ')
-            : clause('JSON_QUERY()', $vc, ', ');
+            ? expr('JSON_VALUE()', $vc)
+            : expr('JSON_QUERY()', $vc);
 
         return $expr->prepend(qn($column, $query));
     }

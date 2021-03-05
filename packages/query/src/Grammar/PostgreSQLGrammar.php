@@ -53,7 +53,12 @@ class PostgreSQLGrammar extends AbstractGrammar
         return $sql;
     }
 
-    public function compileJsonSelector(Query $query, string $column, array $paths, bool $unQuoteLast = true): Clause
+    public function compileJsonSelector(Query $query,
+        string $column,
+        array $paths,
+        bool $unQuoteLast = true,
+        bool $instant = false
+    ): Clause
     {
         $newPaths = [];
 
@@ -61,13 +66,11 @@ class PostgreSQLGrammar extends AbstractGrammar
             preg_match('/([\w.]+)\[(\d)\]/', $path, $matches);
 
             if (count($matches) >= 3) {
-                $newPaths[] = $vc = val($matches[1]);
+                $newPaths[] = $query->quoteOrVal($matches[1], $instant);
                 $newPaths[] = (int) $matches[2];
             } else {
-                $newPaths[] = $vc = val($path);
+                $newPaths[] = $query->quoteOrVal($path, $instant);
             }
-
-            $query->bind(null, $vc);
         }
 
         $last = array_pop($newPaths);

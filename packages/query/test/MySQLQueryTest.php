@@ -73,19 +73,23 @@ class MySQLQueryTest extends QueryTest
         ];
     }
 
-    public function testJsonQuote()
+    public function testJsonQuote(): void
     {
         $query = $this->instance->select('foo -> bar ->> yoo AS yoo')
-            // ->selectRaw('%n AS l', 'foo -> bar -> loo')
+            ->selectRaw('%n AS l', 'foo -> bar -> loo')
             ->from('test')
-            // ->where('foo -> bar ->> yoo', 'www')
-            // // ->having('foo -> bar', '=', qn('hoo -> joo ->> moo'))
-            // ->order('foo -> bar ->> yoo', 'DESC')
+            ->where('foo -> bar ->> yoo', 'www')
+            ->having('foo -> bar', '=', qn('hoo -> joo ->> moo'))
+            ->order('foo -> bar ->> yoo', 'DESC')
         ;
-show($query->getBounded());
-        self::assertEquals(
+
+        self::assertSqlEquals(
             <<<SQL
-            ddd
+            SELECT JSON_UNQUOTE(JSON_EXTRACT(`foo`, '$.bar.yoo')) AS `yoo`, JSON_EXTRACT(`foo`, '$.bar.loo') AS l
+            FROM `test`
+            WHERE JSON_UNQUOTE(JSON_EXTRACT(`foo`, '$.bar.yoo')) = 'www'
+            HAVING JSON_EXTRACT(`foo`, '$.bar') = JSON_UNQUOTE(JSON_EXTRACT(`hoo`, '$.joo.moo'))
+            ORDER BY JSON_UNQUOTE(JSON_EXTRACT(`foo`, '$.bar.yoo')) DESC
             SQL,
             $query->render(true)
         );

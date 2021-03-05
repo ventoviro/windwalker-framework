@@ -15,6 +15,7 @@ use Windwalker\Query\Bounded\BoundedHelper;
 use Windwalker\Query\Grammar\AbstractGrammar;
 use Windwalker\Query\Grammar\SQLServerGrammar;
 
+use function Windwalker\Query\qn;
 use function Windwalker\raw;
 
 /**
@@ -91,6 +92,27 @@ class SQLServerQueryTest extends QueryTest
                 'JSON_QUERY([foo], \'$.bar[1].yoo\')'
             ],
         ];
+    }
+
+    public function testJsonQuote(): void
+    {
+        $query = $this->instance->select('foo -> bar ->> yoo AS yoo')
+            ->selectRaw('%n AS l', 'foo -> bar -> loo')
+            ->from('test')
+            ->where('foo -> bar ->> yoo', 'www')
+            ->having('foo -> bar', '=', qn('hoo -> joo ->> moo'))
+            ->order('foo -> bar ->> yoo', 'DESC')
+        ;
+
+        self::assertSqlEquals(
+            <<<SQL
+            SELECT JSON_VALUE([foo], '$.bar.yoo') AS [yoo], JSON_QUERY([foo], '$.bar.loo') AS l
+            FROM [test] WHERE JSON_VALUE([foo], '$.bar.yoo') = 'www'
+            HAVING JSON_QUERY([foo], '$.bar') = JSON_VALUE([hoo], '$.joo.moo')
+            ORDER BY JSON_VALUE([foo], '$.bar.yoo') DESC
+            SQL,
+            $query->render(true)
+        );
     }
 
     public function testInsert(): void

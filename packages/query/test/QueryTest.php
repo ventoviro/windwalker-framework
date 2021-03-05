@@ -22,6 +22,7 @@ use Windwalker\Test\Traits\QueryTestTrait;
 use Windwalker\Utilities\Reflection\ReflectAccessor;
 
 use function Windwalker\Query\clause;
+use function Windwalker\Query\expr;
 use function Windwalker\Query\qn;
 use function Windwalker\Query\val;
 use function Windwalker\raw;
@@ -103,7 +104,7 @@ class QueryTest extends TestCase
             ],
             'raw and clause' => [
                 // args
-                [[raw('COUNT(*) AS a')], clause('DISTINCT', ['foo AS bar']), 'c AS ccc'],
+                [[raw('COUNT(*) AS a')], expr('DISTINCT', qn('foo AS bar')), 'c AS ccc'],
                 null,
                 // expected
                 'SELECT COUNT(*) AS a, DISTINCT "foo" AS "bar", "c" AS "ccc"',
@@ -118,7 +119,7 @@ class QueryTest extends TestCase
             'raw and selectAs with clause' => [
                 // args
                 [[raw('COUNT(*) AS a')], 'c AS ccc'],
-                [clause('DISTINCT', ['foo AS bar'])],
+                [expr('DISTINCT', qn('foo AS bar'))],
                 // expected
                 'SELECT COUNT(*) AS a, "c" AS "ccc", DISTINCT "foo" AS "bar"',
             ],

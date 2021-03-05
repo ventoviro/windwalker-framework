@@ -307,7 +307,12 @@ abstract class AbstractGrammar
         return $sql;
     }
 
-    abstract public function compileJsonSelector(Query $query, string $column, array $paths, bool $unQuoteLast = true): Clause;
+    abstract public function compileJsonSelector(Query $query,
+        string $column,
+        array $paths,
+        bool $unQuoteLast = true,
+        bool $instant = false
+    ): Clause;
 
     /**
      * If no connection set, we escape it with default function.

@@ -44,7 +44,7 @@ class ManyMorphManyTest extends AbstractORMTestCase
                 'ACS10004',
                 'ACS10005'
             ],
-            $actions->loadColumn('no')->unique()->dump()
+            $actions->loadColumn('no')->unique()->values()->dump()
         );
 
         self::assertEquals(

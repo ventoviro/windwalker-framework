@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Query;
 
 use Windwalker\Query\Clause\Clause;
+use Windwalker\Query\Clause\ExprClause;
 use Windwalker\Query\Clause\QuoteNameClause;
 use Windwalker\Query\Clause\ValueClause;
 
@@ -73,5 +74,20 @@ if (!function_exists(__NAMESPACE__ . '\qn')) {
         }
 
         return new QuoteNameClause($value, $query);
+    }
+}
+
+if (!function_exists(__NAMESPACE__ . '\expr')) {
+    /**
+     * clause
+     *
+     * @param  string  $name
+     * @param  array   $elements
+     *
+     * @return  ExprClause
+     */
+    function expr(string $name = '', ...$elements): ExprClause
+    {
+        return new ExprClause($name, ...$elements);
     }
 }

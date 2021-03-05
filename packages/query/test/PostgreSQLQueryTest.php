@@ -15,6 +15,8 @@ use Windwalker\Query\Bounded\BoundedHelper;
 use Windwalker\Query\Grammar\AbstractGrammar;
 use Windwalker\Query\Grammar\PostgreSQLGrammar;
 
+use function Windwalker\Query\qn;
+
 /**
  * The PostgresqlQueryTest class.
  */
@@ -77,6 +79,28 @@ class PostgreSQLQueryTest extends QueryTest
                 '"foo"->\'bar\'->1->\'yoo\''
             ],
         ];
+    }
+
+    public function testJsonQuote(): void
+    {
+        $query = $this->instance->select('foo -> bar ->> yoo AS yoo')
+            ->selectRaw('%n AS l', 'foo -> bar -> loo')
+            ->from('test')
+            ->where('foo -> bar ->> yoo', 'www')
+            ->having('foo -> bar', '=', qn('hoo -> joo ->> moo'))
+            ->order('foo -> bar ->> yoo', 'DESC')
+        ;
+
+        self::assertSqlEquals(
+            <<<SQL
+            SELECT "foo"->'bar'->>'yoo' AS "yoo", "foo"->'bar'->'loo' AS l
+            FROM "test" 
+            WHERE "foo"->'bar'->>'yoo' = 'www'
+            HAVING "foo"->'bar' = "hoo"->'joo'->>'moo'
+            ORDER BY "foo"->'bar'->>'yoo' DESC
+            SQL,
+            $query->render(true)
+        );
     }
 
     public function testLimitOffset()

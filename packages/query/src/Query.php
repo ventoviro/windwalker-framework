@@ -28,6 +28,7 @@ use Windwalker\Query\Clause\AlterClause;
 use Windwalker\Query\Clause\AsClause;
 use Windwalker\Query\Clause\Clause;
 use Windwalker\Query\Clause\ClauseInterface;
+use Windwalker\Query\Clause\ExprClause;
 use Windwalker\Query\Clause\JoinClause;
 use Windwalker\Query\Clause\QuoteNameClause;
 use Windwalker\Query\Clause\ValueClause;
@@ -603,7 +604,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
             // Process Aub query object
             $value = $this->val($value);
             $this->injectSubQuery($origin);
-        } elseif ($value instanceof RawWrapper) {
+        } elseif ($value instanceof RawWrapper || $value instanceof QuoteNameClause) {
             // Process Raw
             $value = $this->val($value);
         } else {
@@ -838,7 +839,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
             return $this;
         }
 
-        $order = [$this->quoteName($column)];
+        $order = [$this->qnStr($column)];
 
         if ($dir !== null) {
             ArgumentsAssert::assert(
@@ -1108,12 +1109,13 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
      * parseJsonExtract
      *
      * @param  string  $expr
+     * @param  bool    $instant
      *
      * @return  Clause
      *
      * @since  3.5.21
      */
-    public function jsonSelector(string $expr): Clause
+    public function jsonSelector(string $expr, bool $instant = false): Clause
     {
         $unQuoteLast = str_contains($expr, '->>');
 
@@ -1122,7 +1124,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
 
         $column = array_shift($paths);
 
-        return $this->getGrammar()->compileJsonSelector($this, $column, $paths, $unQuoteLast);
+        return $this->getGrammar()->compileJsonSelector($this, $column, $paths, $unQuoteLast, $instant);
     }
 
     /**
@@ -1137,6 +1139,11 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
     public function clause(string $name, $elements = [], string $glue = ' '): Clause
     {
         return clause($name, $elements, $glue);
+    }
+
+    public function expr(string $name, ...$elements): ExprClause
+    {
+        return expr($name, ...$elements);
     }
 
     public function alter(string $target, string $targetName): AlterClause
@@ -1201,6 +1208,27 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
     }
 
     /**
+     * quoteOrVal
+     *
+     * @param  mixed  $value
+     * @param  bool   $instant
+     *
+     * @return  mixed
+     *
+     * @internal Do not use this method directly.
+     */
+    public function quoteOrVal(mixed $value, bool $instant): mixed
+    {
+        if ($instant) {
+            return $this->quote($value);
+        }
+
+        $this->bind(null, $vc = val($value));
+
+        return $vc;
+    }
+
+    /**
      * quoteName
      *
      * @param  string|iterable|WrapperInterface  $name
@@ -1211,6 +1239,21 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
     public function quoteName(mixed $name, bool $ignoreDot = false): mixed
     {
         return $this->getGrammar()::quoteNameMultiple($name, $ignoreDot);
+    }
+
+    public function qnStr(string|\Stringable $name, bool $ignoreDot = false): string
+    {
+        if ($name instanceof RawWrapper) {
+            return $name();
+        }
+
+        $name = (string) $name;
+
+        if (str_contains($name, '->')) {
+            return (string) $this->jsonSelector($name, true);
+        }
+
+        return $this->quoteName($name, $ignoreDot);
     }
 
     /**
@@ -1462,7 +1505,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
                 //     break;
 
                 case 'n':
-                    return $query->quoteName($replacement);
+                    return $query->qnStr($replacement);
                     break;
 
                 case 'q':

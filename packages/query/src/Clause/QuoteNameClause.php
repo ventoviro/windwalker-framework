@@ -78,7 +78,7 @@ class QuoteNameClause implements ClauseInterface
         $value = (string) $this->value;
 
         if ($this->query) {
-            $value = $this->query->quoteName($value);
+            $value = $this->query->qnStr($value);
         }
 
         return $value;

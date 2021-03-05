@@ -15,6 +15,7 @@ use Windwalker\Query\Clause\Clause;
 use Windwalker\Query\Query;
 
 use function Windwalker\Query\clause;
+use function Windwalker\Query\expr;
 use function Windwalker\Query\qn;
 use function Windwalker\Query\val;
 use function Windwalker\raw;
@@ -78,17 +79,19 @@ class MySQLGrammar extends AbstractGrammar
         return $query;
     }
 
-    public function compileJsonSelector(Query $query, string $column, array $paths, bool $unQuoteLast = true): Clause
-    {
-        $expr = clause('JSON_EXTRACT()', [], ', ');
+    public function compileJsonSelector(
+        Query $query,
+        string $column,
+        array $paths,
+        bool $unQuoteLast = true,
+        bool $instant = false
+    ): Clause {
+        $expr = expr('JSON_EXTRACT()', qn($column, $query));
 
-        $expr->append(qn($column, $query))
-            ->append($vc = val('$.' . implode('.', $paths)));
-
-        $query->bind(null, $vc);
+        $expr->append($query->quoteOrVal('$.' . implode('.', $paths), $instant));
 
         if ($unQuoteLast) {
-            $expr = clause('JSON_UNQUOTE()', raw($expr), ', ');
+            $expr = expr('JSON_UNQUOTE()', $expr);
         }
 
         return $expr;

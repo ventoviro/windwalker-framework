@@ -65,7 +65,12 @@ class OracleGrammar extends BaseGrammar
         return $sql;
     }
 
-    public function compileJsonSelector(Query $query, string $column, array $paths, bool $unQuoteLast = true): Clause
+    public function compileJsonSelector(Query $query,
+        string $column,
+        array $paths,
+        bool $unQuoteLast = true,
+        bool $instant = false
+    ): Clause
     {
         throw new \LogicException('This DB does not support JSON.');
     }
