@@ -288,8 +288,6 @@ class NestedSetMapperTest extends AbstractORMTestCase
             ->loadColumn()
             ->dump();
 
-        self::dumpArray($paths);
-
         self::assertEquals(
             [
                 '',
