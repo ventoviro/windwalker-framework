@@ -21,8 +21,8 @@ class Cookies implements CookiesInterface
     public const SAMESITE_STRICT = 'Strict';
 
     protected int $expires = 0;
-    protected string $path;
-    protected string $domain;
+    protected string $path = '';
+    protected string $domain = '';
     protected bool $secure = false;
     protected bool $httpOnly = false;
     protected string $sameSite = self::SAMESITE_LAX;

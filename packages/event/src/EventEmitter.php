@@ -40,7 +40,7 @@ class EventEmitter extends EventDispatcher implements
     /**
      * @var EventDispatcherInterface[]
      */
-    protected array $dealers = [];
+    protected \WeakMap $dealers;
 
     /**
      * EventEmitter constructor.
@@ -50,6 +50,8 @@ class EventEmitter extends EventDispatcher implements
     public function __construct(ListenerProviderInterface $provider = null)
     {
         parent::__construct(CompositeListenerProvider::create($provider));
+
+        $this->dealers = new \WeakMap();
     }
 
     /**
@@ -203,7 +205,7 @@ class EventEmitter extends EventDispatcher implements
      */
     public function registerDealer(EventDispatcherInterface $dispatcher): static
     {
-        $this->dealers[] = $dispatcher;
+        $this->dealers[$dispatcher] = $dispatcher;
 
         return $this;
     }
@@ -215,7 +217,7 @@ class EventEmitter extends EventDispatcher implements
      */
     public function resetDealers(): static
     {
-        $this->dealers = [];
+        $this->dealers = new \WeakMap();
 
         return $this;
     }

@@ -158,24 +158,24 @@ class DependencyResolver
 
             // Prior (2): Argument with numeric keys.
             if (array_key_exists($i, $args)) {
-                $methodArgs[$i] = &$this->resolveParameterValue($args[$i], $param);
+                $methodArgs[$dependencyVarName] = &$this->resolveParameterValue($args[$i], $param);
                 continue;
             }
 
             // Prior (3): Argument with named keys.
             if (array_key_exists($dependencyVarName, $args)) {
-                $methodArgs[$i] = &$this->resolveParameterValue($args[$dependencyVarName], $param);
+                $methodArgs[$dependencyVarName] = &$this->resolveParameterValue($args[$dependencyVarName], $param);
                 continue;
             }
 
-            // Prior (4): Argument with class name keys.
+            // Prior (4): Argument with numeric keys.
             $value = &$this->resolveParameterValue(
                 $this->resolveParameterDependency($param, $args, $options),
                 $param
             );
 
             if ($value !== null) {
-                $methodArgs[$i] = &$value;
+                $methodArgs[$dependencyVarName] = &$value;
 
                 unset($value);
                 continue;
@@ -186,7 +186,7 @@ class DependencyResolver
             if ($param->isOptional()) {
                 // Finally, if there is a default parameter, use it.
                 if ($param->isDefaultValueAvailable()) {
-                    $methodArgs[$i] = $param->getDefaultValue();
+                    $methodArgs[$dependencyVarName] = $param->getDefaultValue();
                 }
 
                 continue;
