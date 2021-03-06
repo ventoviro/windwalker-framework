@@ -12,13 +12,12 @@ declare(strict_types=1);
 namespace Windwalker\ORM\Attributes;
 
 use Windwalker\Attributes\AttributeHandler;
-use Windwalker\Attributes\AttributeInterface;
 use Windwalker\ORM\Metadata\EntityMetadata;
 
 /**
  * The AbstractORMAttribute class.
  */
-abstract class AbstractORMAttribute implements AttributeInterface
+trait ORMAttributeTrait
 {
     /**
      * @inheritDoc
@@ -36,5 +35,13 @@ abstract class AbstractORMAttribute implements AttributeInterface
         return $this->handle($metadata, $handler);
     }
 
+    /**
+     * Run ORM attribute handler.
+     *
+     * @param  EntityMetadata    $metadata
+     * @param  AttributeHandler  $handler
+     *
+     * @return  callable
+     */
     abstract protected function handle(EntityMetadata $metadata, AttributeHandler $handler): callable;
 }

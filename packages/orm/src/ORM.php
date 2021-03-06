@@ -21,8 +21,12 @@ use Windwalker\ORM\Attributes\Cast;
 use Windwalker\ORM\Attributes\Column;
 use Windwalker\ORM\Attributes\CurrentTime;
 use Windwalker\ORM\Attributes\EntitySetup;
+use Windwalker\ORM\Attributes\ManyToMany;
+use Windwalker\ORM\Attributes\ManyToOne;
 use Windwalker\ORM\Attributes\Mapping;
 use Windwalker\ORM\Attributes\NestedSet;
+use Windwalker\ORM\Attributes\OneToMany;
+use Windwalker\ORM\Attributes\OneToOne;
 use Windwalker\ORM\Attributes\PK;
 use Windwalker\ORM\Attributes\Table;
 use Windwalker\ORM\Event\AfterDeleteEvent;
@@ -91,6 +95,11 @@ class ORM
         $ar->registerAttribute(Column::class, \Attribute::TARGET_PROPERTY);
         $ar->registerAttribute(Mapping::class, \Attribute::TARGET_PROPERTY);
         $ar->registerAttribute(PK::class, \Attribute::TARGET_PROPERTY);
+
+        $ar->registerAttribute(OneToOne::class, \Attribute::TARGET_PROPERTY);
+        $ar->registerAttribute(OneToMany::class, \Attribute::TARGET_PROPERTY);
+        $ar->registerAttribute(ManyToOne::class, \Attribute::TARGET_PROPERTY);
+        $ar->registerAttribute(ManyToMany::class, \Attribute::TARGET_PROPERTY);
 
         $ar->registerAttribute(Table::class, \Attribute::TARGET_CLASS);
         $ar->registerAttribute(NestedSet::class, \Attribute::TARGET_CLASS);

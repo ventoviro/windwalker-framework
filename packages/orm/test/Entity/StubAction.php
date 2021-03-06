@@ -54,7 +54,7 @@ class StubAction implements EntityInterface
         $rm->manyToMany('members')
             ->mapBy(StubMemberActionMap::class, 'no', 'action_no')
             ->mapMorphBy(type: 'student')
-            ->target(StubMember::class, 'member_no', 'no');
+            ->targetTo(StubMember::class, 'member_no', 'no');
     }
 
     /**

@@ -15,9 +15,14 @@ use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Cast;
 use Windwalker\ORM\Attributes\Column;
 use Windwalker\ORM\Attributes\EntitySetup;
+use Windwalker\ORM\Attributes\ManyToMany;
+use Windwalker\ORM\Attributes\MapBy;
+use Windwalker\ORM\Attributes\MapMorphBy;
 use Windwalker\ORM\Attributes\Mapping;
+use Windwalker\ORM\Attributes\MorphBy;
 use Windwalker\ORM\Attributes\PK;
 use Windwalker\ORM\Attributes\Table;
+use Windwalker\ORM\Attributes\TargetTo;
 use Windwalker\ORM\Cast\DateTimeCast;
 use Windwalker\ORM\EntityInterface;
 use Windwalker\ORM\EntityTrait;
@@ -57,6 +62,9 @@ class StubMember implements EntityInterface
     protected ?StubLicense $studentLicense = null;
     protected ?StubLicense $teacherLicense = null;
 
+    #[ManyToMany]
+    #[MapBy(StubMemberActionMap::class, 'no', 'member_no'), MapMorphBy(type: 'student')]
+    #[TargetTo(StubAction::class, 'action_no', 'no'), MorphBy(type: 'member')]
     protected ?RelationCollection $actions = null;
 
     #[Mapping('member_action_map')]
@@ -69,18 +77,12 @@ class StubMember implements EntityInterface
         $rm = $metadata->getRelationManager();
 
         $rm->oneToOne('studentLicense')
-            ->target(StubLicense::class, 'no', 'target_no')
+            ->targetTo(StubLicense::class, 'no', 'target_no')
             ->morphBy(type: 'student');
 
         $rm->oneToOne('teacherLicense')
-            ->target(StubLicense::class, 'no', 'target_no')
+            ->targetTo(StubLicense::class, 'no', 'target_no')
             ->morphBy(type: 'teacher');
-
-        $rm->manyToMany('actions')
-            ->mapBy(StubMemberActionMap::class, 'no', 'member_no')
-            ->mapMorphBy(type: 'student')
-            ->target(StubAction::class, 'action_no', 'no')
-            ->morphBy(type: 'member');
     }
 
     /**

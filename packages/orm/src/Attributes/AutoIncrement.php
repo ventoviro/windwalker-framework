@@ -21,8 +21,10 @@ use Windwalker\Utilities\Reflection\ReflectAccessor;
  * The AutoIncrement class.
  */
 #[\Attribute]
-class AutoIncrement extends AbstractORMAttribute
+class AutoIncrement implements AttributeInterface
 {
+    use ORMAttributeTrait;
+
     /**
      * @inheritDoc
      */

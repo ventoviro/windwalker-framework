@@ -53,7 +53,7 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
     ) {
         $this->target = new ForeignTable();
 
-        $this->target($targetTable, $fks);
+        $this->targetTo($targetTable, ...$fks);
 
         $this->prepareOptions([], $options);
         $this->flush((bool) $this->getOption('flush'));
@@ -154,6 +154,30 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
         return $foreignData;
     }
 
+    /**
+     * @param  EntityMetadata  $metadata
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setMetadata(EntityMetadata $metadata): static
+    {
+        $this->metadata = $metadata;
+
+        return $this;
+    }
+
+    /**
+     * @param  string  $propName
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setPropName(string $propName): static
+    {
+        $this->propName = $propName;
+
+        return $this;
+    }
+
     protected function getRelativeValues(array $data, bool $foreign = false): array
     {
         $keys = $foreign
@@ -209,32 +233,18 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
         ) : false;
     }
 
-    public function target(?string $table, array|string $ownerKey, ?string $foreignKey = null): static
+    public function targetTo(?string $table, ...$columns): static
     {
-        $fks = $ownerKey;
-
-        if (is_string($fks)) {
-            TypeAssert::assert(
-                $foreignKey !== null,
-                '{caller} argument #2 and #3, should have a foreign key pair, the foreign key is {value}.',
-                $foreignKey
-            );
-
-            $fks = [$fks => $foreignKey];
-        } else {
-            $fks = $ownerKey;
-        }
-
         $this->target->setName($table);
 
-        $this->foreignKeys($fks);
+        $this->foreignKeys(...$columns);
 
         return $this;
     }
 
-    public function foreignKeys(array $fks): static
+    public function foreignKeys(...$columns): static
     {
-        $this->target->setFks($fks);
+        $this->target->setFks($this->handleColumnMapping($columns));
 
         return $this;
     }
@@ -385,11 +395,34 @@ abstract class AbstractRelation implements RelationStrategyInterface, RelationCo
 
     public function morphBy(...$columns): static
     {
-        $morphs = Arr::collapse($columns, true);
-
-        $this->target->setMorphs($morphs);
+        $this->target->setMorphs($this->handleColumnMapping($columns));
 
         return $this;
+    }
+
+    protected function handleColumnMapping(array $columns): array
+    {
+        if ($columns === []) {
+            return [];
+        }
+
+        $columns = Arr::collapse($columns, true);
+
+        if ($columns === []) {
+            return [];
+        }
+
+        if (array_is_list($columns)) {
+            TypeAssert::assert(
+                count($columns) >= 2,
+                '{caller} argument #2 and #3, should have a foreign key pair, the foreign key is {value}.',
+                $columns[1] ?? null
+            );
+
+            $columns = [$columns[0] => $columns[1]];
+        }
+
+        return $columns;
     }
 
     /**

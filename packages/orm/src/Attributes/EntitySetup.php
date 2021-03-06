@@ -19,8 +19,10 @@ use Windwalker\ORM\Metadata\EntityMetadata;
  * The EntitySetup class.
  */
 #[\Attribute(\Attribute::TARGET_METHOD)]
-class EntitySetup extends AbstractORMAttribute
+class EntitySetup  implements AttributeInterface
 {
+    use ORMAttributeTrait;
+
     /**
      * @inheritDoc
      */

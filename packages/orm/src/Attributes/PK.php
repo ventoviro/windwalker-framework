@@ -20,8 +20,10 @@ use Windwalker\ORM\Metadata\EntityMetadata;
  * The PK class.
  */
 #[\Attribute]
-class PK extends AbstractORMAttribute
+class PK  implements AttributeInterface
 {
+    use ORMAttributeTrait;
+
     protected bool $primary;
 
     protected Column $column;

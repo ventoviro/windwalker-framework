@@ -20,8 +20,10 @@ use Windwalker\ORM\Metadata\EntityMetadata;
  * The Cast class.
  */
 #[\Attribute(\Attribute::IS_REPEATABLE | \Attribute::TARGET_PROPERTY)]
-class Cast extends AbstractORMAttribute
+class Cast implements AttributeInterface
 {
+    use ORMAttributeTrait;
+
     public const CONSTRUCTOR = 2;
     public const HYDRATOR = 3;
 

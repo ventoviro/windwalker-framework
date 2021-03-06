@@ -23,8 +23,9 @@ use Windwalker\Utilities\StrInflector;
  * The Table class.
  */
 #[\Attribute]
-class Table extends AbstractORMAttribute
+class Table  implements AttributeInterface
 {
+    use ORMAttributeTrait;
     use OptionAccessTrait;
 
     protected array $defaultOptions = [];

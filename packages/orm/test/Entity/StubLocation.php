@@ -11,14 +11,18 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Test\Entity;
 
-use Windwalker\ORM\EntityInterface;
-use Windwalker\ORM\EntityTrait;
 use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Column;
 use Windwalker\ORM\Attributes\EntitySetup;
+use Windwalker\ORM\Attributes\OnDelete;
+use Windwalker\ORM\Attributes\OneToOne;
+use Windwalker\ORM\Attributes\OnUpdate;
 use Windwalker\ORM\Attributes\PK;
 use Windwalker\ORM\Attributes\Table;
+use Windwalker\ORM\EntityInterface;
+use Windwalker\ORM\EntityTrait;
 use Windwalker\ORM\Metadata\EntityMetadata;
+use Windwalker\ORM\Relation\Action;
 use Windwalker\ORM\Relation\RelationCollection;
 
 /**
@@ -41,6 +45,11 @@ class StubLocation implements EntityInterface
     #[Column('state')]
     protected int $state = 0;
 
+    #[
+        OneToOne(StubLocationData::class, no: 'location_no'),
+        OnUpdate(Action::CASCADE),
+        OnDelete(Action::CASCADE)
+    ]
     protected ?StubLocationData $data = null;
 
     protected RelationCollection|null $sakuras = null;
@@ -48,12 +57,13 @@ class StubLocation implements EntityInterface
     protected RelationCollection|null $roses = null;
 
     #[EntitySetup]
-    public static function setup(EntityMetadata $metadata): void
-    {
+    public static function setup(
+        EntityMetadata $metadata
+    ): void {
         $rm = $metadata->getRelationManager();
 
-        $rm->oneToOne('data')
-            ->target(StubLocationData::class, ['no' => 'location_no']);
+        // $rm->oneToOne('data')
+        //     ->target(StubLocationData::class, ['no' => 'location_no']);
     }
 
     /**

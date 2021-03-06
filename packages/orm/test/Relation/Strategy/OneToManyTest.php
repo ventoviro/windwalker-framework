@@ -422,13 +422,13 @@ class OneToManyTest extends AbstractORMTestCase
             ->getRelationManager();
 
         $rm->oneToMany('sakuras')
-            ->target(StubSakura::class, ['no' => 'location_no'])
+            ->targetTo(StubSakura::class, ['no' => 'location_no'])
             ->flush($flush)
             ->onUpdate($onUpdate)
             ->onDelete($onDelete);
 
         $rm->oneToMany('roses')
-            ->target(StubRose::class, ['no' => 'location_no'])
+            ->targetTo(StubRose::class, ['no' => 'location_no'])
             ->flush($flush)
             ->onUpdate($onUpdate)
             ->onDelete($onDelete);

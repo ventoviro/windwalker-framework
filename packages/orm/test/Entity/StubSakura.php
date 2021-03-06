@@ -64,7 +64,7 @@ class StubSakura implements EntityInterface
         $rm = $metadata->getRelationManager();
 
         $rm->manyToOne('location')
-            ->target(StubLocation::class, 'location_no', 'no');
+            ->targetTo(StubLocation::class, 'location_no', 'no');
     }
 
     #[AfterSaveEvent]

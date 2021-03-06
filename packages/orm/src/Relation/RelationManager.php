@@ -17,6 +17,7 @@ use Windwalker\ORM\Relation\Strategy\ManyToMany;
 use Windwalker\ORM\Relation\Strategy\ManyToOne;
 use Windwalker\ORM\Relation\Strategy\OneToMany;
 use Windwalker\ORM\Relation\Strategy\OneToOne;
+use Windwalker\ORM\Relation\Strategy\RelationConfigureInterface;
 use Windwalker\ORM\Relation\Strategy\RelationStrategyInterface;
 
 /**
@@ -89,7 +90,7 @@ class RelationManager implements RelationStrategyInterface
             $options
         );
 
-        return $this->relations[$field] = $rel;
+        return $this->addRelation($field, $rel);
     }
 
     public function oneToMany(
@@ -110,7 +111,7 @@ class RelationManager implements RelationStrategyInterface
             $options
         );
 
-        return $this->relations[$field] = $rel;
+        return $this->addRelation($field, $rel);
     }
 
     public function manyToOne(
@@ -131,12 +132,12 @@ class RelationManager implements RelationStrategyInterface
             $options
         );
 
-        return $this->relations[$field] = $rel;
+        return $this->addRelation($field, $rel);
     }
 
     public function manyToMany(
         string $field,
-        ?string $intermediate = null,
+        ?string $mapTable = null,
         array $mapFks = [],
         ?string $targetTable = null,
         array $fks = [],
@@ -147,7 +148,7 @@ class RelationManager implements RelationStrategyInterface
         $rel = new ManyToMany(
             $this->getMetadata(),
             $field,
-            $intermediate,
+            $mapTable,
             $mapFks,
             $targetTable,
             $fks,
@@ -156,7 +157,14 @@ class RelationManager implements RelationStrategyInterface
             $options
         );
 
-        return $this->relations[$field] = $rel;
+        return $this->addRelation($field, $rel);
+    }
+
+    public function addRelation(string $propName, RelationConfigureInterface $relation): RelationConfigureInterface
+    {
+        $relation->setMetadata($this->getMetadata())->setPropName($propName);
+
+        return $this->relations[$propName] = $relation;
     }
 
     /**
@@ -178,10 +186,5 @@ class RelationManager implements RelationStrategyInterface
     public function getRelation(string $propName): ?AbstractRelation
     {
         return $this->relations[$propName] ?? null;
-    }
-
-    public function addRelation(string $field, RelationStrategyInterface $relation): RelationStrategyInterface
-    {
-        return $this->relations[$field] = $relation;
     }
 }

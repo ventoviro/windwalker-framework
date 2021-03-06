@@ -11,16 +11,16 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Relation\Strategy;
 
-use Windwalker\ORM\ORM;
+use Windwalker\ORM\Metadata\EntityMetadata;
 
 /**
  * Interface RelationConfigureInterface
  */
 interface RelationConfigureInterface
 {
-    public function target(?string $table, array|string $ownerKey, ?string $foreignKey = null): static;
+    public function targetTo(?string $table, ...$columns): static;
 
-    public function foreignKeys(array $fks): static;
+    public function foreignKeys(...$columns): static;
 
     /**
      * @param  bool  $flush
@@ -56,4 +56,27 @@ interface RelationConfigureInterface
      * @return  static  Return self to support chaining.
      */
     public function setOptions(array $options): static;
+
+    /**
+     * morphBy
+     *
+     * @param  mixed  ...$columns
+     *
+     * @return  static
+     */
+    public function morphBy(...$columns): static;
+
+    /**
+     * @param  EntityMetadata  $metadata
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setMetadata(EntityMetadata $metadata): static;
+
+    /**
+     * @param  string  $propName
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setPropName(string $propName): static;
 }

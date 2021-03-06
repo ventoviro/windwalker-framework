@@ -58,8 +58,6 @@ class StubUser
         $relation = $metadata->getRelationManager();
 
         $relation->manyToOne('category_id')
-            ->target(
-
-            );
+            ->targetTo();
     }
 }

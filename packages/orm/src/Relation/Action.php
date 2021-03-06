@@ -46,4 +46,11 @@ class Action
      * @const  string
      */
     public const SET_NULL  = 'SET NULL';
+
+    public const ACTIONS = [
+        self::NO_ACTION,
+        self::SET_NULL,
+        self::CASCADE,
+        self::RESTRICT
+    ];
 }

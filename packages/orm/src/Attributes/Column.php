@@ -19,8 +19,10 @@ use Windwalker\ORM\Metadata\EntityMetadata;
  * The Column class.
  */
 #[\Attribute]
-class Column extends AbstractORMAttribute
+class Column  implements AttributeInterface
 {
+    use ORMAttributeTrait;
+
     protected string $name;
 
     protected \ReflectionProperty $property;

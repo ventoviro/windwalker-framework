@@ -105,7 +105,7 @@ class SelectorTest extends AbstractORMTestCase
                 'no',
                 'sakura_no',
             )
-            ->target(
+            ->targetTo(
                 StubRose::class,
                 'rose_no',
                 'no'

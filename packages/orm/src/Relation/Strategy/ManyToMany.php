@@ -61,7 +61,7 @@ class ManyToMany extends AbstractRelation
 
         $this->map = new ForeignTable();
 
-        $this->mapBy($mapTable, $mapFks);
+        $this->mapBy($mapTable, ...$mapFks);
     }
 
     /**
@@ -261,52 +261,35 @@ class ManyToMany extends AbstractRelation
     }
 
     /**
-     * @param  string|null   $mapTable
-     * @param  array|string  $ownerKey
-     * @param  string|null   $mapKey
+     * @param  string|null  $mapTable
+     * @param  mixed        ...$columns
      *
      * @return  static  Return self to support chaining.
      */
-    public function mapBy(?string $mapTable, array|string $ownerKey, ?string $mapKey = null): static
+    public function mapBy(?string $mapTable, ...$columns): static
     {
-        $fks = $ownerKey;
-
-        if (is_string($fks)) {
-            TypeAssert::assert(
-                $mapKey !== null,
-                '{caller} argument #2 and #3, should have a foreign key pair, the foreign key is {value}.',
-                $mapKey
-            );
-
-            $fks = [$fks => $mapKey];
-        } else {
-            $fks = $ownerKey;
-        }
-
         $this->map->setName($mapTable);
 
-        $this->setMapForeignKeys($fks);
+        $this->setMapForeignKeys(...$columns);
 
         return $this;
     }
 
     public function mapMorphBy(...$columns): static
     {
-        $morphs = Arr::collapse($columns, true);
-
-        $this->map->setMorphs($morphs);
+        $this->map->setMorphs($this->handleColumnMapping($columns));
 
         return $this;
     }
 
     /**
-     * @param  array  $mapFks
+     * @param  array  $columns
      *
      * @return  static  Return self to support chaining.
      */
-    public function setMapForeignKeys(array $mapFks): static
+    public function setMapForeignKeys(...$columns): static
     {
-        $this->map->setFks($mapFks);
+        $this->map->setFks($this->handleColumnMapping($columns));
 
         return $this;
     }

@@ -397,7 +397,7 @@ class ManyToManyTest extends AbstractORMTestCase
                 'no',
                 'rose_no',
             )
-            ->target(
+            ->targetTo(
                 StubSakura::class,
                 'sakura_no',
                 'no'
@@ -423,7 +423,7 @@ class ManyToManyTest extends AbstractORMTestCase
                 'no',
                 'sakura_no',
             )
-            ->target(
+            ->targetTo(
                 StubRose::class,
                 'rose_no',
                 'no'
