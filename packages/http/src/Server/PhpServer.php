@@ -13,6 +13,7 @@ namespace Windwalker\Http\Server;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Windwalker\Http\Event\RequestEvent;
+use Windwalker\Http\Event\ResponseEvent;
 use Windwalker\Http\HttpFactory;
 use Windwalker\Http\Output\OutputInterface;
 use Windwalker\Http\Output\StreamOutput;
@@ -53,8 +54,14 @@ class PhpServer extends AbstractServer
                 ->setRequest($request ?? $this->httpFactory->createServerRequestFromGlobals())
         );
 
+        $event = $this->emit(
+            ResponseEvent::wrap('response')
+                ->setRequest($event->getRequest())
+                ->setResponse($event->getResponse() ?? $this->httpFactory->createResponse())
+        );
+
         $this->getOutput()->respond(
-            $event->getResponse() ?? $this->httpFactory->createResponse()
+            $event->getResponse()
         );
     }
 

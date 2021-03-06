@@ -67,6 +67,7 @@ class PhpBridge implements BridgeInterface
      * start
      *
      * @return  bool
+     * @throws \Exception
      */
     public function start(): bool
     {

@@ -226,16 +226,16 @@ class ReflectAccessor
             return $value;
         }
 
-        if (is_callable($value)) {
-            return (new ReflectionCallable($value))->getReflector();
-        }
-
-        if (is_string($value)) {
+        if (is_string($value) && class_exists($value)) {
             return static::$cacheStorage[$value] ??= new ReflectionClass($value);
         }
 
         if (is_object($value)) {
             return static::$cacheStorage[$value::class] ??= new \ReflectionObject($value);
+        }
+
+        if (is_callable($value)) {
+            return (new ReflectionCallable($value))->getReflector();
         }
 
         throw new \InvalidArgumentException(

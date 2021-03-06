@@ -14,7 +14,7 @@ namespace Windwalker\Session\Cookie;
 /**
  * The ArrayCookie class.
  */
-class ArrayCookies implements CookiesInterface
+class ArrayCookies extends Cookies
 {
     protected array $storage = [];
 
@@ -58,5 +58,32 @@ class ArrayCookies implements CookiesInterface
     public function get(string $name): ?string
     {
         return $this->storage[$name] ?? null;
+    }
+
+    public function remove(string $name): bool
+    {
+        $this->storage[$name] = '';
+
+        return true;
+    }
+
+    /**
+     * @return array
+     */
+    public function getStorage(): array
+    {
+        return $this->storage;
+    }
+
+    /**
+     * @param  array  $storage
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setStorage(array $storage): static
+    {
+        $this->storage = $storage;
+
+        return $this;
     }
 }

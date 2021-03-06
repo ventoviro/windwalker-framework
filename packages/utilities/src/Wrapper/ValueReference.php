@@ -41,7 +41,7 @@ class ValueReference implements WrapperInterface
      * @param  string       $path
      * @param  string|null  $delimiter
      */
-    public function __construct(string $path, ?string $delimiter = null)
+    public function __construct(string $path, ?string $delimiter = '.')
     {
         $this->path      = $path;
         $this->delimiter = $delimiter;

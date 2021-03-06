@@ -196,4 +196,52 @@ class Cookies implements CookiesInterface
 
         return $this;
     }
+
+    public function getCookieHeaders(): array
+    {
+        $headers = [];
+
+        foreach ($this->getStorage() as $k => $item) {
+            $header = $k . '=' . $item;
+
+            if ($settings = $this->buildHeaderSettings()) {
+                $header .= '; ' . $settings;
+            }
+
+            $headers[] = $header;
+        }
+
+        return $headers;
+    }
+
+    protected function buildHeaderSettings(): string
+    {
+        $settings = [];
+
+        if ($this->domain) {
+            $settings[] = 'domain=' . $this->domain;
+        }
+
+        if ($this->path) {
+            $settings[] = 'path=' . $this->path;
+        }
+
+        if ($this->expires) {
+            $settings[] = 'expires=' . $this->expires;
+        }
+
+        if ($this->secure) {
+            $settings[] = 'secure';
+        }
+
+        if ($this->sameSite) {
+            $settings[] = 'SameSite=' . $this->sameSite;
+        }
+
+        if ($this->httpOnly) {
+            $settings[] = 'HttpOnly';
+        }
+
+        return implode('; ', $settings);
+    }
 }

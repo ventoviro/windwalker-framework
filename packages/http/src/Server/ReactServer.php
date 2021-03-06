@@ -21,6 +21,7 @@ use RuntimeException;
 use Throwable;
 use Windwalker\Http\Event\ErrorEvent;
 use Windwalker\Http\Event\RequestEvent;
+use Windwalker\Http\Event\ResponseEvent;
 use Windwalker\Http\Helper\ResponseHelper;
 use Windwalker\Http\HttpFactory;
 
@@ -151,6 +152,12 @@ class ReactServer extends AbstractServer
 
                     return $res;
                 }
+
+                $event = $this->emit(
+                    ResponseEvent::wrap('response')
+                        ->setRequest($req)
+                        ->setResponse($event->getResponse())
+                );
 
                 return $event->getResponse();
             }

@@ -261,7 +261,7 @@ namespace Windwalker {
      * @since  __DEPLOY_VERSION__
      */
     #[Pure]
-    function ref(string $path, ?string $delimiter = null): ValueReference
+    function ref(string $path, ?string $delimiter = '.'): ValueReference
     {
         return new ValueReference($path, $delimiter);
     }

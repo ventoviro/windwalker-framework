@@ -158,24 +158,24 @@ class DependencyResolver
 
             // Prior (2): Argument with numeric keys.
             if (array_key_exists($i, $args)) {
-                $methodArgs[$dependencyVarName] = &$this->resolveParameterValue($args[$i], $param);
+                $methodArgs[$i] = &$this->resolveParameterValue($args[$i], $param);
                 continue;
             }
 
             // Prior (3): Argument with named keys.
             if (array_key_exists($dependencyVarName, $args)) {
-                $methodArgs[$dependencyVarName] = &$this->resolveParameterValue($args[$dependencyVarName], $param);
+                $methodArgs[$i] = &$this->resolveParameterValue($args[$dependencyVarName], $param);
                 continue;
             }
 
-            // Prior (4): Argument with numeric keys.
+            // Prior (4): Argument with class name keys.
             $value = &$this->resolveParameterValue(
                 $this->resolveParameterDependency($param, $args, $options),
                 $param
             );
 
             if ($value !== null) {
-                $methodArgs[$dependencyVarName] = &$value;
+                $methodArgs[$i] = &$value;
 
                 unset($value);
                 continue;
@@ -186,7 +186,7 @@ class DependencyResolver
             if ($param->isOptional()) {
                 // Finally, if there is a default parameter, use it.
                 if ($param->isDefaultValueAvailable()) {
-                    $methodArgs[$dependencyVarName] = $param->getDefaultValue();
+                    $methodArgs[$i] = $param->getDefaultValue();
                 }
 
                 continue;
@@ -202,7 +202,7 @@ class DependencyResolver
                 )
             );
 
-            $methodArgs[$dependencyVarName] = null;
+            $methodArgs[$i] = null;
         }
 
         return $methodArgs;
@@ -284,18 +284,22 @@ class DependencyResolver
      */
     public function &resolveParameterValue(mixed &$value, ReflectionParameter $param, int $options = 0): mixed
     {
-        if ($value instanceof ObjectBuilderDefinition) {
-            $value = $this->container->resolve($value);
-        } elseif ($value instanceof ValueReference) {
-            $v = $value($this->container->getParameters());
+        if ($value instanceof RawWrapper) {
+            $value = $value();
+        } else {
+            if ($value instanceof ValueReference) {
+                $v = $value($this->container->getParameters());
 
-            if ($v === null && $this->container->getParent() instanceof Container) {
-                $v = $value($this->container->getParent()->getParameters());
+                if ($v === null && $this->container->getParent() instanceof Container) {
+                    $v = $value($this->container->getParent()->getParameters());
+                }
+
+                $value = $v;
             }
 
-            $value = $v;
-        } elseif ($value instanceof RawWrapper) {
-            $value = $value();
+            if ($value instanceof ObjectBuilderDefinition) {
+                $value = $this->container->resolve($value);
+            }
         }
 
         $options |= $this->container->getOptions();

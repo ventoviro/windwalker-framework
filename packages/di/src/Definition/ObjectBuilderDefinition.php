@@ -126,7 +126,7 @@ class ObjectBuilderDefinition implements DefinitionInterface
      * @throws DependencyResolutionException
      * @throws ReflectionException
      */
-    public function getArgument(string $name, $default = null): array
+    public function getArgument(mixed $name, $default = null): mixed
     {
         if (!isset($this->arguments[$name])) {
             return $default;
@@ -143,7 +143,7 @@ class ObjectBuilderDefinition implements DefinitionInterface
      *
      * @return  static Return self to support chaining.
      */
-    public function setArgument(string $name, mixed $value): static
+    public function setArgument(mixed $name, mixed $value): static
     {
         if (!$value instanceof Closure) {
             $value = fn() => $value;
