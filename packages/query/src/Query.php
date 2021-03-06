@@ -852,7 +852,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
             $order[] = $dir;
         }
 
-        $this->order->append(implode(' ', $order));
+        $this->order->append($this->clause('', $order));
 
         return $this;
     }
@@ -1237,14 +1237,14 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
      *
      * @return mixed
      */
-    public function quoteName(string|\Stringable $name, int $flags = 0): string
+    public function quoteName(string|\Stringable $name, int $flags = 0): string|Clause
     {
         if ($name instanceof RawWrapper) {
             return $name();
         }
 
         if (str_contains($name, '->')) {
-            return (string) $this->jsonSelector($name, (bool) ($flags & QN_JSON_INSTANT));
+            return $this->jsonSelector($name, (bool) ($flags & QN_JSON_INSTANT));
         }
 
         return $this->getGrammar()::quoteName($name, (bool) ($flags & QN_IGNORE_DOTS));

@@ -18,6 +18,8 @@ use Windwalker\Query\Query;
  */
 class QuoteNameClause implements ClauseInterface
 {
+    protected string|Clause|null $quoted = null;
+
     /**
      * QuoteNameClause constructor.
      *
@@ -59,15 +61,26 @@ class QuoteNameClause implements ClauseInterface
     }
 
     /**
-     * @param  Query|null  $query
+     * @param  Query  $query
      *
      * @return  static  Return self to support chaining.
      */
-    public function setQuery(?Query $query): static
+    public function setQuery(Query $query): static
     {
         $this->query = $query;
 
+        $this->doQuoteName();
+
         return $this;
+    }
+
+    protected function doQuoteName(): mixed
+    {
+        if (!$this->query) {
+            return $this->value;
+        }
+
+        return $this->quoted ??= $this->query->quoteName((string) $this->value);
     }
 
     /**
@@ -75,12 +88,6 @@ class QuoteNameClause implements ClauseInterface
      */
     public function __toString(): string
     {
-        $value = (string) $this->value;
-
-        if ($this->query) {
-            $value = $this->query->quoteName($value);
-        }
-
-        return $value;
+        return (string) $this->doQuoteName();
     }
 }

@@ -70,7 +70,7 @@ if (!function_exists(__NAMESPACE__ . '\qn')) {
         }
 
         if (is_array($value)) {
-            return array_map(fn ($v) => new QuoteNameClause($v, $query), $value);
+            return array_map(fn ($v) => qn($v, $query), $value);
         }
 
         return new QuoteNameClause($value, $query);
