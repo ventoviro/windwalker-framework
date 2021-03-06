@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM;
 
-use Windwalker\Attributes\AttributesResolver;
+use Windwalker\Attributes\AttributesAccessor;
 use Windwalker\Cache\Serializer\JsonSerializer;
 use Windwalker\Database\DatabaseAdapter;
 use Windwalker\Database\Driver\StatementInterface;
@@ -20,24 +20,19 @@ use Windwalker\Event\EventAwareInterface;
 use Windwalker\Event\EventAwareTrait;
 use Windwalker\Event\EventInterface;
 use Windwalker\ORM\Attributes\CurrentTime;
-use Windwalker\ORM\Event\{
-    AbstractSaveEvent,
+use Windwalker\ORM\Event\{AbstractSaveEvent,
     AfterDeleteEvent,
     AfterSaveEvent,
     AfterUpdateWhereEvent,
     BeforeDeleteEvent,
     BeforeSaveEvent,
-    BeforeUpdateWhereEvent
-};
+    BeforeUpdateWhereEvent};
 use Windwalker\ORM\Metadata\EntityMetadata;
 use Windwalker\ORM\Strategy\Selector;
-use Windwalker\Query\Query;
 use Windwalker\Utilities\Arr;
 use Windwalker\Utilities\Assert\TypeAssert;
 use Windwalker\Utilities\Reflection\ReflectAccessor;
 use Windwalker\Utilities\TypeCast;
-
-use function DI\string;
 
 /**
  * EntityMapper is an entity & database mapping object.
@@ -831,7 +826,7 @@ class EntityMapper implements EventAwareInterface
             // TODO: Move to separate class or function
             if ($prop = $metadata->getColumn($field)?->getProperty()) {
                 // Current Time
-                if ($curr = AttributesResolver::getFirstAttributeInstance($prop, CurrentTime::class)) {
+                if ($curr = AttributesAccessor::getFirstAttributeInstance($prop, CurrentTime::class)) {
                     $value = $curr->getCurrent();
                 }
             }

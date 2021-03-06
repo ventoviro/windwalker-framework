@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Metadata;
 
+use Windwalker\Attributes\AttributesAccessor;
 use Windwalker\ORM\Attributes\{AutoIncrement, Cast, Column, EntitySetup, MapperClass, Mapping, PK, Table};
-use Windwalker\Attributes\AttributesResolver;
 use Windwalker\ORM\Cast\CastManager;
 use Windwalker\ORM\EntityMapper;
 use Windwalker\ORM\ORM;
@@ -104,14 +104,14 @@ class EntityMetadata
 
     public function setup(): static
     {
-        /** @var ?Table $tableAttr */
-        $tableAttr = AttributesResolver::getFirstAttributeInstance(
-            $this->className,
-            Table::class,
-            \ReflectionAttribute::IS_INSTANCEOF
-        );
+        $ar =  $this->getORM()->getAttributesResolver();
+        $ar->setOption('metadata', $this);
 
-        if (!$tableAttr) {
+        $ref = $this->getReflector();
+
+        $ar->resolveObjectDecorate($ref);
+
+        if (!$this->tableName) {
             throw new \InvalidArgumentException(
                 sprintf(
                     '%s has no table info.',
@@ -120,103 +120,19 @@ class EntityMetadata
             );
         }
 
-        $this->tableName = $tableAttr->getName();
-        $this->tableAlias = $tableAttr->getAlias();
-        $this->mapperClass = $tableAttr->getMapperClass();
+        $ar->resolveObjectMembers($ref);
 
-        $this->prepareOptions([], $tableAttr->getOptions());
+        $ar->setOption('metadata', null);
 
-        // Loop all properties
-        foreach ($this->getProperties() as $prop) {
-            $attributes  = $prop->getAttributes();
-            $singleAttrs = [];
-            $column      = null;
-
-            foreach ($attributes as $attribute) {
-                if (!$attribute->isRepeated()) {
-                    $this->attributeMaps[$attribute->getName()]['props'][$prop->getName()] = $prop;
-
-                    $singleAttrs[$attribute->getName()] = $attribute;
-                }
-            }
-
-            if ($columnAttr = ($singleAttrs[Column::class] ?? $singleAttrs[Mapping::class] ?? null)) {
-                /** @var Column $column */
-                $column = $columnAttr->newInstance();
-                $column->setProperty($prop);
-
-                $this->columns[$column->getName()] = $column;
-                $this->propertyColumns[$prop->getName()] = $column;
-            }
-
-            if ($singleAttrs[PK::class] ?? null) {
-                /** @var PK $pk */
-                $pk = $singleAttrs[PK::class]->newInstance();
-
-                if ($column === null) {
-                    throw new \LogicException(
-                        sprintf(
-                            '%s set on a property without %s',
-                            PK::class,
-                            Column::class
-                        )
-                    );
-                }
-
-                $this->keys[$column->getName()] = $pk->setColumn($column);
-            }
-
-            if ($singleAttrs[AutoIncrement::class] ?? null) {
-                $this->aiColumn = $column;
-            }
-
-            // Register casts
-            $casts = $prop->getAttributes(Cast::class);
-
-            if (!$casts === []) {
-                continue;
-            }
-
-            $colName = $column ? $column->getName() : $prop->getName();
-
-            foreach ($casts as $castAttr) {
-                /** @var Cast $cast */
-                $cast = $castAttr->newInstance();
-                $this->cast(
-                    $colName,
-                    $cast->getCast(),
-                    $cast->getExtract(),
-                    $cast->getStrategy()
-                );
-            }
-        }
-
-        // Loop all methods
-        foreach ($this->getMethods() as $method) {
-            $attributes = $method->getAttributes();
-
-            foreach ($attributes as $attribute) {
-                // If is setup method, call it.
-                if ($attribute->getName() === EntitySetup::class) {
-                    $this->getORM()
-                        ->getAttributesResolver()
-                        ->call(
-                            $method->getClosure(),
-                            [
-                                'metadata' => $this,
-                                static::class => $this,
-                            ]
-                        );
-                }
-
-                // Cache method attributes
-                if (!$attribute->isRepeated()) {
-                    $this->attributeMaps[$attribute->getName()]['methods'][$method->getName()] = $method;
-                }
-            }
-        }
 
         return $this;
+    }
+
+    public function addAttributeMap(string $attrName, \ReflectionProperty|\ReflectionMethod $ref): void
+    {
+        $type = $ref instanceof \ReflectionProperty ? 'props' : 'methods';
+
+        $this->attributeMaps[$attrName][$type][$ref->getName()] = $ref;
     }
 
     /**

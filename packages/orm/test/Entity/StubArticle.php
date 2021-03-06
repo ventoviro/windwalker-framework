@@ -27,8 +27,7 @@ use Windwalker\ORM\Event\AfterSaveEvent;
 #[Table('articles')]
 class StubArticle
 {
-    #[PK, AutoIncrement]
-    #[Column('id')]
+    #[Column('id'), PK, AutoIncrement]
     protected ?int $id = null;
 
     #[Column('category_id')]
@@ -62,6 +61,17 @@ class StubArticle
     public ?StubCategory $c = null;
 
     public static int $counter = 0;
+
+    #[AfterSaveEvent]
+    public static function afterSave(AfterSaveEvent $event): void
+    {
+        static::$counter++;
+
+        $data = $event->getData();
+        $data['category_id'] = 2;
+
+        $event->setData($data);
+    }
 
     /**
      * @return string
@@ -241,16 +251,5 @@ class StubArticle
         $this->id = $id;
 
         return $this;
-    }
-
-    #[AfterSaveEvent]
-    public static function afterSave(AfterSaveEvent $event): void
-    {
-        static::$counter++;
-
-        $data = $event->getData();
-        $data['category_id'] = 2;
-
-        $event->setData($data);
     }
 }

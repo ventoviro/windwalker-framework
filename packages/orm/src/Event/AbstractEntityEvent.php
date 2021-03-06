@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Event;
 
+use Windwalker\Attributes\AttributeHandler;
+use Windwalker\Attributes\AttributeInterface;
 use Windwalker\Database\DatabaseAdapter;
 use Windwalker\Event\AbstractEvent;
 use Windwalker\ORM\Metadata\EntityMetadata;
@@ -19,7 +21,7 @@ use Windwalker\ORM\ORM;
 /**
  * The AbstractEntityEvent class.
  */
-class AbstractEntityEvent extends AbstractEvent
+class AbstractEntityEvent extends AbstractEvent implements AttributeInterface
 {
     protected EntityMetadata $metadata;
 
@@ -51,5 +53,22 @@ class AbstractEntityEvent extends AbstractEvent
     public function getDb(): DatabaseAdapter
     {
         return $this->getORM()->getDb();
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function __invoke(AttributeHandler $handler): callable
+    {
+        /** @var EntityMetadata $metadata */
+        $metadata = $handler->getResolver()->getOption('metadata');
+
+        if (!$metadata) {
+            return $handler->get();
+        }
+
+        $metadata->addAttributeMap(static::class, $handler->getReflector());
+
+        return $handler->get();
     }
 }

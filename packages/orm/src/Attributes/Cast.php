@@ -11,11 +11,16 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Attributes;
 
+use Windwalker\Attributes\AttributeHandler;
+use Windwalker\Attributes\AttributeInterface;
+use Windwalker\Cache\Exception\LogicException;
+use Windwalker\ORM\Metadata\EntityMetadata;
+
 /**
  * The Cast class.
  */
 #[\Attribute(\Attribute::IS_REPEATABLE | \Attribute::TARGET_PROPERTY)]
-class Cast
+class Cast extends AbstractORMAttribute
 {
     public const CONSTRUCTOR = 2;
     public const HYDRATOR = 3;
@@ -65,5 +70,27 @@ class Cast
     public function getStrategy(): ?int
     {
         return $this->strategy;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function handle(EntityMetadata $metadata, AttributeHandler $handler): callable
+    {
+        /** @var \ReflectionProperty $prop */
+        $prop = $handler->getReflector();
+
+        $column = $metadata->getColumnByPropertyName($prop->getName());
+
+        $colName = $column ? $column->getName() : $prop->getName();
+
+        $metadata->cast(
+            $colName,
+            $this->getCast(),
+            $this->getExtract(),
+            $this->getStrategy()
+        );
+
+        return $handler->get();
     }
 }

@@ -11,15 +11,14 @@ declare(strict_types=1);
 
 namespace Windwalker\Event\Provider;
 
+use Windwalker\Attributes\AttributesAccessor;
 use Windwalker\Attributes\AttributesAwareTrait;
 use Windwalker\Attributes\AttributesResolver;
 use Windwalker\Event\Attributes\EventSubscriber;
 use Windwalker\Event\Attributes\ListenTo;
 use Windwalker\Event\EventInterface;
-use Windwalker\Event\EventSubscriberInterface;
 use Windwalker\Event\Listener\ListenerPriority;
 use Windwalker\Event\Listener\ListenersQueue;
-use Windwalker\Utilities\Assert\ArgumentsAssert;
 use Windwalker\Utilities\Assert\TypeAssert;
 use Windwalker\Utilities\StrNormalise;
 
@@ -89,10 +88,10 @@ class SubscribableListenerProvider implements SubscribableListenerProviderInterf
      */
     public function subscribe(object $subscriber, ?int $priority = null): void
     {
-        $hasAttribute = (bool) AttributesResolver::runAttributeIfExists(
+        $hasAttribute = (bool) AttributesAccessor::runAttributeIfExists(
             new \ReflectionObject($subscriber),
             EventSubscriber::class,
-            disposable(fn (): object => $this->getAttributesResolver()->resolveMethods($subscriber))
+            disposable(fn(): object => $this->getAttributesResolver()->resolveMethods($subscriber))
         );
 
         if (!$hasAttribute) {

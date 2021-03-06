@@ -24,8 +24,7 @@ use Windwalker\ORM\Cast\JsonCast;
 #[Table('ww_flower')]
 class StubFlower
 {
-    #[PK, AutoIncrement]
-    #[Column('id')]
+    #[Column('id'), PK, AutoIncrement]
     public ?int $id = null;
 
     #[Column('catid')]

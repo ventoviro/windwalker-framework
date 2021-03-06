@@ -78,9 +78,9 @@ class AttributeHandler
     }
 
     /**
-     * @return object|null
+     * @return mixed
      */
-    public function getObject(): ?object
+    public function getObject(): mixed
     {
         return $this->object;
     }

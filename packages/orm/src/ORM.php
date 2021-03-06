@@ -16,6 +16,21 @@ use Windwalker\Database\DatabaseAdapter;
 use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\Database\Hydrator\FieldHydratorInterface;
 use Windwalker\Database\Hydrator\HydratorInterface;
+use Windwalker\ORM\Attributes\AutoIncrement;
+use Windwalker\ORM\Attributes\Cast;
+use Windwalker\ORM\Attributes\Column;
+use Windwalker\ORM\Attributes\CurrentTime;
+use Windwalker\ORM\Attributes\EntitySetup;
+use Windwalker\ORM\Attributes\Mapping;
+use Windwalker\ORM\Attributes\NestedSet;
+use Windwalker\ORM\Attributes\PK;
+use Windwalker\ORM\Attributes\Table;
+use Windwalker\ORM\Event\AfterDeleteEvent;
+use Windwalker\ORM\Event\AfterSaveEvent;
+use Windwalker\ORM\Event\AfterUpdateWhereEvent;
+use Windwalker\ORM\Event\BeforeDeleteEvent;
+use Windwalker\ORM\Event\BeforeSaveEvent;
+use Windwalker\ORM\Event\BeforeUpdateWhereEvent;
 use Windwalker\ORM\Hydrator\EntityHydrator;
 use Windwalker\ORM\Metadata\EntityMetadata;
 use Windwalker\ORM\Metadata\EntityMetadataCollection;
@@ -62,6 +77,31 @@ class ORM
         $this->db = $db;
 
         $this->entityMetadataCollection = new EntityMetadataCollection($this);
+
+        $this->init();
+    }
+
+    protected function init()
+    {
+        $ar = $this->getAttributesResolver();
+        $ar->setOption('orm', $this);
+
+        $ar->registerAttribute(AutoIncrement::class, \Attribute::TARGET_PROPERTY);
+        $ar->registerAttribute(Cast::class, \Attribute::TARGET_PROPERTY);
+        $ar->registerAttribute(Column::class, \Attribute::TARGET_PROPERTY);
+        $ar->registerAttribute(Mapping::class, \Attribute::TARGET_PROPERTY);
+        $ar->registerAttribute(PK::class, \Attribute::TARGET_PROPERTY);
+
+        $ar->registerAttribute(Table::class, \Attribute::TARGET_CLASS);
+        $ar->registerAttribute(NestedSet::class, \Attribute::TARGET_CLASS);
+
+        $ar->registerAttribute(EntitySetup::class, \Attribute::TARGET_METHOD);
+        $ar->registerAttribute(BeforeSaveEvent::class, \Attribute::TARGET_METHOD);
+        $ar->registerAttribute(AfterSaveEvent::class, \Attribute::TARGET_METHOD);
+        $ar->registerAttribute(BeforeUpdateWhereEvent::class, \Attribute::TARGET_METHOD);
+        $ar->registerAttribute(AfterUpdateWhereEvent::class, \Attribute::TARGET_METHOD);
+        $ar->registerAttribute(BeforeDeleteEvent::class, \Attribute::TARGET_METHOD);
+        $ar->registerAttribute(AfterDeleteEvent::class, \Attribute::TARGET_METHOD);
     }
 
     /**

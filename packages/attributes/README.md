@@ -602,11 +602,11 @@ class ListenTo implements AttributeInterface
 `AttributesResolver` provides a simple static methods to run any callback if attribute exists.
 
 ```php
-use Windwalker\Attributes\AttributesResolver;
+use Windwalker\Attributes\AttributesAccessor;
 
 $object = new Foo();
 
-AttributesResolver::runAttributeIfExists(
+AttributesAccessor::runAttributeIfExists(
     new ReflectionObject($object), // Send any reflections
     SomeAttribute::class,
     function (SomeAttribute $attr) {
@@ -616,7 +616,7 @@ AttributesResolver::runAttributeIfExists(
 
 $ref = new ReflectionObject($object);
 
-AttributesResolver::runAttributeIfExists(
+AttributesAccessor::runAttributeIfExists(
     $ref->getMethod('foo'), // Send ReflectionMethod
     SomeAttribute::class,
     function (SomeAttribute $attr) {

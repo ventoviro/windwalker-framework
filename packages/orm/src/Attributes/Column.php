@@ -11,11 +11,15 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Attributes;
 
+use Windwalker\Attributes\AttributeHandler;
+use Windwalker\Attributes\AttributeInterface;
+use Windwalker\ORM\Metadata\EntityMetadata;
+
 /**
  * The Column class.
  */
 #[\Attribute]
-class Column
+class Column extends AbstractORMAttribute
 {
     protected string $name;
 
@@ -48,14 +52,25 @@ class Column
     }
 
     /**
-     * @param  \ReflectionProperty  $property
-     *
-     * @return  static  Return self to support chaining.
+     * @inheritDoc
      */
-    public function setProperty(\ReflectionProperty $property): static
+    public function handle(EntityMetadata $metadata, AttributeHandler $handler): callable
     {
-        $this->property = $property;
+        /** @var \ReflectionProperty $prop */
+        $prop = $handler->getReflector();
 
-        return $this;
+        $metadata->addAttributeMap(static::class, $prop);
+
+        $this->property = $prop;
+        $column = $this;
+
+        $setter = function () use ($column, $prop) {
+            $this->columns[$column->getName()] = $column;
+            $this->propertyColumns[$prop->getName()] = $column;
+        };
+
+        $setter->call($metadata);
+
+        return $handler->get();
     }
 }

@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Windwalker;
 
-use Windwalker\Attributes\AttributesResolver;
 use Windwalker\ORM\Attributes\Table;
 
 if (!function_exists('entity_table')) {
@@ -32,7 +31,7 @@ if (!function_exists('entity_table')) {
             $entity = $entity::class;
         }
 
-        $tableAttr = AttributesResolver::getFirstAttributeInstance(
+        $tableAttr = Attributes\AttributesAccessor::getFirstAttributeInstance(
             $entity,
             Table::class,
             \ReflectionAttribute::IS_INSTANCEOF

@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Test\Entity;
 
+use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Cast;
 use Windwalker\ORM\Attributes\Column;
 use Windwalker\ORM\Attributes\CurrentTime;
@@ -23,8 +24,7 @@ use Windwalker\ORM\Attributes\Table;
 #[Table('comments')]
 class StubComment
 {
-    #[Column('id')]
-    #[PK(true)]
+    #[Column('id'), PK(true), AutoIncrement]
     protected ?int $id = null;
 
     #[Column('target_id')]

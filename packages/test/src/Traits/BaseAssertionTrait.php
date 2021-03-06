@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Test\Traits;
 
+use JetBrains\PhpStorm\NoReturn;
 use Throwable;
 use Windwalker\Data\Format\PhpFormat;
 use Windwalker\Utilities\Str;

@@ -32,8 +32,7 @@ class StubSakura implements EntityInterface
 {
     use EntityTrait;
 
-    #[PK, AutoIncrement]
-    #[Column('id')]
+    #[Column('id'), PK, AutoIncrement]
     protected ?int $id = null;
 
     #[Column('no')]

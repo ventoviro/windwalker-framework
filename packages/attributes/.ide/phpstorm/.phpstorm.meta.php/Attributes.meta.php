@@ -10,8 +10,11 @@
 declare(strict_types=1);
 
 namespace PHPSTORM_META {
+
+    use Windwalker\Attributes\AttributesAccessor;
+
     override(
-        \Windwalker\Attributes\AttributesResolver::getFirstAttributeInstance(1),
+        AttributesAccessor::getFirstAttributeInstance(1),
         type(1)
     );
 

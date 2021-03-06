@@ -24,6 +24,8 @@ use Windwalker\Utilities\Arr;
 
 use function Windwalker\Query\val;
 
+use const Windwalker\Query\QN_IGNORE_DOTS;
+
 /**
  * The SelectAction class.
  *
@@ -105,7 +107,7 @@ class Selector extends AbstractQueryStrategy
                 $this->selectRaw(
                     '%n AS %r',
                     $alias . '.' . $col,
-                    $this->quoteName($as, true)
+                    $this->quoteName($as, QN_IGNORE_DOTS)
                 );
             }
         }
