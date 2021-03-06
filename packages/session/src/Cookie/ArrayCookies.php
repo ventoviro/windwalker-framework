@@ -14,23 +14,26 @@ namespace Windwalker\Session\Cookie;
 /**
  * The ArrayCookie class.
  */
-class ArrayCookies extends Cookies
+class ArrayCookies extends AbstractCookies
 {
     protected array $storage = [];
 
-    public static function create(array $storage = []): static
+    public static function create(array $storage = [], array $options = []): static
     {
-        return new static($storage);
+        return new static($storage, $options);
     }
 
     /**
      * ArrayCookies constructor.
      *
      * @param  array  $storage
+     * @param  array  $options
      */
-    public function __construct(array $storage = [])
+    public function __construct(array $storage = [], array $options = [])
     {
         $this->storage = $storage;
+
+        parent::__construct($options);
     }
 
     /**

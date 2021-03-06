@@ -73,7 +73,7 @@ class PhpBridge implements BridgeInterface
     {
         $this->handler->open($this->getOptionAndINI('save_path'), $this->getSessionName());
 
-        if ($this->getOption('auto_commit')) {
+        if ($this->getOption(static::OPTION_AUTO_COMMIT)) {
             register_shutdown_function([$this, 'writeClose']);
         }
 

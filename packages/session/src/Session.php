@@ -35,6 +35,8 @@ class Session implements SessionInterface, ArrayAccessibleInterface
 
     protected ?FlashBag $flashBag = null;
 
+    protected ?\Closure $destructor = null;
+
     /**
      * Session constructor.
      *
@@ -46,7 +48,7 @@ class Session implements SessionInterface, ArrayAccessibleInterface
     {
         $this->prepareOptions(
             [
-                static::OPTION_AUTO_COMMIT => true,
+                static::OPTION_AUTO_COMMIT => true, // Only for non-native handlers
                 'ini' => [
                     //
                 ],
@@ -56,10 +58,10 @@ class Session implements SessionInterface, ArrayAccessibleInterface
 
         $this->bridge  = $bridge ?? new NativeBridge();
         $this->cookies = $cookies ?? Cookies::create()
-                ->httpOnly(true)
-                ->expires('+30days')
-                ->secure(false)
-                ->sameSite(Cookies::SAMESITE_LAX);
+            ->httpOnly(true)
+            ->expires('+30days')
+            ->secure(false)
+            ->sameSite(Cookies::SAMESITE_LAX);
     }
 
     public function registerINI(): void
@@ -126,27 +128,30 @@ class Session implements SessionInterface, ArrayAccessibleInterface
             }
 
             // Must set cookie and update expires after session end.
-            register_shutdown_function(
-                function () {
-                    if ($this->getOption('auto_commit')) {
-                        $this->stop(true);
-                    }
-                }
-            );
+            if ($this->getOption(static::OPTION_AUTO_COMMIT)) {
+                $this->destructor = fn () => $this->stop(true);
+            }
         }
 
         return tap(
             $this->bridge->start(),
             // Send Cookies after started
-            fn() => $this->cookies->set(
-                $this->bridge->getSessionName(),
-                $this->bridge->getId()
-            )
+            function () {
+                // Symfony/VarDumper unable to show this...
+                // $this->storage = &$this->bridge->getStorage();
+
+                $this->cookies->set(
+                    $this->bridge->getSessionName(),
+                    $this->bridge->getId()
+                );
+            }
         );
     }
 
     public function stop(bool $unset = true): bool
     {
+        $this->destructor = null;
+
         return $this->bridge->writeClose($unset);
     }
 
@@ -252,8 +257,16 @@ class Session implements SessionInterface, ArrayAccessibleInterface
      */
     public function setCookieParams(?array $options = null): void
     {
-        if (headers_sent() && $this->getCookies() instanceof Cookies) {
-            session_set_cookie_params($options ?? $this->cookies->getOptions());
+        if (!headers_sent() && $this->getCookies() instanceof Cookies) {
+            $options ??= $this->cookies->getOptions();
+
+            if (isset($options['expires'])) {
+                $options['lifetime'] = max($options['expires'] - time(), 0);
+
+                unset($options['expires']);
+            }
+
+            session_set_cookie_params($options);
         }
     }
 
@@ -429,5 +442,12 @@ class Session implements SessionInterface, ArrayAccessibleInterface
     public function isStarted(): bool
     {
         return $this->bridge->isStarted();
+    }
+
+    public function __destruct()
+    {
+        if ($this->destructor) {
+            ($this->destructor)();
+        }
     }
 }
