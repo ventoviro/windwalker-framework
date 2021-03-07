@@ -33,7 +33,7 @@ class TypeAssert
      * @since  __DEPLOY_VERSION__
      */
     public static function assert(
-        bool|callable $assertion,
+        mixed $assertion,
         string $message,
         $value = null,
         ?callable $exception = null

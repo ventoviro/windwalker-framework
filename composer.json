@@ -87,7 +87,7 @@
         "psr-4": {
             "Windwalker\\Attributes\\": "packages/attributes/src",
             "Windwalker\\Authentication\\": "packages/authentication/src",
-            "Windwalker\\Authorisaction\\": "packages/authorisaction/src",
+            "Windwalker\\Authorisation\\": "packages/authorisation/src",
             "Windwalker\\Cache\\": "packages/cache/src",
             "Windwalker\\Crypt\\": "packages/crypt/src",
             "Windwalker\\DI\\": "packages/di/src",
@@ -120,7 +120,7 @@
         "files": [
             "packages/attributes/src/bootstrap.php",
             "packages/authentication/src/bootstrap.php",
-            "packages/authorisaction/src/bootstrap.php",
+            "packages/authorisation/src/bootstrap.php",
             "packages/bootstrap.php",
             "packages/cache/src/bootstrap.php",
             "packages/crypt/src/bootstrap.php",
@@ -156,7 +156,7 @@
         "psr-4": {
             "Windwalker\\Attributes\\Test\\": "packages/attributes/test",
             "Windwalker\\Authentication\\Test\\": "packages/authentication/test",
-            "Windwalker\\Authorisaction\\Test\\": "packages/authorisaction/test",
+            "Windwalker\\Authorisation\\Test\\": "packages/authorisation/test",
             "Windwalker\\Cache\\Test\\": "packages/cache/test",
             "Windwalker\\Crypt\\Test\\": "packages/crypt/test",
             "Windwalker\\DI\\Test\\": "packages/di/test",
@@ -204,7 +204,7 @@
     "replace": {
         "windwalker/attributes": "self.version",
         "windwalker/authentication": "self.version",
-        "windwalker/authorisaction": "self.version",
+        "windwalker/authorisation": "self.version",
         "windwalker/cache": "self.version",
         "windwalker/crypt": "self.version",
         "windwalker/data": "self.version",

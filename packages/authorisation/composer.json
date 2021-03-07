@@ -42,7 +42,7 @@
         }
     },
     "config": {
-        "platauthorisaction": {
+        "platform": {
             "php": "8.0.0"
         }
     }

@@ -28,13 +28,6 @@ class Authentication implements AuthenticationInterface
     protected array $methods = [];
 
     /**
-     * Property credential.
-     *
-     * @var array
-     */
-    protected array $credential;
-
-    /**
      * Authentication constructor.
      *
      * @param Method\MethodInterface[] $methods

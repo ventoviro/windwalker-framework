@@ -74,6 +74,11 @@ class ResultSet implements \IteratorAggregate
         return $this->matchedMethod;
     }
 
+    public function getMatchedResult(): AuthResult
+    {
+        return $this->results[$this->getMatchedMethod()];
+    }
+
     /**
      * @inheritDoc
      */

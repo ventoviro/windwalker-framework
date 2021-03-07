@@ -23,11 +23,11 @@ interface AuthorisationInterface
      *
      * @param  string  $policy
      * @param  mixed   $user
-     * @param  mixed   $data
+     * @param  mixed   ...$args
      *
      * @return  bool
      */
-    public function authorise(string $policy, mixed $user, mixed $data = null): bool;
+    public function authorise(string $policy, mixed $user, mixed ...$args): bool;
 
     /**
      * addPolicy

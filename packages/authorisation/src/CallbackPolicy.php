@@ -39,14 +39,13 @@ class CallbackPolicy implements PolicyInterface
      * authorise
      *
      * @param  mixed  $user
-     * @param  mixed  $data
      * @param  mixed  ...$args
      *
      * @return  bool
      */
-    public function authorise(mixed $user, mixed $data = null, mixed ...$args): bool
+    public function authorise(mixed $user, mixed ...$args): bool
     {
-        return $this->getHandler()($user, $data, ...$args);
+        return $this->getHandler()($user, ...$args);
     }
 
     /**
