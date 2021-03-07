@@ -52,7 +52,7 @@ class PriorityQueue extends SplPriorityQueue implements Serializable
         if ($array instanceof SplPriorityQueue) {
             $this->merge($array);
         } else {
-            $this->bind($array, $priority);
+            $this->join($array, $priority);
         }
     }
 
@@ -64,7 +64,7 @@ class PriorityQueue extends SplPriorityQueue implements Serializable
      *
      * @return  static
      */
-    public function bind(array $array = [], $priority = self::NORMAL): PriorityQueue
+    public function join(array $array = [], $priority = self::NORMAL): PriorityQueue
     {
         foreach ($array as $item) {
             $this->insert($item, $priority);

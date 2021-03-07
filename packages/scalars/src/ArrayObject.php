@@ -187,7 +187,7 @@ class ArrayObject implements AccessibleInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function bind(mixed $data, array $options = []): static
+    public function fill(mixed $data, array $options = []): static
     {
         $items = TypeCast::toArray($data);
 

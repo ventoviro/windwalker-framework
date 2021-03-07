@@ -328,7 +328,7 @@ class TableManager extends AbstractMetaManager
             $tableColumns = $this->getColumns();
             $index = new Index($name, $this->getName());
             $index->columns((array) $columns)
-                ->bind($options);
+                ->fill($options);
 
             foreach ($index->getColumns() as $column) {
                 if (isset($tableColumns[$column->getColumnName()])) {
@@ -404,7 +404,7 @@ class TableManager extends AbstractMetaManager
 
             $constraint = new Constraint($type, $name, $this->getName());
             $constraint->columns((array) $columns)
-                ->bind($options);
+                ->fill($options);
 
             foreach ($constraint->getColumns() as $column) {
                 if (isset($tableColumns[$column->getColumnName()])) {

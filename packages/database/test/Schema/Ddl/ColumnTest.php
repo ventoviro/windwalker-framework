@@ -148,7 +148,7 @@ class ColumnTest extends TestCase
     }
 
     /**
-     * @see  Column::bind
+     * @see  Column::fill
      */
     public function testBind(): void
     {

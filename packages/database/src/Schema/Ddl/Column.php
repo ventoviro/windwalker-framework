@@ -68,7 +68,7 @@ class Column
         $this->isNullable    = $isNullable;
         $this->dataType((string) $dataType);
 
-        $this->bind($options);
+        $this->fill($options);
     }
 
     /**

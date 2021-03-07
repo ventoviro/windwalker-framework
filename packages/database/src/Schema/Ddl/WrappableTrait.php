@@ -26,7 +26,7 @@ trait WrappableTrait
      *
      * @return  static
      */
-    public function bind(array $data): static
+    public function fill(array $data): static
     {
         foreach ($data as $key => $datum) {
             $prop = StrNormalise::toCamelCase($key);
@@ -56,7 +56,7 @@ trait WrappableTrait
             return $data;
         }
 
-        return (new static())->bind($data);
+        return (new static())->fill($data);
     }
 
     /**

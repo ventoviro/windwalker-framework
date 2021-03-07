@@ -45,7 +45,7 @@ class AccessibleHydrator implements HydratorInterface
     public function hydrate(array $data, object $object): object
     {
         if ($object instanceof ArrayObject) {
-            return $object->bind($data, ['replace_nulls' => true]);
+            return $object->fill($data, ['replace_nulls' => true]);
         }
 
         if ($object instanceof AccessorAccessibleInterface) {

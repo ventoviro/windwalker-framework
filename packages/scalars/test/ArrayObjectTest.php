@@ -59,11 +59,11 @@ class ArrayObjectTest extends TestCase
     }
 
     /**
-     * @see  ArrayObject::bind
+     * @see  ArrayObject::fill
      */
-    public function testBind(): void
+    public function testFill(): void
     {
-        $a = $this->instance->bind(['a', 'b', null]);
+        $a = $this->instance->fill(['a', 'b', null]);
 
         self::assertEquals(['a', 'b', 3], $a->dump());
     }

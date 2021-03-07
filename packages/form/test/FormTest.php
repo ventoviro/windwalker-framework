@@ -256,13 +256,13 @@ class FormTest extends TestCase
     }
 
     /**
-     * Method to test bind().
+     * Method to test fill().
      *
      * @return void
      *
-     * @covers \Windwalker\Form\Form::bind
+     * @covers \Windwalker\Form\Form::fill
      */
-    public function testBind()
+    public function testFill()
     {
         $data = [
             'id' => 5,
@@ -277,6 +277,26 @@ class FormTest extends TestCase
 
         self::assertEquals(5, $fields['id']->getValue());
         self::assertEquals('foo', $fields['u/username']->getValue());
+    }
+
+    public function testBind()
+    {
+        $data = [
+            'id' => 5,
+            'u' => [
+                'username' => 'foo',
+            ],
+        ];
+
+        $form = $this->getByDefine();
+
+        $fields = iterator_to_array($form->bind($data)->getFields());
+
+        $data['id'] = 6;
+        $data['u']['username'] = 'bar';
+
+        self::assertEquals(6, $fields['id']->getValue());
+        self::assertEquals('bar', $fields['u/username']->getValue());
     }
 
     /**
