@@ -9,14 +9,14 @@
 
 declare(strict_types=1);
 
-use Opis\Closure\SerializableClosure;
+use Opis\Closure\Library;
 
 include_once __DIR__ . '/functions.php';
 
 if (
     ini_get('ffi.enable')
-    && class_exists(SerializableClosure::class)
+    && class_exists(Library::class)
     && class_exists(\FFI::class)
 ) {
-    // SerializableClosure::init();
+    Library::init();
 }
