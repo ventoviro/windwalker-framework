@@ -85,7 +85,6 @@ namespace {
          *
          * @since  3.5.8
          */
-        #[Pure]
         function is_json(mixed $string): bool
         {
             if (!is_string($string)) {

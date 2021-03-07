@@ -68,14 +68,12 @@ class SafeEncoder
      */
     public static function chooseEncoder(string $encoder): string
     {
-        $map = [
+        return match($encoder) {
             static::HEX => Hex::class,
             static::BASE32 => Base32::class,
             static::BASE32HEX => Base32Hex::class,
             static::BASE64 => Base64::class,
-            static::BASE64URLSAFE => Base64UrlSafe::class,
-        ];
-
-        return $map[$encoder] ?? Base64UrlSafe::class;
+            default => Base64UrlSafe::class, // static::BASE64URLSAFE
+        };
     }
 }
