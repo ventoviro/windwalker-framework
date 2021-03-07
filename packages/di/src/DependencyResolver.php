@@ -21,10 +21,13 @@ use ReflectionUnionType;
 use TypeError;
 use Windwalker\DI\Definition\DefinitionInterface;
 use Windwalker\DI\Definition\ObjectBuilderDefinition;
+use Windwalker\DI\Exception\DefinitionResolveException;
 use Windwalker\DI\Exception\DependencyResolutionException;
 use Windwalker\Utilities\Reflection\ReflectionCallable;
 use Windwalker\Utilities\Wrapper\RawWrapper;
 use Windwalker\Utilities\Wrapper\ValueReference;
+
+use function Windwalker\collect;
 
 /**
  * The ObjectFactory class.
@@ -266,6 +269,22 @@ class DependencyResolver
             if ($depObject instanceof $dependencyClassName) {
                 return $depObject;
             }
+        }
+
+        if (isset($depObject)) {
+            $types = collect($dependencies)
+                ->map(fn (\ReflectionType $dep) => $dep->getName())
+                ->implode('|');
+
+            throw new DefinitionResolveException(
+                sprintf(
+                    'Unable to resolve %s argument #%s type: %s with %s given',
+                    $param->getDeclaringClass()->getName(),
+                    $param->getPosition(),
+                    (string) $types,
+                    get_debug_type($depObject ?? null)
+                )
+            );
         }
 
         return $nope;

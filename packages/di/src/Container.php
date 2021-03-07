@@ -243,7 +243,8 @@ class Container implements ContainerInterface, IteratorAggregate, Countable, Arr
         }
 
         if ($source instanceof ValueReference) {
-            $source = $source($this->getParameters(), $source->getDelimiter() ?? '.');
+            // Use Container::getParam() to support get value from parent.
+            $source = $this->getParam($source->getPath(), $source->getDelimiter() ?? '.');
         }
 
         if (is_string($source) && !class_exists($source)) {
