@@ -16,11 +16,11 @@
         "phpunit/phpunit": "^8.0||^9.0",
         "windwalker/test": "4.x-dev",
         "windwalker/scalars": "4.x-dev",
-        "doctrine/inflector": "^2.0",
+        "symfony/string": "^5.2",
         "symfony/options-resolver": "^5.0"
     },
     "suggest": {
-        "doctrine/inflector": "Install ~1.0 to use inflector.",
+        "symfony/string": "Install ^5.2 to use inflector.",
         "opis/closure": "Install ^3.0 to support serializable Closure."
     },
     "minimum-stability": "dev",

@@ -11,25 +11,23 @@ declare(strict_types=1);
 
 namespace Windwalker\Utilities;
 
-use Doctrine\Inflector\Inflector;
-use Doctrine\Inflector\InflectorFactory;
 use DomainException;
+use Symfony\Component\String\Inflector\EnglishInflector;
+use Symfony\Component\String\Inflector\InflectorInterface;
 
 /**
  * The StrInflector class.
- *
- * @since  __DEPLOY_VERSION__
  */
 class StrInflector
 {
-    protected static ?Inflector $inflector = null;
+    public static ?InflectorInterface $inflector = null;
 
     /**
      * Checks if a word is in a plural form.
      *
      * @param  string  $word  The string input.
      *
-     * @return  boolean  True if word is plural, false if not.
+     * @return  bool  True if word is plural, false if not.
      *
      * @since  2.0
      */
@@ -44,7 +42,7 @@ class StrInflector
      *
      * @param  string  $word  The string input.
      *
-     * @return  boolean  True if word is singular, false if not.
+     * @return  bool  True if word is singular, false if not.
      *
      * @since  2.0
      */
@@ -57,13 +55,25 @@ class StrInflector
     /**
      * Converts a word into its plural form.
      *
-     * @param  string  $word  The singular word to pluralise.
+     * @param  string  $word  The singular word to pluralize.
      *
      * @return  string  An inflected string, or false if no rule could be applied.
      *
      * @since  2.0
      */
     public static function toPlural(string $word): string
+    {
+        return static::getPossiblePluralize($word)[0];
+    }
+
+    /**
+     * Get possible pluralize words.
+     *
+     * @param  string  $word  The singular word to pluralize.
+     *
+     * @return  array
+     */
+    public static function getPossiblePluralize(string $word): array
     {
         static::checkDependency();
 
@@ -81,6 +91,18 @@ class StrInflector
      */
     public static function toSingular(string $word): string
     {
+        return static::getPossibleSingularize($word)[0];
+    }
+
+    /**
+     * Get possible singularize words.
+     *
+     * @param  string  $word  The plural word to singularize.
+     *
+     * @return  array
+     */
+    public static function getPossibleSingularize(string $word): array
+    {
         static::checkDependency();
 
         return static::getInflector()->singularize($word);
@@ -88,15 +110,15 @@ class StrInflector
 
     protected static function checkDependency(): void
     {
-        if (!class_exists(Inflector::class)) {
-            throw new DomainException('Please install doctrine/inflector first');
+        if (!interface_exists(InflectorInterface::class)) {
+            throw new DomainException('Please install symfony/string first');
         }
     }
 
-    protected static function getInflector(): Inflector
+    protected static function getInflector(): InflectorInterface
     {
         if (!static::$inflector) {
-            static::$inflector = InflectorFactory::create()->build();
+            static::$inflector = new EnglishInflector();
         }
 
         return static::$inflector;
