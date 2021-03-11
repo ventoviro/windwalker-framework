@@ -22,7 +22,7 @@ use Psr\Container\NotFoundExceptionInterface;
 use ReflectionException;
 use Traversable;
 use UnexpectedValueException;
-use Windwalker\Core\Migration\Command\MigrationToCommand;
+use Windwalker\Core\Migration\Command\MigrateCommand;
 use Windwalker\DI\Attributes\AttributesResolver;
 use Windwalker\DI\Concern\ConfigRegisterTrait;
 use Windwalker\DI\Definition\DefinitionFactory;
@@ -91,7 +91,7 @@ class Container implements ContainerInterface, IteratorAggregate, Countable, Arr
     public static function define(string|callable $class, array $args): ObjectBuilderDefinition
     {
         $builder = new ObjectBuilderDefinition($class);
-        $builder->setArguments($args);
+        $builder->addArguments($args);
 
         return $builder;
     }
@@ -201,10 +201,9 @@ class Container implements ContainerInterface, IteratorAggregate, Countable, Arr
      *
      * @return mixed Entry.
      * @throws ContainerExceptionInterface Error while retrieving the entry.
-     *
-     * @throws NotFoundExceptionInterface  No entry was found for **this** identifier.
+     * @throws NotFoundExceptionInterface No entry was found for **this** identifier.
      */
-    public function get($id, bool $forceNew = false): mixed
+    public function get(string $id, bool $forceNew = false): mixed
     {
         $definition = $this->getDefinition($id);
 
@@ -264,7 +263,7 @@ class Container implements ContainerInterface, IteratorAggregate, Countable, Arr
             if ($source instanceof ObjectBuilderDefinition) {
                 $source = clone $source;
                 $source->setContainer($this);
-                $source->setArguments($args);
+                $source->addArguments($args);
             }
 
             return $source->resolve($this);
@@ -284,7 +283,7 @@ class Container implements ContainerInterface, IteratorAggregate, Countable, Arr
      *
      * @return bool
      */
-    public function has($id): bool
+    public function has(string $id): bool
     {
         return $this->getDefinition($id) !== null;
     }

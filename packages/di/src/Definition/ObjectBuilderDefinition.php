@@ -64,7 +64,7 @@ class ObjectBuilderDefinition implements DefinitionInterface
         $new = clone $this;
 
         if ($args !== null) {
-            $new->setArguments($args);
+            $new->addArguments($args);
         }
 
         return $new;
@@ -208,7 +208,7 @@ class ObjectBuilderDefinition implements DefinitionInterface
      *
      * @return  static  Return self to support chaining.
      */
-    public function setArguments(array $arguments): static
+    public function addArguments(array $arguments): static
     {
         foreach ($arguments as $name => $argument) {
             $this->setArgument($name, $argument);

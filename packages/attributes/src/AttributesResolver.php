@@ -110,6 +110,12 @@ class AttributesResolver extends ObjectBuilder
         $ref = ReflectAccessor::reflect($instance);
         $object = $ref instanceof \ReflectionObject ? $instance : null;
 
+        // If is closure, get closure back.
+        if ($instance instanceof \ReflectionFunction) {
+            $object = $instance->getClosure();
+            $instance = $object;
+        }
+
         $builder = $this->createHandler(fn() => $instance, $ref);
 
         foreach ($ref->getAttributes() as $attribute) {

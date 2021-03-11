@@ -230,7 +230,7 @@ class ReflectAccessor
             return static::$cacheStorage[$value] ??= new ReflectionClass($value);
         }
 
-        if (is_object($value)) {
+        if (is_object($value) && !$value instanceof \Closure) {
             return static::$cacheStorage[$value::class] ??= new \ReflectionObject($value);
         }
 

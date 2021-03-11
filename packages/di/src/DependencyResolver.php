@@ -61,11 +61,12 @@ class DependencyResolver
             );
 
             if (!($options & Container::IGNORE_ATTRIBUTES)) {
-                $builder = $this->container->getAttributesResolver()
-                    ->resolveClassCreate($class, $builder);
+                $instance = $this->container->getAttributesResolver()
+                    ->resolveClassCreate($class, fn (...$args) => $builder($args, $options))(...$args);
+            } else {
+                $instance = $builder($args, $options);
             }
 
-            $instance = $builder($args, $options);
         } elseif (is_callable($class)) {
             $instance = $this->container->call($class, $args, null, $options);
 
