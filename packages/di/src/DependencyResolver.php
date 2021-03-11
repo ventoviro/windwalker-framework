@@ -46,7 +46,7 @@ class DependencyResolver
         $this->container = $container;
     }
 
-    public function newInstance($class, array $args = [], int $options = 0)
+    public function newInstance(mixed $class, array $args = [], int $options = 0): object
     {
         if ($class instanceof DefinitionInterface) {
             return $this->container->resolve($class);
@@ -55,7 +55,10 @@ class DependencyResolver
         $options |= $this->container->getOptions();
 
         if (is_string($class)) {
-            $builder = fn(array $args, int $options) => $this->newInstanceByClassName($class, $args, $options);
+            $builder = fn(array $args, int $options) => $this->resolvePropertiesAttributes(
+                $this->newInstanceByClassName($class, $args, $options),
+                $options
+            );
 
             if (!($options & Container::IGNORE_ATTRIBUTES)) {
                 $builder = $this->container->getAttributesResolver()
@@ -65,6 +68,17 @@ class DependencyResolver
             $instance = $builder($args, $options);
         } elseif (is_callable($class)) {
             $instance = $this->container->call($class, $args, null, $options);
+
+            if (!is_object($instance)) {
+                throw new \UnexpectedValueException(
+                    sprintf(
+                        'Thr callback for creating instance must return an object, got %s.',
+                        get_debug_type($instance)
+                    )
+                );
+            }
+
+            $instance = $this->resolvePropertiesAttributes($instance, $options);
 
             if (!($options & Container::IGNORE_ATTRIBUTES)) {
                 $instance = $this->container->getAttributesResolver()
@@ -83,6 +97,11 @@ class DependencyResolver
             );
         }
 
+        return $instance;
+    }
+
+    protected function resolvePropertiesAttributes(object $instance, int $options): object
+    {
         if (!($options & Container::IGNORE_ATTRIBUTES)) {
             $instance = $this->container->getAttributesResolver()
                 ->resolveProperties($instance);
@@ -91,7 +110,7 @@ class DependencyResolver
         return $instance;
     }
 
-    public function newInstanceByClassName(string $class, array $args = [], $options = 0): object
+    public function newInstanceByClassName(string $class, array $args = [], int $options = 0): object
     {
         $reflection = new ReflectionClass($class);
 

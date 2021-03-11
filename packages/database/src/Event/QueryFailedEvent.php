@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Database\Event;
 
 use Windwalker\Event\AbstractEvent;
+use Windwalker\Query\Query;
 
 /**
  * The QueryFailedEvent class.
@@ -105,6 +106,17 @@ class QueryFailedEvent extends AbstractEvent
         $this->query = $query;
 
         return $this;
+    }
+
+    public function getDebugQueryString(): string
+    {
+        $query = $this->getQuery();
+
+        if ($query instanceof Query) {
+            $query = $query->render(true);
+        }
+
+        return (string) $query;
     }
 
     /**

@@ -59,6 +59,7 @@ class AttributesResolver extends GlobalAttributesResolver
 
     protected function prepareAttribute(object $attribute): void
     {
+        // If Attribute need inject, we inject services here.
         $ref = new ReflectionObject($attribute);
 
         foreach ($ref->getProperties() as $property) {

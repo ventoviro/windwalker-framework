@@ -72,9 +72,11 @@ class EventEmitter extends EventDispatcher implements
     /**
      * @inheritDoc
      */
-    public function emit(EventInterface|string $event, array $args = []): EventInterface
+    public function emit(object|string $event, array $args = []): object
     {
-        $event = Event::wrap($event, $args);
+        if (is_string($event) || $event instanceof EventInterface) {
+            $event = Event::wrap($event, $args);
+        }
 
         $this->dispatch($event);
 

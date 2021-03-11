@@ -11,8 +11,6 @@ declare(strict_types=1);
 
 namespace Windwalker\Event;
 
-use Psr\EventDispatcher\EventDispatcherInterface;
-
 /**
  * Trait EventAwareTrait
  */
@@ -28,14 +26,14 @@ trait EventAwareTrait
     /**
      * Trigger an event.
      *
-     * @param  EventInterface|string  $event  The event object or name.
-     * @param  array                  $args   The arguments to set in event.
+     * @param  object|string  $event  The event object or name.
+     * @param  array          $args   The arguments to set in event.
      *
-     * @return  EventInterface  The event after being passed through all listeners.
+     * @return  EventInterface|object  The event after being passed through all listeners.
      *
      * @since   2.0
      */
-    public function emit(EventInterface|string $event, array $args = []): EventInterface
+    public function emit(object|string $event, array $args = []): object
     {
         return $this->getDispatcher()->emit($event, $args);
     }
