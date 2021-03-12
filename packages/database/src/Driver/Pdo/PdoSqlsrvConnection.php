@@ -34,7 +34,7 @@ class PdoSqlsrvConnection extends AbstractPdoConnection
             $params['Server'] .= ',' . $params['port'];
         }
 
-        $params['Database']     = $options['database'] ?? null;
+        $params['Database']     = $options['dbname'] ?? null;
         $params['CharacterSet'] = $options['charset'] ?? null;
         $params['MultipleActiveResultSets'] = 'False';
 

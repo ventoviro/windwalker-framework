@@ -73,7 +73,7 @@ abstract class AbstractPdoConnection extends AbstractConnection
 
         return new \PDO(
             $options['dsn'],
-            $options['username'] ?? null,
+            $options['user'] ?? null,
             $options['password'] ?? null,
             $attrs
         );

@@ -35,9 +35,9 @@ abstract class AbstractConnection extends AbstractPoolConnection implements Conn
      * @var array
      */
     protected array $defaultOptions = [
-        'database' => null,
+        'dbname' => null,
         'host' => 'localhost',
-        'username' => '',
+        'user' => '',
         'password' => '',
     ];
 

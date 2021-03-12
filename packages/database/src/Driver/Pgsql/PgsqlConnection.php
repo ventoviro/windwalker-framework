@@ -36,8 +36,8 @@ class PgsqlConnection extends AbstractConnection
 
         $params['host'] = $options['host'];
         $params['port'] = $options['port'] ?? null;
-        $params['dbname'] = $options['database'] ?? null;
-        $params['user'] = $options['username'] ?? null;
+        $params['dbname'] = $options['dbname'] ?? null;
+        $params['user'] = $options['user'] ?? null;
         $params['password'] = $options['password'] ?? null;
 
         if (isset($options['charset'])) {

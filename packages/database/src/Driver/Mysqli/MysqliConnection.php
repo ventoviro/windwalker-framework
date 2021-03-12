@@ -45,9 +45,9 @@ class MysqliConnection extends AbstractConnection
 
         return mysqli_connect(
             $options['host'] ?? null,
-            $options['username'] ?? null,
+            $options['user'] ?? null,
             $options['password'] ?? null,
-            $options['database'] ?? null
+            $options['dbname'] ?? null
         );
     }
 

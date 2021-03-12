@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Test\Schema;
 
-use Windwalker\Database\Schema\DatabaseManager;
+use Windwalker\Database\Manager\DatabaseManager;
 use Windwalker\Database\Test\AbstractDatabaseTestCase;
 
 /**

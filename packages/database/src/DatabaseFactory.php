@@ -43,6 +43,8 @@ class DatabaseFactory implements DatabaseFactoryInterface
     ): DatabaseAdapter {
         [, $platformShortName] = static::extractDriverName($driverName);
 
+        $options['driver'] = $driverName;
+
         return new DatabaseAdapter(
             $this->createDriver(
                 $driverName,

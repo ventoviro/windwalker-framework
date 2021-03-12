@@ -37,8 +37,8 @@ class PdoOdbcConnection extends AbstractPdoConnection
             $params['Port'] = $options['port'];
         }
 
-        if ($options['database'] ?? null) {
-            $params['Database'] = $options['database'];
+        if ($options['dbname'] ?? null) {
+            $params['Database'] = $options['dbname'];
         }
 
         $options['dsn'] = static::getDsn($params);

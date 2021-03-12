@@ -14,15 +14,14 @@ namespace Windwalker\Database;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Windwalker\Database\Driver\AbstractDriver;
-use Windwalker\Database\Driver\ConnectionInterface;
 use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\Database\Hydrator\HydratorAwareInterface;
 use Windwalker\Database\Hydrator\HydratorInterface;
+use Windwalker\Database\Manager\DatabaseManager;
+use Windwalker\Database\Manager\SchemaManager;
 use Windwalker\Database\Manager\TableManager;
 use Windwalker\Database\Manager\WriterManager;
 use Windwalker\Database\Platform\AbstractPlatform;
-use Windwalker\Database\Schema\DatabaseManager;
-use Windwalker\Database\Schema\SchemaManager;
 use Windwalker\Event\EventAwareTrait;
 use Windwalker\Event\EventListenableInterface;
 use Windwalker\ORM\EntityMapper;
@@ -82,11 +81,9 @@ class DatabaseAdapter implements EventListenableInterface, HydratorAwareInterfac
     }
 
     /**
-     * disconnect
+     * Force close all connections from pool.
      *
      * @return  int
-     *
-     * @deprecated No-longer need since has conn-pool
      */
     public function disconnect(): int
     {
@@ -208,6 +205,16 @@ class DatabaseAdapter implements EventListenableInterface, HydratorAwareInterfac
         return $this->getSchema($schema)->getTables($includeViews);
     }
 
+    public function getOptions(): array
+    {
+        return $this->getDriver()->getOptions();
+    }
+
+    public function getDriverName(): string
+    {
+        return $this->getDriver()->getOption('driver');
+    }
+
     /**
      * @return AbstractDriver
      */
@@ -226,7 +233,7 @@ class DatabaseAdapter implements EventListenableInterface, HydratorAwareInterfac
 
     public function getDatabase(string $name = null, $new = false): DatabaseManager
     {
-        $name = $name ?? $this->getDriver()->getOption('database');
+        $name = $name ?? $this->getDriver()->getOption('dbname');
 
         return $this->once('database.' . $name, fn() => new DatabaseManager($name, $this), $new);
     }

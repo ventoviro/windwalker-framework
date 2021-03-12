@@ -80,8 +80,8 @@ abstract class AbstractDriver implements HydratorAwareInterface
             [
                 'driver' => null,
                 'host' => 'localhost',
-                'database' => null,
-                'username' => null,
+                'dbname' => null,
+                'user' => null,
                 'password' => null,
                 'port' => null,
                 'prefix' => null,
@@ -94,7 +94,7 @@ abstract class AbstractDriver implements HydratorAwareInterface
                 [
                     'driver',
                     'host',
-                    'username',
+                    'user',
                 ]
             );
         // ->setAllowedTypes('driver', 'string');

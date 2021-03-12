@@ -11,7 +11,9 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Manager;
 
+use Windwalker\Attributes\AttributesAccessor;
 use Windwalker\Database\Schema\Ddl\Table;
+use Windwalker\ORM\Attributes\Table as TableAttr;
 use Windwalker\Utilities\Cache\InstanceCacheTrait;
 
 /**
@@ -41,41 +43,73 @@ class SchemaManager extends AbstractMetaManager
 
     public function exists(): bool
     {
-        return isset($this->getPlatform()->listDatabases()[$this->getName()]);
+        return in_array($this->getName(), $this->getPlatform()->listSchemas(), true);
     }
 
-    public function getTables(bool $refresh = false): array
+    public function getTable(string $name, bool $new = false): TableManager
     {
-        return $this->once(
+        if (class_exists($name)) {
+            /** @var TableAttr $tableAttr */
+            $tableAttr = AttributesAccessor::getFirstAttributeInstance($name, TableAttr::class);
+
+            if ($tableAttr) {
+                $name = $tableAttr->getName();
+            }
+        }
+
+        return $this->once('table.manager.' . $name, fn() => new TableManager($name, $this->db), $new);
+    }
+
+    /**
+     * @param  bool  $includeViews
+     * @param  bool  $refresh
+     *
+     * @return  Table[]
+     */
+    public function getTables(bool $includeViews = false, bool $refresh = false): array
+    {
+        $platform = $this->db->getPlatform();
+
+        $tables = $this->once(
             'tables',
             fn() => Table::wrapList(
-                $this->getPlatform()
-                    ->listTables($this->getName())
+                $platform->listTables($this->getName())
+            ),
+            $refresh
+        );
+
+        if ($includeViews) {
+            $tables = array_merge($tables, $this->getViews());
+        }
+
+        return $tables;
+    }
+
+    public function getViews(bool $refresh = false)
+    {
+        return $this->once(
+            'views',
+            fn() => Table::wrapList(
+                $this->getPlatform()->listViews($this->getName())
             ),
             $refresh
         );
     }
 
+    public function getTableDetail(string $table, bool $includeViews = false): ?Table
+    {
+        return $this->getTables($includeViews)[$table];
+    }
+
     public function hasTable(string $table): bool
     {
-        return isset($this->getTables()[$table]);
-    }
-
-    public function getTable(string $table): ?Table
-    {
-        return $this->getTables()[$table] ?? null;
-    }
-
-    public function dropTable(string $table): static
-    {
-        $this->db->getTable($table)->drop();
-
-        return $this;
+        return in_array($this->db->replacePrefix($table), $this->getTables(), true);
     }
 
     public function reset(): static
     {
-        $this->cacheReset();
+        $this->tables = null;
+        $this->views  = null;
 
         return $this;
     }

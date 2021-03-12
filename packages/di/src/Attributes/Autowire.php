@@ -32,7 +32,7 @@ class Autowire implements ContainerAttributeInterface
 
                 // Only value is NULL needs autowire.
                 if ($value !== null) {
-                    return fn() => $value;
+                    return $value;
                 }
 
                 $resolver = $container->getDependencyResolver();

@@ -666,7 +666,7 @@ class FileObject extends \SplFileInfo
         }
 
         // Path is parent
-        if (strpos($self, $parent) === 0) {
+        if (str_starts_with($self, $parent)) {
             return true;
         }
 
@@ -693,7 +693,7 @@ class FileObject extends \SplFileInfo
     /**
      * Method to get property Root
      *
-     * @return  string
+     * @return string|null
      *
      * @since  __DEPLOY_VERSION__
      */
@@ -705,7 +705,7 @@ class FileObject extends \SplFileInfo
     /**
      * Method to set property root
      *
-     * @param  string  $root
+     * @param  string|null  $root
      *
      * @return  static  Return self to support chaining.
      *
@@ -736,7 +736,7 @@ class FileObject extends \SplFileInfo
         ];
 
         if (
-            strpos($name, 'Async') !== false
+            str_contains($name, 'Async')
             && in_array($method = substr($name, 0, -5), $allows, true)
         ) {
             return static::doAsync($method, $args);

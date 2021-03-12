@@ -11,42 +11,77 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Manager;
 
-use Windwalker\Utilities\Cache\InstanceCacheTrait;
-
 /**
  * The DatabaseManager class.
  */
 class DatabaseManager extends AbstractMetaManager
 {
-    use InstanceCacheTrait;
-
-    public function create(array $options = []): static
+    /**
+     * createDatabase
+     *
+     * @param  bool   $ifNotExists
+     * @param  array  $options
+     *
+     * @return static
+     */
+    public function create(bool $ifNotExists = false, array $options = []): static
     {
-        if (!$this->exists()) {
-            $this->getPlatform()->createDatabase($this->getName(), $options);
+        if ($ifNotExists && $this->exists()) {
+            return $this;
         }
+
+        $this->db->getPlatform()->createDatabase($this->getName(), $options);
 
         return $this;
     }
 
-    public function drop(array $options = []): static
+    /**
+     * dropDatabase
+     *
+     * @param  bool  $ifExists
+     *
+     * @return  static
+     */
+    public function drop(bool $ifExists = false): static
     {
-        if ($this->exists()) {
-            $this->getPlatform()->dropDatabase($this->getName(), $options);
+        $name = $this->getName();
+
+        if ($ifExists && $this->exists()) {
+            return $this;
         }
+
+        if ($name === $this->db->getPlatform()->getCurrentDatabase()) {
+            $this->db->disconnect();
+
+            $this->db->getDriver()->setOption('dbname', null);
+        }
+
+        $this->db->getPlatform()->dropDatabase($name);
 
         return $this;
     }
 
+    /**
+     * exists
+     *
+     * @return  bool
+     */
     public function exists(): bool
     {
-        return isset($this->getPlatform()->listDatabases()[$this->getName()]);
+        return in_array(
+            $this->getName(),
+            $this->db->listDatabases(),
+            true
+        );
     }
 
+    /**
+     * resetCache
+     *
+     * @return  static
+     */
     public function reset(): static
     {
-        $this->cacheReset();
-
         return $this;
     }
 }
