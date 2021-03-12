@@ -64,7 +64,7 @@ abstract class AbstractConnectionTest extends AbstractDatabaseDriverTestCase
                 self::getTestParams(),
                 [
                     'host',
-                    'username',
+                    'user',
                     'password',
                     'database',
                     'port'
@@ -93,7 +93,7 @@ abstract class AbstractConnectionTest extends AbstractDatabaseDriverTestCase
     public function testConnectWrong()
     {
         $conn = $this->instance;
-        $conn->setOption('username', 'notexists');
+        $conn->setOption('user', 'notexists');
         $conn->setOption('password', 'This-is-wrong-password');
 
         $this->expectException(\RuntimeException::class);

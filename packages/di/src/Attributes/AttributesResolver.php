@@ -57,6 +57,33 @@ class AttributesResolver extends GlobalAttributesResolver
         return $this;
     }
 
+    /**
+     * Resolve class constructor and return create function.
+     *
+     * @param  string         $class
+     * @param  callable|null  $builder
+     *
+     * @return  AttributeHandler
+     *
+     * @throws \ReflectionException
+     */
+    public function resolveClassCreate(string $class, ?callable $builder = null): AttributeHandler
+    {
+        $ref = new \ReflectionClass($class);
+
+        $builder = $builder ?? fn($args, int $options) => $this->getBuilder()($class, ...$args);
+
+        $handler = $this->createHandler($builder, $ref);
+
+        foreach ($ref->getAttributes() as $attribute) {
+            if ($this->hasAttribute($attribute, \Attribute::TARGET_CLASS)) {
+                $handler = $this->runAttribute($attribute, $handler);
+            }
+        }
+
+        return $handler;
+    }
+
     protected function prepareAttribute(object $attribute): void
     {
         // If Attribute need inject, we inject services here.

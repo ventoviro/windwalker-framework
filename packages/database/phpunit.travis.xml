@@ -8,11 +8,11 @@
     <php>
         <ini name="error_reporting" value="-1" />
 
-        <const name="WINDWALKER_TEST_DB_DSN_MYSQL"  value="host=localhost;database=windwalker_test;username=root;password=;prefix=ww_" />
-        <const name="WINDWALKER_TEST_DB_DSN_POSTGRESQL"  value="host=localhost;database=windwalker_test;username=postgres;password=;prefix=ww_" />
-        <!--<const name="WINDWALKER_TEST_DB_DSN_ORACLE" value="host=localhost;port=5432;database=windwalker_test;username=root;password=ut1234;prefix=ww_" />-->
-        <!--<const name="WINDWALKER_TEST_DB_DSN_SQLSRV" value="host=localhost;port=1521;database=windwalker_test;username=root;password=ut1234;prefix=ww_" />-->
-        <!--<const name="WINDWALKER_TEST_DB_DSN_SQLITE" value="database=tmp/test.db;prefix=ww_" />-->
+        <const name="WINDWALKER_TEST_DB_DSN_MYSQL"  value="host=localhost;dbname=windwalker_test;user=root;password=;prefix=ww_" />
+        <const name="WINDWALKER_TEST_DB_DSN_POSTGRESQL"  value="host=localhost;dbname=windwalker_test;user=postgres;password=;prefix=ww_" />
+        <!--<const name="WINDWALKER_TEST_DB_DSN_ORACLE" value="host=localhost;port=5432;dbname=windwalker_test;user=root;password=ut1234;prefix=ww_" />-->
+        <!--<const name="WINDWALKER_TEST_DB_DSN_SQLSRV" value="host=localhost;port=1521;dbname=windwalker_test;user=root;password=ut1234;prefix=ww_" />-->
+        <!--<const name="WINDWALKER_TEST_DB_DSN_SQLITE" value="dbname=tmp/test.db;prefix=ww_" />-->
     </php>
 
     <testsuites>

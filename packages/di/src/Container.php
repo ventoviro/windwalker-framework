@@ -22,7 +22,6 @@ use Psr\Container\NotFoundExceptionInterface;
 use ReflectionException;
 use Traversable;
 use UnexpectedValueException;
-use Windwalker\Core\Migration\Command\MigrateCommand;
 use Windwalker\DI\Attributes\AttributesResolver;
 use Windwalker\DI\Concern\ConfigRegisterTrait;
 use Windwalker\DI\Definition\DefinitionFactory;

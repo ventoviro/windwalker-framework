@@ -35,7 +35,7 @@ class MySQLPlatformTest extends AbstractPlatformTest
         $schemas = $this->instance->listDatabases();
 
         self::assertContains(
-            self::getTestParams()['database'],
+            self::getTestParams()['dbname'],
             $schemas
         );
     }
@@ -48,7 +48,7 @@ class MySQLPlatformTest extends AbstractPlatformTest
         $schemas = $this->instance->listSchemas();
 
         self::assertContains(
-            self::getTestParams()['database'],
+            self::getTestParams()['dbname'],
             $schemas
         );
     }

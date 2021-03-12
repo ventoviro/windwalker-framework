@@ -65,7 +65,7 @@ trait ArrayCreationTrait
     }
 
     /**
-     * fill
+     * fillWith
      *
      * @param  int    $start
      * @param  int    $num
@@ -75,7 +75,7 @@ trait ArrayCreationTrait
      *
      * @since  3.5
      */
-    public static function fill(int $start, int $num, mixed $value): static
+    public static function fillWith(int $start, int $num, mixed $value): static
     {
         return static::wrap(array_fill($start, $num, $value));
     }

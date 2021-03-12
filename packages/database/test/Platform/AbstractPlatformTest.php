@@ -115,7 +115,7 @@ abstract class AbstractPlatformTest extends AbstractDatabaseTestCase
     public function testGetCurrentDatabase(): void
     {
         self::assertEquals(
-            self::$db->getDriver()->getOption('database'),
+            self::$db->getDriver()->getOption('dbname'),
             $this->instance->getCurrentDatabase()
         );
     }

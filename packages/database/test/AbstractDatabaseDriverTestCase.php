@@ -70,8 +70,8 @@ abstract class AbstractDatabaseDriverTestCase extends TestCase
 
         $reseter = AbstractReseter::create(static::$platform);
 
-        static::$dbname = $params['database'];
-        unset($params['database']);
+        static::$dbname = $params['dbname'];
+        unset($params['dbname']);
 
         $pdo = static::createBaseConnect($params, $connClass);
 
@@ -80,7 +80,7 @@ abstract class AbstractDatabaseDriverTestCase extends TestCase
         // Disconnect.
         $pdo = null;
 
-        $params['database'] = static::$dbname;
+        $params['dbname'] = static::$dbname;
 
         static::$baseConn = static::createBaseConnect($params, $connClass);
 
@@ -95,7 +95,7 @@ abstract class AbstractDatabaseDriverTestCase extends TestCase
 
         return new \PDO(
             $dsn,
-            $params['username'] ?? null,
+            $params['user'] ?? null,
             $params['password'] ?? null,
             [
                 \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION

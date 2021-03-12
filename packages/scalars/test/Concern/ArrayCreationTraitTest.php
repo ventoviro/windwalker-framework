@@ -188,9 +188,9 @@ class ArrayCreationTraitTest extends TestCase
         );
     }
 
-    public function testFill(): void
+    public function testFillWith(): void
     {
-        $a = ArrayObject::fill(5, 3, 'Y');
+        $a = ArrayObject::fillWith(5, 3, 'Y');
 
         self::assertEquals(
             [
