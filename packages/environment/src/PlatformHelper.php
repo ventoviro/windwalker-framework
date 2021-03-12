@@ -21,9 +21,9 @@ class PlatformHelper
     /**
      * Property server.
      *
-     * @var Platform
+     * @var Platform|null
      */
-    protected static Platform $platform;
+    protected static ?Platform $platform = null;
 
     /**
      * isWindows
