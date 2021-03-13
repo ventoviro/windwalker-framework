@@ -13,6 +13,7 @@ namespace Windwalker\DI {
 
     use Windwalker\DI\Definition\ObjectBuilderDefinition;
     use Windwalker\DI\Definition\StoreDefinition;
+    use Windwalker\DI\Wrapper\CallbackWrapper;
 
     if (!function_exists('\Windwalker\DI\create')) {
         function create(string|callable $class, ...$args): ObjectBuilderDefinition
@@ -47,6 +48,13 @@ namespace Windwalker\DI {
         function prepare_shared(string $class, ?callable $extend, int $options = 0): StoreDefinition
         {
             return prepare($class, $extend, $options | Container::SHARED);
+        }
+    }
+
+    if (!function_exists('\Windwalker\DI\callback')) {
+        function callback(callable $callable, ?object $context, int $options = 0): CallbackWrapper
+        {
+            return new CallbackWrapper($callable, $context, $options);
         }
     }
 }

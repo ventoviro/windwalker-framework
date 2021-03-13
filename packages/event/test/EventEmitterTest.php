@@ -538,8 +538,8 @@ class EventEmitterTest extends TestCase
             )
         );
 
-        $this->instance->registerDealer($dealer1)
-            ->registerDealer($dealer2);
+        $this->instance->addDealer($dealer1)
+            ->addDealer($dealer2);
 
         $event = $this->instance->emit('hello');
 

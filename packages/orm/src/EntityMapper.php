@@ -126,7 +126,7 @@ class EntityMapper implements EventAwareInterface
     {
         $selector = new Selector($this->getORM());
 
-        $selector->getDispatcher()->registerDealer($this->getDispatcher());
+        $selector->getEventDispatcher()->addDealer($this->getEventDispatcher());
 
         return $selector;
     }
@@ -962,7 +962,7 @@ class EntityMapper implements EventAwareInterface
     protected function hasEvents(...$events): bool
     {
         foreach ($events as $event) {
-            foreach ($this->getDispatcher()->getListeners($event) as $listener) {
+            foreach ($this->getEventDispatcher()->getListeners($event) as $listener) {
                 return true;
             }
 

@@ -13,14 +13,15 @@ namespace Windwalker\DI\Attributes;
 
 use ReflectionObject;
 use Reflector;
-use Windwalker\Attributes\AttributesResolver as GlobalAttributesResolver;
+use Windwalker\Attributes\AttributeHandler as BaseAttributeHandler;
+use Windwalker\Attributes\AttributesResolver as BaseAttributesResolver;
 use Windwalker\DI\Container;
 use Windwalker\Utilities\Reflection\ReflectAccessor;
 
 /**
  * The AttributesResolver class.
  */
-class AttributesResolver extends GlobalAttributesResolver
+class AttributesResolver extends BaseAttributesResolver
 {
     protected Container $container;
 
@@ -63,25 +64,38 @@ class AttributesResolver extends GlobalAttributesResolver
      * @param  string         $class
      * @param  callable|null  $builder
      *
-     * @return  AttributeHandler
+     * @return  BaseAttributeHandler
      *
      * @throws \ReflectionException
      */
-    public function resolveClassCreate(string $class, ?callable $builder = null): AttributeHandler
+    public function resolveClassCreate(string $class, ?callable $builder = null): BaseAttributeHandler
     {
-        $ref = new \ReflectionClass($class);
-
+        /*
+         * Container builder use `(array $args, int $options)` signature.
+         * So we should change the default builder to fit it.
+         */
         $builder = $builder ?? fn($args, int $options) => $this->getBuilder()($class, ...$args);
 
-        $handler = $this->createHandler($builder, $ref);
+        return parent::resolveClassCreate($class, $builder);
+    }
 
-        foreach ($ref->getAttributes() as $attribute) {
-            if ($this->hasAttribute($attribute, \Attribute::TARGET_CLASS)) {
-                $handler = $this->runAttribute($attribute, $handler);
-            }
-        }
+    /**
+     * Decorate object by attributes.
+     *
+     * @param  object  $object
+     *
+     * @return  object
+     */
+    public function decorateObject(object $object): object
+    {
+        $args = [];
+        $options = 0;
 
-        return $handler;
+        /*
+         * Container builder use `(array $args, int $options)` signature.
+         * So we must add 2 argument to polyfill it.
+         */
+        return $this->resolveObjectDecorate($object)($args, $options);
     }
 
     protected function prepareAttribute(object $attribute): void
@@ -101,7 +115,7 @@ class AttributesResolver extends GlobalAttributesResolver
     /**
      * @inheritDoc
      */
-    protected function createHandler(callable $getter, Reflector $reflector, ?object $object = null): AttributeHandler
+    protected function createHandler(callable $getter, Reflector $reflector, ?object $object = null): BaseAttributeHandler
     {
         return new AttributeHandler($getter, $reflector, $object, $this, $this->container);
     }

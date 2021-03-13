@@ -23,5 +23,5 @@ interface DispatcherAwareInterface
      *
      * @return  EventDispatcherInterface
      */
-    public function getDispatcher(): EventDispatcherInterface;
+    public function getEventDispatcher(): EventDispatcherInterface;
 }

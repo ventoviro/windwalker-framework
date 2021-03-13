@@ -30,6 +30,7 @@ use Windwalker\DI\Definition\ObjectBuilderDefinition;
 use Windwalker\DI\Definition\StoreDefinitionInterface;
 use Windwalker\DI\Exception\DefinitionException;
 use Windwalker\DI\Exception\DefinitionNotFoundException;
+use Windwalker\DI\Wrapper\CallbackWrapper;
 use Windwalker\Utilities\Assert\ArgumentsAssert;
 use Windwalker\Utilities\Contract\ArrayAccessibleInterface;
 use Windwalker\Utilities\Wrapper\RawWrapper;
@@ -258,14 +259,20 @@ class Container implements ContainerInterface, IteratorAggregate, Countable, Arr
             return $this->newInstance($source, $args, $options);
         }
 
-        if ($source instanceof DefinitionInterface) {
-            if ($source instanceof ObjectBuilderDefinition) {
-                $source = clone $source;
-                $source->setContainer($this);
-                $source->addArguments($args);
+        if (is_string($source) && $this->has($source)) {
+            $definition = $this->getDefinition($source);
+        } else {
+            $definition = $source;
+        }
+
+        if ($definition instanceof DefinitionInterface) {
+            if ($definition instanceof ObjectBuilderDefinition) {
+                $definition = clone $definition;
+                $definition->setContainer($this);
+                $definition->addArguments($args);
             }
 
-            return $source->resolve($this);
+            return $definition->resolve($this);
         }
 
         return $this->get($source);
@@ -561,6 +568,29 @@ class Container implements ContainerInterface, IteratorAggregate, Countable, Arr
     public function call(callable $callable, array $args = [], ?object $context = null, int $options = 0): mixed
     {
         return $this->dependencyResolver->call($callable, $args, $context, $options);
+    }
+
+    /**
+     * Execute a callable with dependencies.
+     *
+     * Can wrap callable with `\Windwalker\DI\callback($callable, $context, $options)`.
+     *
+     * @param  callable  $callable
+     * @param  mixed     ...$args
+     *
+     * @return  mixed
+     *
+     * @throws ReflectionException
+     */
+    public function execute(callable $callable, mixed ...$args): mixed
+    {
+        if ($callable instanceof CallbackWrapper) {
+            $context = $callable->context;
+            $options = $callable->options;
+            $callable = $callable->callable;
+        }
+
+        return $this->call($callable, $args, $context ?? null, $options ?? 0);
     }
 
     /**

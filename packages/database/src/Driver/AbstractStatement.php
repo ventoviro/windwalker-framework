@@ -261,7 +261,7 @@ abstract class AbstractStatement implements StatementInterface
      */
     public function addDispatcherDealer(EventDispatcherInterface $dispatcher): void
     {
-        $this->getDispatcher()->registerDealer($dispatcher);
+        $this->getEventDispatcher()->addDealer($dispatcher);
     }
 
     /**

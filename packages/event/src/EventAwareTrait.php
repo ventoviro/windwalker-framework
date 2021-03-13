@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Event;
 
+use Psr\EventDispatcher\EventDispatcherInterface;
+
 /**
  * Trait EventAwareTrait
  */
@@ -35,7 +37,7 @@ trait EventAwareTrait
      */
     public function emit(object|string $event, array $args = []): object
     {
-        return $this->getDispatcher()->emit($event, $args);
+        return $this->getEventDispatcher()->emit($event, $args);
     }
 
     /**
@@ -53,7 +55,7 @@ trait EventAwareTrait
      */
     public function subscribe(object $subscriber, ?int $priority = null): static
     {
-        $this->getDispatcher()->subscribe($subscriber, $priority);
+        $this->getEventDispatcher()->subscribe($subscriber, $priority);
 
         return $this;
     }
@@ -71,7 +73,7 @@ trait EventAwareTrait
      */
     public function on(string $event, callable $callable, ?int $priority = null): static
     {
-        $this->getDispatcher()->on($event, $callable, $priority);
+        $this->getEventDispatcher()->on($event, $callable, $priority);
 
         return $this;
     }
@@ -81,12 +83,19 @@ trait EventAwareTrait
      *
      * @return  EventEmitter
      */
-    public function getDispatcher(): EventEmitter
+    public function getEventDispatcher(): EventEmitter
     {
-        if (!$this->dispatcher) {
-            $this->dispatcher = new EventEmitter();
+        return $this->dispatcher ??= new EventEmitter();
+    }
+
+    public function addEventDealer(EventDispatcherInterface|DispatcherAwareInterface $dispatcher): static
+    {
+        if ($dispatcher instanceof DispatcherAwareInterface) {
+            $dispatcher = $dispatcher->getEventDispatcher();
         }
 
-        return $this->dispatcher;
+        $this->getEventDispatcher()->addDealer($dispatcher);
+
+        return $this;
     }
 }

@@ -14,7 +14,7 @@ namespace PHPSTORM_META {
     use Windwalker\DI\ServiceAwareTrait;
 
     override(
-        ServiceAwareTrait::make(0),
+        \Windwalker\DI\ServiceAwareTrait::make(0),
         map(
             [
                 '' => '@',
@@ -23,7 +23,7 @@ namespace PHPSTORM_META {
     );
 
     override(
-        ServiceAwareTrait::service(0),
+        \Windwalker\DI\ServiceAwareTrait::service(0),
         map(
             [
                 '' => '@',
@@ -32,7 +32,7 @@ namespace PHPSTORM_META {
     );
 
     override(
-        ServiceAwareTrait::resolve(0),
+        \Windwalker\DI\ServiceAwareTrait::resolve(0),
         map(
             [
                 '' => '@',

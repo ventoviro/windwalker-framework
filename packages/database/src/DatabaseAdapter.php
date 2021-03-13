@@ -97,7 +97,7 @@ class DatabaseAdapter implements EventListenableInterface, HydratorAwareInterfac
         $stmt = $this->getDriver()->prepare($query, $options);
 
         // Make DatabaseAdapter listen to statement events
-        $stmt->addDispatcherDealer($this->getDispatcher());
+        $stmt->addDispatcherDealer($this->getEventDispatcher());
 
         return $stmt;
     }

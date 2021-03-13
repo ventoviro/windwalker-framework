@@ -46,8 +46,8 @@ class HttpServer extends AdaptableServer
 
         parent::__construct($adapter);
 
-        $this->adapter->getDispatcher()
-            ->registerDealer($this->getDispatcher());
+        $this->adapter->getEventDispatcher()
+            ->addDealer($this->getEventDispatcher());
     }
 
     /**

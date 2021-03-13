@@ -223,7 +223,7 @@ class Selector extends AbstractQueryStrategy
 
     protected function registerEvents(StatementInterface $stmt): StatementInterface
     {
-        $stmt->addDispatcherDealer($this->getDispatcher());
+        $stmt->addDispatcherDealer($this->getEventDispatcher());
 
         return $stmt;
     }

@@ -96,7 +96,7 @@ abstract class AbstractDatabaseTestCase extends AbstractDatabaseDriverTestCase
 
         $result = $callback();
 
-        static::$db->getDispatcher()->remove($fp);
+        static::$db->getEventDispatcher()->remove($fp);
 
         return $logs;
     }

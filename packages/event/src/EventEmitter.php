@@ -205,7 +205,7 @@ class EventEmitter extends EventDispatcher implements
      *
      * @return  static
      */
-    public function registerDealer(EventDispatcherInterface $dispatcher): static
+    public function addDealer(EventDispatcherInterface $dispatcher): static
     {
         $this->dealers[$dispatcher] = $dispatcher;
 
