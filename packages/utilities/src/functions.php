@@ -124,7 +124,7 @@ namespace Windwalker {
         #[Pure]
         function nope(): Closure
         {
-            return static fn($v) => $v;
+            return static fn($v = null) => $v;
         }
     }
 
