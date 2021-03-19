@@ -18,12 +18,16 @@ use SplPriorityQueue;
 use SplQueue;
 use SplStack;
 use Windwalker\Data\Collection;
+use Windwalker\DI\Attributes\AttributeType;
 use Windwalker\DI\Attributes\Inject;
 use Windwalker\DI\Container;
 use Windwalker\DI\Exception\DefinitionException;
 use Windwalker\DI\Exception\DependencyResolutionException;
+use Windwalker\DI\Test\Injection\HelloInner;
+use Windwalker\DI\Test\Injection\HelloWrapper;
 use Windwalker\DI\Test\Injection\StubInject;
 use Windwalker\DI\Test\Injection\StubService;
+use Windwalker\DI\Test\Injection\WiredClass;
 use Windwalker\DI\Test\Mock\Bar;
 use Windwalker\DI\Test\Mock\Bar2;
 use Windwalker\DI\Test\Mock\Foo;
@@ -34,6 +38,9 @@ use Windwalker\Scalars\ArrayObject;
 use Windwalker\Test\Traits\BaseAssertionTrait;
 use Windwalker\Utilities\Reflection\ReflectAccessor;
 use Windwalker\Utilities\TypeCast;
+
+use function Windwalker\DI\create;
+use function Windwalker\str;
 
 /**
  * The ContainerTest class.
@@ -675,6 +682,26 @@ class ContainerTest extends TestCase
     public function testResolve(): void
     {
         self::markTestIncomplete(); // TODO: Complete this test
+    }
+
+    /**
+     * @see  Container::resolve
+     */
+    public function testResolveWithDecorator(): void
+    {
+        $this->instance->getAttributesResolver()->registerAttribute(
+            HelloWrapper::class,
+            AttributeType::ALL
+        );
+
+        $this->instance->bind(HelloInner::class, create(HelloInner::class, bar: str('Hello')));
+
+        $hello = $this->instance->resolve(HelloInner::class);
+
+        self::assertEquals(
+            'Hello',
+            (string) $hello->logs[0]
+        );
     }
 
     /**

@@ -39,4 +39,13 @@ namespace PHPSTORM_META {
             ]
         )
     );
+
+    override(
+        Container::resolve(0),
+        map(
+            [
+                '' => '@',
+            ]
+        )
+    );
 }
