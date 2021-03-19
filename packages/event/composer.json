@@ -20,7 +20,7 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^8.0||^9.0",
-        "mockery/mockery": "^1.3",
+        "mockery/mockery": "^1.4",
         "windwalker/test": "4.x-dev",
         "windwalker/promise": "4.x-dev",
         "reactivex/rxphp": "^2.0",

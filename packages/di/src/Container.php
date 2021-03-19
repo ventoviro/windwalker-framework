@@ -712,6 +712,7 @@ class Container implements ContainerInterface, IteratorAggregate, Countable, Arr
      *
      * @return  static  The new container object.
      *
+     * @throws DefinitionException
      * @since   2.0
      */
     public function createChild(): static

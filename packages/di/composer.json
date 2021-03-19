@@ -11,7 +11,7 @@
     "license": "MIT",
     "require": {
         "php": ">=8.0.0",
-        "psr/container": "^1.0",
+        "psr/container": "^1.0||^2.0",
         "windwalker/data": "4.x-dev",
         "windwalker/cache": "4.x-dev",
         "windwalker/utilities": "4.x-dev"

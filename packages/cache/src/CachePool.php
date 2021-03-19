@@ -76,7 +76,7 @@ class CachePool implements CacheItemPoolInterface, CacheInterface, LoggerAwareIn
     /**
      * @inheritDoc
      */
-    public function getItem($key): CacheItemInterface|CacheItem
+    public function getItem(string $key): CacheItemInterface|CacheItem
     {
         $item = new CacheItem($key);
         $item->setLogger($this->logger);
@@ -105,7 +105,7 @@ class CachePool implements CacheItemPoolInterface, CacheInterface, LoggerAwareIn
     /**
      * @inheritDoc
      */
-    public function hasItem($key): bool
+    public function hasItem(string $key): bool
     {
         return $this->getItem($key)->isHit();
     }
@@ -132,7 +132,7 @@ class CachePool implements CacheItemPoolInterface, CacheInterface, LoggerAwareIn
     /**
      * @inheritDoc
      */
-    public function deleteItem($key): bool
+    public function deleteItem(string $key): bool
     {
         try {
             $this->storage->remove($key);

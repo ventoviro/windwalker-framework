@@ -21,7 +21,7 @@
         "windwalker/test": "4.x-dev",
         "windwalker/database": "4.x-dev",
         "asika/sql-splitter": "^1.0",
-        "jdorn/sql-formatter": "^1.0",
+        "jdorn/sql-formatter": "^1.2",
         "opis/closure": "4.x-dev||^4.0"
     },
     "suggest": {
