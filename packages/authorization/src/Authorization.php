@@ -9,14 +9,14 @@
 
 declare(strict_types=1);
 
-namespace Windwalker\Authorisation;
+namespace Windwalker\Authorization;
 
 /**
- * The Authorisation class.
+ * The Authorization class.
  *
  * @since  3.0
  */
-class Authorisation implements AuthorisationInterface
+class Authorization implements AuthorizationInterface
 {
     /**
      * Property policies.

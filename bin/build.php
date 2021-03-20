@@ -61,8 +61,9 @@ class Build extends Console
     protected $subtrees = [
         'attributes' => 'Attributes',
         'authentication' => 'Authentication',
-        'authorisation' => 'Authorisation',
+        'authorization' => 'Authorization',
         'cache' => 'Cache',
+        'console' => 'Console',
         'crypt' => 'Crypt',
         'data' => 'Data',
         'database' => 'Database',

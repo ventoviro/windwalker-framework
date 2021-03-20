@@ -1,16 +1,16 @@
 {
-    "name": "windwalker/authorisaction",
+    "name": "windwalker/authorization",
     "type": "windwalker-package",
-    "description": "Windwalker Authorisaction package",
+    "description": "Windwalker Authorization package",
     "keywords": [
         "windwalker",
         "framework",
-        "authorisaction",
-        "authorizaction",
+        "authorization",
+        "authorization",
         "auth",
         "user"
     ],
-    "homepage": "https://github.com/ventoviro/windwalker-authorisaction",
+    "homepage": "https://github.com/ventoviro/windwalker-authorization",
     "license": "MIT",
     "require": {
         "php": ">=8.0.0",
@@ -25,7 +25,7 @@
     "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
-            "Windwalker\\Authorisaction\\": "src/"
+            "Windwalker\\Authorization\\": "src/"
         },
         "files": [
             "src/bootstrap.php"
@@ -33,7 +33,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Windwalker\\Authorisaction\\Test\\": "test/"
+            "Windwalker\\Authorization\\Test\\": "test/"
         }
     },
     "extra": {

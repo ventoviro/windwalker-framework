@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace Windwalker\Authorisation;
+namespace Windwalker\Authorization;
 
 /**
  * Interface PolicyInterface
@@ -21,9 +21,9 @@ interface PolicyProviderInterface
     /**
      * register
      *
-     * @param  AuthorisationInterface  $authorisation
+     * @param  AuthorizationInterface  $authorization
      *
      * @return  void
      */
-    public function register(AuthorisationInterface $authorisation): void;
+    public function register(AuthorizationInterface $authorization): void;
 }

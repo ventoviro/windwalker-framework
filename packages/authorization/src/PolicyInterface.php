@@ -9,7 +9,7 @@
 
 declare(strict_types=1);
 
-namespace Windwalker\Authorisation;
+namespace Windwalker\Authorization;
 
 /**
  * The PolicyInterface class.

@@ -23,7 +23,7 @@
         "windwalker/dom": "4.x-dev",
         "windwalker/filesystem": "4.x-dev",
         "twig/twig": "^2.0",
-        "illuminate/view": "^6.0||^7.0||^8.0",
+        "illuminate/view": "^6.0||^7.0||^8.0||^9.0",
         "mustache/mustache": "^2.0",
         "league/plates": "^3.4"
     },
