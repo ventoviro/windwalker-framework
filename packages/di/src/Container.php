@@ -719,7 +719,7 @@ class Container implements ContainerInterface, IteratorAggregate, Countable, Arr
     {
         $child        = new static($this);
         $child->level = $this->level + 1;
-        $params       = clone $this->getParameters();
+        $params       = $this->getParameters()->createChild();
         $child->setParameters($params->reset());
 
         $child->setAttributesResolver(clone $this->getAttributesResolver());

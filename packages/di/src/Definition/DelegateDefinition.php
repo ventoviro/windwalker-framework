@@ -21,18 +21,18 @@ class DelegateDefinition implements DefinitionInterface
 {
     protected DefinitionInterface $definition;
 
-    protected ?Closure $handler = null;
+    protected ?Closure $factory = null;
 
     /**
      * DecoratorDefinition constructor.
      *
      * @param  DefinitionInterface  $definition
-     * @param  Closure|null         $handler
+     * @param  Closure|null         $factory
      */
-    public function __construct(DefinitionInterface $definition, ?Closure $handler = null)
+    public function __construct(DefinitionInterface $definition, ?Closure $factory = null)
     {
         $this->definition = $definition;
-        $this->handler    = $handler;
+        $this->factory    = $factory;
     }
 
     /**
@@ -44,7 +44,7 @@ class DelegateDefinition implements DefinitionInterface
      */
     public function resolve(Container $container): mixed
     {
-        $handler = $this->handler ?? fn($value, Container $container) => $value;
+        $handler = $this->factory ?? fn($value, Container $container) => $value;
 
         return $handler($this->definition->resolve($container), $container);
     }
@@ -58,6 +58,8 @@ class DelegateDefinition implements DefinitionInterface
      */
     public function set(mixed $value): void
     {
+        $this->factory = null;
+
         $this->definition->set($value);
     }
 }

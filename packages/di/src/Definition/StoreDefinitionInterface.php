@@ -22,7 +22,7 @@ interface StoreDefinitionInterface extends DefinitionInterface
 
     public function isProtected(): bool;
 
-    public function extend(Closure $closure);
+    public function extend(Closure $closure): static;
 
     public function reset(): void;
 }

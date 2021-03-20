@@ -30,6 +30,14 @@ class Parameters extends Collection
 
     protected ?Parameters $parent = null;
 
+    public function createChild(): static
+    {
+        $new = clone $this;
+        $new->parent = $this;
+
+        return $new;
+    }
+
     /**
      * @inheritDoc
      */

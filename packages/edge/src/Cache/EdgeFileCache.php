@@ -101,7 +101,11 @@ class EdgeFileCache implements EdgeCacheInterface
      */
     public function store(string $path, string $value): void
     {
-        $value = "<?php /* File: {$path} */ ?>" . $value;
+        $value = self::replaceFirst(
+            '<?php',
+            "<?php /* File: {$path} */ ",
+            $value
+        );
 
         $file = $this->getCacheFile($this->getCacheKey($path));
 
@@ -113,6 +117,14 @@ class EdgeFileCache implements EdgeCacheInterface
 
         file_put_contents($file, $value);
     }
+
+    private static function replaceFirst(string $from, string $to, string $content): string
+    {
+        $from = '/'.preg_quote($from, '/').'/';
+
+        return preg_replace($from, $to, $content, 1);
+    }
+
 
     /**
      * Remove an item from the cache by its unique key
