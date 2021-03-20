@@ -33,6 +33,10 @@ trait EventAwareTrait
      *
      * @return  EventInterface|object  The event after being passed through all listeners.
      *
+     * @psalm-template T
+     * @psalm-param T $event
+     * @psalm-return T
+     *
      * @since   2.0
      */
     public function emit(object|string $event, array $args = []): object
