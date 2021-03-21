@@ -121,4 +121,22 @@ class Parameters extends Collection
     {
         return $this->parent;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function &getIterator(): \Generator
+    {
+        foreach ($this->storage as $key => &$value) {
+            yield $key => $value;
+        }
+
+        unset($value);
+
+        if ($this->parent) {
+            foreach ($this->parent as $key => &$value) {
+                yield $key => $value;
+            }
+        }
+    }
 }

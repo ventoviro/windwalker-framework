@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Uri;
 
+use Windwalker\Utilities\Str;
+
 /**
  * The UriNormalizer class.
  */
@@ -72,13 +74,13 @@ class UriNormalizer
         return $scheme . '://' . static::normalizePath($path);
     }
 
-    public static function ensureRoot(string $path): string
+    public static function ensureRoot(string $path, string $ds = '/'): string
     {
-        return '/' . ltrim(static::cleanPath($path) . '/');
+        return Str::ensureLeft(static::cleanPath($path), $ds);
     }
 
-    public static function ensureDir(string $path): string
+    public static function ensureDir(string $path, string $ds = '/'): string
     {
-        return rtrim(static::cleanPath($path) . '/') . '/';
+        return Str::ensureRight(static::cleanPath($path), $ds);
     }
 }

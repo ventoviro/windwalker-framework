@@ -97,6 +97,7 @@ use function Windwalker\value;
  * @method Collection|Collection[]|object[] all(?string $class = null, array $args = [])
  * @method Collection loadColumn(int|string $offset = 0)
  * @method mixed result()
+ * @method int count()
  * @method StatementInterface execute(?array $params = null)
  */
 class Query implements QueryInterface, BindableInterface, \IteratorAggregate
@@ -117,7 +118,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
 
     public const TYPE_CUSTOM = 'custom';
 
-    protected ?string $type = null;
+    protected ?string $type = self::TYPE_SELECT;
 
     protected ?Clause $select = null;
 
@@ -1801,8 +1802,14 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
      *
      * @since   2.0
      */
-    public function clear($clauses = null): static
+    public function clear(...$clauses): static
     {
+        $clauses = Arr::collapse($clauses);
+
+        if (count($clauses) === 1) {
+            $clauses = array_pop($clauses);
+        }
+
         $handlers = [
             'select' => ['type'],
             'delete' => ['type'],
@@ -1907,6 +1914,10 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
             return $this->prepareStatement()->$name(...$args);
         }
 
+        if (strtolower($name) === 'count') {
+            return $this->getDbConnection()->countWith($this);
+        }
+
         throw new \BadMethodCallException(
             sprintf('Call to undefined method of: %s::%s()', static::class, $name)
         );
@@ -1927,6 +1938,11 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
 
     public function prepareStatement(): StatementInterface
     {
+        return $this->getDbConnection()->prepare($this);
+    }
+
+    private function getDbConnection(): DatabaseAdapter
+    {
         $db = $this->getEscaper()->getConnection();
 
         if (!($db instanceof AbstractDriver || $db instanceof DatabaseAdapter || $db instanceof ORM)) {
@@ -1943,6 +1959,6 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
             $db = $db->getDb();
         }
 
-        return $db->prepare($this);
+        return $db;
     }
 }

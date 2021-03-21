@@ -94,7 +94,7 @@ class ArrayObject implements AccessibleInterface
      *
      * @return  static
      */
-    protected function newInstance($data = []): ArrayObject|static
+    protected function newInstance($data = []): static
     {
         $new = clone $this;
 
@@ -113,7 +113,7 @@ class ArrayObject implements AccessibleInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function with(mixed $key, mixed $value): ArrayObject|static
+    public function with(mixed $key, mixed $value): static
     {
         $new = clone $this;
 
@@ -132,7 +132,7 @@ class ArrayObject implements AccessibleInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function withDef(mixed $key, mixed $default): ArrayObject|static
+    public function withDef(mixed $key, mixed $default): static
     {
         $new = clone $this;
 
@@ -150,7 +150,7 @@ class ArrayObject implements AccessibleInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function withRemove(mixed $key): ArrayObject|static
+    public function withRemove(mixed $key): static
     {
         $new = clone $this;
 
@@ -168,7 +168,7 @@ class ArrayObject implements AccessibleInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function withReset(array $storage = []): ArrayObject|static
+    public function withReset(array $storage = []): static
     {
         $new = clone $this;
 
@@ -212,7 +212,7 @@ class ArrayObject implements AccessibleInterface
      *
      * @since  3.5
      */
-    public function keys($search = null, ?bool $strict = null): ArrayObject|static
+    public function keys($search = null, ?bool $strict = null): static
     {
         return $this->newInstance(array_keys($this->storage, ...array_filter(func_get_args())));
     }
@@ -247,7 +247,7 @@ class ArrayObject implements AccessibleInterface
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function setColumn(mixed $name, mixed $value): ArrayObject|static
+    public function setColumn(mixed $name, mixed $value): static
     {
         return $this->newInstance()->apply(
             function (array $storage) use ($name, $value) {
@@ -263,16 +263,31 @@ class ArrayObject implements AccessibleInterface
     }
 
     /**
-     * apply
+     * Apply a callback to data and return new object.
      *
      * @param  callable  $callback
      * @param  array     $args
      *
      * @return  static
      */
-    public function apply(callable $callback, ...$args): ArrayObject|static
+    public function apply(callable $callback, ...$args): static
     {
-        return $this->newInstance($callback(TypeCast::toArray($this), ...$args));
+        return $this->newInstance($callback($this->storage, ...$args));
+    }
+
+    /**
+     * Apply a callback to data and return self.
+     *
+     * @param  callable  $callback
+     * @param  mixed     ...$args
+     *
+     * @return  static
+     */
+    public function transform(callable $callback, ...$args): static
+    {
+        $this->storage = $callback($this->storage, ...$args);
+
+        return $this;
     }
 
     /**
@@ -280,39 +295,9 @@ class ArrayObject implements AccessibleInterface
      *
      * @return  static
      */
-    public function values(): ArrayObject|static
+    public function values(): static
     {
         return $this->newInstance(array_values(TypeCast::toArray($this)));
-    }
-
-    /**
-     * pipe
-     *
-     * @param  callable  $callback
-     * @param  array     $args
-     *
-     * @return  static
-     */
-    public function pipe(callable $callback, ...$args): static
-    {
-        return $callback($this, ...$args);
-    }
-
-    /**
-     * tap
-     *
-     * @param  callable  $callback
-     * @param  mixed     ...$args
-     *
-     * @return  static
-     *
-     * @since  __DEPLOY_VERSION__
-     */
-    public function tap(callable $callback, ...$args): static
-    {
-        $callback($this, ...$args);
-
-        return $this;
     }
 
     /**

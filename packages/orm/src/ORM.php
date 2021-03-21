@@ -41,6 +41,8 @@ use Windwalker\ORM\Metadata\EntityMetadataCollection;
 use Windwalker\ORM\Strategy\Selector;
 use Windwalker\Query\Query;
 
+use function Windwalker\raw;
+
 /**
  * The ORM class.
  *
@@ -251,6 +253,7 @@ class ORM
 
     /**
      * @return FieldHydratorInterface
+     * @throws \ReflectionException
      */
     public function getEntityHydrator(): FieldHydratorInterface
     {
@@ -272,6 +275,11 @@ class ORM
         $this->hydrator = $hydrator;
 
         return $this;
+    }
+
+    public function countWith(Query|string $query): int
+    {
+        return $this->db->countWith($query);
     }
 
     public function __call(string $name, array $args = []): mixed

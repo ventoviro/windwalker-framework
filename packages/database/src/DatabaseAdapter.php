@@ -29,6 +29,8 @@ use Windwalker\ORM\ORM;
 use Windwalker\Query\Query;
 use Windwalker\Utilities\Cache\InstanceCacheTrait;
 
+use function Windwalker\raw;
+
 /**
  * The DatabaseAdapter class.
  *
@@ -274,6 +276,36 @@ class DatabaseAdapter implements EventListenableInterface, HydratorAwareInterfac
     public function transaction(callable $callback, bool $autoCommit = true, bool $enabled = true): mixed
     {
         return $this->getPlatform()->transaction($callback, $autoCommit, $enabled);
+    }
+
+    public function countWith(Query|string $query): int
+    {
+        // Use fast COUNT(*) on Query objects if there no GROUP BY or HAVING clause:
+        if ($query instanceof Query && $query->getType() === Query::TYPE_SELECT
+            && $query->getGroup() === null && $query->getHaving() === null) {
+            $query = clone $query;
+
+            $query->clear('select', 'order', 'limit')->selectRaw('COUNT(*)');
+
+            return (int) $query->result();
+        }
+
+        // Otherwise fall back to inefficient way of counting all results.
+        if ($query instanceof Query) {
+            $subQuery = clone $query;
+
+            $subQuery->clear('select', 'order', 'limit')
+                ->selectAs(raw('COUNT(*)'), 'count');
+        } else {
+            $subQuery = $query->getSql();
+        }
+
+        $query = $this->createQuery();
+
+        $query->selectRaw('COUNT(%n)', 'count')
+            ->from($subQuery, 'c');
+
+        return (int) $this->prepare($query)->result();
     }
 
     /**

@@ -43,7 +43,7 @@ class QueryTest extends TestCase
 
     /**
      * @param  array        $args
-     * @param  array        $addArgs
+     * @param  array        $asArgs
      * @param  string       $expected
      * @param  string|null  $subQueryAlias
      * @param  string|null  $modifiedSql
@@ -54,15 +54,15 @@ class QueryTest extends TestCase
      */
     public function testSelect(
         array $args,
-        ?array $addArgs,
+        ?array $asArgs,
         string $expected,
         ?string $subQueryAlias = null,
         ?string $modifiedSql = null
     ): void {
         $q = $this->instance->select(...$args);
 
-        if ($addArgs !== null) {
-            $q = $q->selectAs(...$addArgs);
+        if ($asArgs !== null) {
+            $q = $q->selectAs(...$asArgs);
         }
 
         self::assertSqlEquals($expected, (string) $q);

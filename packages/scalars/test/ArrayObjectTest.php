@@ -414,6 +414,20 @@ class ArrayObjectTest extends TestCase
         );
 
         self::assertEquals([3, 2, 1], $a->dump());
+        self::assertNotSame($a, $this->instance);
+    }
+
+
+    public function testTransform(): void
+    {
+        $a = $this->instance->transform(
+            function (array $v) {
+                return array_reverse($v);
+            }
+        );
+
+        self::assertEquals([3, 2, 1], $a->dump());
+        self::assertSame($a, $this->instance);
     }
 
     public function testImplode(): void
