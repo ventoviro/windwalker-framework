@@ -118,17 +118,32 @@ class FileObject extends \SplFileInfo
     /**
      * getRelativePathFrom
      *
-     * @param  string|\SplFileInfo  $root
+     * @param  string|\SplFileInfo|null  $root
      *
      * @return  string
      */
-    public function getRelativePathname($root = null): string
+    public function getRelativePathname(string|\SplFileInfo|null $root = null): string
+    {
+        $path = $this->getRelativePath($root);
+        $basename = $this->getBasename();
+
+        return $path . DIRECTORY_SEPARATOR . $basename;
+    }
+
+    /**
+     * getRelativePath
+     *
+     * @param  string|\SplFileInfo|null  $root
+     *
+     * @return  string
+     */
+    public function getRelativePath(string|\SplFileInfo|null $root = null): string
     {
         if ($root === null) {
             $root = $this->root;
         }
 
-        $path = Path::normalize($this->getPathname());
+        $path = Path::normalize($this->getPath());
         $root = Path::normalize(static::unwrap($root));
 
         if ((string) $root === '') {

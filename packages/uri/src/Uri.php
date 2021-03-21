@@ -149,6 +149,10 @@ class Uri implements UriInterface
         $this->query    = $parts['query'] ?? null;
         $this->fragment = $parts['fragment'] ?? null;
 
+        if ($this->path !== null) {
+            $this->path = UriNormalizer::normalizePath($this->path);
+        }
+
         // Parse the query
         if (isset($parts['query'])) {
             $this->vars = UriHelper::parseQuery($parts['query']);

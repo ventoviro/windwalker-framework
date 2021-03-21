@@ -133,7 +133,7 @@ class Path
 
         $prefix = '';
 
-        if (strpos($path, '://') !== false) {
+        if (str_contains($path, '://')) {
             $extracted = explode('://', $path, 2);
 
             if (count($extracted) === 1) {
@@ -423,5 +423,27 @@ class Path
     public static function isRelative(string $path): bool
     {
         return !static::isAbsolute($path);
+    }
+
+    /**
+     * makeRelativeFrom
+     *
+     * @param  string       $path
+     * @param  string|null  $base
+     * @param  string       $prefix
+     *
+     * @return  string
+     */
+    public static function makeRelativeFrom(string $path, ?string $base = null, string $prefix = ''): string
+    {
+        $base ??= getcwd();
+
+        $path = static::normalize($path);
+
+        if (str_starts_with($path, $base)) {
+            return $prefix . Str::removeLeft($path, $base);
+        }
+
+        return $path;
     }
 }

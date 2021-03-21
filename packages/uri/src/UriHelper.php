@@ -56,7 +56,7 @@ class UriHelper
      *
      * @param  string  $url  URL to parse
      *
-     * @return  mixed  Associative array or false if badly formed URL.
+     * @return array|bool Associative array or false if badly formed URL.
      *
      * @see     http://us3.php.net/manual/en/function.parse-url.php
      * @since   2.0

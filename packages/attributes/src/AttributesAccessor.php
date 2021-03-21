@@ -11,7 +11,10 @@ declare(strict_types=1);
 
 namespace Windwalker\Attributes;
 
+use JetBrains\PhpStorm\ArrayShape;
+use Windwalker\Filesystem\Filesystem;
 use Windwalker\Utilities\Reflection\ReflectAccessor;
+use Windwalker\Utilities\StrNormalise;
 
 /**
  * The AttributesAccessor class.
@@ -21,18 +24,26 @@ class AttributesAccessor
     public static function runAttributeIfExists(
         mixed $valueOrAttrs,
         string $attributeClass,
-        callable $handler
+        callable $handler,
+        int $options = 0
     ): int {
         $count = 0;
+        $source = $valueOrAttrs;
 
         if (!is_array($valueOrAttrs)) {
-            $valueOrAttrs = (array) AttributesAccessor::getAttributesFromAny($valueOrAttrs, $attributeClass);
+            $valueOrAttrs = (array) static::getAttributesFromAny($valueOrAttrs, $attributeClass);
         }
 
         /** @var \ReflectionAttribute $attribute */
         foreach ($valueOrAttrs as $attribute) {
-            if (strtolower($attribute->getName()) === strtolower($attributeClass)) {
-                $handler($attribute->newInstance());
+            $match = strtolower($attribute->getName()) === strtolower($attributeClass);
+
+            if (!$match && $options & \ReflectionAttribute::IS_INSTANCEOF) {
+                $match = is_subclass_of($attribute->getName(), $attributeClass);
+            }
+
+            if ($match) {
+                $handler($attribute->newInstance(), $source);
                 $count++;
             }
         }
@@ -40,12 +51,56 @@ class AttributesAccessor
         return $count;
     }
 
+    /**
+     * scanDirAndRunAttributes
+     *
+     * @param  string    $attributeClass
+     * @param  string    $dir
+     * @param  string    $namespace
+     * @param  callable  $handler
+     * @param  int       $options
+     *
+     * @return  array<string, int>
+     */
+    public static function scanDirAndRunAttributes(
+        string $attributeClass,
+        string $dir,
+        string $namespace,
+        callable $handler,
+        int $options = 0
+    ): array {
+        $files = Filesystem::files($dir, true);
+        $results = [];
+
+        foreach ($files as $file) {
+            if ($file->getExtension() !== 'php') {
+                continue;
+            }
+
+            $class = $namespace . '\\' . $file->getRelativePath() . '\\' . $file->getBasename('.php');
+            $class = StrNormalise::toClassNamespace($class);
+
+            if (class_exists($class)) {
+                $results[$class] = static::runAttributeIfExists(
+                    $class,
+                    $attributeClass,
+                    function ($attrInstance, $source) use ($file, $class, $handler) {
+                        return $handler($attrInstance, $class, $file);
+                    },
+                    $options
+                );
+            }
+        }
+
+        return $results;
+    }
+
     public static function getFirstAttribute(
         mixed $value,
         string $attributeClass,
         int $flags = 0
     ): ?\ReflectionAttribute {
-        $attrs = AttributesAccessor::getAttributesFromAny($value, $attributeClass, $flags);
+        $attrs = static::getAttributesFromAny($value, $attributeClass, $flags);
 
         return $attrs ? $attrs[0] : null;
     }
