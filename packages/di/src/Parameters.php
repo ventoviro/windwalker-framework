@@ -125,7 +125,7 @@ class Parameters extends Collection
     /**
      * @inheritDoc
      */
-    public function &getIterator(): \Generator
+    public function &getIterator(bool $includeParent = true): \Generator
     {
         foreach ($this->storage as $key => &$value) {
             yield $key => $value;
@@ -133,7 +133,7 @@ class Parameters extends Collection
 
         unset($value);
 
-        if ($this->parent) {
+        if ($this->parent && $includeParent) {
             foreach ($this->parent as $key => &$value) {
                 yield $key => $value;
             }
