@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Filesystem;
 
 use JetBrains\PhpStorm\Pure;
+use Windwalker\Utilities\Arr;
 use Windwalker\Utilities\Str;
 
 /**
@@ -426,24 +427,47 @@ class Path
     }
 
     /**
-     * makeRelativeFrom
+     * Method to find the relative path from a given path to another path based on the current working directory.
+     * If both the given paths are the same, it would resolve to a zero-length string.
+     * This method is a fork from Node.js but without case check.
      *
-     * @param  string       $path
-     * @param  string|null  $base
-     * @param  string       $prefix
+     * @see https://github.com/nodejs/node-v0.x-archive/blob/master/lib/path.js#L504-L530
+     * @see https://github.com/nodejs/node-v0.x-archive/blob/master/lib/path.js#L265-L304
+     *
+     * Path::relative('/root/path', '/root/path/images/a.jpg') => `images/a.jpg`
+     *
+     * @param  string  $from
+     * @param  string  $to
      *
      * @return  string
      */
-    public static function makeRelativeFrom(string $path, ?string $base = null, string $prefix = ''): string
+    public static function relative(string $from, string $to): string
     {
-        $base ??= getcwd();
+        $to = static::normalize($to);
+        $from = static::normalize($from);
 
-        $path = static::normalize($path);
+        $fromParts = Arr::explodeAndClear(DIRECTORY_SEPARATOR, $from);
+        $toParts = Arr::explodeAndClear(DIRECTORY_SEPARATOR, $to);
 
-        if (str_starts_with($path, $base)) {
-            return $prefix . Str::removeLeft($path, $base);
+        $length = min(count($fromParts), count($toParts));
+        $samePartsLength = $length;
+
+        for ($i = 0; $i < $length; $i++) {
+            if ($fromParts[$i] !== $toParts[$i]) {
+                $samePartsLength = $i;
+                break;
+            }
         }
 
-        return $path;
+        $outputParts = [];
+        $fromPartsLength = count($fromParts);
+
+        for ($k = $samePartsLength; $k < $fromPartsLength; $k++) {
+            $outputParts[] = '..';
+        }
+
+        $outputParts = array_merge($outputParts, array_slice($toParts, $samePartsLength));
+
+        return implode(DIRECTORY_SEPARATOR, $outputParts);
     }
 }
