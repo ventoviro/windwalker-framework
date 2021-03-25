@@ -63,6 +63,9 @@ class Container implements ContainerInterface, IteratorAggregate, Countable, Arr
      */
     protected array $aliases = [];
 
+    /**
+     * @var StoreDefinitionInterface[]
+     */
     protected array $storage = [];
 
     /**
@@ -362,6 +365,13 @@ class Container implements ContainerInterface, IteratorAggregate, Countable, Arr
         $this->builders = [];
         $this->aliases  = [];
         $this->parameters->reset();
+    }
+
+    public function clearCache(): void
+    {
+        foreach ($this->storage as $storage) {
+            $storage->reset();
+        }
     }
 
     /**

@@ -61,17 +61,22 @@ class ListenTo implements AttributeInterface
 
             $listener = $handler();
 
-            if ($this->once) {
-                $listener = disposable($listener);
-            }
-
-            $provider->on(
-                $this->event,
-                $listener,
-                $this->priority
-            );
+            $this->listen($provider, $listener);
 
             return $listener;
         };
+    }
+
+    public function listen(SubscribableListenerProviderInterface $provider, callable $listener): void
+    {
+        if ($this->once) {
+            $listener = disposable($listener);
+        }
+
+        $provider->on(
+            $this->event,
+            $listener,
+            $this->priority
+        );
     }
 }
