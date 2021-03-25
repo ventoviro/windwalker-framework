@@ -20,6 +20,7 @@ use Windwalker\Utilities\Cache\InstanceCacheTrait;
 use Windwalker\Utilities\Classes\ObjectBuilderAwareTrait;
 use Windwalker\Utilities\Iterator\PriorityQueue;
 use Windwalker\Utilities\Options\OptionAccessTrait;
+use Windwalker\Utilities\Paths\PathsAwareTrait;
 use Windwalker\Utilities\Str;
 
 /**
@@ -32,6 +33,7 @@ class CompositeRenderer implements RendererInterface, TemplateFactoryInterface, 
     use ObjectBuilderAwareTrait;
     use InstanceCacheTrait;
     use OptionAccessTrait;
+    use PathsAwareTrait;
 
     protected array $factories = [
         'edge' => [
@@ -57,13 +59,6 @@ class CompositeRenderer implements RendererInterface, TemplateFactoryInterface, 
     ];
 
     protected array $aliases = [];
-
-    /**
-     * Property paths.
-     *
-     * @var PriorityQueue
-     */
-    protected PriorityQueue $paths;
 
     /**
      * Class init.
@@ -188,89 +183,6 @@ class CompositeRenderer implements RendererInterface, TemplateFactoryInterface, 
     public function has(string $layout): bool
     {
         return $this->findFile($layout) !== null;
-    }
-
-    /**
-     * getPaths
-     *
-     * @return  PriorityQueue
-     */
-    public function getPaths(): PriorityQueue
-    {
-        return $this->paths;
-    }
-
-    /**
-     * setPaths
-     *
-     * @param  array|string|SplPriorityQueue  $paths
-     *
-     * @return static Return self to support chaining.
-     */
-    public function setPaths(array|string|SplPriorityQueue $paths): static
-    {
-        if ($paths instanceof SplPriorityQueue) {
-            $paths = new PriorityQueue($paths);
-        }
-
-        if (!$paths instanceof PriorityQueue) {
-            $priority = new PriorityQueue();
-
-            foreach ((array) $paths as $i => $path) {
-                $priority->insert(Path::normalize($path), 100 - ($i * 10));
-            }
-
-            $paths = $priority;
-        }
-
-        $this->paths = $paths;
-
-        return $this;
-    }
-
-    /**
-     * addPath
-     *
-     * @param  string   $path
-     * @param  integer  $priority
-     *
-     * @return  static
-     */
-    public function addPath(string $path, int $priority = 100): static
-    {
-        $this->paths->insert($path, $priority);
-
-        return $this;
-    }
-
-    /**
-     * clearPaths
-     *
-     * @return  static
-     */
-    public function clearPaths(): static
-    {
-        $this->setPaths([]);
-
-        return $this;
-    }
-
-    /**
-     * dumpPaths
-     *
-     * @return  array
-     */
-    public function dumpPaths(): array
-    {
-        $paths = clone $this->paths;
-
-        $return = [];
-
-        foreach ($paths as $path) {
-            $return[] = $path;
-        }
-
-        return $return;
     }
 
     public function getRenderer(string $type, array $options = []): TemplateFactoryInterface

@@ -88,7 +88,7 @@ trait ConfigRegisterTrait
     {
         $bootDeferred = [];
 
-        foreach ($config ?? [] as $provider) {
+        foreach ($config as $provider) {
             $provider = $this->resolve($provider);
 
             if ($provider instanceof ServiceProviderInterface) {

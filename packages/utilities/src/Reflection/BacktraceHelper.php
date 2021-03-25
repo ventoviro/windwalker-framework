@@ -31,10 +31,10 @@ class BacktraceHelper
 
             if ($inClass === true && !($trace['object'] ?? null) instanceof $class) {
                 return [
-                    'file' => $traces[$i - 2]['file'],
-                    'line' => $traces[$i - 2]['line'],
-                    'class' => $traces[$i - 1]['class'],
-                    'function' => $traces[$i - 1]['function'],
+                    'file' => $traces[$i - 2]['file'] ?? '',
+                    'line' => $traces[$i - 2]['line'] ?? '',
+                    'class' => $traces[$i - 1]['class'] ?? '',
+                    'function' => $traces[$i - 1]['function'] ?? '',
                 ];
             }
         }
@@ -54,10 +54,10 @@ class BacktraceHelper
 
             if ($inClass === true && !($trace['object'] ?? null) instanceof $class) {
                 return [
-                    'file' => $traces[$i - 1]['file'],
-                    'line' => $traces[$i - 1]['line'],
-                    'class' => $traces[$i]['class'],
-                    'function' => $traces[$i]['function'],
+                    'file' => $traces[$i - 1]['file'] ?? '',
+                    'line' => $traces[$i - 1]['line'] ?? '',
+                    'class' => $traces[$i]['class'] ?? '',
+                    'function' => $traces[$i]['function'] ?? '',
                 ];
             }
         }
@@ -83,7 +83,7 @@ class BacktraceHelper
         $trace['file']  ??= null;
         $trace['line']  ??= null;
 
-        foreach ($trace['args'] as $arg) {
+        foreach ((array) $trace['args'] as $arg) {
             if (is_array($arg)) {
                 $arg = 'Array';
             } elseif (is_object($arg)) {

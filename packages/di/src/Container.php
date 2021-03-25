@@ -493,7 +493,13 @@ class Container implements ContainerInterface, IteratorAggregate, Countable, Arr
             );
         }
 
+        // Do not affect parent
+        $definition = clone $definition;
+
         $definition->extend($closure);
+
+        // Keep a clone at self
+        $this->setDefinition($id, $definition);
 
         return $this;
     }

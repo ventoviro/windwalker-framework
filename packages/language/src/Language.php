@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Language;
 
+use JetBrains\PhpStorm\ArrayShape;
 use Windwalker\Data\Traits\FormatAwareTrait;
 use Windwalker\Utilities\Reflection\BacktraceHelper;
 use Windwalker\Utilities\Utf8String;
@@ -158,8 +159,10 @@ class Language implements LanguageInterface
      * @param  string|null  $locale
      * @param  bool         $fallback
      *
-     * @return  array
+     * @return  array<string>
+     * @throws \ReflectionException
      */
+    #[ArrayShape(['string', 'string'])]
     public function get(string $id, ?string $locale = null, bool $fallback = true): array
     {
         $fullId    = $this->resolveNamespace($id);

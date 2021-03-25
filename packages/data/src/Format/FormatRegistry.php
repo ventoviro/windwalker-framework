@@ -66,7 +66,7 @@ class FormatRegistry
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function parse(string $string, ?string $format = null, array $options = []): array
+    public function parse(string $string, ?string $format = null, array $options = []): mixed
     {
         $format ??= $this->defaultFormat;
 
@@ -74,7 +74,7 @@ class FormatRegistry
             ->parse($string, $options);
     }
 
-    public function dump(array $data, ?string $format = null, array $options = []): string
+    public function dump(mixed $data, ?string $format = null, array $options = []): string
     {
         $format ??= $this->defaultFormat;
 
