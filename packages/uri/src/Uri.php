@@ -513,7 +513,7 @@ class Uri implements UriInterface
      *
      * @since  3.5.2
      */
-    public function withVar(string $name, $value): Uri|static
+    public function withVar(string $name, array|string $value): Uri|static
     {
         $new = clone $this;
 

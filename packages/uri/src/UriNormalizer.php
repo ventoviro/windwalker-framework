@@ -76,11 +76,11 @@ class UriNormalizer
 
     public static function ensureRoot(string $path, string $ds = '/'): string
     {
-        return Str::ensureLeft(static::cleanPath($path), $ds);
+        return Str::ensureLeft($path, $ds);
     }
 
     public static function ensureDir(string $path, string $ds = '/'): string
     {
-        return Str::ensureRight(static::cleanPath($path), $ds);
+        return Str::ensureRight($path, $ds);
     }
 }
