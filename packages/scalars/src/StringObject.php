@@ -36,7 +36,7 @@ use Windwalker\Utilities\Utf8String;
  *
  * @method StringObject getChar(int $pos)
  * @method StringObject between(string $start, string $end, int $offset = 0)
- * @method StringObject collapseWhitespaces(string $string)
+ * @method StringObject collapseWhitespaces()
  * @method bool         contains(string $search, bool $caseSensitive = true)
  * @method bool         endsWith(string $search, bool $caseSensitive = true)
  * @method bool         startsWith(string $target, bool $caseSensitive = true)

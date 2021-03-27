@@ -24,12 +24,13 @@ class Cast implements AttributeInterface
 {
     use ORMAttributeTrait;
 
-    public const CONSTRUCTOR = 2;
-    public const HYDRATOR = 3;
+    public const NULLABLE = 1 << 0;
+    public const USE_CONSTRUCTOR = 1 << 1;
+    public const USE_HYDRATOR = 1 << 2;
 
     protected mixed $cast;
 
-    protected ?int $strategy;
+    protected int $options;
 
     /**
      * @var mixed
@@ -41,13 +42,13 @@ class Cast implements AttributeInterface
      *
      * @param  string      $cast
      * @param  mixed|null  $extract
-     * @param  int|null    $strategy
+     * @param  int         $options
      */
-    public function __construct(mixed $cast, mixed $extract = null, ?int $strategy = null)
+    public function __construct(mixed $cast, mixed $extract = null, int $options = 0)
     {
-        $this->cast     = $cast;
-        $this->strategy = $strategy;
-        $this->extract  = $extract;
+        $this->cast    = $cast;
+        $this->options = $options;
+        $this->extract = $extract;
     }
 
     /**
@@ -67,11 +68,11 @@ class Cast implements AttributeInterface
     }
 
     /**
-     * @return int|null
+     * @return int
      */
-    public function getStrategy(): ?int
+    public function getOptions(): int
     {
-        return $this->strategy;
+        return $this->options;
     }
 
     /**
@@ -90,7 +91,7 @@ class Cast implements AttributeInterface
             $colName,
             $this->getCast(),
             $this->getExtract(),
-            $this->getStrategy()
+            $this->getOptions()
         );
 
         return $handler->get();

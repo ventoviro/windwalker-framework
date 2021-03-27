@@ -50,7 +50,11 @@ class SchemaManager extends AbstractMetaManager
     {
         if (class_exists($name)) {
             /** @var TableAttr $tableAttr */
-            $tableAttr = AttributesAccessor::getFirstAttributeInstance($name, TableAttr::class);
+            $tableAttr = AttributesAccessor::getFirstAttributeInstance(
+                $name,
+                TableAttr::class,
+                \ReflectionAttribute::IS_INSTANCEOF
+            );
 
             if ($tableAttr) {
                 $name = $tableAttr->getName();

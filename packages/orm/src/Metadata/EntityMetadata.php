@@ -11,8 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Metadata;
 
-use Windwalker\Attributes\AttributesAccessor;
-use Windwalker\ORM\Attributes\{AutoIncrement, Cast, Column, EntitySetup, MapperClass, Mapping, PK, Table};
+use Windwalker\ORM\Attributes\{Column, PK, Table};
 use Windwalker\ORM\Cast\CastManager;
 use Windwalker\ORM\EntityMapper;
 use Windwalker\ORM\ORM;
@@ -87,9 +86,9 @@ class EntityMetadata
             $entity = $entity::class;
         }
 
-        $this->orm         = $orm;
-        $this->className   = $entity;
-        $this->castManager = new CastManager();
+        $this->orm             = $orm;
+        $this->className       = $entity;
+        $this->castManager     = new CastManager();
         $this->relationManager = new RelationManager($this);
 
         $this->setup();
@@ -104,7 +103,7 @@ class EntityMetadata
 
     public function setup(): static
     {
-        $ar =  $this->getORM()->getAttributesResolver();
+        $ar = $this->getORM()->getAttributesResolver();
         $ar->setOption('metadata', $this);
 
         $ref = $this->getReflector();
@@ -123,7 +122,6 @@ class EntityMetadata
         $ar->resolveObjectMembers($ref);
 
         $ar->setOption('metadata', null);
-
 
         return $this;
     }
@@ -194,13 +192,13 @@ class EntityMetadata
         string $field,
         mixed $cast,
         mixed $extract = null,
-        ?int $strategy = null
+        int $options = 0
     ): static {
         $this->getCastManager()->addCast(
             $field,
             $cast,
             $extract,
-            $strategy
+            $options
         );
 
         return $this;
@@ -344,7 +342,7 @@ class EntityMetadata
     {
         $args = [
             $this,
-            $orm = $this->getORM()
+            $orm = $this->getORM(),
         ];
 
         $mapperClass ??= $this->getMapperClass();

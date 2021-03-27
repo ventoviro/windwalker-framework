@@ -68,7 +68,7 @@ class StubMember implements EntityInterface
     protected ?RelationCollection $actions = null;
 
     #[Mapping('member_action_map')]
-    #[Cast(StubMemberActionMap::class, strategy: Cast::HYDRATOR)]
+    #[Cast(StubMemberActionMap::class, strategy: Cast::USE_HYDRATOR)]
     protected ?StubMemberActionMap $map = null;
 
     #[EntitySetup]

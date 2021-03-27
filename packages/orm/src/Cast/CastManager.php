@@ -48,8 +48,7 @@ class CastManager
      * @param  string      $field
      * @param  mixed       $cast
      * @param  mixed|null  $extract
-     *
-     * @param  int|null    $strategy
+     * @param  int         $options
      *
      * @return  static
      */
@@ -57,11 +56,11 @@ class CastManager
         string $field,
         mixed $cast,
         mixed $extract = null,
-        ?int $strategy = null
+        int $options = 0
     ): static {
         $this->castGroups[$field] ??= [];
 
-        $this->castGroups[$field][] = [$cast, $extract, $strategy];
+        $this->castGroups[$field][] = [$cast, $extract, $options];
 
         return $this;
     }
@@ -82,7 +81,7 @@ class CastManager
                 $casts = [];
 
                 foreach ($groups as $castControl) {
-                    [$cast, $extract, $hydrateStrategy] = $castControl;
+                    [$cast, $extract, $options] = $castControl;
 
                     if (!$extract) {
                         if ($cast instanceof CastInterface || is_subclass_of($cast, CastInterface::class)) {
@@ -93,8 +92,8 @@ class CastManager
                     }
 
                     $casts[] = [
-                        $this->castToCallback($cast, $hydrateStrategy, 'cast'),
-                        $this->castToCallback($extract, $hydrateStrategy, 'extract')
+                        $this->castToCallback($cast, $options, 'cast'),
+                        $this->castToCallback($extract, $options, 'extract')
                     ];
                 }
 
@@ -148,13 +147,13 @@ class CastManager
     /**
      * castToCallback
      *
-     * @param  mixed     $cast
-     * @param  int|null  $hydrateStrategy
-     * @param  string    $direction
+     * @param  mixed   $cast
+     * @param  int     $options
+     * @param  string  $direction
      *
      * @return  callable
      */
-    public function castToCallback(mixed $cast, ?int $hydrateStrategy, $direction = 'cast'): callable
+    public function castToCallback(mixed $cast, int $options, $direction = 'cast'): callable
     {
         if (is_callable($cast)) {
             return fn(mixed $value) => $cast($value);
@@ -174,14 +173,18 @@ class CastManager
                 }
 
                 // Pure class
-                return static function (mixed $value, ORM $orm) use ($hydrateStrategy, $cast) {
-                    if ($hydrateStrategy === null) {
-                        $hydrateStrategy = EntityMetadata::isEntity($cast)
-                            ? Cast::HYDRATOR
-                            : Cast::CONSTRUCTOR;
+                return static function (mixed $value, ORM $orm) use ($options, $cast) {
+                    if ($value === null && $options & Cast::NULLABLE) {
+                        return $value;
                     }
 
-                    if ($hydrateStrategy === Cast::HYDRATOR) {
+                    if (!($options & Cast::USE_HYDRATOR) && !($options & Cast::USE_CONSTRUCTOR)) {
+                        $options |= EntityMetadata::isEntity($cast)
+                            ? Cast::USE_HYDRATOR
+                            : Cast::USE_CONSTRUCTOR;
+                    }
+
+                    if ($options & Cast::USE_HYDRATOR) {
                         $object = $orm->getAttributesResolver()->createObject($cast);
 
                         $value = TypeCast::toArray($value);

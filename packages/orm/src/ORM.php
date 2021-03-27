@@ -18,6 +18,7 @@ use Windwalker\Database\Hydrator\FieldHydratorInterface;
 use Windwalker\Database\Hydrator\HydratorInterface;
 use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Cast;
+use Windwalker\ORM\Attributes\CastNullable;
 use Windwalker\ORM\Attributes\Column;
 use Windwalker\ORM\Attributes\CurrentTime;
 use Windwalker\ORM\Attributes\EntitySetup;
@@ -94,6 +95,7 @@ class ORM
 
         $ar->registerAttribute(AutoIncrement::class, \Attribute::TARGET_PROPERTY);
         $ar->registerAttribute(Cast::class, \Attribute::TARGET_PROPERTY);
+        $ar->registerAttribute(CastNullable::class, \Attribute::TARGET_PROPERTY);
         $ar->registerAttribute(Column::class, \Attribute::TARGET_PROPERTY);
         $ar->registerAttribute(Mapping::class, \Attribute::TARGET_PROPERTY);
         $ar->registerAttribute(PK::class, \Attribute::TARGET_PROPERTY);

@@ -57,7 +57,7 @@ class StubArticle
     #[Cast('array')]
     protected ?array $params = [];
 
-    #[Cast(StubCategory::class, strategy: Cast::HYDRATOR)]
+    #[Cast(StubCategory::class, strategy: Cast::USE_HYDRATOR)]
     public ?StubCategory $c = null;
 
     public static int $counter = 0;

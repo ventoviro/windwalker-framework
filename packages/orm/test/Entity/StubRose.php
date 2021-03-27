@@ -50,7 +50,7 @@ class StubRose implements EntityInterface
     protected ?RelationCollection $sakuras = null;
 
     #[Mapping('sakura_rose_map')]
-    #[Cast(StubSakuraRoseMap::class, strategy: Cast::HYDRATOR)]
+    #[Cast(StubSakuraRoseMap::class, strategy: Cast::USE_HYDRATOR)]
     protected ?StubSakuraRoseMap $map = null;
 
     /**

@@ -59,9 +59,11 @@ class ReflectAccessor
      * @throws ReflectionException
      * @since   2.0
      */
-    public static function setValue(object $object, string $propertyName, mixed $value, bool $safe = false): void
+    public static function setValue(object $object, mixed $propertyName, mixed $value, bool $safe = false): void
     {
         $refl = new ReflectionClass($object);
+
+        $propertyName = (string) $propertyName;
 
         // First check if the property is easily accessible.
         if ($refl->hasProperty($propertyName)) {

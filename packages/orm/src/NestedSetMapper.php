@@ -324,8 +324,16 @@ class NestedSetMapper extends EntityMapper
             default => $this->getMainKey(),
         };
 
+        $pk = $this->getMainKey();
+
+        if ($pk === null) {
+            throw new \LogicException(
+                'Primary key not set for entity: ' . $this->getMetadata()->getClassName()
+            );
+        }
+
         // Get the node data.
-        $row = $this->select($this->getMainKey(), 'parent_id', 'level', 'lft', 'rgt')
+        $row = $this->select($pk, 'parent_id', 'level', 'lft', 'rgt')
             ->where($k, '=', $value)
             ->limit(1)
             ->get($className ?? $this->getMetadata()->getClassName());
