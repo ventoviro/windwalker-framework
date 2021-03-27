@@ -13,6 +13,7 @@ namespace Windwalker\Filesystem;
 
 use FilesystemIterator;
 use Psr\Http\Message\StreamInterface;
+use Webmozart\Glob\Glob;
 use Webmozart\Glob\Iterator\GlobIterator;
 use Windwalker\Filesystem\Exception\FilesystemException;
 use Windwalker\Filesystem\Iterator\FilesIterator;
@@ -83,7 +84,7 @@ class Filesystem
             throw new \DomainException('Please install webmozart/glob first');
         }
 
-        return new FilesIterator(new GlobIterator($path, $flags));
+        return new FilesIterator(new GlobIterator($path, $flags), Glob::getBasePath($path));
     }
 
     /**
@@ -95,17 +96,19 @@ class Filesystem
      * @return  FilesIterator
      */
     public static function globAll(
-        array $paths,
+        string|array $paths,
         int $flags = FilesystemIterator::KEY_AS_PATHNAME | FilesystemIterator::CURRENT_AS_FILEINFO
     ): FilesIterator {
         if (!class_exists(GlobIterator::class)) {
             throw new \DomainException('Please install webmozart/glob first');
         }
 
+        $paths = (array) $paths;
+
         $iter = new \AppendIterator();
 
         foreach ($paths as $path) {
-            $iter->append(new GlobIterator($path, $flags));
+            $iter->append(new FilesIterator(new GlobIterator($path, $flags), Glob::getBasePath($path)));
         }
 
         return new FilesIterator(new UniqueIterator($iter));

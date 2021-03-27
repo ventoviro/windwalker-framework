@@ -73,14 +73,16 @@ class FileObject extends \SplFileInfo
      */
     public static function wrap(\SplFileInfo|string $file, ?string $root = null): static
     {
-        if ($file instanceof \SplFileInfo) {
-            $file = new static($file->getPathname());
-        }
-
         if ($file instanceof self) {
-            $file->root = $root;
+            if ($root !== null) {
+                $file->root = $root;
+            }
 
             return $file;
+        }
+
+        if ($file instanceof \SplFileInfo) {
+            $file = new static($file->getPathname());
         }
 
         return new static($file, $root);
@@ -143,7 +145,11 @@ class FileObject extends \SplFileInfo
             $root = $this->root;
         }
 
-        $path = Path::normalize($this->getPath());
+        if ($root === null) {
+            throw new \InvalidArgumentException('No root path provided');
+        }
+
+        $path = Path::normalize($this->getPathname());
         $root = Path::normalize(static::unwrap($root));
 
         if ((string) $root === '') {

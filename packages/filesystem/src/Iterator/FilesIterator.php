@@ -94,6 +94,19 @@ class FilesIterator extends NestedIterator
     }
 
     /**
+     * FilesIterator constructor.
+     *
+     * @param  iterable|callable  $iterator
+     * @param  string|null        $path
+     */
+    public function __construct(iterable|callable $iterator, ?string $path = null)
+    {
+        parent::__construct($iterator);
+
+        $this->path = $path;
+    }
+
+    /**
      * @inheritDoc
      *
      * @return FileObject
@@ -133,6 +146,18 @@ class FilesIterator extends NestedIterator
     public function getPath(): ?string
     {
         return $this->path;
+    }
+
+    /**
+     * @param  string|null  $path
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setPath(?string $path)
+    {
+        $this->path = $path;
+
+        return $this;
     }
 
     /**
