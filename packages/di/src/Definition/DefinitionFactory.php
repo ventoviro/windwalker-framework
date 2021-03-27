@@ -43,4 +43,33 @@ class DefinitionFactory
 
         return new ValueDefinition($value);
     }
+
+    public static function isSameClass(mixed $a, mixed $b): bool
+    {
+        $class1 = static::getClassName($a);
+        $class2 = static::getClassName($b);
+
+        return strtolower(trim($class1, '\\')) === strtolower(trim($class2, '\\'));
+    }
+
+    public static function getClassName(object $obj): mixed
+    {
+        if ($obj instanceof ObjectBuilderDefinition) {
+            return $obj->getClass();
+        }
+
+        if ($obj instanceof \Closure) {
+            return spl_object_hash($obj);
+        }
+
+        if (is_object($obj)) {
+            return $obj::class;
+        }
+
+        if (is_string($obj) || is_callable($obj)) {
+            return $obj;
+        }
+
+        throw new \InvalidArgumentException('Invalid object type, should be object or class name.');
+    }
 }

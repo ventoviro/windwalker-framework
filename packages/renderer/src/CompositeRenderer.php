@@ -338,8 +338,8 @@ class CompositeRenderer implements RendererInterface, TemplateFactoryInterface, 
 
         $handler = $builder->getBuilder();
 
-        $handler = static function (array $options) use ($callable, $handler) {
-            return $callable($handler($options), $options);
+        $handler = static function (string $className, array $options) use ($callable, $handler) {
+            return $callable($handler($className, $options), $options);
         };
 
         $builder->setBuilder($handler);
