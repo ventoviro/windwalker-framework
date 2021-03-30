@@ -353,7 +353,15 @@ class Container implements ContainerInterface, IteratorAggregate, Countable, Arr
         }
 
         if ($this->parent instanceof static) {
-            return $this->parent->getDefinition($id);
+            $parentDefinition = $this->parent->getDefinition($id);
+
+            // Store parent definition as self
+            if ($parentDefinition) {
+                $parentDefinition = clone $parentDefinition;
+
+                $this->setDefinition($id, $parentDefinition);
+                return $parentDefinition;
+            }
         }
 
         return null;
