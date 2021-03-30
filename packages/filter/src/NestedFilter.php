@@ -16,8 +16,6 @@ use Windwalker\Utilities\Arr;
 use Windwalker\Utilities\Assert\Assert;
 use Windwalker\Utilities\TypeCast;
 
-use function DI\create;
-
 /**
  * The NestedFilter class.
  */
