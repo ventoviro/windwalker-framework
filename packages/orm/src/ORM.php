@@ -15,12 +15,10 @@ use Windwalker\Attributes\AttributesAwareTrait;
 use Windwalker\Database\DatabaseAdapter;
 use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\Database\Hydrator\FieldHydratorInterface;
-use Windwalker\Database\Hydrator\HydratorInterface;
 use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Cast;
 use Windwalker\ORM\Attributes\CastNullable;
 use Windwalker\ORM\Attributes\Column;
-use Windwalker\ORM\Attributes\CurrentTime;
 use Windwalker\ORM\Attributes\EntitySetup;
 use Windwalker\ORM\Attributes\ManyToMany;
 use Windwalker\ORM\Attributes\ManyToOne;
@@ -39,10 +37,7 @@ use Windwalker\ORM\Event\BeforeUpdateWhereEvent;
 use Windwalker\ORM\Hydrator\EntityHydrator;
 use Windwalker\ORM\Metadata\EntityMetadata;
 use Windwalker\ORM\Metadata\EntityMetadataCollection;
-use Windwalker\ORM\Strategy\Selector;
 use Windwalker\Query\Query;
-
-use function Windwalker\raw;
 
 /**
  * The ORM class.
@@ -131,7 +126,7 @@ class ORM
         return $this->getEntityMetadata($entityClass)->getMapper($mapperClass);
     }
 
-    public function from(mixed $tables, ?string $alias = null): Selector
+    public function from(mixed $tables, ?string $alias = null): SelectorQuery
     {
         if (is_string($tables) && class_exists($tables)) {
             return $this->mapper($tables)->select();
@@ -140,14 +135,14 @@ class ORM
         return $this->createSelectorQuery()->from($tables, $alias);
     }
 
-    public function select(...$columns): Selector
+    public function select(...$columns): SelectorQuery
     {
         return $this->createSelectorQuery()->select(...$columns);
     }
 
-    protected function createSelectorQuery(): Selector
+    protected function createSelectorQuery(): SelectorQuery
     {
-        return new Selector($this);
+        return new SelectorQuery($this);
     }
 
     public function insert(string $table, bool $incrementField = false): Query

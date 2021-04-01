@@ -28,7 +28,6 @@ use Windwalker\ORM\Event\{AbstractSaveEvent,
     BeforeSaveEvent,
     BeforeUpdateWhereEvent};
 use Windwalker\ORM\Metadata\EntityMetadata;
-use Windwalker\ORM\Strategy\Selector;
 use Windwalker\Utilities\Arr;
 use Windwalker\Utilities\Assert\TypeAssert;
 use Windwalker\Utilities\Reflection\ReflectAccessor;
@@ -78,9 +77,9 @@ class EntityMapper implements EventAwareInterface
      * @param  mixed        $tables
      * @param  string|null  $alias
      *
-     * @return  Selector
+     * @return  SelectorQuery
      */
-    public function from(mixed $tables, ?string $alias = null): Selector
+    public function from(mixed $tables, ?string $alias = null): SelectorQuery
     {
         return $this->createSelectorQuery()->from($tables, $alias);
     }
@@ -93,26 +92,26 @@ class EntityMapper implements EventAwareInterface
      *
      * @param  mixed  ...$columns
      *
-     * @return  Selector
+     * @return  SelectorQuery
      */
-    public function select(...$columns): Selector
+    public function select(...$columns): SelectorQuery
     {
         return $this->createSelectorQuery()
             ->from($this->getMetadata()->getClassName())
             ->select(...$columns);
     }
 
-    public function insert(bool $incrementField = false): Selector
+    public function insert(bool $incrementField = false): SelectorQuery
     {
         return $this->createSelectorQuery()->insert($this->getMetadata()->getClassName(), $incrementField);
     }
 
-    public function update(?string $alias = null): Selector
+    public function update(?string $alias = null): SelectorQuery
     {
         return $this->createSelectorQuery()->update($this->getMetadata()->getClassName() ,$alias);
     }
 
-    public function delete(?string $alias = null): Selector
+    public function delete(?string $alias = null): SelectorQuery
     {
         return $this->createSelectorQuery()->delete($this->getMetadata()->getClassName(), $alias);
     }
@@ -120,11 +119,11 @@ class EntityMapper implements EventAwareInterface
     /**
      * Create Selector query.
      *
-     * @return  Selector
+     * @return  SelectorQuery
      */
-    public function createSelectorQuery(): Selector
+    public function createSelectorQuery(): SelectorQuery
     {
-        $selector = new Selector($this->getORM());
+        $selector = new SelectorQuery($this->getORM());
 
         $selector->getEventDispatcher()->addDealer($this->getEventDispatcher());
 

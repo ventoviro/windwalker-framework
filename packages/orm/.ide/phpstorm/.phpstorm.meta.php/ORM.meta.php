@@ -22,7 +22,7 @@ namespace PHPSTORM_META {
     );
 
     override(
-        \Windwalker\ORM\Strategy\Selector::get(0),
+        \Windwalker\ORM\SelectorQuery::get(0),
         map(
             [
                 '' => '@',
@@ -31,7 +31,7 @@ namespace PHPSTORM_META {
     );
 
     override(
-        \Windwalker\ORM\Strategy\Selector::all(0),
+        \Windwalker\ORM\SelectorQuery::all(0),
         map(
             [
                 '' => '@',
@@ -57,13 +57,13 @@ namespace PHPSTORM_META {
     );
 
     expectedArguments(
-        \Windwalker\ORM\Strategy\Selector::where(),
+        \Windwalker\ORM\SelectorQuery::where(),
         1,
         argumentsSet('compare_operators')
     );
 
     expectedArguments(
-        \Windwalker\ORM\Strategy\Selector::having(),
+        \Windwalker\ORM\SelectorQuery::having(),
         1,
         argumentsSet('compare_operators')
     );

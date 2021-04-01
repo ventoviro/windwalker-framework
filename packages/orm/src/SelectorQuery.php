@@ -9,9 +9,10 @@
 
 declare(strict_types=1);
 
-namespace Windwalker\ORM\Strategy;
+namespace Windwalker\ORM;
 
 use Windwalker\Data\Collection;
+use Windwalker\Database\DatabaseAdapter;
 use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\Database\Event\HydrateEvent;
 use Windwalker\Database\Event\ItemFetchedEvent;
@@ -29,18 +30,29 @@ use const Windwalker\Query\QN_IGNORE_DOTS;
 /**
  * The SelectAction class.
  *
+ * @property-read DatabaseAdapter $db
+ * @property-read ORM $orm
+ *
  * Query methods.
  */
-class Selector extends AbstractQueryStrategy
+class SelectorQuery extends Query
 {
     use EventAwareTrait;
 
     protected ?string $groupDivider = null;
 
+    /**
+     * @inheritDoc
+     */
+    public function __construct(ORM $orm, $grammar = null)
+    {
+        parent::__construct($orm, $grammar ?? $orm->getDb()->getPlatform()->getGrammar());
+
+        $this->init();
+    }
+
     protected function init(): void
     {
-        parent::init();
-
         $this->on(
             ItemFetchedEvent::class,
             function (ItemFetchedEvent $event) {
@@ -90,7 +102,7 @@ class Selector extends AbstractQueryStrategy
 
         foreach ($tables as $i => $clause) {
             $tbm = $db->getTable(
-                Query::convertClassToTable($clause->getValue(), $alias)
+                static::convertClassToTable($clause->getValue(), $alias)
             );
 
             $cols = $tbm->getColumnNames();
@@ -231,5 +243,34 @@ class Selector extends AbstractQueryStrategy
     public function prepareStatement(): StatementInterface
     {
         return $this->registerEvents(parent::prepareStatement());
+    }
+
+    public function getDb(): DatabaseAdapter
+    {
+        return $this->getORM()->getDb();
+    }
+
+    public function getORM(): ORM
+    {
+        return $this->getEscaper()->getConnection();
+    }
+
+    public function __get(string $name)
+    {
+        if ($name === 'db') {
+            return $this->getDb();
+        }
+
+        if ($name === 'orm') {
+            return $this->getORM();
+        }
+
+        throw new \InvalidArgumentException(
+            sprintf(
+                'Property is %s undefined in %s',
+                $name,
+                static::class
+            )
+        );
     }
 }

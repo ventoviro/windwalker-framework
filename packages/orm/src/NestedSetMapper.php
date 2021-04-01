@@ -24,7 +24,6 @@ use Windwalker\ORM\Nested\NestedPathableInterface;
 use Windwalker\ORM\Nested\Position;
 use Windwalker\ORM\Relation\RelationCollection;
 use Windwalker\ORM\Relation\RelationProxies;
-use Windwalker\ORM\Strategy\Selector;
 use Windwalker\Query\Query;
 use Windwalker\Utilities\Assert\ArgumentsAssert;
 use Windwalker\Utilities\Cache\InstanceCacheTrait;

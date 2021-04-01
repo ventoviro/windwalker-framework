@@ -11,13 +11,11 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Relation\Strategy;
 
-use Windwalker\Data\Collection;
 use Windwalker\ORM\Relation\Action;
 use Windwalker\ORM\Relation\RelationCollection;
 use Windwalker\ORM\Relation\RelationProxies;
-use Windwalker\ORM\Strategy\Selector;
+use Windwalker\ORM\SelectorQuery;
 use Windwalker\Utilities\Arr;
-use Windwalker\Utilities\Reflection\ReflectAccessor;
 
 /**
  * The OneToMany class.
@@ -105,7 +103,7 @@ class OneToMany extends AbstractRelation
         }
     }
 
-    protected function createCollectionQuery(array $data): Selector
+    protected function createCollectionQuery(array $data): SelectorQuery
     {
         return $this->getORM()
             ->from($this->getTargetTable())

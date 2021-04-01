@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\ORM\Relation;
 
 use Windwalker\Data\Collection;
-use Windwalker\ORM\Strategy\Selector;
+use Windwalker\ORM\SelectorQuery;
 use Windwalker\Utilities\TypeCast;
 
 /**
@@ -40,12 +40,12 @@ class RelationCollection implements \IteratorAggregate, \JsonSerializable, \Arra
     /**
      * RelationCollection constructor.
      *
-     * @param  string         $className
-     * @param  Selector|null  $query
+     * @param  string              $className
+     * @param  SelectorQuery|null  $query
      */
     public function __construct(
         protected string $className,
-        protected ?Selector $query = null
+        protected ?SelectorQuery $query = null
     ) {
         //
     }
@@ -171,9 +171,9 @@ class RelationCollection implements \IteratorAggregate, \JsonSerializable, \Arra
     }
 
     /**
-     * @return Selector|null
+     * @return SelectorQuery|null
      */
-    public function getQuery(): ?Selector
+    public function getQuery(): ?SelectorQuery
     {
         return clone $this->query;
     }

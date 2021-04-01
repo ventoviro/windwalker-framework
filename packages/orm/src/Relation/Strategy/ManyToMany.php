@@ -11,17 +11,15 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Relation\Strategy;
 
-use Windwalker\Data\Collection;
 use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\ORM\Metadata\EntityMetadata;
 use Windwalker\ORM\Relation\Action;
 use Windwalker\ORM\Relation\ForeignTable;
 use Windwalker\ORM\Relation\RelationCollection;
 use Windwalker\ORM\Relation\RelationProxies;
-use Windwalker\ORM\Strategy\Selector;
+use Windwalker\ORM\SelectorQuery;
 use Windwalker\Query\Clause\JoinClause;
 use Windwalker\Utilities\Arr;
-use Windwalker\Utilities\Assert\TypeAssert;
 use Windwalker\Utilities\Reflection\ReflectAccessor;
 
 use function Windwalker\Query\val;
@@ -177,7 +175,7 @@ class ManyToMany extends AbstractRelation
         return $results;
     }
 
-    protected function createCollectionQuery(array $data): Selector
+    protected function createCollectionQuery(array $data): SelectorQuery
     {
         $foreignMetadata = $this->getForeignMetadata();
         $alias = $foreignMetadata->getTableAlias();

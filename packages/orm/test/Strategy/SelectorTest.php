@@ -11,9 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Test\Strategy;
 
-use Windwalker\Database\Test\AbstractDatabaseTestCase;
-use Windwalker\ORM\Strategy\Selector;
-use Windwalker\ORM\ORM;
+use Windwalker\ORM\SelectorQuery;
 use Windwalker\ORM\Test\AbstractORMTestCase;
 use Windwalker\ORM\Test\Entity\StubArticle;
 use Windwalker\ORM\Test\Entity\StubCategory;
@@ -27,7 +25,7 @@ use Windwalker\ORM\Test\Entity\StubSakuraRoseMap;
  */
 class SelectorTest extends AbstractORMTestCase
 {
-    protected Selector $instance;
+    protected SelectorQuery $instance;
 
     public function testGroupByJoins()
     {
@@ -200,6 +198,6 @@ class SelectorTest extends AbstractORMTestCase
 
     protected function setUp(): void
     {
-        $this->instance = new Selector(self::$orm);
+        $this->instance = new SelectorQuery(self::$orm);
     }
 }
