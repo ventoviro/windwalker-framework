@@ -61,7 +61,7 @@ class ListField extends AbstractField
      *
      * @return DOMElement
      */
-    public function buildInput(DOMElement $input, array $options = []): string
+    public function buildInput(DOMElement $input, array $options = []): string|DOMElement
     {
         $select = h('select', $input->getAttributes(true));
 
@@ -73,7 +73,7 @@ class ListField extends AbstractField
             $select['name'] = $this->getInputName('[]');
         }
 
-        return $select->render();
+        return $select;
     }
 
     private function appendOption(DOMElement $select, DOMElement|array $option, ?string $group = null): void

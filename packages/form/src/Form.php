@@ -19,7 +19,9 @@ use IteratorAggregate;
 use OutOfBoundsException;
 use ReflectionException;
 use Windwalker\Attributes\AttributesResolver;
+use Windwalker\Attributes\AttributeType;
 use Windwalker\Form\Attributes\Fieldset;
+use Windwalker\Form\Attributes\NS;
 use Windwalker\Form\Field\AbstractField;
 use Windwalker\Form\Renderer\FormRendererInterface;
 use Windwalker\Form\Renderer\SimpleRenderer;
@@ -100,7 +102,7 @@ class Form implements IteratorAggregate
         return $this;
     }
 
-    public function add(string $name, $field, ?string $fieldset = null): AbstractField
+    public function add(string $name, mixed $field, ?string $fieldset = null): AbstractField
     {
         [$namespace, $name] = FormNormalizer::extractNamespace($name);
 
@@ -262,22 +264,22 @@ class Form implements IteratorAggregate
         return $this;
     }
 
-    public function wrap(?string $fieldset = null, ?string $group = null, ?callable $handler = null): static
+    public function wrap(?string $fieldset = null, ?string $namespace = null, ?callable $handler = null): static
     {
         if ($fieldset) {
             $this->fieldsets[$fieldset] ??= new Fieldset($fieldset, null);
             $this->fieldset             = $this->fieldsets[$fieldset];
         }
 
-        if ($group) {
-            $this->namespaceStack[] = $group;
+        if ($namespace) {
+            $this->namespaceStack[] = $namespace;
         }
 
         if ($handler) {
             $this->register($handler);
         }
 
-        if ($group) {
+        if ($namespace) {
             array_pop($this->namespaceStack);
         }
 
@@ -288,7 +290,7 @@ class Form implements IteratorAggregate
         return $this;
     }
 
-    public function register(Closure $handler): static
+    public function register(callable $handler): static
     {
         $this->attributeResolver->resolveCallable($handler)($this);
 
@@ -302,11 +304,32 @@ class Form implements IteratorAggregate
         return $this->fieldsets[$name];
     }
 
-    public function group(string $name, callable $handler): static
+    /**
+     * Wrap by namespace, use `/` to separate namespace.
+     *
+     * @param  string    $name
+     * @param  callable  $handler
+     *
+     * @return  $this
+     */
+    public function ns(string $name, callable $handler): static
     {
         $this->wrap(null, $name, $handler);
 
         return $this;
+    }
+
+    /**
+     * Alias of ns().
+     *
+     * @param  string    $name
+     * @param  callable  $handler
+     *
+     * @return  static
+     */
+    public function group(string $name, callable $handler): static
+    {
+        return $this->ns($name, $handler);
     }
 
     public function filter(array $data): array
@@ -406,7 +429,12 @@ class Form implements IteratorAggregate
 
         $this->attributeResolver->registerAttribute(
             Fieldset::class,
-            Attribute::TARGET_METHOD | Attribute::TARGET_FUNCTION
+            Attribute::TARGET_METHOD | Attribute::TARGET_FUNCTION | AttributeType::CALLABLE
+        );
+
+        $this->attributeResolver->registerAttribute(
+            NS::class,
+            Attribute::TARGET_METHOD | Attribute::TARGET_FUNCTION | AttributeType::CALLABLE
         );
     }
 

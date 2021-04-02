@@ -26,4 +26,13 @@ interface EdgeLoaderInterface
      * @return  string
      */
     public function find(string $key): string;
+
+    /**
+     * loadFile
+     *
+     * @param  string  $path
+     *
+     * @return  string
+     */
+    public function load(string $path): string;
 }

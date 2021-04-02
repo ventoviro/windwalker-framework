@@ -42,7 +42,7 @@ class TextField extends AbstractInputField
      */
     protected array $options = [];
 
-    public function buildInput(DOMElement $input, array $options = []): string
+    public function buildInput(DOMElement $input, array $options = []): string|DOMElement
     {
         $html = parent::buildInput($input, $options);
 

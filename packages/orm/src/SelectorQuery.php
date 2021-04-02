@@ -16,6 +16,7 @@ use Windwalker\Database\DatabaseAdapter;
 use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\Database\Event\HydrateEvent;
 use Windwalker\Database\Event\ItemFetchedEvent;
+use Windwalker\Event\EventAwareInterface;
 use Windwalker\Event\EventAwareTrait;
 use Windwalker\ORM\Metadata\EntityMetadata;
 use Windwalker\ORM\Relation\Strategy\ManyToMany;
@@ -272,5 +273,15 @@ class SelectorQuery extends Query
                 static::class
             )
         );
+    }
+
+    /**
+     * createSubQuery
+     *
+     * @return  static
+     */
+    public function createSubQuery(): static
+    {
+        return new static($this->orm, $this->grammar);
     }
 }

@@ -52,6 +52,8 @@ class Fieldset implements AttributeInterface
             $fieldset = $form->fieldset($this->name, $handler);
 
             $fieldset->title($this->title);
+
+            return $handler->get();
         };
     }
 

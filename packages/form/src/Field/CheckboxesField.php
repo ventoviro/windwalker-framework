@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Form\Field;
 
-use DOMElement;
 use Windwalker\Data\Collection;
+use Windwalker\DOM\DOMElement;
 use Windwalker\Form\FormNormalizer;
 
 use function Windwalker\DOM\h;
@@ -24,7 +24,7 @@ use function Windwalker\DOM\h;
  */
 class CheckboxesField extends ListField
 {
-    public function buildInput(DOMElement $input, array $options = []): string
+    public function buildInput(DOMElement $input, array $options = []): string|DOMElement
     {
         $attrs = $input->getAttributes(true);
         unset($attrs['name']);
@@ -68,7 +68,7 @@ class CheckboxesField extends ListField
             );
         }
 
-        return $input->render();
+        return $input;
     }
 
     /**

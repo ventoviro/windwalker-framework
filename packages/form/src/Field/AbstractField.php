@@ -421,12 +421,12 @@ abstract class AbstractField
         return $this;
     }
 
-    public function setDefaultValue($value): static
+    public function setDefaultValue(mixed $value): static
     {
         return $this->set('default', $value);
     }
 
-    public function getDefaultValue()
+    public function getDefaultValue(): mixed
     {
         return $this->get('default');
     }

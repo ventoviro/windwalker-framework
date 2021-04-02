@@ -35,9 +35,9 @@ trait ManageInputTrait
         return $this->getForm()->getRenderer()->renderInput($this, $input, $options);
     }
 
-    public function buildInput(DOMElement $input, array $options = []): string
+    public function buildInput(DOMElement $input, array $options = []): string|DOMElement
     {
-        return $input->render();
+        return $input;
     }
 
     public function getPreparedInput(): DOMElement
