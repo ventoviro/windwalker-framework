@@ -28,6 +28,7 @@ use Windwalker\Form\Renderer\SimpleRenderer;
 use Windwalker\Utilities\Arr;
 use Windwalker\Utilities\Classes\ObjectBuilderAwareTrait;
 use Windwalker\Utilities\Options\OptionAccessTrait;
+use Windwalker\Utilities\Symbol;
 
 /**
  * The Form class.
@@ -225,15 +226,19 @@ class Form implements IteratorAggregate
     /**
      * getFields
      *
-     * @param  string|null  $fieldset
-     * @param  string       $namespace
+     * @param  Symbol|string|null  $fieldset
+     * @param  string              $namespace
      *
-     * @return  Generator|AbstractField[]
+     * @return Generator
      */
-    public function getFields(?string $fieldset = null, string $namespace = ''): Generator
+    public function getFields(Symbol|string|null $fieldset = null, string $namespace = ''): Generator
     {
         foreach ($this->fields as $k => $field) {
-            if ($fieldset !== null && $field->getFieldset() !== $fieldset) {
+            if ($field->getFieldset() && Symbol::none()->is($fieldset)) {
+                continue;
+            }
+
+            if ($fieldset !== null && $field->getFieldset() !== $fieldset && !Symbol::none()->is($fieldset)) {
                 continue;
             }
 
@@ -389,13 +394,13 @@ class Form implements IteratorAggregate
     /**
      * renderFields
      *
-     * @param  string|null  $fieldset
-     * @param  string       $namespace
-     * @param  array        $options
+     * @param  Symbol|string|null  $fieldset
+     * @param  string              $namespace
+     * @param  array               $options
      *
      * @return string
      */
-    public function renderFields(?string $fieldset = null, string $namespace = '', array $options = []): string
+    public function renderFields(Symbol|string|null $fieldset = null, string $namespace = '', array $options = []): string
     {
         $output = '';
 
@@ -484,5 +489,13 @@ class Form implements IteratorAggregate
         $this->namespace = $namespace;
 
         return $this;
+    }
+
+    /**
+     * @return Fieldset[]
+     */
+    public function getFieldsets(): array
+    {
+        return $this->fieldsets;
     }
 }
