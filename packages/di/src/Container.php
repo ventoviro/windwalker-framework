@@ -31,6 +31,7 @@ use Windwalker\DI\Definition\StoreDefinitionInterface;
 use Windwalker\DI\Exception\DefinitionException;
 use Windwalker\DI\Exception\DefinitionNotFoundException;
 use Windwalker\DI\Wrapper\CallbackWrapper;
+use Windwalker\Utilities\Arr;
 use Windwalker\Utilities\Assert\ArgumentsAssert;
 use Windwalker\Utilities\Contract\ArrayAccessibleInterface;
 use Windwalker\Utilities\Wrapper\RawWrapper;
@@ -834,6 +835,26 @@ class Container implements ContainerInterface, IteratorAggregate, Countable, Arr
         $this->parameters = $parameters;
 
         return $this;
+    }
+
+    public function mergeParameters(?string $path, $data, bool $override = false): void
+    {
+        $params = $path === null ? $this->getParameters() : $this->getParameters()->proxy($path);
+
+        $params->transform(
+            function ($storage) use ($override, $data) {
+                if ($override) {
+                    return Arr::mergeRecursive(
+                        $data,
+                        $storage,
+                    );
+                }
+                return Arr::mergeRecursive(
+                    $storage,
+                    $data
+                );
+            }
+        );
     }
 
     /**
