@@ -64,15 +64,15 @@ trait SimpleAccessibleTrait
      * @param  mixed  $key
      * @param  mixed  $default
      *
-     * @return  static
+     * @return  mixed
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function def(mixed $key, mixed $default): static
+    public function def(mixed $key, mixed $default): mixed
     {
         $this->getStorage()[$key] = $this->getStorage()[$key] ?? $default;
 
-        return $this;
+        return $this->getStorage()[$key];
     }
 
     /**

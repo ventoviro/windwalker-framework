@@ -41,11 +41,11 @@ interface AccessorAccessibleInterface
      * @param  mixed  $key
      * @param  mixed  $default
      *
-     * @return  static
+     * @return  mixed
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function def(mixed $key, mixed $default): static;
+    public function def(mixed $key, mixed $default): mixed;
 
     /**
      * Check a key exists or not.

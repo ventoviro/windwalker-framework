@@ -180,7 +180,8 @@ class Form implements IteratorAggregate
             $value = Arr::get($data, $name, '/');
 
             if ($value !== null) {
-                $field->bindValue($value);
+
+                $field->setValue($value);
             }
         }
 
@@ -202,6 +203,9 @@ class Form implements IteratorAggregate
             $value = &Arr::get($data, $name, '/');
 
             $field->bindValue($value);
+
+            // Break reference
+            unset($value);
         }
 
         return $this;

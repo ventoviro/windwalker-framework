@@ -19,6 +19,8 @@ use Windwalker\Utilities\Accessible\SimpleAccessibleTrait;
 use Windwalker\Utilities\Contract\ArrayAccessibleInterface;
 use Windwalker\Utilities\Options\OptionAccessTrait;
 
+use Windwalker\Utilities\TypeCast;
+
 use function Windwalker\tap;
 
 /**
@@ -27,7 +29,6 @@ use function Windwalker\tap;
 class Session implements SessionInterface, ArrayAccessibleInterface
 {
     use OptionAccessTrait;
-    use SimpleAccessibleTrait;
 
     protected ?BridgeInterface $bridge = null;
 
@@ -201,17 +202,128 @@ class Session implements SessionInterface, ArrayAccessibleInterface
     }
 
     /**
-     * clear
+     * Get value from this object.
      *
-     * @return bool
+     * @param  mixed  $key
+     *
+     * @return  mixed
      */
-    public function clear(): bool
+    public function &get(mixed $key): mixed
     {
-        return $this->bridge->unset();
+        $this->start();
+
+        $ret = null;
+
+        if (!isset($this->getStorage()[$key])) {
+            return $ret;
+        }
+
+        $ret =& $this->getStorage()[$key];
+
+        return $ret;
     }
 
-    public function &all(): array
+    /**
+     * Set value to this object.
+     *
+     * @param  mixed  $key
+     * @param  mixed  $value
+     *
+     * @return  static
+     */
+    public function set(mixed $key, mixed $value): static
     {
+        $this->start();
+
+        $this->getStorage()[$key] = $value;
+
+        return $this;
+    }
+
+    /**
+     * Set value default if not exists.
+     *
+     * @param  mixed  $key
+     * @param  mixed  $default
+     *
+     * @return  mixed
+     *
+     * @since  __DEPLOY_VERSION__
+     */
+    public function def(mixed $key, mixed $default): mixed
+    {
+        $this->start();
+
+        $this->getStorage()[$key] = $this->getStorage()[$key] ?? $default;
+
+        return $this->getStorage()[$key];
+    }
+
+    /**
+     * Check a key exists or not.
+     *
+     * @param  mixed  $key
+     *
+     * @return  mixed
+     *
+     * @since  __DEPLOY_VERSION__
+     */
+    public function has(mixed $key): bool
+    {
+        $this->start();
+
+        return isset($this->getStorage()[$key]);
+    }
+
+    /**
+     * remove
+     *
+     * @param  mixed  $key
+     *
+     * @return  static
+     *
+     * @since  __DEPLOY_VERSION__
+     */
+    public function remove(mixed $key): static
+    {
+        $this->start();
+
+        if ($this->has($key)) {
+            unset($this->getStorage()[$key]);
+        }
+
+        return $this;
+    }
+
+    /**
+     * Creates a copy of storage.
+     *
+     * @param  bool  $recursive
+     *
+     * @param  bool  $onlyDumpable
+     *
+     * @return array
+     */
+    public function dump(bool $recursive = false, bool $onlyDumpable = false): array
+    {
+        $this->start();
+
+        if (!$recursive) {
+            return $this->getStorage();
+        }
+
+        return TypeCast::toArray($this->getStorage(), true, $onlyDumpable);
+    }
+
+    /**
+     * Convert the object into something JSON serializable.
+     *
+     * @return array
+     */
+    public function jsonSerialize(): array
+    {
+        $this->start();
+
         return $this->getStorage();
     }
 
@@ -219,27 +331,56 @@ class Session implements SessionInterface, ArrayAccessibleInterface
      * count
      *
      * @return  int
+     *
+     * @since  __DEPLOY_VERSION__
      */
     public function count(): int
     {
-        return \Windwalker\count($this->getStorage());
+        $this->start();
+
+        return count($this->getStorage());
     }
 
     /**
-     * jsonSerialize
-     *
-     * @return  mixed
+     * @return array|null
      */
-    public function jsonSerialize(): mixed
+    public function &getStorage(): ?array
     {
+        $this->start();
+
         return $this->bridge->getStorage();
     }
 
-    public function &getStorage(): ?array
+    public function overrideWith(string $name, mixed $override = null): mixed
     {
-        $storage =& $this->bridge->getStorage();
+        $this->start();
 
-        return $storage;
+        if ($override === null) {
+            return $this->get($name);
+        }
+
+        $this->set($name, $override);
+
+        return $override;
+    }
+
+    /**
+     * clear
+     *
+     * @return bool
+     */
+    public function clear(): bool
+    {
+        $this->start();
+
+        return $this->bridge->unset();
+    }
+
+    public function &all(): array
+    {
+        $this->start();
+
+        return $this->getStorage();
     }
 
     /**
@@ -290,7 +431,7 @@ class Session implements SessionInterface, ArrayAccessibleInterface
         return $this;
     }
 
-    protected function getOptionAndINI(string $name)
+    protected function getOptionAndINI(string $name): mixed
     {
         return $this->getOption('ini')[$name] ?? ini_get('session.' . $name);
     }
