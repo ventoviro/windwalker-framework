@@ -52,6 +52,10 @@ class Container implements ContainerInterface, IteratorAggregate, Countable, Arr
 
     public const IGNORE_ATTRIBUTES = 1 << 3;
 
+    public const MERGE_OVERRIDE = 1 << 0;
+
+    public const MERGE_RECURSIVE = 1 << 1;
+
     protected int $options = 0;
 
     protected int $level = 1;
@@ -837,22 +841,24 @@ class Container implements ContainerInterface, IteratorAggregate, Countable, Arr
         return $this;
     }
 
-    public function mergeParameters(?string $path, $data, bool $override = false): void
+    public function mergeParameters(?string $path, array $data, int $options = 0): void
     {
         $params = $path === null ? $this->getParameters() : $this->getParameters()->proxy($path);
+        $override = $options & static::MERGE_OVERRIDE;
+        $recursive = $options & static::MERGE_RECURSIVE;
+        $merge = $recursive
+            ? [Arr::class, 'mergeRecursive']
+            : 'array_merge';
+
+        $params->merge();
 
         $params->transform(
-            function ($storage) use ($override, $data) {
+            function ($storage) use ($override, $merge, $data) {
                 if ($override) {
-                    return Arr::mergeRecursive(
-                        $data,
-                        $storage,
-                    );
+                    return $merge($data, $storage);
                 }
-                return Arr::mergeRecursive(
-                    $storage,
-                    $data
-                );
+
+                return $merge($storage, $data);
             }
         );
     }
