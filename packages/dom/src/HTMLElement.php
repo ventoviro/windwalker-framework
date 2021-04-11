@@ -33,12 +33,16 @@ abstract class HTMLElement
     /**
      * buildAttributes
      *
-     * @param  array  $attributes
+     * @param  array|DOMElement  $attributes
      *
      * @return  string
      */
-    public static function buildAttributes(array $attributes): string
+    public static function buildAttributes(array|DOMElement $attributes): string
     {
+        if ($attributes instanceof DOMElement) {
+            $attributes = $attributes->getAttributes(true);
+        }
+
         return DOMElement::buildAttributes($attributes, DOMElement::HTML);
     }
 }
