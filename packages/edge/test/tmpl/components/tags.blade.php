@@ -18,5 +18,8 @@
 <div>
     Hello
 
-    <x-foo flower="sakura" :foo="$foo" @click="toGo()" />
+    <x-foo flower="sakura" :foo="$foo" @click="toGo()">
+        <x-slot name="flower">Rose</x-slot>
+        World
+    </x-foo>
 </div>

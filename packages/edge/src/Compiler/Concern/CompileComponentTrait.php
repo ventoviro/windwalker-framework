@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Edge\Compiler\Concern;
 
+use Windwalker\Edge\Component\ComponentAttributes;
 use Windwalker\Utilities\Arr;
 use Windwalker\Utilities\Str;
 
@@ -104,5 +105,19 @@ trait CompileComponentTrait
     protected function compileEndSlot(): string
     {
         return '<?php }); $__edge->endSlot(); ?>';
+    }
+
+    /**
+     * Sanitize the given component attribute value.
+     *
+     * @param  mixed  $value
+     * @return mixed
+     */
+    public static function sanitizeComponentAttribute(mixed $value): mixed
+    {
+        return is_string($value) ||
+        (is_object($value) && ! $value instanceof ComponentAttributes && method_exists($value, '__toString'))
+            ? e($value)
+            : $value;
     }
 }

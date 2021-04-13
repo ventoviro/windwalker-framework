@@ -249,7 +249,7 @@ trait ArrayLoopTrait
     public function mapRecursive(callable $callback, bool $useKeys = false, bool $loopIterable = false): static
     {
         return $this->map(
-            static function ($value, $key = null) use ($useKeys, $callback, $loopIterable) {
+            function ($value, $key = null) use ($useKeys, $callback, $loopIterable) {
                 if (is_array($value)) {
                     return Arr::mapRecursive($value, $callback, $useKeys, $loopIterable);
                 }

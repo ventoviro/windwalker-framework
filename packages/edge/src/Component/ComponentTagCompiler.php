@@ -11,10 +11,14 @@ declare(strict_types=1);
 
 namespace Windwalker\Edge\Component;
 
-use Windwalker\Edge\Compiler\EdgeCompiler;
+use Windwalker\Attributes\AttributesAccessor;
+use Windwalker\Data\Collection;
 use Windwalker\Edge\Edge;
+use Windwalker\Utilities\Attributes\Prop;
 use Windwalker\Utilities\Str;
 use Windwalker\Utilities\StrNormalise;
+
+use function Windwalker\collect;
 
 /**
  * The ComponentTagCompiler class.
@@ -69,6 +73,8 @@ class ComponentTagCompiler
         $value = $this->compileSelfClosingTags($value);
         $value = $this->compileOpeningTags($value);
         $value = $this->compileClosingTags($value);
+        show($value);
+        exit(' @Checkpoint');
 
         return $value;
     }
@@ -180,7 +186,7 @@ class ComponentTagCompiler
                 $this->boundAttributes = [];
 
                 $attributes = $this->getAttributesFromAttributeString($matches['attributes']);
-show($attributes);exit(' @Checkpoint');
+
                 return $this->componentString($matches[1], $attributes) . "\n@endComponentClass##END-COMPONENT-CLASS##";
             },
             $value
@@ -215,12 +221,12 @@ show($attributes);exit(' @Checkpoint');
         if (!class_exists($class)) {
             $parameters = [
                 'view' => "'$class'",
-                'data' => '[' . $this->attributesToString($data->all(), $escapeBound = false) . ']',
+                'data' => '[' . $this->attributesToString($data->dump(), escapeBound: false) . ']',
             ];
 
             $class = AnonymousComponent::class;
         } else {
-            $parameters = $data->all();
+            $parameters = $data->dump();
         }
 
         return "##BEGIN-COMPONENT-CLASS##@component('{$class}', '{$component}', [" . $this->attributesToString(
@@ -228,7 +234,7 @@ show($attributes);exit(' @Checkpoint');
                 false
             ) . '])
 <?php $component->withAttributes([' . $this->attributesToString(
-                $attributes->all(),
+                $attributes->dump(),
                 $class !== DynamicComponent::class
             ) . ']); ?>';
     }
@@ -254,6 +260,8 @@ show($attributes);exit(' @Checkpoint');
             );
         }
 
+        // Support find from loader path
+
         throw new \InvalidArgumentException(
             "Unable to locate a class or view for component [{$component}]."
         );
@@ -265,29 +273,38 @@ show($attributes);exit(' @Checkpoint');
      * @param  string  $class
      * @param  array   $attributes
      *
-     * @return array
+     * @return array<Collection>
      */
-    // public function partitionDataAndAttributes(string $class, array $attributes)
-    // {
-    //     // If the class doesn't exists, we'll assume it's a class-less component and
-    //     // return all of the attributes as both data and attributes since we have
-    //     // now way to partition them. The user can exclude attributes manually.
-    //     if (!class_exists($class)) {
-    //         return [collect($attributes), collect($attributes)];
-    //     }
-    //
-    //     $constructor = (new \ReflectionClass($class))->getConstructor();
-    //
-    //     $parameterNames = $constructor
-    //         ? collect($constructor->getParameters())->map->getName()->all()
-    //         : [];
-    //
-    //     return collect($attributes)->partition(
-    //         function ($value, $key) use ($parameterNames) {
-    //             return in_array(Str::camel($key), $parameterNames);
-    //         }
-    //     )->all();
-    // }
+    public function partitionDataAndAttributes(string $class, array $attributes)
+    {
+        // If the class doesn't exists, we'll assume it's a class-less component and
+        // return all of the attributes as both data and attributes since we have
+        // now way to partition them. The user can exclude attributes manually.
+        if (!class_exists($class)) {
+            return [collect($attributes), collect($attributes)];
+        }
+
+        $properties = (new \ReflectionClass($class))->getProperties();
+        $props      = [];
+
+        foreach ($properties as $property) {
+            AttributesAccessor::runAttributeIfExists(
+                $property,
+                Prop::class,
+                function ($prop, \ReflectionProperty $property) use ($attributes, &$props) {
+                    $propName = StrNormalise::toDashSeparated($property->getName());
+
+                    if ($attributes[$propName] ?? null) {
+                        $props[$property->getName()] = $attributes[$propName];
+
+                        unset($attributes[$propName]);
+                    }
+                }
+            );
+        }
+
+        return [collect($props), collect($attributes)];
+    }
 
     /**
      * Compile the closing tags within the given string.
@@ -387,7 +404,7 @@ show($attributes);exit(' @Checkpoint');
 
                 return [$attribute => $value];
             }
-        )->toArray();
+        )->dump();
     }
 
     /**
@@ -459,17 +476,19 @@ show($attributes);exit(' @Checkpoint');
      */
     protected function escapeSingleQuotesOutsideOfPhpBlocks(string $value): string
     {
-        return collect(token_get_all($value))->map(
-            function ($token) {
-                if (!is_array($token)) {
-                    return $token;
-                }
+        return (string) collect(token_get_all($value))
+            ->map(
+                function ($token) {
+                    if (!is_array($token)) {
+                        return $token;
+                    }
 
-                return $token[0] === T_INLINE_HTML
-                    ? str_replace("'", "\\'", $token[1])
-                    : $token[1];
-            }
-        )->implode('');
+                    return $token[0] === T_INLINE_HTML
+                        ? str_replace("'", "\\'", $token[1])
+                        : $token[1];
+                }
+            )
+            ->implode('');
     }
 
     /**
@@ -480,15 +499,16 @@ show($attributes);exit(' @Checkpoint');
      *
      * @return string
      */
-    protected function attributesToString(array $attributes, $escapeBound = true)
+    protected function attributesToString(array $attributes, bool $escapeBound = true): string
     {
-        return collect($attributes)
-            ->map(
-                function (string $value, string $attribute) use ($escapeBound) {
-                    return $escapeBound && isset($this->boundAttributes[$attribute]) && $value !== 'true' && !is_numeric(
-                        $value
-                    )
-                        ? "'{$attribute}' => \Illuminate\View\Compilers\BladeCompiler::sanitizeComponentAttribute({$value})"
+        return (string) collect($attributes)
+            ->walk(
+                function (string &$value, string $attribute) use ($escapeBound) {
+                    $value = $escapeBound
+                        && isset($this->boundAttributes[$attribute])
+                        && $value !== 'true'
+                        && !is_numeric($value)
+                        ? "'{$attribute}' => \Windwalker\Edge\Compiler\EdgeCompiler::sanitizeComponentAttribute({$value})"
                         : "'{$attribute}' => {$value}";
                 }
             )
