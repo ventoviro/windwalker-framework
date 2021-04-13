@@ -23,7 +23,7 @@ trait CompileEchoTrait
      *
      * @return string
      */
-    protected function compileEchos(string $value): string
+    public function compileEchos(string $value): string
     {
         foreach ($this->getEchoMethods() as $method => $length) {
             $value = $this->$method($value);

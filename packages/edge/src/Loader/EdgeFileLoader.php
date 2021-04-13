@@ -61,6 +61,19 @@ class EdgeFileLoader implements EdgeLoaderInterface
      */
     public function find(string $key): string
     {
+        $filePath = $this->doFind($key);
+
+        if ($filePath === null) {
+            $paths = implode(" |\n ", $this->paths);
+
+            throw new LayoutNotFoundException('View file not found: ' . $key . ".\n (Paths: " . $paths . ')', 13001);
+        }
+
+        return $filePath;
+    }
+
+    public function doFind(string $key): ?string
+    {
         $key = $this->normalize($key);
 
         $filePath = null;
@@ -73,12 +86,6 @@ class EdgeFileLoader implements EdgeLoaderInterface
                     break 2;
                 }
             }
-        }
-
-        if ($filePath === null) {
-            $paths = implode(" |\n ", $this->paths);
-
-            throw new LayoutNotFoundException('View file not found: ' . $key . ".\n (Paths: " . $paths . ')', 13001);
         }
 
         return $filePath;
@@ -196,5 +203,13 @@ class EdgeFileLoader implements EdgeLoaderInterface
         $this->extensions = $extensions;
 
         return $this;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function has(string $key): bool
+    {
+        return $this->doFind($key) !== null;
     }
 }

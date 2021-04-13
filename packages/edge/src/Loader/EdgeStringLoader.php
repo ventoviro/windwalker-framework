@@ -82,4 +82,12 @@ class EdgeStringLoader implements EdgeLoaderInterface
 
         return $this;
     }
+
+    /**
+     * @inheritDoc
+     */
+    public function has(string $key): bool
+    {
+        return true;
+    }
 }
