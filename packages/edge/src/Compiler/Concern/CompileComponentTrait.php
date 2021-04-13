@@ -53,8 +53,18 @@ trait CompileComponentTrait
     protected function compileSlot(string $expression): string
     {
         $expression = $this->stripParentheses($expression);
+        $expr = Arr::explodeAndClear(',', $expression);
 
-        return "<?php \$__edge->slot({$expression})(function (...\$__scope) use (\$__edge, \$__data) { ?>";
+        $slots = ';';
+
+        if (
+            count($expr) <= 1
+            && strtolower($expr[0] ?? '') !== 'null'
+        ) {
+            $slots = "(function (...\$__scope) use (\$__edge, \$__data) {";
+        }
+
+        return "<?php \$__edge->slot({$expression})$slots ?>";
     }
 
     protected function compileScope(string $expression): string

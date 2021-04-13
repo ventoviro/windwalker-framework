@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Edge\Concern;
 
+use Windwalker\Edge\Wrapper\SlotWrapper;
 use Windwalker\Utilities\Symbol;
 
 use function Windwalker\nope;
@@ -84,11 +85,11 @@ trait ManageComponentTrait
     /**
      * Get the data for the given component.
      *
-     * @param  \Closure|null  $slot
+     * @param  callable|null  $slot
      *
      * @return array
      */
-    protected function componentData(?\Closure $slot): array
+    protected function componentData(?callable $slot): array
     {
         return array_merge(
             $this->componentData[count($this->componentStack)],
@@ -101,15 +102,24 @@ trait ManageComponentTrait
      * Start the slot rendering process.
      *
      * @param  string|null  $name
+     * @param  string|null  $content
      *
      * @return \Closure
      */
-    public function slot(?string $name = null): \Closure
+    public function slot(?string $name = null, ?string $content = null): \Closure
     {
         $name ??= Symbol::root()->getValue();
 
+        if ($content !== null) {
+            $this->slots[$this->currentComponent()][$name] = new SlotWrapper(
+                function () use ($content) {
+                    echo $content;
+                }
+            );
+        }
+
         return function ($renderer) use ($name) {
-            $this->slots[$this->currentComponent()][$name] = $renderer;
+            $this->slots[$this->currentComponent()][$name] = new SlotWrapper($renderer);
             $this->slotStack[$this->currentComponent()][]  = $name;
         };
     }
