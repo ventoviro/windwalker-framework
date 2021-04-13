@@ -75,7 +75,12 @@ trait ManageComponentTrait
      */
     public function renderComponent(): string
     {
-        $slot = $this->slots[$this->currentComponent()][Symbol::root()->getValue()] ?? null;
+        $staticSlot = ob_get_clean();
+        $slot = $this->slots[$this->currentComponent()][Symbol::main()->getValue()] ?? null;
+
+        $slot ??= new SlotWrapper(function () use ($staticSlot) {
+            echo $staticSlot;
+        });
 
         $name = array_pop($this->componentStack);
 
@@ -108,7 +113,7 @@ trait ManageComponentTrait
      */
     public function slot(?string $name = null, ?string $content = null): \Closure
     {
-        $name ??= Symbol::root()->getValue();
+        $name ??= Symbol::main()->getValue();
 
         if ($content !== null) {
             $this->slots[$this->currentComponent()][$name] = new SlotWrapper(
