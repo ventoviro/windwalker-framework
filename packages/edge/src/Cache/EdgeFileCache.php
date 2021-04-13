@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Edge\Cache;
 
 use RuntimeException;
+use Windwalker\Filesystem\Path;
 
 /**
  * The FileCacheHandler class.
@@ -26,6 +27,8 @@ class EdgeFileCache implements EdgeCacheInterface
      * @var  string
      */
     protected string $path = '';
+
+    protected bool $debug = false;
 
     /**
      * FileCacheHandler constructor.
@@ -64,7 +67,17 @@ class EdgeFileCache implements EdgeCacheInterface
      */
     public function getCacheKey(string $path): string
     {
-        return md5(realpath($path));
+        $key = md5(realpath($path));
+
+        if ($this->isDebug()) {
+            $prefix = Path::getFilename($path);
+            $prefix = Path::stripExtension($prefix);
+            $prefix = Path::stripExtension($prefix);
+
+            $key = $prefix . '-' . $key . '.php';
+        }
+
+        return $key;
     }
 
     /**
@@ -154,6 +167,26 @@ class EdgeFileCache implements EdgeCacheInterface
     public function setPath(string $path): static
     {
         $this->path = $path;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDebug(): bool
+    {
+        return $this->debug;
+    }
+
+    /**
+     * @param  bool  $debug
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setDebug(bool $debug): static
+    {
+        $this->debug = $debug;
 
         return $this;
     }

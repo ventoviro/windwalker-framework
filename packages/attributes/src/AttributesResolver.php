@@ -226,7 +226,9 @@ class AttributesResolver extends ObjectBuilder
                 $property->setAccessible(true);
             }
 
-            $getter = fn() => $object ? $property->getValue($object) : $property->getDefaultValue();
+            $getter = fn() => $object && $property->isInitialized($object)
+                ? $property->getValue($object)
+                : $property->getDefaultValue();
 
             foreach ($property->getAttributes() as $attribute) {
                 if ($this->hasAttribute($attribute, \Attribute::TARGET_PROPERTY)) {

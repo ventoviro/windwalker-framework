@@ -11,6 +11,10 @@ declare(strict_types=1);
 
 namespace Windwalker\Edge\Concern;
 
+use Windwalker\Utilities\Symbol;
+
+use function Windwalker\nope;
+
 /**
  * The ComponentConcernTrait class.
  *
@@ -51,15 +55,14 @@ trait ManageComponentTrait
      *
      * @param  string  $name
      * @param  array   $data
-     * @param  array   $more
      *
      * @return void
      */
-    public function startComponent(string $name, array $data = [], array $more = [])
+    public function startComponent(string $name, array $data = [])
     {
         if (ob_start()) {
             $this->componentStack[]                         = $name;
-            $this->componentData[$this->currentComponent()] = array_merge($more, $data);
+            $this->componentData[$this->currentComponent()] = $data;
             $this->slots[$this->currentComponent()]         = [];
         }
     }
@@ -71,23 +74,25 @@ trait ManageComponentTrait
      */
     public function renderComponent(): string
     {
+        $slot = $this->slots[$this->currentComponent()][Symbol::root()->getValue()] ?? null;
+
         $name = array_pop($this->componentStack);
 
-        return $this->render($name, $this->componentData($name));
+        return $this->render($name, $this->componentData($slot));
     }
 
     /**
      * Get the data for the given component.
      *
-     * @param  string  $name
+     * @param  \Closure|null  $slot
      *
      * @return array
      */
-    protected function componentData(string $name): array
+    protected function componentData(?\Closure $slot): array
     {
         return array_merge(
             $this->componentData[count($this->componentStack)],
-            ['slot' => trim(ob_get_clean())],
+            ['slot' => $slot],
             $this->slots[count($this->componentStack)]
         );
     }
@@ -95,19 +100,18 @@ trait ManageComponentTrait
     /**
      * Start the slot rendering process.
      *
-     * @param  string       $name
-     * @param  string|null  $content
+     * @param  string|null  $name
      *
-     * @return void
+     * @return \Closure
      */
-    public function slot(string $name, ?string $content = null): void
+    public function slot(?string $name = null): \Closure
     {
-        if ($content !== null) {
-            $this->slots[$this->currentComponent()][$name] = $content;
-        } elseif (ob_start()) {
-            $this->slots[$this->currentComponent()][$name] = '';
+        $name ??= Symbol::root()->getValue();
+
+        return function ($renderer) use ($name) {
+            $this->slots[$this->currentComponent()][$name] = $renderer;
             $this->slotStack[$this->currentComponent()][]  = $name;
-        }
+        };
     }
 
     /**
@@ -118,10 +122,10 @@ trait ManageComponentTrait
     public function endSlot(): void
     {
         end($this->componentStack);
-        $currentSlot                                          = array_pop(
+
+        $currentSlot = array_pop(
             $this->slotStack[$this->currentComponent()]
         );
-        $this->slots[$this->currentComponent()][$currentSlot] = trim(ob_get_clean());
     }
 
     /**

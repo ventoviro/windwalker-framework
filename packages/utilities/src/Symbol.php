@@ -14,6 +14,8 @@ namespace Windwalker\Utilities;
 /**
  * The Symbol class.
  *
+ * @method static self main()
+ * @method static self root()
  * @method static self empty()
  * @method static self full()
  * @method static self none()

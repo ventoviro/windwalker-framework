@@ -40,7 +40,13 @@ class ReflectAccessor
         foreach ($properties as $property) {
             $property->setAccessible(true);
 
-            $values[$property->getName()] = $property->getValue($object);
+            $inited = is_object($object)
+                ? $property->isInitialized($object)
+                : $property->isInitialized();
+
+            $value = $inited ? $property->getValue($object) : null;
+
+            $values[$property->getName()] = $value;
         }
 
         return $values;

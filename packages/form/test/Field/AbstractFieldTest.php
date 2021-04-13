@@ -425,7 +425,7 @@ HTML;
     public function testGetAndSetValue()
     {
         // Test default value
-        $this->instance->setDefaultValue('joo');
+        $this->instance->defaultValue('joo');
 
         self::assertEquals('joo', $this->instance->getValue());
 

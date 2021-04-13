@@ -59,6 +59,17 @@ interface AccessorAccessibleInterface
     public function has(mixed $key): bool;
 
     /**
+     * remove
+     *
+     * @param  mixed  $key
+     *
+     * @return  static
+     *
+     * @since  __DEPLOY_VERSION__
+     */
+    public function remove(mixed $key): static;
+
+    /**
      * Creates a copy of storage.
      *
      * @param  bool  $recursive

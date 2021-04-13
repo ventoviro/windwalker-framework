@@ -374,6 +374,13 @@ abstract class AbstractField
         return $this;
     }
 
+    /**
+     * bindValue
+     *
+     * @param mixed $value
+     *
+     * @return  $this
+     */
     public function bindValue(&$value): static
     {
         $this->value = &$value;
@@ -421,7 +428,7 @@ abstract class AbstractField
         return $this;
     }
 
-    public function setDefaultValue(mixed $value): static
+    public function defaultValue(mixed $value): static
     {
         return $this->set('default', $value);
     }
@@ -486,13 +493,13 @@ abstract class AbstractField
     /**
      * Escape html string.
      *
-     * @param  string  $text
+     * @param  string|null  $text
      *
      * @return  string
      *
      * @since  2.1.9
      */
-    public function escape(?string $text): string
+    public function escape(mixed $text): string
     {
         return htmlspecialchars((string) $text, ENT_COMPAT, 'UTF-8');
     }

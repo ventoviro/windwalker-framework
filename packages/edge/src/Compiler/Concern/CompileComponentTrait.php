@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace Windwalker\Edge\Compiler\Concern;
 
+use Windwalker\Utilities\Arr;
+use Windwalker\Utilities\Str;
+
 /**
  * The CompileComponentTrait class.
  *
@@ -49,7 +52,38 @@ trait CompileComponentTrait
      */
     protected function compileSlot(string $expression): string
     {
-        return "<?php \$__edge->slot{$expression}; ?>";
+        $expression = $this->stripParentheses($expression);
+
+        return "<?php \$__edge->slot({$expression})(function (...\$__scope) use (\$__edge, \$__data) { ?>";
+    }
+
+    protected function compileScope(string $expression): string
+    {
+        $expression = $this->stripParentheses($expression);
+
+        $expr = Arr::explodeAndClear(',', $expression);
+
+        $extract = '';
+
+        // Use: @scope(['foo' => $foo])
+        if (count($expr) === 1 && str_starts_with($expr[0], '[')) {
+            $extract = "{$expr[0]} = \$__scope; ";
+        }
+
+        // Use: @scope($foo, $bar)
+        if (count($expr) > 0) {
+            $destruct = [];
+
+            foreach ($expr as $var) {
+                $varName = Str::removeLeft($var, '$');
+
+                $destruct[] = "'$varName' => $var";
+            }
+
+            $extract = '[' . implode(', ', $destruct) . '] = $__scope; ';
+        }
+
+        return "<?php $extract ?>";
     }
 
     /**
@@ -59,6 +93,6 @@ trait CompileComponentTrait
      */
     protected function compileEndSlot(): string
     {
-        return '<?php $__edge->endSlot(); ?>';
+        return '<?php }); $__edge->endSlot(); ?>';
     }
 }

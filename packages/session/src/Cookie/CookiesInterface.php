@@ -23,4 +23,8 @@ interface CookiesInterface
     public function set(string $name, string $value): bool;
 
     public function get(string $name): ?string;
+
+    public function remove(string $name): bool;
+
+    public function getStorage(): array;
 }

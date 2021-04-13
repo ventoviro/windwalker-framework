@@ -477,8 +477,8 @@ class Language implements LanguageInterface
      */
     public function extract(string $namespace): static
     {
-        $lang = new static($this->getLocale(), $this->getFallback(), $namespace);
-
+        $lang = clone $this;
+        $lang->setNamespace($namespace);
         $lang->setParent($this);
 
         return $lang;

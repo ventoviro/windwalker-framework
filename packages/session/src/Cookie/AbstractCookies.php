@@ -180,8 +180,6 @@ abstract class AbstractCookies implements CookiesInterface
         return $this;
     }
 
-    abstract public function getStorage(): array;
-
     public function getCookieHeaders(): array
     {
         $headers = [];

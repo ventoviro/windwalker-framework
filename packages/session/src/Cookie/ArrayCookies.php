@@ -65,7 +65,7 @@ class ArrayCookies extends AbstractCookies
 
     public function remove(string $name): bool
     {
-        $this->storage[$name] = '';
+        unset($this->storage[$name]);
 
         return true;
     }

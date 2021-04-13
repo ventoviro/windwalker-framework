@@ -502,4 +502,9 @@ class Form implements IteratorAggregate
     {
         return $this->fieldsets;
     }
+
+    public function getFieldset(string $name): ?Fieldset
+    {
+        return $this->fieldsets[$name] ?? null;
+    }
 }
