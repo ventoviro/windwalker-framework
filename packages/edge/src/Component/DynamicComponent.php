@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Edge\Component;
 
+use Windwalker\Edge\Edge;
+use Windwalker\Utilities\Attributes\Prop;
 use Windwalker\Utilities\StrNormalise;
 
 /**
@@ -23,14 +25,13 @@ class DynamicComponent extends AbstractComponent
      *
      * @var string
      */
+    #[Prop]
     public string $is = '';
 
-    /**
-     * The component tag compiler instance.
-     *
-     * @var ?ComponentTagCompiler
-     */
-    protected static ?ComponentTagCompiler $compiler = null;
+    #[Prop]
+    public Edge $edge;
+
+    protected ?ComponentTagCompiler $compiler = null;
 
     /**
      * The cached component classes.
@@ -40,18 +41,6 @@ class DynamicComponent extends AbstractComponent
     protected static array $componentClasses = [];
 
     /**
-     * Create a new component instance.
-     *
-     * @param  string  $is
-     *
-     * @return void
-     */
-    public function __construct(string $is)
-    {
-        $this->is = $is;
-    }
-
-    /**
      * Get the view / contents that represent the component.
      *
      * @return \Closure|string
@@ -59,15 +48,15 @@ class DynamicComponent extends AbstractComponent
     public function render(): \Closure|string
     {
         $template = <<<'EOF'
-<?php extract(collect($attributes->getAttributes())->mapWithKeys(function ($value, $key) { return [Windwalker\Utilities\StrNormalise::toCamelCase(str_replace([':', '.'], ' ', $key)) => $value]; })->all(), EXTR_SKIP); ?>
+<?php extract(\Windwalker\collect($attributes->getAttributes())->mapWithKeys(function ($value, $key) { return [Windwalker\Utilities\StrNormalise::toCamelCase(str_replace([':', '.'], ' ', $key)) => $value]; })->dump(), EXTR_SKIP); ?>
 {{ props }}
 <x-{{ is }} {{ bindings }} {{ attributes }}>
 {{ slots }}
 {{ defaultSlot }}
-</x-{{ component }}>
+</x-{{ is }}>
 EOF;
 
-        return function ($data) use ($template) {
+        return function ($edge, $data) use ($template) {
             $bindings = $this->bindings($class = $this->classForComponent());
 
             return str_replace(
@@ -84,7 +73,7 @@ EOF;
                     $this->compileProps($bindings),
                     $this->compileBindings($bindings),
                     class_exists($class) ? '{{ $attributes }}' : '',
-                    $this->compileSlots($data['__laravel_slots']),
+                    $this->compileSlots($data['__edge_slots']),
                     '{{ $slot ?? "" }}',
                 ],
                 $template
@@ -111,7 +100,8 @@ EOF;
                     function ($dataKey) {
                         return StrNormalise::toCamelCase($dataKey);
                     }
-                )->all()
+                )
+                    ->dump()
             ) . '\'])';
     }
 
@@ -191,6 +181,30 @@ EOF;
      */
     protected function compiler()
     {
-        return static::$compiler ??= new ComponentTagCompiler();
+        return $this->compiler ??= $this->createCompiler();
+    }
+
+    protected function createCompiler(): ComponentTagCompiler
+    {
+        $extension = $this->edge->getExtension('edge-component');
+
+        if (!$extension) {
+            foreach ($this->edge->getExtensions() as $extension) {
+                if ($extension instanceof ComponentExtension) {
+                    break;
+                }
+            }
+        }
+
+        if (!$extension) {
+            throw new \LogicException(
+                sprintf(
+                    'Extension: %s not found.',
+                    ComponentExtension::class
+                )
+            );
+        }
+
+        return new ComponentTagCompiler($this->edge, $extension->getComponents());
     }
 }

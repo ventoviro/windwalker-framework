@@ -83,7 +83,7 @@ trait CompileComponentTrait
             "\n",
             [
                 '<?php if (isset($component)) { $__componentOriginal' . $hash . ' = $component; } ?>',
-                '<?php $component = $__edge->make(' . $component . ', ...' . ($data ?: '[]') . '); ?>',
+                '<?php $component = $__edge->make(' . $component . ', ' . ($data ?: '[]') . '); ?>',
                 '<?php $component->withName(' . $name . '); ?>',
                 '<?php if ($component->shouldRender()): ?>',
                 '<?php $__edge->startComponent($component->resolveView(), $component->data()); ?>',

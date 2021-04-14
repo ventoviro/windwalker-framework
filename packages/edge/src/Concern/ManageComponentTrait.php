@@ -14,8 +14,6 @@ namespace Windwalker\Edge\Concern;
 use Windwalker\Edge\Wrapper\SlotWrapper;
 use Windwalker\Utilities\Symbol;
 
-use function Windwalker\nope;
-
 /**
  * The ComponentConcernTrait class.
  *
@@ -76,11 +74,13 @@ trait ManageComponentTrait
     public function renderComponent(): string
     {
         $staticSlot = ob_get_clean();
-        $slot = $this->slots[$this->currentComponent()][Symbol::main()->getValue()] ?? null;
+        $slot       = $this->slots[$this->currentComponent()][Symbol::main()->getValue()] ?? null;
 
-        $slot ??= new SlotWrapper(function () use ($staticSlot) {
-            echo $staticSlot;
-        });
+        $slot ??= new SlotWrapper(
+            function () use ($staticSlot) {
+                echo $staticSlot;
+            }
+        );
 
         $view = array_pop($this->componentStack);
 
@@ -96,10 +96,18 @@ trait ManageComponentTrait
      */
     protected function componentData(?callable $slot): array
     {
+        $slots = array_merge(
+            [
+                '__default' => $slot,
+            ],
+            $this->slots[count($this->componentStack)]
+        );
+
         return array_merge(
             $this->componentData[count($this->componentStack)],
             ['slot' => $slot],
-            $this->slots[count($this->componentStack)]
+            $this->slots[count($this->componentStack)],
+            ['__edge_slots' => $slots]
         );
     }
 

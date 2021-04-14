@@ -18,7 +18,10 @@ use Windwalker\Utilities\Attributes\Prop;
 use Windwalker\Utilities\Str;
 use Windwalker\Utilities\StrNormalise;
 
+use Windwalker\Utilities\Wrapper\RawWrapper;
+
 use function Windwalker\collect;
+use function Windwalker\raw;
 
 /**
  * The ComponentTagCompiler class.
@@ -223,6 +226,10 @@ class ComponentTagCompiler
             ];
 
             $class = AnonymousComponent::class;
+        } elseif (is_a($class, DynamicComponent::class, true)) {
+            $data['edge'] = raw('$__edge');
+
+            $parameters = $data->dump();
         } else {
             $parameters = $data->dump();
         }
@@ -297,8 +304,8 @@ class ComponentTagCompiler
             AttributesAccessor::runAttributeIfExists(
                 $property,
                 Prop::class,
-                function ($prop, \ReflectionProperty $property) use ($attributes, &$props) {
-                    $propName = StrNormalise::toDashSeparated($property->getName());
+                function ($prop, \ReflectionProperty $property) use (&$attributes, &$props) {
+                    $propName = StrNormalise::toKebabCase($property->getName());
 
                     if ($attributes[$propName] ?? null) {
                         $props[$property->getName()] = $attributes[$propName];
@@ -510,6 +517,11 @@ class ComponentTagCompiler
         return (string) collect($attributes)
             ->walk(
                 function (string &$value, string $attribute) use ($escapeBound) {
+                    if ($value instanceof RawWrapper) {
+                        $value = $value();
+                        return;
+                    }
+
                     $value = $escapeBound
                         && isset($this->boundAttributes[$attribute])
                         && $value !== 'true'

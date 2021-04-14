@@ -30,7 +30,9 @@ use Windwalker\Edge\Extension\ParsersExtensionInterface;
 use Windwalker\Edge\Loader\EdgeLoaderInterface;
 use Windwalker\Edge\Loader\EdgeStringLoader;
 use Windwalker\Utilities\Arr;
+use Windwalker\Utilities\Assert\Assert;
 use Windwalker\Utilities\Classes\ObjectBuilderAwareTrait;
+use Windwalker\Utilities\Reflection\ReflectAccessor;
 use Windwalker\Utilities\Wrapper\RawWrapper;
 
 /**
@@ -213,7 +215,7 @@ class Edge
             extract($__data, EXTR_OVERWRITE);
 
             if ($__path instanceof Closure) {
-                eval(' ?>' . $this->compile($__path($this)) . '<?php ');
+                eval(' ?>' . $this->compile($__path($this, $__data)) . '<?php ');
                 return;
             }
 
@@ -228,17 +230,20 @@ class Edge
     /**
      * wrapException
      *
-     * @param  Throwable  $e
-     * @param  string     $path
-     * @param  string     $layout
+     * @param  Throwable       $e
+     * @param  string|Closure  $path
+     * @param  string|Closure  $layout
      *
      * @return  void
      *
      * @throws EdgeException
      */
-    protected function wrapException(Throwable $e, string $path, string $layout): void
+    protected function wrapException(Throwable $e, string|Closure $path, string|Closure $layout): void
     {
         $msg = $e->getMessage();
+
+        $layout = $layout instanceof Closure ? Assert::describeValue($layout) : $layout;
+        $path = $path instanceof Closure ? Assert::describeValue($path) : $path;
 
         $msg .= sprintf("\n\n| View layout: %s (%s)", $path, $layout);
 
@@ -246,7 +251,7 @@ class Edge
 
         if ($cache instanceof EdgeFileCache) {
             if (str_starts_with(realpath($cache->getPath()), $e->getFile())) {
-                throw new EdgeException($msg, $e->getCode(), $path, $e->getLine());
+                throw new EdgeException($msg, $e->getCode(), $path, $e->getLine(), $e);
             }
         }
 
@@ -647,8 +652,14 @@ class Edge
         return $this;
     }
 
-    public function make(string $class, ...$args): object
+    public function make(string $class, array $props = []): object
     {
-        return $this->getObjectBuilder()->createObject($class, ...$args);
+        $object = $this->getObjectBuilder()->createObject($class);
+
+        foreach ($props as $key => $value) {
+            ReflectAccessor::setValue($object, $key, $value);
+        }
+
+        return $object;
     }
 }

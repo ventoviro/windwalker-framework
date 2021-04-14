@@ -11,21 +11,18 @@ declare(strict_types=1);
 
 namespace Windwalker\Edge\Component;
 
+use Windwalker\Utilities\Attributes\Prop;
+
 /**
  * The AnonymousComponent class.
  */
 class AnonymousComponent extends AbstractComponent
 {
-    /**
-     * AnonymousComponent constructor.
-     *
-     * @param  string  $view
-     * @param  array   $data
-     */
-    public function __construct(public string $view, public array $data)
-    {
+    #[Prop]
+    public string $view = '';
 
-    }
+    #[Prop]
+    public array $data = [];
 
     /**
      * @inheritDoc

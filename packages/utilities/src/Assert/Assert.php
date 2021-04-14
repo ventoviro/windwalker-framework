@@ -119,6 +119,14 @@ class Assert
             return 'BOOL (FALSE)';
         }
 
+        if ($value instanceof \Closure) {
+            $ref = new \ReflectionFunction($value);
+            $classRef = $ref->getClosureScopeClass();
+            $line = $ref->getStartLine() . ':' . $ref->getEndLine();
+
+            return $classRef->getName() . "::{Closure} ($line)";
+        }
+
         if (is_object($value)) {
             return get_class($value);
         }

@@ -76,6 +76,24 @@ class ComponentTest extends TestCase
     {
         $v = $this->instance->render('components.tags');
 
-        show($v);
+        self::assertDomStringEqualsDomString(
+<<<HTML
+<div>
+    <h3>Class Component</h3>
+    Foo Hello World
+
+    <h3>Anonymous Component</h3>
+    <div id="foo" class="alert alert-TTT" flower="sakura" x-data foo="Foo Attr" @click="toGo()">
+        Foo Component: TTT - Message: unknown message
+
+        World
+    </div>
+
+    <h3>Dynamic Component</h3>
+    Foo Hello YOO
+</div>
+HTML,
+            $v
+        );
     }
 }

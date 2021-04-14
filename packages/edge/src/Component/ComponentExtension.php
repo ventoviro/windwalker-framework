@@ -28,6 +28,7 @@ class ComponentExtension implements EdgeExtensionInterface, ParsersExtensionInte
      */
     public function __construct(protected Edge $edge, protected array $components = [])
     {
+        $this->registerComponent('dynamic-component', DynamicComponent::class);
     }
 
     /**
