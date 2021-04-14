@@ -435,17 +435,17 @@ abstract class Arr
     /**
      * find
      *
-     * @param  array     $data
-     * @param  callable  $callback
-     * @param  bool      $keepKey
-     * @param  int       $offset
-     * @param  int       $limit
+     * @param  array          $data
+     * @param  callable|null  $callback
+     * @param  bool           $keepKey
+     * @param  int|null       $offset
+     * @param  int|null       $limit
      *
      * @return array
      */
     public static function find(
         array $data,
-        callable $callback = null,
+        ?callable $callback = null,
         bool $keepKey = false,
         ?int $offset = null,
         ?int $limit = null
@@ -454,7 +454,7 @@ abstract class Arr
         $i       = 0;
         $c       = 0;
 
-        $callback = $callback ?? 'is_null';
+        $callback ??= 'is_null';
 
         foreach ($data as $key => $value) {
             // If use global function, send only value as argument.

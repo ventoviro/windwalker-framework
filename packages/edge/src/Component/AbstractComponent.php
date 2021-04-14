@@ -15,6 +15,8 @@ use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
 
+use function Windwalker\collect;
+
 /**
  * The AbstractComponent class.
  */
@@ -142,7 +144,7 @@ abstract class AbstractComponent
                     function (ReflectionProperty $property) {
                         return $property->getName();
                     }
-                )->all();
+                )->dump();
         }
 
         $values = [];

@@ -15,6 +15,8 @@ use Windwalker\Edge\Edge;
 use Windwalker\Utilities\Attributes\Prop;
 use Windwalker\Utilities\StrNormalise;
 
+use function Windwalker\collect;
+
 /**
  * The DynamicComponent class.
  */
@@ -114,7 +116,7 @@ EOF;
      */
     protected function compileBindings(array $bindings): string
     {
-        return collect($bindings)
+        return (string) collect($bindings)
             ->map(
                 function ($key) {
                     return ':' . $key . '="$' . StrNormalise::toCamelCase(str_replace([':', '.'], ' ', $key)) . '"';
@@ -132,10 +134,10 @@ EOF;
      */
     protected function compileSlots(array $slots): string
     {
-        return collect($slots)
-            ->map(
-                function ($slot, $name) {
-                    return $name === '__default' ? null : '<x-slot name="' . $name . '">{{ $' . $name . ' }}</x-slot>';
+        return (string) collect($slots)
+            ->walk(
+                function (&$slot, $name) {
+                    $slot = $name === '__default' ? null : '<x-slot name="' . $name . '">{{ $' . $name . ' }}</x-slot>';
                 }
             )
             ->filter()

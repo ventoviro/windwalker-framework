@@ -116,14 +116,14 @@ trait ArrayLoopTrait
     /**
      * find
      *
-     * @param  callable  $callback
-     * @param  bool      $keepKey
-     * @param  int       $offset
-     * @param  int       $limit
+     * @param  callable|null  $callback
+     * @param  bool           $keepKey
+     * @param  null           $offset
+     * @param  null           $limit
      *
      * @return static
      */
-    public function find(callable $callback, $keepKey = false, $offset = null, $limit = null): static
+    public function find(?callable $callback, $keepKey = false, $offset = null, $limit = null): static
     {
         return $this->newInstance(Arr::find($this->storage, $callback, $keepKey, $offset, $limit));
     }

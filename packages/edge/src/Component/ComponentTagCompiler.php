@@ -258,8 +258,15 @@ class ComponentTagCompiler
         $loader = $this->edge->getLoader();
 
         if (isset($this->components[$component])) {
-            if (class_exists($alias = $this->components[$component])) {
-                return $alias;
+            $class = $this->components[$component];
+
+            if (class_exists($class)) {
+                return $class;
+            }
+
+            // Component Alias
+            if ($loader->has($class)) {
+                return $class;
             }
 
             if ($loader->has($component)) {
@@ -267,7 +274,7 @@ class ComponentTagCompiler
             }
 
             throw new \InvalidArgumentException(
-                "Unable to locate class or view [{$alias}] for component [{$component}]."
+                "Unable to locate class or view [{$class}] for component [{$component}]."
             );
         }
 

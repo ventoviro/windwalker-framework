@@ -215,7 +215,7 @@ class Edge
             extract($__data, EXTR_OVERWRITE);
 
             if ($__path instanceof Closure) {
-                eval(' ?>' . $this->compile($__path($this, $__data)) . '<?php ');
+                eval(' ?>' . $__edge->compile($__path($this, $__data)) . '<?php ');
                 return;
             }
 
