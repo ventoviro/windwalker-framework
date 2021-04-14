@@ -11,11 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Edge\Component;
 
-use Illuminate\Support\Arr;
-use Illuminate\Support\HtmlString;
-use Illuminate\Support\Str;
-use Illuminate\View\AppendableAttributeValue;
-use Illuminate\View\ComponentAttributeBag;
+use Windwalker\Utilities\Arr;
+use Windwalker\Utilities\StrNormalise;
 
 /**
  * The ComponentAttributes class.
@@ -27,12 +24,13 @@ class ComponentAttributes implements \ArrayAccess, \IteratorAggregate
      *
      * @var array
      */
-    protected $attributes = [];
+    protected array $attributes = [];
 
     /**
      * Create a new component attribute bag instance.
      *
      * @param  array  $attributes
+     *
      * @return void
      */
     public function __construct(array $attributes = [])
@@ -44,9 +42,10 @@ class ComponentAttributes implements \ArrayAccess, \IteratorAggregate
      * Get the first attribute's value.
      *
      * @param  mixed  $default
+     *
      * @return mixed
      */
-    public function first($default = null)
+    public function first(mixed $default = null): mixed
     {
         return $this->getIterator()->current() ?? value($default);
     }
@@ -55,10 +54,11 @@ class ComponentAttributes implements \ArrayAccess, \IteratorAggregate
      * Get a given attribute from the attribute array.
      *
      * @param  string  $key
-     * @param  mixed  $default
+     * @param  mixed   $default
+     *
      * @return mixed
      */
-    public function get($key, $default = null)
+    public function get(string $key, mixed $default = null): mixed
     {
         return $this->attributes[$key] ?? value($default);
     }
@@ -67,9 +67,10 @@ class ComponentAttributes implements \ArrayAccess, \IteratorAggregate
      * Determine if a given attribute exists in the attribute array.
      *
      * @param  string  $key
+     *
      * @return bool
      */
-    public function has($key)
+    public function has(string $key): bool
     {
         return array_key_exists($key, $this->attributes);
     }
@@ -78,14 +79,15 @@ class ComponentAttributes implements \ArrayAccess, \IteratorAggregate
      * Only include the given attribute from the attribute array.
      *
      * @param  mixed  $keys
+     *
      * @return static
      */
-    public function only($keys)
+    public function only(mixed $keys): static
     {
         if (is_null($keys)) {
             $values = $this->attributes;
         } else {
-            $keys = Arr::wrap($keys);
+            $keys = (array) $keys;
 
             $values = Arr::only($this->attributes, $keys);
         }
@@ -97,14 +99,15 @@ class ComponentAttributes implements \ArrayAccess, \IteratorAggregate
      * Exclude the given attribute from the attribute array.
      *
      * @param  mixed|array  $keys
+     *
      * @return static
      */
-    public function except($keys)
+    public function except(mixed $keys): static
     {
         if (is_null($keys)) {
             $values = $this->attributes;
         } else {
-            $keys = Arr::wrap($keys);
+            $keys = (array) $keys;
 
             $values = Arr::except($this->attributes, $keys);
         }
@@ -116,9 +119,10 @@ class ComponentAttributes implements \ArrayAccess, \IteratorAggregate
      * Filter the attributes, returning a bag of attributes that pass the filter.
      *
      * @param  callable  $callback
+     *
      * @return static
      */
-    public function filter($callback)
+    public function filter(callable $callback): static
     {
         return new static(collect($this->attributes)->filter($callback)->all());
     }
@@ -127,35 +131,42 @@ class ComponentAttributes implements \ArrayAccess, \IteratorAggregate
      * Return a bag of attributes that have keys starting with the given value / pattern.
      *
      * @param  string  $string
+     *
      * @return static
      */
-    public function whereStartsWith($string)
+    public function whereStartsWith(string $string): static
     {
-        return $this->filter(function ($value, $key) use ($string) {
-            return Str::startsWith($key, $string);
-        });
+        return $this->filter(
+            function ($value, $key) use ($string) {
+                return str_starts_with($key, $string);
+            }
+        );
     }
 
     /**
      * Return a bag of attributes with keys that do not start with the given value / pattern.
      *
      * @param  string  $string
+     *
      * @return static
      */
-    public function whereDoesntStartWith($string)
+    public function whereDoesntStartWith(string $string): static
     {
-        return $this->filter(function ($value, $key) use ($string) {
-            return ! Str::startsWith($key, $string);
-        });
+        return $this->filter(
+            function ($value, $key) use ($string) {
+                return !str_starts_with($key, $string);
+            }
+        );
     }
 
     /**
      * Return a bag of attributes that have keys starting with the given value / pattern.
      *
      * @param  string  $string
+     *
      * @return static
      */
-    public function thatStartWith($string)
+    public function thatStartWith(string $string): static
     {
         return $this->whereStartsWith($string);
     }
@@ -164,9 +175,10 @@ class ComponentAttributes implements \ArrayAccess, \IteratorAggregate
      * Exclude the given attribute from the attribute array.
      *
      * @param  mixed|array  $keys
+     *
      * @return static
      */
-    public function exceptProps($keys)
+    public function exceptProps(mixed $keys): static
     {
         $props = [];
 
@@ -174,7 +186,7 @@ class ComponentAttributes implements \ArrayAccess, \IteratorAggregate
             $key = is_numeric($key) ? $defaultValue : $key;
 
             $props[] = $key;
-            $props[] = Str::kebab($key);
+            $props[] = StrNormalise::toKebabCase($key);
         }
 
         return $this->except($props);
@@ -184,11 +196,12 @@ class ComponentAttributes implements \ArrayAccess, \IteratorAggregate
      * Conditionally merge classes into the attribute bag.
      *
      * @param  mixed|array  $classList
+     *
      * @return static
      */
-    public function class($classList)
+    public function class(mixed $classList): static
     {
-        $classList = Arr::wrap($classList);
+        $classList = (array) $classList;
 
         $classes = [];
 
@@ -207,31 +220,39 @@ class ComponentAttributes implements \ArrayAccess, \IteratorAggregate
      * Merge additional attributes / values into the attribute bag.
      *
      * @param  array  $attributeDefaults
-     * @param  bool  $escape
+     * @param  bool   $escape
+     *
      * @return static
      */
-    public function merge(array $attributeDefaults = [], $escape = true)
+    public function merge(array $attributeDefaults = [], bool $escape = true)
     {
-        $attributeDefaults = array_map(function ($value) use ($escape) {
-            return $this->shouldEscapeAttributeValue($escape, $value)
-                ? e($value)
-                : $value;
-        }, $attributeDefaults);
+        $attributeDefaults = array_map(
+            function ($value) use ($escape) {
+                return $this->shouldEscapeAttributeValue($escape, $value)
+                    ? e($value)
+                    : $value;
+            },
+            $attributeDefaults
+        );
 
         [$appendableAttributes, $nonAppendableAttributes] = collect($this->attributes)
-            ->partition(function ($value, $key) use ($attributeDefaults) {
-                return $key === 'class' ||
-                    (isset($attributeDefaults[$key]) &&
-                        $attributeDefaults[$key] instanceof AppendableAttributeValue);
-            });
+            ->partition(
+                function ($value, $key) use ($attributeDefaults) {
+                    return $key === 'class' ||
+                        (isset($attributeDefaults[$key]) &&
+                            $attributeDefaults[$key] instanceof AppendableAttributeValue);
+                }
+            );
 
-        $attributes = $appendableAttributes->mapWithKeys(function ($value, $key) use ($attributeDefaults, $escape) {
-            $defaultsValue = isset($attributeDefaults[$key]) && $attributeDefaults[$key] instanceof AppendableAttributeValue
-                ? $this->resolveAppendableAttributeDefault($attributeDefaults, $key, $escape)
-                : ($attributeDefaults[$key] ?? '');
+        $attributes = $appendableAttributes->mapWithKeys(
+            function ($value, $key) use ($attributeDefaults, $escape) {
+                $defaultsValue = isset($attributeDefaults[$key]) && $attributeDefaults[$key] instanceof AppendableAttributeValue
+                    ? $this->resolveAppendableAttributeDefault($attributeDefaults, $key, $escape)
+                    : ($attributeDefaults[$key] ?? '');
 
-            return [$key => implode(' ', array_unique(array_filter([$defaultsValue, $value])))];
-        })->merge($nonAppendableAttributes)->all();
+                return [$key => implode(' ', array_unique(array_filter([$defaultsValue, $value])))];
+            }
+        )->merge($nonAppendableAttributes)->all();
 
         return new static(array_merge($attributeDefaults, $attributes));
     }
@@ -239,28 +260,30 @@ class ComponentAttributes implements \ArrayAccess, \IteratorAggregate
     /**
      * Determine if the specific attribute value should be escaped.
      *
-     * @param  bool  $escape
+     * @param  bool   $escape
      * @param  mixed  $value
+     *
      * @return bool
      */
     protected function shouldEscapeAttributeValue($escape, $value)
     {
-        if (! $escape) {
+        if (!$escape) {
             return false;
         }
 
-        return ! is_object($value) &&
-            ! is_null($value) &&
-            ! is_bool($value);
+        return !is_object($value) &&
+            !is_null($value) &&
+            !is_bool($value);
     }
 
     /**
      * Create a new appendable attribute value.
      *
      * @param  mixed  $value
-     * @return \Illuminate\View\AppendableAttributeValue
+     *
+     * @return AppendableAttributeValue
      */
-    public function prepends($value)
+    public function prepends(mixed $value): AppendableAttributeValue
     {
         return new AppendableAttributeValue($value);
     }
@@ -268,12 +291,13 @@ class ComponentAttributes implements \ArrayAccess, \IteratorAggregate
     /**
      * Resolve an appendable attribute value default value.
      *
-     * @param  array  $attributeDefaults
+     * @param  array   $attributeDefaults
      * @param  string  $key
-     * @param  bool  $escape
+     * @param  bool    $escape
+     *
      * @return mixed
      */
-    protected function resolveAppendableAttributeDefault($attributeDefaults, $key, $escape)
+    protected function resolveAppendableAttributeDefault(array $attributeDefaults, string $key, bool $escape): mixed
     {
         if ($this->shouldEscapeAttributeValue($escape, $value = $attributeDefaults[$key]->value)) {
             $value = e($value);
@@ -287,7 +311,7 @@ class ComponentAttributes implements \ArrayAccess, \IteratorAggregate
      *
      * @return array
      */
-    public function getAttributes()
+    public function getAttributes(): array
     {
         return $this->attributes;
     }
@@ -296,9 +320,10 @@ class ComponentAttributes implements \ArrayAccess, \IteratorAggregate
      * Set the underlying attributes.
      *
      * @param  array  $attributes
+     *
      * @return void
      */
-    public function setAttributes(array $attributes)
+    public function setAttributes(array $attributes): void
     {
         if (isset($attributes['attributes']) &&
             $attributes['attributes'] instanceof self) {
@@ -317,7 +342,7 @@ class ComponentAttributes implements \ArrayAccess, \IteratorAggregate
      *
      * @return string
      */
-    public function toHtml()
+    public function toHtml(): string
     {
         return (string) $this;
     }
@@ -326,17 +351,19 @@ class ComponentAttributes implements \ArrayAccess, \IteratorAggregate
      * Merge additional attributes / values into the attribute bag.
      *
      * @param  array  $attributeDefaults
-     * @return \Illuminate\Support\HtmlString
+     *
+     * @return string
      */
-    public function __invoke(array $attributeDefaults = [])
+    public function __invoke(array $attributeDefaults = []): string
     {
-        return new HtmlString((string) $this->merge($attributeDefaults));
+        return (string) $this->merge($attributeDefaults);
     }
 
     /**
      * Determine if the given offset exists.
      *
      * @param  string  $offset
+     *
      * @return bool
      */
     public function offsetExists($offset)
@@ -348,6 +375,7 @@ class ComponentAttributes implements \ArrayAccess, \IteratorAggregate
      * Get the value at the given offset.
      *
      * @param  string  $offset
+     *
      * @return mixed
      */
     public function offsetGet($offset)
@@ -359,7 +387,8 @@ class ComponentAttributes implements \ArrayAccess, \IteratorAggregate
      * Set the value at a given offset.
      *
      * @param  string  $offset
-     * @param  mixed  $value
+     * @param  mixed   $value
+     *
      * @return void
      */
     public function offsetSet($offset, $value)
@@ -371,6 +400,7 @@ class ComponentAttributes implements \ArrayAccess, \IteratorAggregate
      * Remove the value at the given offset.
      *
      * @param  string  $offset
+     *
      * @return void
      */
     public function offsetUnset($offset)
@@ -385,7 +415,7 @@ class ComponentAttributes implements \ArrayAccess, \IteratorAggregate
      */
     public function getIterator()
     {
-        return new ArrayIterator($this->attributes);
+        return new \ArrayIterator($this->attributes);
     }
 
     /**
@@ -393,7 +423,7 @@ class ComponentAttributes implements \ArrayAccess, \IteratorAggregate
      *
      * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         $string = '';
 
@@ -402,11 +432,11 @@ class ComponentAttributes implements \ArrayAccess, \IteratorAggregate
                 continue;
             }
 
-            if ($value === true) {
-                $value = $key;
-            }
+            $string .= ' ' . $key;
 
-            $string .= ' '.$key.'="'.str_replace('"', '\\"', trim($value)).'"';
+            if ($value !== true) {
+                $string .= '="' . str_replace('"', '\\"', trim($value)) . '"';
+            }
         }
 
         return trim($string);

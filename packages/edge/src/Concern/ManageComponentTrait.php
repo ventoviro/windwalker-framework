@@ -54,12 +54,12 @@ trait ManageComponentTrait
     /**
      * Start a component rendering process.
      *
-     * @param  string  $name
-     * @param  array   $data
+     * @param  string|callable  $name
+     * @param  array            $data
      *
      * @return void
      */
-    public function startComponent(string $name, array $data = [])
+    public function startComponent(string|callable $name, array $data = [])
     {
         if (ob_start()) {
             $this->componentStack[]                         = $name;
@@ -82,9 +82,9 @@ trait ManageComponentTrait
             echo $staticSlot;
         });
 
-        $name = array_pop($this->componentStack);
+        $view = array_pop($this->componentStack);
 
-        return $this->render($name, $this->componentData($slot));
+        return $this->render($view, $this->componentData($slot));
     }
 
     /**

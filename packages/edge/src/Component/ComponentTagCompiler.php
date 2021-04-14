@@ -73,8 +73,6 @@ class ComponentTagCompiler
         $value = $this->compileSelfClosingTags($value);
         $value = $this->compileOpeningTags($value);
         $value = $this->compileClosingTags($value);
-        show($value);
-        exit(' @Checkpoint');
 
         return $value;
     }
@@ -187,7 +185,7 @@ class ComponentTagCompiler
 
                 $attributes = $this->getAttributesFromAttributeString($matches['attributes']);
 
-                return $this->componentString($matches[1], $attributes) . "\n@endComponentClass##END-COMPONENT-CLASS##";
+                return $this->componentString($matches[1], $attributes) . "\n@endComponentClass";
             },
             $value
         );
@@ -229,7 +227,7 @@ class ComponentTagCompiler
             $parameters = $data->dump();
         }
 
-        return "##BEGIN-COMPONENT-CLASS##@component('{$class}', '{$component}', [" . $this->attributesToString(
+        return "@component('{$class}', '{$component}', [" . $this->attributesToString(
                 $parameters,
                 false
             ) . '])
@@ -250,9 +248,15 @@ class ComponentTagCompiler
      */
     public function componentClass(string $component): string
     {
+        $loader = $this->edge->getLoader();
+
         if (isset($this->components[$component])) {
             if (class_exists($alias = $this->components[$component])) {
                 return $alias;
+            }
+
+            if ($loader->has($component)) {
+                return $component;
             }
 
             throw new \InvalidArgumentException(
@@ -260,7 +264,9 @@ class ComponentTagCompiler
             );
         }
 
-        // Support find from loader path
+        if ($loader->has($component)) {
+            return $component;
+        }
 
         throw new \InvalidArgumentException(
             "Unable to locate a class or view for component [{$component}]."
@@ -315,7 +321,7 @@ class ComponentTagCompiler
      */
     protected function compileClosingTags(string $value): string
     {
-        return preg_replace("/<\/\s*x[-\:][\w\-\:\.]*\s*>/", ' @endComponentClass##END-COMPONENT-CLASS##', $value);
+        return preg_replace("/<\/\s*x[-\:][\w\-\:\.]*\s*>/", ' @endComponentClass', $value);
     }
 
     /**

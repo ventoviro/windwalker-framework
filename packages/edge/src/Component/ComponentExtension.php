@@ -22,6 +22,9 @@ class ComponentExtension implements EdgeExtensionInterface, ParsersExtensionInte
 {
     /**
      * ComponentExtension constructor.
+     *
+     * @param  Edge   $edge
+     * @param  array  $components
      */
     public function __construct(protected Edge $edge, protected array $components = [])
     {
@@ -50,7 +53,7 @@ class ComponentExtension implements EdgeExtensionInterface, ParsersExtensionInte
         $compiler = new ComponentTagCompiler($this->edge, $this->components);
 
         $content = $compiler->compile($content);
-        show($content);
+
         return $content;
     }
 

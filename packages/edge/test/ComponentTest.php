@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Edge\Test;
 
 use PHPUnit\Framework\TestCase;
+use Windwalker\Edge\Cache\EdgeFileCache;
 use Windwalker\Edge\Component\ComponentExtension;
 use Windwalker\Edge\Edge;
 use Windwalker\Edge\Loader\EdgeFileLoader;
@@ -45,7 +46,8 @@ class ComponentTest extends TestCase
                 [
                     __DIR__ . '/tmpl',
                 ]
-            )
+            ),
+            (new EdgeFileCache(__DIR__ . '/../tmp'))->setDebug(true)
         );
 
         $this->instance->addExtension($ext = new ComponentExtension($this->instance));

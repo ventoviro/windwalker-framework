@@ -11,9 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Edge\Component;
 
-use Illuminate\Container\Container;
-use Illuminate\Support\Str;
-use Illuminate\View\Compilers\ComponentTagCompiler;
+use Windwalker\Utilities\StrNormalise;
 
 /**
  * The DynamicComponent class.
@@ -25,44 +23,45 @@ class DynamicComponent extends AbstractComponent
      *
      * @var string
      */
-    public $component;
+    public string $is = '';
 
     /**
      * The component tag compiler instance.
      *
-     * @var \Illuminate\View\Compilers\BladeTagCompiler
+     * @var ?ComponentTagCompiler
      */
-    protected static $compiler;
+    protected static ?ComponentTagCompiler $compiler = null;
 
     /**
      * The cached component classes.
      *
      * @var array
      */
-    protected static $componentClasses = [];
+    protected static array $componentClasses = [];
 
     /**
      * Create a new component instance.
      *
-     * @param  string  $component
+     * @param  string  $is
+     *
      * @return void
      */
-    public function __construct(string $component)
+    public function __construct(string $is)
     {
-        $this->component = $component;
+        $this->is = $is;
     }
 
     /**
      * Get the view / contents that represent the component.
      *
-     * @return \Illuminate\Contracts\View\View|string
+     * @return \Closure|string
      */
-    public function render()
+    public function render(): \Closure|string
     {
         $template = <<<'EOF'
-<?php extract(collect($attributes->getAttributes())->mapWithKeys(function ($value, $key) { return [Illuminate\Support\Str::camel(str_replace([':', '.'], ' ', $key)) => $value]; })->all(), EXTR_SKIP); ?>
+<?php extract(collect($attributes->getAttributes())->mapWithKeys(function ($value, $key) { return [Windwalker\Utilities\StrNormalise::toCamelCase(str_replace([':', '.'], ' ', $key)) => $value]; })->all(), EXTR_SKIP); ?>
 {{ props }}
-<x-{{ component }} {{ bindings }} {{ attributes }}>
+<x-{{ is }} {{ bindings }} {{ attributes }}>
 {{ slots }}
 {{ defaultSlot }}
 </x-{{ component }}>
@@ -73,7 +72,7 @@ EOF;
 
             return str_replace(
                 [
-                    '{{ component }}',
+                    '{{ is }}',
                     '{{ props }}',
                     '{{ bindings }}',
                     '{{ attributes }}',
@@ -81,7 +80,7 @@ EOF;
                     '{{ defaultSlot }}',
                 ],
                 [
-                    $this->component,
+                    $this->is,
                     $this->compileProps($bindings),
                     $this->compileBindings($bindings),
                     class_exists($class) ? '{{ $attributes }}' : '',
@@ -97,43 +96,60 @@ EOF;
      * Compile the @props directive for the component.
      *
      * @param  array  $bindings
+     *
      * @return string
      */
-    protected function compileProps(array $bindings)
+    protected function compileProps(array $bindings): string
     {
         if (empty($bindings)) {
             return '';
         }
 
-        return '@props('.'[\''.implode('\',\'', collect($bindings)->map(function ($dataKey) {
-                return Str::camel($dataKey);
-            })->all()).'\']'.')';
+        return '@props([\'' . implode(
+                '\',\'',
+                collect($bindings)->map(
+                    function ($dataKey) {
+                        return StrNormalise::toCamelCase($dataKey);
+                    }
+                )->all()
+            ) . '\'])';
     }
 
     /**
      * Compile the bindings for the component.
      *
      * @param  array  $bindings
+     *
      * @return string
      */
-    protected function compileBindings(array $bindings)
+    protected function compileBindings(array $bindings): string
     {
-        return collect($bindings)->map(function ($key) {
-            return ':'.$key.'="$'.Str::camel(str_replace([':', '.'], ' ', $key)).'"';
-        })->implode(' ');
+        return collect($bindings)
+            ->map(
+                function ($key) {
+                    return ':' . $key . '="$' . StrNormalise::toCamelCase(str_replace([':', '.'], ' ', $key)) . '"';
+                }
+            )
+            ->implode(' ');
     }
 
     /**
      * Compile the slots for the component.
      *
      * @param  array  $slots
+     *
      * @return string
      */
-    protected function compileSlots(array $slots)
+    protected function compileSlots(array $slots): string
     {
-        return collect($slots)->map(function ($slot, $name) {
-            return $name === '__default' ? null : '<x-slot name="'.$name.'">{{ $'.$name.' }}</x-slot>';
-        })->filter()->implode(PHP_EOL);
+        return collect($slots)
+            ->map(
+                function ($slot, $name) {
+                    return $name === '__default' ? null : '<x-slot name="' . $name . '">{{ $' . $name . ' }}</x-slot>';
+                }
+            )
+            ->filter()
+            ->implode(PHP_EOL);
     }
 
     /**
@@ -141,44 +157,40 @@ EOF;
      *
      * @return string
      */
-    protected function classForComponent()
+    protected function classForComponent(): string
     {
-        if (isset(static::$componentClasses[$this->component])) {
-            return static::$componentClasses[$this->component];
+        if (isset(static::$componentClasses[$this->is])) {
+            return static::$componentClasses[$this->is];
         }
 
-        return static::$componentClasses[$this->component] =
-            $this->compiler()->componentClass($this->component);
+        return static::$componentClasses[$this->is] =
+            $this->compiler()->componentClass($this->is);
     }
 
     /**
      * Get the names of the variables that should be bound to the component.
      *
      * @param  string  $class
+     *
      * @return array
      */
-    protected function bindings(string $class)
+    protected function bindings(string $class): array
     {
-        [$data, $attributes] = $this->compiler()->partitionDataAndAttributes($class, $this->attributes->getAttributes());
+        [$data, $attributes] = $this->compiler()->partitionDataAndAttributes(
+            $class,
+            $this->attributes->getAttributes()
+        );
 
-        return array_keys($data->all());
+        return array_keys($data->dump());
     }
 
     /**
      * Get an instance of the Blade tag compiler.
      *
-     * @return \Illuminate\View\Compilers\ComponentTagCompiler
+     * @return ComponentTagCompiler
      */
     protected function compiler()
     {
-        if (! static::$compiler) {
-            static::$compiler = new ComponentTagCompiler(
-                Container::getInstance()->make('blade.compiler')->getClassComponentAliases(),
-                Container::getInstance()->make('blade.compiler')->getClassComponentNamespaces(),
-                Container::getInstance()->make('blade.compiler')
-            );
-        }
-
-        return static::$compiler;
+        return static::$compiler ??= new ComponentTagCompiler();
     }
 }

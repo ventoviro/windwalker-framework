@@ -30,6 +30,7 @@ use Windwalker\Edge\Extension\ParsersExtensionInterface;
 use Windwalker\Edge\Loader\EdgeLoaderInterface;
 use Windwalker\Edge\Loader\EdgeStringLoader;
 use Windwalker\Utilities\Arr;
+use Windwalker\Utilities\Classes\ObjectBuilderAwareTrait;
 use Windwalker\Utilities\Wrapper\RawWrapper;
 
 /**
@@ -47,6 +48,7 @@ class Edge
     use ManageEventTrait;
     use ManageLayoutTrait;
     use ManageStackTrait;
+    use ObjectBuilderAwareTrait;
 
     /**
      * Property globals.
@@ -134,29 +136,31 @@ class Edge
     /**
      * render
      *
-     * @param  string  $__layout
-     * @param  array   $__data
-     * @param  array   $__more
+     * @param  string|callable  $__layout
+     * @param  array            $__data
+     * @param  array            $__more
      *
      * @return string
      * @throws EdgeException
      */
-    public function render(string $__layout, array $__data = [], array $__more = []): string
+    public function render(string|Closure $__layout, array $__data = [], array $__more = []): string
     {
         // TODO: Aliases
 
         $this->incrementRender();
 
-        $__path = $this->loader->find($__layout);
+        if (!$__layout instanceof Closure) {
+            $__path = $this->loader->find($__layout);
 
-        if ($this->cache->isExpired($__path)) {
-            $compiler = $this->prepareExtensions(clone $this->compiler);
+            if ($this->cache->isExpired($__path)) {
+                $compiled = $this->compile($this->loader->load($__path));
 
-            $compiled = $compiler->compile($this->loader->load($__path));
+                $this->cache->store($__path, $compiled);
 
-            $this->cache->store($__path, $compiled);
-
-            unset($compiler, $compiled);
+                unset($compiler, $compiled);
+            }
+        } else {
+            $__path = $__layout;
         }
 
         $__data = array_merge($this->getGlobals(true), $__more, $__data);
@@ -189,6 +193,17 @@ class Edge
         return $result;
     }
 
+    public function compile(string|Closure $path): string
+    {
+        $compiler = $this->prepareExtensions(clone $this->compiler);
+
+        if ($path instanceof Closure) {
+            $path = $path($this);
+        }
+
+        return $compiler->compile($path);
+    }
+
     protected function getRenderFunction(array $data): Closure
     {
         $__data = $data;
@@ -196,6 +211,11 @@ class Edge
 
         return function ($__path) use ($__data, $__edge) {
             extract($__data, EXTR_OVERWRITE);
+
+            if ($__path instanceof Closure) {
+                eval(' ?>' . $this->compile($__path($this)) . '<?php ');
+                return;
+            }
 
             if ($__edge->getCache() instanceof EdgeFileCache) {
                 include $__edge->getCache()->getCacheFile($__edge->getCache()->getCacheKey($__path));
@@ -625,5 +645,10 @@ class Edge
         $this->cache = $cache;
 
         return $this;
+    }
+
+    public function make(string $class, ...$args): object
+    {
+        return $this->getObjectBuilder()->createObject($class, ...$args);
     }
 }

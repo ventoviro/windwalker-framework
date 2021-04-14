@@ -249,7 +249,19 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
             return $this->ownerDocument->createAttribute($name);
         }
 
-        return parent::setAttribute($name, static::valueToString($value));
+        try {
+            return parent::setAttribute($name, static::valueToString($value));
+        } catch (\DOMException $e) {
+            if ($e->getCode() === 5) {
+                throw new \DOMException(
+                    $e->getMessage() . ' for attribute: "' . $name . '"',
+                    $e->getCode(),
+                    $e
+                );
+            } else {
+                throw $e;
+            }
+        }
     }
 
     /**
