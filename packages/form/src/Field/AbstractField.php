@@ -164,11 +164,16 @@ abstract class AbstractField
      */
     public function render(array $options = []): string
     {
+        $wrapper = $this->getPreparedWrapper();
+
         $options = array_merge($this->getStates(), $options);
 
-        $wrapper = $this->prepareWrapper(clone $this->getWrapper());
-
         return $this->getForm()->getRenderer()->renderField($this, $wrapper, $options);
+    }
+
+    public function getPreparedWrapper(): DOMElement
+    {
+        return $this->prepareWrapper(clone $this->getWrapper());
     }
 
     /**

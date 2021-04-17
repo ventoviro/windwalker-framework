@@ -71,36 +71,8 @@ abstract class AbstractComponent
      */
     public function resolveView(): \Closure|string
     {
-        $view = $this->render();
-
         return $this->render();
     }
-
-    /**
-     * Create a Blade view with the raw component string content.
-     *
-     * @param  \Illuminate\Contracts\View\Factory  $factory
-     * @param  string                              $contents
-     *
-     * @return string
-     */
-    // protected function createBladeViewFromString($factory, $contents)
-    // {
-    //     $factory->addNamespace(
-    //         '__components',
-    //         $directory = Container::getInstance()['config']->get('view.compiled')
-    //     );
-    //
-    //     if (! is_file($viewFile = $directory.'/'.sha1($contents).'.blade.php')) {
-    //         if (! is_dir($directory)) {
-    //             mkdir($directory, 0755, true);
-    //         }
-    //
-    //         file_put_contents($viewFile, $contents);
-    //     }
-    //
-    //     return '__components::'.basename($viewFile, '.blade.php');
-    // }
 
     /**
      * Get the data that should be supplied to the view.
@@ -112,7 +84,7 @@ abstract class AbstractComponent
      */
     public function data(): array
     {
-        $this->attributes = $this->attributes ?: $this->newAttributeBag();
+        $this->attributes ??= $this->newAttributeBag();
 
         return array_merge($this->extractPublicProperties(), $this->extractPublicMethods());
     }
@@ -274,8 +246,12 @@ abstract class AbstractComponent
      *
      * @return $this
      */
-    public function withAttributes(array $attributes): static
+    public function withAttributes(array $attributes, array|ComponentAttributes $binding = []): static
     {
+        // if ($binding instanceof ComponentAttributes) {
+        //     $binding = $binding->getAttributes();
+        // }
+
         $this->attributes = $this->attributes ?: $this->newAttributeBag();
 
         $this->attributes->setAttributes($attributes);

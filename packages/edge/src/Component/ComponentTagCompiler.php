@@ -234,6 +234,13 @@ class ComponentTagCompiler
             $parameters = $data->dump();
         }
 
+        // Bind attributes
+        if (isset($attributes[''])) {
+            $attributes['attributes'] = $attributes[''];
+
+            unset($attributes['']);
+        }
+
         return "@component('{$class}', '{$component}', [" . $this->attributesToString(
                 $parameters,
                 false
@@ -241,7 +248,7 @@ class ComponentTagCompiler
 <?php $component->withAttributes([' . $this->attributesToString(
                 $attributes->dump(),
                 $class !== DynamicComponent::class
-            ) . ']); ?>';
+            ) . "]); ?>";
     }
 
     /**
@@ -456,7 +463,7 @@ class ComponentTagCompiler
         $pattern = "/
             (?:^|\s+)     # start of the string or whitespace between attributes
             :(?!:)        # attribute needs to start with a single colon
-            ([\w\-:.@]+)  # match the actual attribute name
+            ([\w\-:.@]*)  # match the actual attribute name
             =             # only match attributes that have a value
         /xm";
 

@@ -39,7 +39,7 @@ class AnonymousComponent extends AbstractComponent
      */
     public function data(): array
     {
-        $this->attributes = $this->attributes ?: $this->newAttributeBag();
+        $this->attributes ??= $this->newAttributeBag();
 
         return array_merge(
             $this->data['attributes'] ?? [],

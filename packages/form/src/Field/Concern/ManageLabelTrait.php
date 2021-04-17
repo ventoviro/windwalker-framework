@@ -49,9 +49,9 @@ trait ManageLabelTrait
         return $this->getForm()->getRenderer()->renderLabel($this, $label, $options);
     }
 
-    public function buildLabel(DOMElement $label, array $options = []): string
+    public function buildLabel(DOMElement $label, array $options = []): string|DOMElement
     {
-        return $label->render();
+        return $label;
     }
 
     public function getPreparedLabel(): DOMElement

@@ -77,7 +77,7 @@ trait ManageComponentTrait
         $slot       = $this->slots[$this->currentComponent()][Symbol::main()->getValue()] ?? null;
 
         $slot ??= new SlotWrapper(
-            function () use ($staticSlot) {
+            function (...$args) use ($staticSlot) {
                 echo $staticSlot;
             }
         );

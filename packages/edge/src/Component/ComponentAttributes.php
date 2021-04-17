@@ -14,6 +14,9 @@ namespace Windwalker\Edge\Component;
 use Windwalker\Utilities\Arr;
 use Windwalker\Utilities\StrNormalise;
 
+use function Windwalker\collect;
+use function Windwalker\value;
+
 /**
  * The ComponentAttributes class.
  */
@@ -25,6 +28,15 @@ class ComponentAttributes implements \ArrayAccess, \IteratorAggregate
      * @var array
      */
     protected array $attributes = [];
+
+    public static function wrap(array|self $attributes): static
+    {
+        if ($attributes instanceof static) {
+            return $attributes;
+        }
+
+        return new static($attributes);
+    }
 
     /**
      * Create a new component attribute bag instance.
@@ -241,7 +253,8 @@ class ComponentAttributes implements \ArrayAccess, \IteratorAggregate
                     return $key === 'class' ||
                         (isset($attributeDefaults[$key]) &&
                             $attributeDefaults[$key] instanceof AppendableAttributeValue);
-                }
+                },
+                true
             );
 
         $attributes = $appendableAttributes->mapWithKeys(
@@ -252,7 +265,7 @@ class ComponentAttributes implements \ArrayAccess, \IteratorAggregate
 
                 return [$key => implode(' ', array_unique(array_filter([$defaultsValue, $value])))];
             }
-        )->merge($nonAppendableAttributes)->all();
+        )->merge($nonAppendableAttributes)->dump();
 
         return new static(array_merge($attributeDefaults, $attributes));
     }
@@ -325,9 +338,14 @@ class ComponentAttributes implements \ArrayAccess, \IteratorAggregate
      */
     public function setAttributes(array $attributes): void
     {
-        if (isset($attributes['attributes']) &&
-            $attributes['attributes'] instanceof self) {
-            $parentBag = $attributes['attributes'];
+        if (
+            isset($attributes['attributes']) &&
+            (
+                $attributes['attributes'] instanceof self
+                || is_array($attributes['attributes'])
+            )
+        ) {
+            $parentBag = static::wrap($attributes['attributes']);
 
             unset($attributes['attributes']);
 

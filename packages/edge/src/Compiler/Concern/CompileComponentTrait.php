@@ -218,8 +218,9 @@ trait CompileComponentTrait
      */
     public static function sanitizeComponentAttribute(mixed $value): mixed
     {
-        return is_string($value) ||
-        (is_object($value) && !$value instanceof ComponentAttributes && method_exists($value, '__toString'))
+        // todo: Must escape stringable
+        return is_string($value)
+        // || (is_object($value) && !$value instanceof ComponentAttributes && method_exists($value, '__toString'))
             ? e($value)
             : $value;
     }
