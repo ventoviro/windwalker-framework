@@ -135,7 +135,6 @@ abstract class AbstractField
         $this->prepareState(
             [
                 'no_label' => false,
-                'vertical' => true,
             ]
         );
     }
