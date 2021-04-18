@@ -41,8 +41,14 @@ class AnonymousComponent extends AbstractComponent
     {
         $this->attributes ??= $this->newAttributeBag();
 
+        $attributes = $this->data['attributes'] ?? [];
+
+        if ($attributes instanceof ComponentAttributes) {
+            $attributes = $attributes->getAttributes();
+        }
+
         return array_merge(
-            $this->data['attributes'] ?? [],
+            $attributes,
             $this->attributes->getAttributes(),
             $this->data,
             ['attributes' => $this->attributes]

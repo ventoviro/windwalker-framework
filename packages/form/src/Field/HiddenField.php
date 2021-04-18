@@ -16,7 +16,7 @@ namespace Windwalker\Form\Field;
  *
  * @since  2.0
  */
-class HiddenField extends TextField
+class HiddenField extends TextField implements HiddenFieldInterface
 {
     /**
      * Property type.

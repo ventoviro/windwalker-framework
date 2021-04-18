@@ -76,7 +76,7 @@ EOF;
                     $this->compileBindings($bindings),
                     class_exists($class) ? '{{ $attributes }}' : '',
                     $this->compileSlots($data['__edge_slots']),
-                    '{{ $slot ?? "" }}',
+                    '{!! $slot ?? "" !!}',
                 ],
                 $template
             );
@@ -181,7 +181,7 @@ EOF;
      *
      * @return ComponentTagCompiler
      */
-    protected function compiler()
+    protected function compiler(): ComponentTagCompiler
     {
         return $this->compiler ??= $this->createCompiler();
     }

@@ -164,7 +164,7 @@ trait CompileComponentTrait
             count($expr) <= 1
             && strtolower($expr[0] ?? '') !== 'null'
         ) {
-            $slots = "(function (...\$__scope) use (\$__edge, \$__data) {";
+            $slots = "(function (...\$__scope) use (\$__edge, \$__data) { extract(\$__data);";
         }
 
         return "<?php \$__edge->slot({$expression})$slots ?>";
