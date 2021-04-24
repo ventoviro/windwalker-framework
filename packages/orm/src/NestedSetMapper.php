@@ -443,6 +443,16 @@ class NestedSetMapper extends EntityMapper
     {
         $k = $this->getMainKey();
         $data = $event->getData();
+        $oldData = $event->getOldData();
+
+        if ($oldData) {
+            $data = array_filter($data);
+            $data = array_merge(
+                $oldData,
+                $data
+            );
+        }
+
         $pk = $data[$k] ?? null;
         $parentId = $data['parent_id'] ?? null;
         $source = $event->getSource();

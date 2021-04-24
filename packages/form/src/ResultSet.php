@@ -16,7 +16,7 @@ use Generator;
 /**
  * The ResultSet class.
  */
-class ResultSet
+class ResultSet implements \IteratorAggregate
 {
     /**
      * @var ValidateResult[]

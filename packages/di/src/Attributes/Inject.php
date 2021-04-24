@@ -23,7 +23,7 @@ use Windwalker\DI\Exception\DependencyResolutionException;
  *
  * @since  3.4.4
  */
-#[Attribute]
+#[Attribute(Attribute::TARGET_PROPERTY | Attribute::TARGET_PARAMETER)]
 class Inject implements ContainerAttributeInterface
 {
     public ?string $id = null;
@@ -53,10 +53,6 @@ class Inject implements ContainerAttributeInterface
     public function __invoke(AttributeHandler $handler): callable
     {
         $reflector = $handler->getReflector();
-
-        if (!$reflector instanceof ReflectionProperty) {
-            return $handler;
-        }
 
         return function (...$args) use ($handler, $reflector) {
             $type = $reflector->getType();

@@ -25,7 +25,7 @@ abstract class AbstractSaveEvent extends AbstractEntityEvent
 
     protected array $data;
 
-    protected ?array $oldData;
+    protected ?array $oldData = null;
 
     protected array|object $source = [];
 

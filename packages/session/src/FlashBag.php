@@ -16,7 +16,7 @@ namespace Windwalker\Session;
  */
 class FlashBag
 {
-    protected ?array $storage;
+    protected ?array $storage = null;
 
     /**
      * FlashBag constructor.
@@ -28,7 +28,7 @@ class FlashBag
         $this->storage = &$storage;
     }
 
-    public function add($value, string $type = 'info'): void
+    public function add(mixed $value, string $type = 'info'): void
     {
         $this->storage[$type] ??= [];
 

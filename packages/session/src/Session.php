@@ -443,7 +443,7 @@ class Session implements SessionInterface, ArrayAccessibleInterface
     {
         if ($this->flashBag === null) {
             $storage           = &$this->getStorage();
-            $storage['_flash'] = [];
+            $storage['_flash'] ??= [];
 
             $this->flashBag = new FlashBag($storage['_flash']);
         }

@@ -37,6 +37,12 @@ trait ManageInputTrait
 
     public function buildInput(DOMElement $input, array $options = []): string|DOMElement
     {
+        $surrounds = $this->getSurrounds();
+
+        foreach ($surrounds as $surround) {
+            $input = $surround($input, $options);
+        }
+
         return $input;
     }
 

@@ -87,7 +87,7 @@ abstract class AbstractField
      *
      * @var  mixed
      */
-    protected $value = null;
+    protected mixed $value = null;
 
     /**
      * Property form.
@@ -95,6 +95,11 @@ abstract class AbstractField
      * @var  Form
      */
     protected ?Form $form = null;
+
+    /**
+     * @var array<callable>
+     */
+    protected array $surrounds = [];
 
     /**
      * create
@@ -539,34 +544,39 @@ abstract class AbstractField
 
         if (isset($accessors[$method])) {
             $option = $accessors[$method];
+
+            return $this->set($option, $args[0]);
         }
 
         if (in_array($method, $accessors, true)) {
-            $option = $method;
-        }
-
-        if (isset($option)) {
-            if (str_starts_with($method, 'get')) {
-                return $this->get(strtolower(Str::removeLeft($method, 'get')));
-            }
-
-            if (str_starts_with($method, 'is')) {
-                $v = $this->get(strtolower(Str::removeLeft($method, 'is')));
-
-                return $v !== null && $v !== false;
-            }
-
             return $this->set($method, $args[0]);
         }
 
+        $is = false;
+        $option = null;
+
         if (str_starts_with($method, 'get')) {
-            return $this->getAttribute(strtolower(Str::removeLeft($method, 'get')));
+            $option = lcfirst(Str::removeLeft($method, 'get'));
+        } elseif (str_starts_with($method, 'is')) {
+            $option = lcfirst(Str::removeLeft($method, 'is'));
+            $is = true;
+            // return $v !== null && $v !== false;
         }
 
-        if (str_starts_with($method, 'is')) {
-            $v = $this->getAttribute(strtolower(Str::removeLeft($method, 'is')));
+        if ($option !== null) {
+            if (isset($accessors[$option])) {
+                $option = $accessors[$option];
+                $v = $this->get($option);
+                return $is ? $v !== null && $v !== false : $v;
+            }
 
-            return $v !== null && $v !== false;
+            if (in_array($option, $accessors, true)) {
+                $v = $this->get($option);
+                return $is ? $v !== null && $v !== false : $v;
+            }
+
+            $v = $this->getAttribute($option);
+            return $is ? $v !== null && $v !== false : $v;
         }
 
         return $this->setAttribute($method, $args[0]);
@@ -583,5 +593,49 @@ abstract class AbstractField
     public function __toString(): string
     {
         return $this->render();
+    }
+
+    public function surround(string|\Closure|\DOMElement $surround, array $attributes = []): static
+    {
+        if (is_string($surround)) {
+            $surround = DOMElement::create($surround, $attributes);
+        }
+
+        if ($surround instanceof \DOMElement) {
+            $surround = function ($input) use ($surround) {
+                if ($input instanceof \DOMElement) {
+                    $surround->appendChild($input);
+                    return $surround;
+                }
+
+                $surround->innerHTML = $input;
+
+                return $surround;
+            };
+        }
+
+        $this->surrounds[] = $surround;
+
+        return $this;
+    }
+
+    /**
+     * @return callable[]
+     */
+    public function getSurrounds(): array
+    {
+        return $this->surrounds;
+    }
+
+    /**
+     * @param  callable[]|DOMElement[]  $surrounds
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setSurrounds(array $surrounds): static
+    {
+        $this->surrounds = $surrounds;
+
+        return $this;
     }
 }

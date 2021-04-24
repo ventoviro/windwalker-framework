@@ -203,6 +203,15 @@ class ORM
         return $this->getEntityHydrator()->extractField($entity, $field);
     }
 
+    public function getEntityClass(string|object $entity): string
+    {
+        if (is_object($entity)) {
+            $entity = $entity::class;
+        }
+
+        return $entity;
+    }
+
     public function getEntityMetadata(string|object $entity): EntityMetadata
     {
         return $this->getEntityMetadataCollection()->get($entity);

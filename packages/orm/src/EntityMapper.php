@@ -743,6 +743,13 @@ class EntityMapper implements EventAwareInterface
         return $this->getMetadata()->getTableName();
     }
 
+    public function createEntity(): object
+    {
+        $class = $this->getMetadata()->getClassName();
+
+        return $this->getORM()->getAttributesResolver()->createObject($class);
+    }
+
     public function toEntity(array|object $data): object
     {
         $class = $this->getMetadata()->getClassName();
@@ -757,7 +764,7 @@ class EntityMapper implements EventAwareInterface
 
         return $this->getORM()->hydrateEntity(
             $data,
-            $this->getORM()->getAttributesResolver()->createObject($class)
+            $this->createEntity()
         );
     }
 

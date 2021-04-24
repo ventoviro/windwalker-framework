@@ -346,11 +346,32 @@ class Form implements IteratorAggregate
         $filtered = [];
 
         foreach ($this->fields as $name => $field) {
+            if (!Arr::has($data, $name, '/')) {
+                continue;
+            }
+
             $value    = Arr::get($data, $name, '/');
             $filtered = Arr::set($filtered, $name, $field->filter($value), '/');
         }
 
         return $filtered;
+    }
+
+    public function prepareStore(array $data): array
+    {
+        foreach ($this->fields as $name => $field) {
+            if (!Arr::has($data, $name, '/')) {
+                continue;
+            }
+
+            $value = Arr::get($data, $name, '/');
+
+            $value = $field->prepareStore($value);
+
+            $data = Arr::set($data, $name, $value, '/');
+        }
+
+        return $data;
     }
 
     /**
