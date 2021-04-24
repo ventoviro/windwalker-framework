@@ -292,7 +292,7 @@ HTML;
                 'class' => 'stub-flower',
             ]
         )
-            ->addFilter('cmd; func: strtoupper');
+            ->addFilter('cmd|func(strtoupper)');
 
         self::assertEquals('ABCFOO_BAR-YOODIVDATADIV456789', $field->filter('abc foo_bar-yoo<div>data</div>456:789'));
 

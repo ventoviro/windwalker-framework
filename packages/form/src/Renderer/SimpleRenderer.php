@@ -24,7 +24,7 @@ class SimpleRenderer implements FormRendererInterface
      */
     public function renderField(AbstractField $field, DOMElement $wrapper, array $options = []): string
     {
-        return $field->buildWrapper($wrapper, $options);
+        return (string) $field->buildWrapper($wrapper, $options);
     }
 
     /**
@@ -32,7 +32,7 @@ class SimpleRenderer implements FormRendererInterface
      */
     public function renderLabel(AbstractField $field, DOMElement $label, array $options = []): string
     {
-        return $field->buildLabel($label, $options);
+        return (string) $field->buildLabel($label, $options);
     }
 
     /**
@@ -40,6 +40,6 @@ class SimpleRenderer implements FormRendererInterface
      */
     public function renderInput(AbstractField $field, DOMElement $input, array $options = []): string
     {
-        return $field->buildInput($input, $options);
+        return (string) $field->buildInput($input, $options);
     }
 }

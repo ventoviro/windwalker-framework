@@ -80,7 +80,7 @@ class FilterFactory
     public function createChainFromSyntax(mixed $syntax, array $options = []): FilterInterface|ValidatorInterface
     {
         if (is_string($syntax)) {
-            $clauses = Arr::explodeAndClear(';', $syntax);
+            $clauses = Arr::explodeAndClear('|', $syntax);
         } elseif (!is_array($syntax)) {
             $clauses = [$syntax];
         } else {
@@ -104,11 +104,14 @@ class FilterFactory
 
     public function createFromSyntax(string $syntax, array &$options = []): FilterInterface|ValidatorInterface
     {
-        [$type, $optString] = array_pad(explode(':', $syntax), 2, '');
+        preg_match('/(?P<type>\w+)(\((?P<params>.*)\))*/', $syntax, $matches);
+
+        $type = $matches['type'] ?? '';
+        $params = $matches['params'] ?? '';
 
         $type = trim($type);
 
-        preg_match_all('/(\w+)(\s?=\s?(\w+))?/', $optString, $matches, PREG_SET_ORDER);
+        preg_match_all('/(\w+)(\s?=\s?(\w+))?/', $params, $matches, PREG_SET_ORDER);
 
         $options = [];
         foreach ($matches as $match) {
