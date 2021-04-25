@@ -228,8 +228,8 @@ class ListField extends AbstractField
     /**
      * addOption
      *
-     * @param  DOMElement  $option
-     * @param  string      $group
+     * @param  DOMElement   $option
+     * @param  string|null  $group
      *
      * @return  static
      */
@@ -301,7 +301,7 @@ class ListField extends AbstractField
     /**
      * prepareOptions
      *
-     * @return  array|DOMElement[]
+     * @return  array<DOMElement|mixed>
      */
     protected function prepareOptions(): array
     {
