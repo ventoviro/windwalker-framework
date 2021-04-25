@@ -108,4 +108,20 @@ class AttachmentResponse extends Response
             HeaderHelper::attachmentContentDisposition($filename)
         );
     }
+
+    /**
+     * withInlineFilename
+     *
+     * @param  string  $filename
+     *
+     * @return  static
+     * @throws InvalidArgumentException
+     */
+    public function withInlineFilename(string $filename): static
+    {
+        return $this->withHeader(
+            'Content-Disposition',
+            HeaderHelper::inlineContentDisposition($filename)
+        );
+    }
 }

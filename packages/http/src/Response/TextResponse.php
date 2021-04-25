@@ -25,13 +25,13 @@ class TextResponse extends AbstractContentTypeResponse
     /**
      * Handle body to stream object.
      *
-     * @param  string  $body  The body data.
+     * @param  string|resource|StreamInterface  $body  The body data.
      *
      * @return  StreamInterface  Converted to stream object.
      */
-    protected function handleBody(string $body): StreamInterface
+    protected function handleBody(mixed $body): StreamInterface
     {
-        if (is_string($body)) {
+        if (is_string($body) || is_resource($body)) {
             $stream = new Stream('php://temp', 'wb+');
             $stream->write($body);
             $stream->rewind();

@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\DI;
 
+use App\Module\Admin\Category\CategoryListView;
 use InvalidArgumentException;
 use ReflectionClass;
 use ReflectionException;
@@ -65,7 +66,19 @@ class DependencyResolver
                     ->resolveClassCreate($class, $builder);
             }
 
-            $instance = $builder($args, $options);
+            try {
+                $instance = $builder($args, $options);
+            } catch (\Throwable $e) {
+                throw new DefinitionResolveException(
+                    sprintf(
+                        'Error when creating object %s: %s',
+                        $class,
+                        $e->getMessage(),
+                    ),
+                    $e->getCode(),
+                    $e
+                );
+            }
         } elseif (is_callable($class)) {
             $instance = $this->container->call($class, $args, null, $options);
 
@@ -93,7 +106,7 @@ class DependencyResolver
             return $instance;
         } else {
             throw new InvalidArgumentException(
-                'New instance must get first argument as class name, callable or DefinitionInterface object.'
+                'New instance must get first argument as a class name, a callable or a DefinitionInterface object.'
             );
         }
 
@@ -264,9 +277,9 @@ class DependencyResolver
             // If the dependency class name is registered with this container or a parent, use it.
             if ($this->container->has($dependencyClassName)) {
                 $depObject = $this->container->get($dependencyClassName);
-            } elseif (array_key_exists($dependencyVarName, $args)) {
+            } elseif (array_key_exists($dependencyClassName, $args)) {
                 // If an arg provided, use it.
-                return $args[$dependencyVarName];
+                return $args[$dependencyClassName];
             } elseif (
                 $autowire
                 && !$dependency->isAbstract()

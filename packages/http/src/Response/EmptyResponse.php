@@ -28,7 +28,7 @@ class EmptyResponse extends Response
      * @param  int    $status   The status code.
      * @param  array  $headers  The custom headers.
      */
-    public function __construct($status = 204, array $headers = [])
+    public function __construct(int $status = 204, array $headers = [])
     {
         parent::__construct(new NullStream(), $status, $headers);
     }
