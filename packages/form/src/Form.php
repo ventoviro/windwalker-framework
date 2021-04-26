@@ -23,6 +23,7 @@ use Windwalker\Attributes\AttributeType;
 use Windwalker\Form\Attributes\Fieldset;
 use Windwalker\Form\Attributes\NS;
 use Windwalker\Form\Field\AbstractField;
+use Windwalker\Form\Field\CompositeFieldInterface;
 use Windwalker\Form\Renderer\FormRendererInterface;
 use Windwalker\Form\Renderer\SimpleRenderer;
 use Windwalker\Utilities\Arr;
@@ -346,12 +347,19 @@ class Form implements IteratorAggregate
         $filtered = [];
 
         foreach ($this->fields as $name => $field) {
-            if (!Arr::has($data, $name, '/')) {
-                continue;
-            }
+            if ($field instanceof CompositeFieldInterface) {
+                $filtered = array_merge(
+                    $data,
+                    $field->filter($data)
+                );
+            } else {
+                if (!Arr::has($data, $name, '/')) {
+                    continue;
+                }
 
-            $value    = Arr::get($data, $name, '/');
-            $filtered = Arr::set($filtered, $name, $field->filter($value), '/');
+                $value = Arr::get($data, $name, '/');
+                $filtered = Arr::set($filtered, $name, $field->filter($value), '/');
+            }
         }
 
         return $filtered;
@@ -386,7 +394,11 @@ class Form implements IteratorAggregate
         $results = new ResultSet();
 
         foreach ($this->fields as $name => $field) {
-            $value = Arr::get($data, $name, '/');
+            if ($field instanceof CompositeFieldInterface) {
+                $value = $data;
+            } else {
+                $value = Arr::get($data, $name, '/');
+            }
 
             $results->addResult($name, $field->validate($value));
         }

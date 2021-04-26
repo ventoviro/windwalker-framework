@@ -18,7 +18,7 @@ class AppendableAttributeValue
      *
      * @var mixed
      */
-    public $value;
+    public mixed $value;
 
     /**
      * Create a new appendable attribute value.

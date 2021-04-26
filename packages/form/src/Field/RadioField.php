@@ -23,7 +23,7 @@ use function Windwalker\DOM\h;
  */
 class RadioField extends ListField
 {
-    public function buildInput(DOMElement $input, array $options = []): string|DOMElement
+    public function buildFieldElement(DOMElement $input, array $options = []): string|DOMElement
     {
         $attrs = $input->getAttributes(true);
         unset($attrs['name']);

@@ -400,13 +400,20 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
     /**
      * buildAttributes
      *
-     * @param  array        $attributes
-     * @param  string|null  $type
+     * @param  array|NativeDOMElement  $attributes
+     * @param  string|null             $type
      *
      * @return  string
      */
-    public static function buildAttributes(array $attributes, ?string $type = null): string
+    public static function buildAttributes(array|NativeDOMElement $attributes, ?string $type = null): string
     {
+        if ($attributes instanceof NativeDOMElement) {
+            $attributes = array_map(
+                fn (\DOMAttr $attr) => $attr->value,
+                iterator_to_array($attributes->attributes)
+            );
+        }
+
         $ele = static::create('root', $attributes, '')->render($type);
 
         return trim(Str::removeLeft(Str::removeRight($ele, '></root>'), '<root'));

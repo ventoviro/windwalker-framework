@@ -11,10 +11,12 @@ declare(strict_types=1);
 
 namespace Windwalker\Authentication;
 
+use Windwalker\Form\ValidateResult;
+
 /**
  * The AuthResultSet class.
  */
-class ResultSet implements \IteratorAggregate
+class ResultSet implements \IteratorAggregate, \Countable
 {
     /**
      * @var AuthResult[]
@@ -44,18 +46,28 @@ class ResultSet implements \IteratorAggregate
 
     public function isSuccess(): bool
     {
-        foreach ($this->results as $result) {
-            if ($result->isSuccess()) {
-                return true;
-            }
-        }
-
-        return false;
+        return $this->getFirstFailure() === null;
     }
 
     public function isFailure(): bool
     {
         return !$this->isSuccess();
+    }
+
+    public function getFirstFailure(): ?AuthResult
+    {
+        foreach ($this->results as $result) {
+            if ($result->isFailure()) {
+                return $result;
+            }
+        }
+
+        return null;
+    }
+
+    public function first(): ?AuthResult
+    {
+        return $this->results[array_key_first($this->results)] ?? null;
     }
 
     /**
@@ -87,5 +99,10 @@ class ResultSet implements \IteratorAggregate
         foreach ($this->results as $k => $result) {
             yield $k => $result;
         }
+    }
+
+    public function count(): int
+    {
+        return count($this->results);
     }
 }

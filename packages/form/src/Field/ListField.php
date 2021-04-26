@@ -53,6 +53,11 @@ class ListField extends AbstractField
         return $input;
     }
 
+    protected function createInputElement(array $attrs = []): DOMElement
+    {
+        return h('select', $attrs, null);
+    }
+
     /**
      * buildInput
      *
@@ -61,19 +66,17 @@ class ListField extends AbstractField
      *
      * @return DOMElement
      */
-    public function buildInput(DOMElement $input, array $options = []): string|DOMElement
+    public function buildFieldElement(DOMElement $input, array $options = []): string|DOMElement
     {
-        $select = h('select', $input->getAttributes(true));
-
         foreach ($this->getOptions() as $key => $option) {
-            $this->appendOption($select, $option, (string) $key);
+            $this->appendOption($input, $option, (string) $key);
         }
 
         if ($this->isMultiple()) {
-            $select['name'] = $this->getInputName('[]');
+            $input['name'] = $this->getInputName('[]');
         }
 
-        return $select;
+        return $input;
     }
 
     private function appendOption(DOMElement $select, DOMElement|array $option, ?string $group = null): void
@@ -203,22 +206,39 @@ class ListField extends AbstractField
     /**
      * registerOptions
      *
-     * @param  array     $options
-     * @param  callable  $handler
+     * @param  array          $options
+     * @param  callable|null  $handler
      *
      * @return  static
      *
      * @since  3.5.2
      */
-    public function registerOptions(array $options, callable $handler): self
+    public function registerOptions(array $options, ?callable $handler = null): self
     {
         foreach ($options as $name => $option) {
             if (is_numeric($name)) {
                 // Option
-                $handler($this, $option, null);
+                if ($handler) {
+                    $handler($this, $option, null);
+                } else {
+                    $this->option((string) $option, (string) $option);
+                }
+            } elseif (is_array($option)) {
+                foreach ($option as $opt) {
+                    // Group
+                    if ($handler) {
+                        $handler($this, $opt, null, $name);
+                    } else {
+                        $this->option((string) $opt, (string) $opt, [], (string) $name);
+                    }
+                }
             } else {
-                // Group
-                $handler($this, $option, $name);
+                // Option
+                if ($handler) {
+                    $handler($this, $option, $name);
+                } else {
+                    $this->option((string) $option, (string) $name);
+                }
             }
         }
 

@@ -250,7 +250,7 @@ class ComponentAttributes implements \ArrayAccess, \IteratorAggregate
         [$appendableAttributes, $nonAppendableAttributes] = collect($this->attributes)
             ->partition(
                 function ($value, $key) use ($attributeDefaults) {
-                    return $key === 'class' ||
+                    return $key === 'class' || $key === 'style' ||
                         (isset($attributeDefaults[$key]) &&
                             $attributeDefaults[$key] instanceof AppendableAttributeValue);
                 },

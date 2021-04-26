@@ -40,6 +40,6 @@ class SimpleRenderer implements FormRendererInterface
      */
     public function renderInput(AbstractField $field, DOMElement $input, array $options = []): string
     {
-        return (string) $field->buildInput($input, $options);
+        return (string) $field->buildFieldElement($input, $options);
     }
 }

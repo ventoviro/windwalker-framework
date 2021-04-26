@@ -16,7 +16,7 @@ use Generator;
 /**
  * The ResultSet class.
  */
-class ResultSet implements \IteratorAggregate
+class ResultSet implements \IteratorAggregate, \Countable
 {
     /**
      * @var ValidateResult[]
@@ -49,18 +49,28 @@ class ResultSet implements \IteratorAggregate
 
     public function isSuccess(): bool
     {
-        foreach ($this->results as $result) {
-            if ($result->isFailure()) {
-                return false;
-            }
-        }
-
-        return true;
+        return $this->getFirstFailure() === null;
     }
 
     public function isFailure(): bool
     {
         return !$this->isSuccess();
+    }
+
+    public function first(): ?ValidateResult
+    {
+        return $this->results[array_key_first($this->results)] ?? null;
+    }
+
+    public function getFirstFailure(): ?ValidateResult
+    {
+        foreach ($this->results as $result) {
+            if ($result->isFailure()) {
+                return $result;
+            }
+        }
+
+        return null;
     }
 
     /**
@@ -79,5 +89,10 @@ class ResultSet implements \IteratorAggregate
         foreach ($this->results as $k => $result) {
             yield $k => $result;
         }
+    }
+
+    public function count(): int
+    {
+        return count($this->results);
     }
 }

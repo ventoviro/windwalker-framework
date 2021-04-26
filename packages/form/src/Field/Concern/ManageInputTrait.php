@@ -35,7 +35,7 @@ trait ManageInputTrait
         return $this->getForm()->getRenderer()->renderInput($this, $input, $options);
     }
 
-    public function buildInput(DOMElement $input, array $options = []): string|DOMElement
+    public function buildFieldElement(DOMElement $input, array $options = []): string|DOMElement
     {
         $surrounds = $this->getSurrounds();
 
