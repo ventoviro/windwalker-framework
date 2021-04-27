@@ -226,13 +226,9 @@ abstract class AbstractField
     public function getNamespaceName(bool $withParent = false): string
     {
         $name = $this->name;
-        $ns   = $this->getNamespace();
+        $ns   = $this->getNamespace($withParent);
 
         if ($ns) {
-            $name = $ns . '/' . $name;
-        }
-
-        if ($withParent && $ns = $this->getForm()->getNamespace()) {
             $name = $ns . '/' . $name;
         }
 
@@ -400,11 +396,19 @@ abstract class AbstractField
     /**
      * Method to get property Control
      *
+     * @param  bool  $withParent
+     *
      * @return  string
      */
-    public function getNamespace(): string
+    public function getNamespace(bool $withParent = false): string
     {
-        return $this->namespace;
+        $namespace = $this->namespace;
+
+        if ($withParent && $ns = $this->getForm()->getNamespace()) {
+            $namespace = trim($ns . '/' . $namespace, '/');
+        }
+
+        return $namespace;
     }
 
     /**

@@ -78,7 +78,7 @@ abstract class Arr
         }
 
         if ($nodes !== [] && (is_array($value) || is_object($value))) {
-            return static::has($value, implode($delimiter, $nodes));
+            return static::has($value, implode($delimiter, $nodes), $delimiter);
         }
 
         return true;

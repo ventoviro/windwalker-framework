@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Windwalker\Form;
 
 use Attribute;
-use Closure;
 use Generator;
 use InvalidArgumentException;
 use IteratorAggregate;
@@ -235,6 +234,8 @@ class Form implements IteratorAggregate
      * @param  string              $namespace
      *
      * @return Generator
+     *
+     * @psalm-return AbstractField[]
      */
     public function getFields(Symbol|string|null $fieldset = null, string $namespace = ''): Generator
     {
@@ -263,13 +264,26 @@ class Form implements IteratorAggregate
     /**
      * removeField
      *
-     * @param  string  $namespace
+     * @param  string|AbstractField  $field  Field full namespace name or object.
      *
      * @return  $this
      */
-    public function removeField(string $namespace): static
+    public function removeField(string|AbstractField $field): static
     {
-        unset($this->fields[$namespace]);
+        if (is_stringable($field)) {
+            unset($this->fields[$field]);
+        } else {
+            $this->fields = array_filter($this->fields, fn ($f) => $f !== $field);
+        }
+
+        return $this;
+    }
+
+    public function removeFields(Symbol|string|null $fieldset = null, string $namespace = ''): static
+    {
+        foreach ($this->getFields($fieldset, $namespace) as $field) {
+            $this->removeField($field->getNamespaceName());
+        }
 
         return $this;
     }
@@ -314,6 +328,13 @@ class Form implements IteratorAggregate
         return $this->fieldsets[$name];
     }
 
+    public function removeFieldset(string $name): static
+    {
+        unset($this->fieldsets[$name]);
+
+        return $this;
+    }
+
     /**
      * Wrap by namespace, use `/` to separate namespace.
      *
@@ -353,6 +374,8 @@ class Form implements IteratorAggregate
                     $field->filter($data)
                 );
             } else {
+                $name = $field->getNamespaceName(true);
+
                 if (!Arr::has($data, $name, '/')) {
                     continue;
                 }
@@ -397,7 +420,7 @@ class Form implements IteratorAggregate
             if ($field instanceof CompositeFieldInterface) {
                 $value = $data;
             } else {
-                $value = Arr::get($data, $name, '/');
+                $value = Arr::get($data, $field->getNamespaceName(true), '/');
             }
 
             $results->addResult($name, $field->validate($value));
@@ -524,6 +547,14 @@ class Form implements IteratorAggregate
     public function setNamespace(string $namespace): static
     {
         $this->namespace = $namespace;
+
+        return $this;
+    }
+
+    public function appendNamespace(string $namespace): static
+    {
+        $this->namespace .= '/' . $namespace;
+        $this->namespace = FormNormalizer::clearNamespace($this->namespace);
 
         return $this;
     }

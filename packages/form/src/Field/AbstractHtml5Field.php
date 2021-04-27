@@ -28,11 +28,10 @@ abstract class AbstractHtml5Field extends TextField
     /**
      * max
      *
-     * @param  int   $max
-     * @param  bool  $addFilter
-     * @param  bool  $forceInt
+     * @param  int|null  $max
+     * @param  bool      $addFilter
      *
-     * @return  static|mixed
+     * @return mixed
      *
      * @since  3.4.2
      */
@@ -48,10 +47,10 @@ abstract class AbstractHtml5Field extends TextField
     /**
      * min
      *
-     * @param  int   $min
-     * @param  bool  $addFilter
+     * @param  int|null  $min
+     * @param  bool      $addFilter
      *
-     * @return  mixed|static
+     * @return mixed
      *
      * @since  3.4.2
      */
