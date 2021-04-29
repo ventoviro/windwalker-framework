@@ -17,7 +17,6 @@ use Windwalker\Event\Attributes\ListenTo;
 use Windwalker\Event\EventDispatcher;
 use Windwalker\Event\EventEmitter;
 use Windwalker\Event\EventInterface;
-use Windwalker\Event\EventSubscriberInterface;
 use Windwalker\Event\Provider\SimpleListenerProvider;
 use Windwalker\Utilities\TypeCast;
 
@@ -392,14 +391,16 @@ class EventEmitterTest extends TestCase
             public $flower = '';
 
             #[ListenTo('count')]
-            public function count1(EventInterface $event): void
-            {
+            public function count1(
+                EventInterface $event
+            ): void {
                 $event['result'] = $this->count += $event['num'];
             }
 
             #[ListenTo('count')]
-            public function count2(EventInterface $event): void
-            {
+            public function count2(
+                EventInterface $event
+            ): void {
                 $event['result'] = $this->count += $event['num'];
             }
 
@@ -419,20 +420,23 @@ class EventEmitterTest extends TestCase
             public $count = 0;
 
             #[ListenTo('foo', 500, true)]
-            public function foo(EventInterface $event)
-            {
+            public function foo(
+                EventInterface $event
+            ) {
                 $this->count += $event['num'];
             }
 
             #[ListenTo('bar', 100, true)]
-            public function bar1(EventInterface $event)
-            {
+            public function bar1(
+                EventInterface $event
+            ) {
                 $this->count *= $event['num'];
             }
 
             #[ListenTo('bar', 100)]
-            public function bar2(EventInterface $event)
-            {
+            public function bar2(
+                EventInterface $event
+            ) {
                 $this->count *= $event['num'];
             }
         };

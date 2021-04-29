@@ -153,8 +153,8 @@ abstract class AbstractEvent implements EventInterface
      */
     public function merge(array $arguments): static
     {
-        foreach ($arguments as $key => &$value) {
-            $this->$key = &$value;
+        foreach ($arguments as $key => $value) {
+            $this->$key = $value;
         }
 
         return $this;

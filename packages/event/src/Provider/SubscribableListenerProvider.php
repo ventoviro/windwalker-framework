@@ -29,8 +29,6 @@ use function Windwalker\disposable;
  */
 class SubscribableListenerProvider implements SubscribableListenerProviderInterface
 {
-    use AttributesAwareTrait;
-
     /**
      * @var ListenersQueue[]
      */
@@ -41,13 +39,6 @@ class SubscribableListenerProvider implements SubscribableListenerProviderInterf
      */
     public function __construct()
     {
-        $this->configureAttributes($this->getAttributesResolver());
-    }
-
-    protected function configureAttributes(AttributesResolver $resolver): void
-    {
-        $resolver->registerAttribute(ListenTo::class, \Attribute::TARGET_METHOD | \Attribute::TARGET_FUNCTION);
-        $resolver->setOption('provider', $this);
     }
 
     /**
@@ -88,13 +79,37 @@ class SubscribableListenerProvider implements SubscribableListenerProviderInterf
      */
     public function subscribe(object $subscriber, ?int $priority = null): void
     {
-        $hasAttribute = (bool) AttributesAccessor::runAttributeIfExists(
-            new \ReflectionObject($subscriber),
-            EventSubscriber::class,
-            disposable(fn(): object => $this->getAttributesResolver()->resolveMethods($subscriber))
-        );
+        $ref = new \ReflectionObject($subscriber);
 
-        if (!$hasAttribute) {
+        if (AttributesAccessor::getFirstAttribute($ref, EventSubscriber::class)) {
+            foreach ($ref->getMethods() as $method) {
+                // Handle ListenTo attributes
+                foreach ($method->getAttributes(ListenTo::class, \ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
+                    /** @var ListenTo $listenTo */
+                    $listenTo = $attribute->newInstance();
+                    $listener = [$subscriber, static::normalize($method->getName())];
+
+                    if ($listenTo->once) {
+                        $listener = disposable($listener);
+                    }
+
+                    $this->on(
+                        $listenTo->event,
+                        $listener,
+                        $listenTo->priority
+                    );
+                }
+
+                // Handle Event attributes
+                foreach ($method->getAttributes(EventInterface::class, \ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
+                    $this->on(
+                        $attribute->getName(),
+                        [$subscriber, static::normalize($method->getName())],
+                        $priority
+                    );
+                }
+            }
+        } else {
             $methods = get_class_methods($subscriber);
 
             foreach ($methods as $method) {

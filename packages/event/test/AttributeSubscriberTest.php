@@ -14,14 +14,9 @@ namespace Windwalker\Event\Test;
 use PHPUnit\Framework\TestCase;
 use Windwalker\Event\Attributes\EventSubscriber;
 use Windwalker\Event\Attributes\ListenTo;
-use Windwalker\Event\EventDispatcher;
 use Windwalker\Event\EventEmitter;
 use Windwalker\Event\EventInterface;
-use Windwalker\Event\EventSubscriberInterface;
-use Windwalker\Event\Provider\SimpleListenerProvider;
 use Windwalker\Utilities\Accessible\BaseAccessibleTrait;
-
-use function Windwalker\disposable;
 
 /**
  * The AttributeSubscriberTest class.
@@ -169,14 +164,16 @@ class AttributeSubscriberTest extends TestCase
             public static int $staticCount = 0;
 
             #[ListenTo('count')]
-            public function count1(EventInterface $event): void
-            {
+            public function count1(
+                EventInterface $event
+            ): void {
                 $event['result'] = $this->count += $event['num'];
             }
 
             #[ListenTo('count')]
-            public function count2(EventInterface $event): void
-            {
+            public function count2(
+                EventInterface $event
+            ): void {
                 $event['result'] = $this->count += $event['num'];
             }
 
@@ -202,20 +199,23 @@ class AttributeSubscriberTest extends TestCase
             public $count = 0;
 
             #[ListenTo('foo', 500, true)]
-            public function foo(EventInterface $event)
-            {
+            public function foo(
+                EventInterface $event
+            ) {
                 $this->count += $event['num'];
             }
 
             #[ListenTo('bar', 100, true)]
-            public function bar1(EventInterface $event)
-            {
+            public function bar1(
+                EventInterface $event
+            ) {
                 $this->count *= $event['num'];
             }
 
             #[ListenTo('bar', 100)]
-            public function bar2(EventInterface $event)
-            {
+            public function bar2(
+                EventInterface $event
+            ) {
                 $this->count *= $event['num'];
             }
         };

@@ -56,7 +56,7 @@ class DependencyResolver
         $options |= $this->container->getOptions();
 
         if (is_string($class)) {
-            $builder = fn(array $args, int $options) => $this->resolvePropertiesAttributes(
+            $builder = fn(array $args, int $options) => $this->resolveMembersAttributes(
                 $this->newInstanceByClassName($class, $args, $options),
                 $options
             );
@@ -91,7 +91,7 @@ class DependencyResolver
                 );
             }
 
-            $instance = $this->resolvePropertiesAttributes($instance, $options);
+            $instance = $this->resolveMembersAttributes($instance, $options);
 
             if (!($options & Container::IGNORE_ATTRIBUTES)) {
                 $instance = $this->container->getAttributesResolver()
@@ -113,11 +113,11 @@ class DependencyResolver
         return $instance;
     }
 
-    protected function resolvePropertiesAttributes(object $instance, int $options): object
+    protected function resolveMembersAttributes(object $instance, int $options): object
     {
         if (!($options & Container::IGNORE_ATTRIBUTES)) {
             $instance = $this->container->getAttributesResolver()
-                ->resolveProperties($instance);
+                ->resolveObjectMembers($instance);
         }
 
         return $instance;

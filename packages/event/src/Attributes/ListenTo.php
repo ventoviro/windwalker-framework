@@ -23,7 +23,7 @@ use function Windwalker\disposable;
  * The ListenTo class.
  */
 #[\Attribute(\Attribute::TARGET_METHOD | \Attribute::TARGET_FUNCTION | \Attribute::IS_REPEATABLE)]
-class ListenTo implements AttributeInterface
+class ListenTo
 {
     /**
      * ListenTo constructor.
@@ -33,50 +33,10 @@ class ListenTo implements AttributeInterface
      * @param  bool      $once
      */
     public function __construct(
-        protected string $event,
-        protected ?int $priority = ListenerPriority::NORMAL,
-        protected bool $once = false,
+        public string $event,
+        public ?int $priority = ListenerPriority::NORMAL,
+        public bool $once = false,
     ) {
         //
-    }
-
-    /**
-     * @inheritDoc
-     */
-    public function __invoke(AttributeHandler $handler): callable
-    {
-        return function () use ($handler) {
-            $resolver = $handler->getResolver();
-            $provider = $resolver->getOption('provider');
-
-            if (!$provider instanceof SubscribableListenerProviderInterface) {
-                throw new \LogicException(
-                    sprintf(
-                        'Event Provider should be %s, %s given',
-                        SubscribableListenerProviderInterface::class,
-                        Assert::describeValue($provider)
-                    )
-                );
-            }
-
-            $listener = $handler();
-
-            $this->listen($provider, $listener);
-
-            return $listener;
-        };
-    }
-
-    public function listen(SubscribableListenerProviderInterface $provider, callable $listener): void
-    {
-        if ($this->once) {
-            $listener = disposable($listener);
-        }
-
-        $provider->on(
-            $this->event,
-            $listener,
-            $this->priority
-        );
     }
 }

@@ -20,13 +20,12 @@ interface EventListenableInterface
      * Add a subscriber object with multiple listener methods to this dispatcher.
      * If object is not EventSubscriberInterface, it will be registered to all events matching it's methods name.
      *
-     * @param  object|EventSubscriberInterface  $subscriber  The listener
-     * @param  integer                          $priority    The listener priority.
+     * @param  object    $subscriber  The listener
+     * @param  int|null  $priority    The listener priority.
      *
      * @return  static  This method is chainable.
      *
-     * @throws  \InvalidArgumentException
-     *
+     * @throws \InvalidArgumentException
      * @since   2.0
      */
     public function subscribe(object $subscriber, ?int $priority = null): static;
