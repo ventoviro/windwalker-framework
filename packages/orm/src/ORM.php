@@ -28,6 +28,7 @@ use Windwalker\ORM\Attributes\OneToMany;
 use Windwalker\ORM\Attributes\OneToOne;
 use Windwalker\ORM\Attributes\PK;
 use Windwalker\ORM\Attributes\Table;
+use Windwalker\ORM\Attributes\Watch;
 use Windwalker\ORM\Event\AfterDeleteEvent;
 use Windwalker\ORM\Event\AfterSaveEvent;
 use Windwalker\ORM\Event\AfterUpdateWhereEvent;
@@ -110,6 +111,7 @@ class ORM
         $ar->registerAttribute(AfterUpdateWhereEvent::class, \Attribute::TARGET_METHOD);
         $ar->registerAttribute(BeforeDeleteEvent::class, \Attribute::TARGET_METHOD);
         $ar->registerAttribute(AfterDeleteEvent::class, \Attribute::TARGET_METHOD);
+        $ar->registerAttribute(Watch::class, \Attribute::TARGET_METHOD);
     }
 
     /**

@@ -12,6 +12,8 @@ declare(strict_types=1);
 namespace Windwalker\ORM\Metadata;
 
 use Windwalker\ORM\Attributes\{Column, PK, Table};
+use Windwalker\Event\EventAwareInterface;
+use Windwalker\Event\EventAwareTrait;
 use Windwalker\ORM\Cast\CastManager;
 use Windwalker\ORM\EntityMapper;
 use Windwalker\ORM\ORM;
@@ -23,8 +25,9 @@ use Windwalker\Utilities\Reflection\ReflectAccessor;
 /**
  * The EntityMetadata class.
  */
-class EntityMetadata
+class EntityMetadata implements EventAwareInterface
 {
+    use EventAwareTrait;
     use RuntimeCacheTrait;
     use OptionAccessTrait;
 
@@ -348,13 +351,17 @@ class EntityMetadata
         $mapperClass ??= $this->getMapperClass();
 
         if ($mapperClass === EntityMapper::class) {
-            return new EntityMapper(...$args);
+            $mapper = new EntityMapper(...$args);
+        } else {
+            $mapper = $orm->getAttributesResolver()->createObject(
+                $mapperClass,
+                ...$args
+            );
         }
 
-        return $orm->getAttributesResolver()->createObject(
-            $mapperClass,
-            ...$args
-        );
+        $mapper->addEventDealer($this);
+
+        return $mapper;
     }
 
     /**
