@@ -38,12 +38,11 @@ class AttributeHandler
         $this->set($handler);
     }
 
-    public function __invoke(&...$args)
+    public function __invoke(&...$args): mixed
     {
         // try {
             return ($this->handler)(...$args);
         // } catch (\Throwable $e) {
-        //     var_dump($this->handler);
         //     show($this->handler, $this);
         //     throw $e;
         // }

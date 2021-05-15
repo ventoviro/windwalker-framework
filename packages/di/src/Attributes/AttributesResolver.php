@@ -59,6 +59,20 @@ class AttributesResolver extends BaseAttributesResolver
     }
 
     /**
+     * Create object by class and resolve attributes.
+     *
+     * @param  string  $class
+     * @param  mixed   ...$args
+     *
+     * @return  object
+     * @throws \ReflectionException
+     */
+    public function createObject(string $class, ...$args): object
+    {
+        return $this->container->newInstance($class, $args);
+    }
+
+    /**
      * Resolve class constructor and return create function.
      *
      * @param  string         $class

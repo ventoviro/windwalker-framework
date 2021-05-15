@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\ORM;
 
 use Windwalker\Attributes\AttributesAwareTrait;
+use Windwalker\Attributes\AttributesResolver;
 use Windwalker\Database\DatabaseAdapter;
 use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\Database\Hydrator\FieldHydratorInterface;
@@ -81,12 +82,27 @@ class ORM
 
         $this->entityMetadataCollection = new EntityMetadataCollection($this);
 
-        $this->init();
+        $this->setAttributesResolver(new AttributesResolver());
     }
 
-    protected function init()
+    /**
+     * setAttributesResolver
+     *
+     * @param  AttributesResolver  $attributesResolver
+     *
+     * @return  static
+     */
+    public function setAttributesResolver(AttributesResolver $attributesResolver): static
     {
-        $ar = $this->getAttributesResolver();
+        $this->initAttributeResolver($attributesResolver);
+
+        $this->attributeResolver = $attributesResolver;
+
+        return $this;
+    }
+
+    protected function initAttributeResolver(AttributesResolver $ar): void
+    {
         $ar->setOption('orm', $this);
 
         $ar->registerAttribute(AutoIncrement::class, \Attribute::TARGET_PROPERTY);
@@ -175,20 +191,45 @@ class ORM
     }
 
     /**
+     * createEntity
+     *
+     * @param  string  $entityClass
+     *
+     * @return  object
+     *
+     * @throws \ReflectionException
+     */
+    public function createEntity(string $entityClass, array $data = []): object
+    {
+        $entity = $this->mapper($entityClass)->createEntity();
+
+        if ($data !== []) {
+            $entity = $this->hydrateEntity($data, $entity);
+        }
+
+        return $entity;
+    }
+
+    /**
      * hydrateEntity
      *
      * @param  array   $data
      * @param  object  $entity
      *
      * @return  object
+     * @throws \ReflectionException
      */
     public function hydrateEntity(array $data, object $entity): object
     {
         return $this->getEntityHydrator()->hydrate($data, $entity);
     }
 
-    public function extractEntity(array|object $entity): array
+    public function extractEntity(array|object|null $entity): array
     {
+        if ($entity === null) {
+            return [];
+        }
+
         if (is_array($entity)) {
             return $entity;
         }

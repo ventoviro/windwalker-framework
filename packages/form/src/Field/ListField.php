@@ -213,7 +213,7 @@ class ListField extends AbstractField
      *
      * @since  3.5.2
      */
-    public function registerOptions(array $options, ?callable $handler = null): self
+    public function registerOptions(iterable $options, ?callable $handler = null): self
     {
         foreach ($options as $name => $option) {
             if (is_numeric($name)) {

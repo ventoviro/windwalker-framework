@@ -17,6 +17,11 @@ namespace PHPSTORM_META {
     );
 
     override(
+        \Windwalker\ORM\ORM::createEntity(0),
+        type(0)
+    );
+
+    override(
         \Windwalker\ORM\ORM::findOne(0),
         type(0)
     );

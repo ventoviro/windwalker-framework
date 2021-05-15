@@ -250,7 +250,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
         }
 
         try {
-            return parent::setAttribute($name, static::valueToString($value));
+            return parent::setAttribute($name, (string) static::valueToString($value));
         } catch (\DOMException $e) {
             if ($e->getCode() === 5) {
                 throw new \DOMException(
