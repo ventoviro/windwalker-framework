@@ -25,7 +25,7 @@ use Windwalker\ORM\Metadata\EntityMetadata;
 /**
  * The Watch class.
  */
-#[\Attribute(\Attribute::TARGET_METHOD)]
+#[\Attribute(\Attribute::TARGET_METHOD | \Attribute::TARGET_PROPERTY)]
 class Watch implements AttributeInterface
 {
     use ORMAttributeTrait;
@@ -37,12 +37,18 @@ class Watch implements AttributeInterface
     public const INCLUDE_UPDATE_WHERE = 1 << 2;
 
     /**
+     * @var callable|string
+     */
+    protected $columnOrHandler;
+
+    /**
      * Watch constructor.
      */
     public function __construct(
-        public string $field,
+        string|callable $columnOrHandler,
         public int $options = 0,
     ) {
+        $this->columnOrHandler = $columnOrHandler;
     }
 
     protected function handle(EntityMetadata $metadata, AttributeHandler $handler): callable
@@ -50,99 +56,24 @@ class Watch implements AttributeInterface
         $metadata->addAttributeMap(static::class, $handler->getReflector());
 
         return function () use ($handler, $metadata) {
-            $method = $handler();
+            $ref = $handler->getReflector();
+            $target = $handler();
 
-            if ($this->options & static::BEFORE_SAVE) {
-                $metadata->on(
-                    BeforeSaveEvent::class,
-                    function (BeforeSaveEvent $event) use ($handler, $method) {
-                        if (!($this->options & static::ON_CREATE) && $event->getType() === BeforeSaveEvent::TYPE_CREATE) {
-                            return;
-                        }
-
-                        $val    = $event->getData()[$this->field] ?? null;
-                        $oldVal = $event->getOldData()[$this->field] ?? null;
-
-                        if ($val !== $oldVal) {
-                            $watchEvent = self::createWatchEvent($event, $val, $oldVal);
-
-                            $handler->getResolver()
-                                ->call(
-                                    $method,
-                                    [
-                                        $watchEvent::class => $watchEvent,
-                                        'event' => $watchEvent,
-                                    ]
-                                );
-                        }
-                    }
-                );
-                $metadata->on(
-                    BeforeUpdateWhereEvent::class,
-                    function (BeforeUpdateWhereEvent $event) use ($method, $handler) {
-                        $val = $event->getData()[$this->field] ?? null;
-
-                        $watchEvent = self::createWatchEvent($event, $val);
-
-                        $handler->getResolver()
-                            ->call(
-                                $method,
-                                [
-                                    $watchEvent::class => $watchEvent,
-                                    'event' => $watchEvent,
-                                ]
-                            );
-                    }
-                );
+            if ($ref instanceof \ReflectionProperty) {
+                $method = $this->columnOrHandler;
+                $column = $metadata->getColumnByPropertyName($ref->getName())->getName();
             } else {
-                $metadata->on(
-                    AfterSaveEvent::class,
-                    function (AfterSaveEvent $event) use ($handler, $method) {
-                        if (!($this->options & static::ON_CREATE) && $event->getType() === AfterSaveEvent::TYPE_CREATE) {
-                            return;
-                        }
-
-                        $val    = $event->getData()[$this->field] ?? null;
-                        $oldVal = $event->getOldData()[$this->field] ?? null;
-
-                        if ($val !== $oldVal) {
-                            $watchEvent = self::createWatchEvent($event, $val, $oldVal);
-
-                            $handler->getResolver()
-                                ->call(
-                                    $method,
-                                    [
-                                        $watchEvent::class => $watchEvent,
-                                        'event' => $watchEvent,
-                                    ]
-                                );
-                        }
-                    }
-                );
-                $metadata->on(
-                    AfterUpdateWhereEvent::class,
-                    function (AfterUpdateWhereEvent $event) use ($method, $handler) {
-                        $val = $event->getData()[$this->field] ?? null;
-
-                        $watchEvent = self::createWatchEvent($event, $val);
-
-                        $handler->getResolver()
-                            ->call(
-                                $method,
-                                [
-                                    $watchEvent::class => $watchEvent,
-                                    'event' => $watchEvent,
-                                ]
-                            );
-                    }
-                );
+                $method = $target;
+                $column = $this->columnOrHandler;
             }
+
+            $metadata->watch($column, $method, $this->options);
 
             return $method;
         };
     }
 
-    protected static function createWatchEvent(
+    public static function createWatchEvent(
         AbstractSaveEvent|AbstractUpdateWhereEvent $event,
         mixed $value,
         mixed $oldValue = null,

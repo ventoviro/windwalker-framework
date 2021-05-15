@@ -11,11 +11,15 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Metadata;
 
-use Windwalker\ORM\Attributes\{Column, PK, Table};
+use Windwalker\ORM\Attributes\{Column, PK, Table, Watch};
 use Windwalker\Event\EventAwareInterface;
 use Windwalker\Event\EventAwareTrait;
 use Windwalker\ORM\Cast\CastManager;
 use Windwalker\ORM\EntityMapper;
+use Windwalker\ORM\Event\AfterSaveEvent;
+use Windwalker\ORM\Event\AfterUpdateWhereEvent;
+use Windwalker\ORM\Event\BeforeSaveEvent;
+use Windwalker\ORM\Event\BeforeUpdateWhereEvent;
 use Windwalker\ORM\ORM;
 use Windwalker\ORM\Relation\RelationManager;
 use Windwalker\Utilities\Cache\RuntimeCacheTrait;
@@ -106,12 +110,12 @@ class EntityMetadata implements EventAwareInterface
 
     public function setup(): static
     {
-        $ar = $this->getORM()->getAttributesResolver();
-        $ar->setOption('metadata', $this);
+        $resolver = $this->getORM()->getAttributesResolver();
+        $resolver->setOption('metadata', $this);
 
         $ref = $this->getReflector();
 
-        $ar->resolveObjectDecorate($ref);
+        $resolver->resolveObjectDecorate($ref);
 
         if (!$this->tableName) {
             throw new \InvalidArgumentException(
@@ -122,9 +126,9 @@ class EntityMetadata implements EventAwareInterface
             );
         }
 
-        $ar->resolveObjectMembers($ref);
+        $resolver->resolveObjectMembers($ref);
 
-        $ar->setOption('metadata', null);
+        $resolver->setOption('metadata', null);
 
         return $this;
     }
@@ -410,5 +414,102 @@ class EntityMetadata implements EventAwareInterface
     public function getMapperClass(): string
     {
         return $this->mapperClass;
+    }
+
+    public function watch(string $column, callable $method, int $options = 0): \Closure
+    {
+        $unwatches = [];
+
+        if ($options & Watch::BEFORE_SAVE) {
+            $this->on(
+                BeforeSaveEvent::class,
+                $unwatches[BeforeSaveEvent::class] = function (BeforeSaveEvent $event) use ($column, $options, $method) {
+                    if (!($options & Watch::ON_CREATE) && $event->getType() === BeforeSaveEvent::TYPE_CREATE) {
+                        return;
+                    }
+
+                    $val    = $event->getData()[$column] ?? null;
+                    $oldVal = $event->getOldData()[$column] ?? null;
+
+                    if ($val !== $oldVal) {
+                        $watchEvent = Watch::createWatchEvent($event, $val, $oldVal);
+
+                        $this->getORM()->getAttributesResolver()
+                            ->call(
+                                $method,
+                                [
+                                    $watchEvent::class => $watchEvent,
+                                    'event' => $watchEvent,
+                                ]
+                            );
+                    }
+                }
+            );
+            $this->on(
+                BeforeUpdateWhereEvent::class,
+                $unwatches[BeforeUpdateWhereEvent::class] = function (BeforeUpdateWhereEvent $event) use ($column, $method) {
+                    $val = $event->getData()[$column] ?? null;
+
+                    $watchEvent = Watch::createWatchEvent($event, $val);
+
+                    $this->getORM()->getAttributesResolver()
+                        ->call(
+                            $method,
+                            [
+                                $watchEvent::class => $watchEvent,
+                                'event' => $watchEvent,
+                            ]
+                        );
+                }
+            );
+        } else {
+            $this->on(
+                AfterSaveEvent::class,
+                $unwatches[AfterSaveEvent::class] = function (AfterSaveEvent $event) use ($column, $options, $method) {
+                    if (!($options & Watch::ON_CREATE) && $event->getType() === AfterSaveEvent::TYPE_CREATE) {
+                        return;
+                    }
+
+                    $val    = $event->getData()[$column] ?? null;
+                    $oldVal = $event->getOldData()[$column] ?? null;
+
+                    if ($val !== $oldVal) {
+                        $watchEvent = Watch::createWatchEvent($event, $val, $oldVal);
+
+                        $this->getORM()->getAttributesResolver()
+                            ->call(
+                                $method,
+                                [
+                                    $watchEvent::class => $watchEvent,
+                                    'event' => $watchEvent,
+                                ]
+                            );
+                    }
+                }
+            );
+            $this->on(
+                AfterUpdateWhereEvent::class,
+                $unwatches[AfterUpdateWhereEvent::class] = function (AfterUpdateWhereEvent $event) use ($column, $method) {
+                    $val = $event->getData()[$column] ?? null;
+
+                    $watchEvent = Watch::createWatchEvent($event, $val);
+
+                    $this->getORM()->getAttributesResolver()
+                        ->call(
+                            $method,
+                            [
+                                $watchEvent::class => $watchEvent,
+                                'event' => $watchEvent,
+                            ]
+                        );
+                }
+            );
+        }
+
+        return function () use ($unwatches) {
+            foreach ($unwatches as $event => $listener) {
+                $this->getEventDispatcher()->off($event, $listener);
+            }
+        };
     }
 }
