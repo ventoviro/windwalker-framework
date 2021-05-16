@@ -81,7 +81,7 @@ class Response implements ResponseInterface
      * @param  int    $status   The status code.
      * @param  array  $headers  The custom headers.
      */
-    public function __construct($body = 'php://memory', $status = 200, array $headers = [])
+    public function __construct(mixed $body = 'php://memory', int $status = 200, array $headers = [])
     {
         $stream = $body;
 
