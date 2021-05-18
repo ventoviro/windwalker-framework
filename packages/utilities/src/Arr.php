@@ -830,7 +830,7 @@ abstract class Arr
 
         foreach ($args as $i => $array) {
             if (!is_array($array)) {
-                throw new InvalidArgumentException(sprintf('Argument #%d is not an array.', $i + 2));
+                throw new InvalidArgumentException(sprintf('Argument #%d is not an array.', $i + 1));
             }
 
             foreach ($array as $key => &$value) {
