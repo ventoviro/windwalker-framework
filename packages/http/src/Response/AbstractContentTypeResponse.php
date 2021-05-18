@@ -26,7 +26,7 @@ abstract class AbstractContentTypeResponse extends Response
      *
      * @var  string
      */
-    protected $type = 'text/plain';
+    protected string $type = 'text/plain';
 
     /**
      * Constructor.

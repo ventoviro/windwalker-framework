@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Http\Response;
 
 use InvalidArgumentException;
+use Psr\Http\Message\StreamInterface;
 use UnexpectedValueException;
 
 /**
@@ -26,7 +27,7 @@ class JsonResponse extends TextResponse
      *
      * @var  string
      */
-    protected $type = 'application/json';
+    protected string $type = 'application/json';
 
     /**
      * Constructor.
@@ -48,13 +49,18 @@ class JsonResponse extends TextResponse
     /**
      * Encode json.
      *
-     * @param  mixed  $data     The dat to convert.
+     * @param  mixed  $data     The data to convert.
      * @param  int    $options  The json_encode() options flag.
      *
-     * @return  string  Encoded json.
+     * @return  mixed  Encoded json.
+     * @throws \JsonException
      */
-    protected function encode(mixed $data, $options = 0): string
+    protected function encode(mixed $data, int $options = 0): mixed
     {
+        if ($data instanceof StreamInterface || is_resource($data)) {
+            return $data;
+        }
+
         // Check is already json string.
         if (is_string($data) && $data !== '') {
             $firstChar = $data[0];
@@ -64,16 +70,7 @@ class JsonResponse extends TextResponse
             }
         }
 
-        // Clear json_last_error()
-        json_encode(null);
-
-        $json = json_encode($data, $options);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new UnexpectedValueException(sprintf('JSON encode failure: %s', json_last_error_msg()));
-        }
-
-        return $json;
+        return json_encode($data, JSON_THROW_ON_ERROR | $options);
     }
 
     /**

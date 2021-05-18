@@ -164,17 +164,13 @@ class BacktraceHelper
     /**
      * replaceRoot
      *
-     * @param  string       $file
-     * @param  string|null  $replaceRoot
+     * @param  string  $file
+     * @param  string  $root
      *
      * @return  string
      */
-    public static function replaceRoot(string $file, ?string $replaceRoot = null): string
+    public static function replaceRoot(string $file, string $root): string
     {
-        if ($replaceRoot) {
-            $file = 'ROOT' . substr($file, strlen(WINDWALKER_ROOT));
-        }
-
-        return $file;
+        return 'ROOT' . Str::removeLeft($file, $root);
     }
 }

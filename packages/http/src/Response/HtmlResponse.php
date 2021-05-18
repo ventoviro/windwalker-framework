@@ -23,5 +23,5 @@ class HtmlResponse extends TextResponse
      *
      * @var  string
      */
-    protected $type = 'text/html';
+    protected string $type = 'text/html';
 }

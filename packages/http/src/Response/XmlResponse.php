@@ -27,7 +27,7 @@ class XmlResponse extends TextResponse
      *
      * @var  string
      */
-    protected $type = 'application/xml';
+    protected string $type = 'application/xml';
 
     /**
      * Constructor.
