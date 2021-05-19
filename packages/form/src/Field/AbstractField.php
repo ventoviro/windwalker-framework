@@ -42,6 +42,8 @@ use function Windwalker\DOM\h;
  * @method mixed isRequired()
  * @method $this disabled(bool $value)
  * @method mixed isDisabled()
+ * @method $this readonly(bool $value)
+ * @method mixed isReadonly()
  * @method  $this  onchange(string $value = null)
  * @method  mixed  getOnchange()
  * @method  $this  onfocus(string $value = null)
