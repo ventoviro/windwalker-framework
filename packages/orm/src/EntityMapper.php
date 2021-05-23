@@ -133,28 +133,27 @@ class EntityMapper implements EventAwareInterface
     /**
      * findOne
      *
-     * @param  mixed  $conditions
+     * @param  mixed        $conditions
+     * @param  string|null  $className
      *
      * @return  object|null
-     *
-     * @throws \ReflectionException
      */
-    public function findOne(mixed $conditions): ?object
+    public function findOne(mixed $conditions, ?string $className = null): ?object
     {
         $metadata = $this->getMetadata();
 
         return $this->from($metadata->getClassName())
             ->where($this->conditionsToWheres($conditions))
-            ->get($metadata->getClassName());
+            ->get($className ?? $metadata->getClassName());
     }
 
-    public function findList(mixed $conditions = []): \Generator
+    public function findList(mixed $conditions = [], ?string $className = null): \Generator
     {
         $metadata = $this->getMetadata();
 
         return $this->from($metadata->getClassName())
             ->where($this->conditionsToWheres($conditions))
-            ->getIterator($metadata->getClassName());
+            ->getIterator($className ?? $metadata->getClassName());
     }
 
     public function findResult(mixed $conditions): ?string

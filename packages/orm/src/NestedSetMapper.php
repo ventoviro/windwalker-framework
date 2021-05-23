@@ -44,6 +44,8 @@ class NestedSetMapper extends EntityMapper
 
     protected const RIGHT = 'right';
 
+    protected int $depth = 0;
+
     protected function init(): void
     {
         parent::init();
@@ -78,7 +80,7 @@ class NestedSetMapper extends EntityMapper
         );
     }
 
-    protected function postProcessFindHydration(HydrateEvent $event)
+    protected function postProcessFindHydration(HydrateEvent $event): void
     {
         $item = $event->getItem();
 
@@ -706,6 +708,8 @@ class NestedSetMapper extends EntityMapper
 
     protected function postProcessDelete(AfterDeleteEvent $event): void
     {
+        $this->depth++;
+
         /** @var ?NestedEntityInterface $entity */
         $entity = $event->getEntity();
 
@@ -730,17 +734,22 @@ class NestedSetMapper extends EntityMapper
                 ->execute();
         }
 
-        // Compress the left values.
-        $this->update()
-            ->set('lft', raw('lft - ' . $entity->getWidth()))
-            ->where('lft', '>', $entity->getRgt())
-            ->execute();
+        // Since this process uses event, we must make sure lft/rgt offset is only run at top level event.
+        if ($this->depth === 1) {
+            // Compress the left values.
+            $this->update()
+                ->set('lft', raw('lft - ' . $entity->getWidth()))
+                ->where('lft', '>', $entity->getLft())
+                ->execute();
 
-        // Compress the right values.
-        $this->update()
-            ->set('rgt', raw('rgt - ' . $entity->getWidth()))
-            ->where('rgt', '>', $entity->getRgt())
-            ->execute();
+            // Compress the right values.
+            $this->update()
+                ->set('rgt', raw('rgt - ' . $entity->getWidth()))
+                ->where('rgt', '>', $entity->getRgt())
+                ->execute();
+        }
+
+        $this->depth--;
     }
 
     public function getRoot(): ?NestedEntityInterface
