@@ -13,6 +13,7 @@ namespace Windwalker\ORM;
 
 use Windwalker\Attributes\AttributesAccessor;
 use Windwalker\Cache\Serializer\JsonSerializer;
+use Windwalker\Data\Collection;
 use Windwalker\Database\DatabaseAdapter;
 use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\Database\Schema\Ddl\Column as DbColumn;
@@ -32,6 +33,8 @@ use Windwalker\Utilities\Arr;
 use Windwalker\Utilities\Assert\TypeAssert;
 use Windwalker\Utilities\Reflection\ReflectAccessor;
 use Windwalker\Utilities\TypeCast;
+
+use function Windwalker\collect;
 
 /**
  * EntityMapper is an entity & database mapping object.
@@ -765,6 +768,19 @@ class EntityMapper implements EventAwareInterface
             $data,
             $this->createEntity()
         );
+    }
+
+    public function toCollection(array|object $data): Collection
+    {
+        $class = $this->getMetadata()->getClassName();
+
+        if ($data instanceof $class) {
+            $data = $this->extract($class);
+        } elseif (is_object($data)) {
+            $data = TypeCast::toArray($data);
+        }
+
+        return collect($data);
     }
 
     public function hydrate(array $data, object $entity): object
