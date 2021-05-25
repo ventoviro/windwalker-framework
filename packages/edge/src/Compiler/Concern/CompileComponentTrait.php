@@ -167,7 +167,7 @@ trait CompileComponentTrait
             $slots = "(function (...\$__scope) use (\$__edge, \$__data) { extract(\$__data);";
         }
 
-        return "<?php \$__edge->slot({$expression})$slots ?>";
+        return "<?php \$__data = get_defined_vars(); \$__edge->slot({$expression})$slots ?>";
     }
 
     protected function compileScope(string $expression): string
