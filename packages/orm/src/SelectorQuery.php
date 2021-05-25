@@ -80,8 +80,6 @@ class SelectorQuery extends Query implements EventAwareInterface
                     $object = $orm->getAttributesResolver()->createObject($object);
                 }
 
-                show($item);exit(' @Checkpoint');
-
                 $object = $orm->hydrateEntity($item, $object);
 
                 if (EntityMetadata::isEntity($object)) {

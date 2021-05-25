@@ -20,6 +20,8 @@ use Windwalker\Utilities\Assert\Assert;
 use Windwalker\Utilities\Cache\RuntimeCacheTrait;
 use Windwalker\Utilities\TypeCast;
 
+use function Windwalker\ds;
+
 /**
  * The Reflector class.
  */
@@ -123,6 +125,10 @@ class ReflectAccessor
         }
 
         foreach ($types as $type) {
+            if (is_object($value) && $value::class === $type->getName()) {
+                return $value;
+            }
+
             if ($type->getName() === 'mixed') {
                 return $value;
             }
