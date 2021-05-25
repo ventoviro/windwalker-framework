@@ -394,13 +394,12 @@ class EntityMapper implements EventAwareInterface
      */
     public function updateBatch(array|object $data, mixed $conditions = null, bool $updateNulls = false): array
     {
-        $dataToSave = $this->extractForSave($data);
+        $dataToSave = $this->extractForSave($data, $updateNulls);
 
         $results = [];
 
         foreach ($this->findList($conditions) as $item) {
             $item = $this->hydrate($dataToSave, $item);
-
             $results[] = $this->updateOne($item, null, $updateNulls);
         }
 

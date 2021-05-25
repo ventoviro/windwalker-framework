@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Database\Driver;
 
 use JetBrains\PhpStorm\Pure;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Windwalker\Database\DatabaseFactory;
 use Windwalker\Database\Event\QueryEndEvent;
@@ -22,6 +23,7 @@ use Windwalker\Database\Hydrator\HydratorInterface;
 use Windwalker\Database\Hydrator\SimpleHydrator;
 use Windwalker\Database\Platform\AbstractPlatform;
 use Windwalker\Database\Schema\AbstractSchemaManager;
+use Windwalker\Event\EventAwareInterface;
 use Windwalker\Pool\ConnectionPool;
 use Windwalker\Pool\PoolInterface;
 use Windwalker\Query\Query;
@@ -182,6 +184,12 @@ abstract class AbstractDriver implements HydratorAwareInterface
 
         // Prepare actions by driver
         $stmt = $this->createStatement($sql, $bounded, $options);
+
+        if ($query instanceof EventAwareInterface) {
+            $stmt->addDispatcherDealer($query->getEventDispatcher());
+        } elseif ($query instanceof EventDispatcherInterface) {
+            $stmt->addDispatcherDealer($query);
+        }
 
         // Register monitor events
         $stmt->on(

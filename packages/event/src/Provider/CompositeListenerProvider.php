@@ -182,14 +182,16 @@ class CompositeListenerProvider implements SubscribableListenerProviderInterface
 
         $listeners = &$this->getQueues();
 
-        if (!isset($listeners[$event->getName()])) {
+        $eventName = strtolower($event->getName());
+
+        if (!isset($listeners[$eventName])) {
             return $this;
         }
 
         if ($listenerOrSubscriber === null) {
-            unset($listeners[$event->getName()]);
+            unset($listeners[$eventName]);
         } else {
-            $queue = $listeners[$event->getName()];
+            $queue = $listeners[$eventName];
 
             if ($this->isSubscriber($listenerOrSubscriber)) {
                 $this->offSubscriber($queue, $listenerOrSubscriber);

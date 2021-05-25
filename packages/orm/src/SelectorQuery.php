@@ -36,7 +36,7 @@ use const Windwalker\Query\QN_IGNORE_DOTS;
  *
  * Query methods.
  */
-class SelectorQuery extends Query
+class SelectorQuery extends Query implements EventAwareInterface
 {
     use EventAwareTrait;
 
@@ -49,10 +49,10 @@ class SelectorQuery extends Query
     {
         parent::__construct($orm, $grammar ?? $orm->getDb()->getPlatform()->getGrammar());
 
-        $this->init();
+        $this->bindEvents();
     }
 
-    protected function init(): void
+    protected function bindEvents(): void
     {
         $this->on(
             ItemFetchedEvent::class,
@@ -79,6 +79,8 @@ class SelectorQuery extends Query
                 if (is_string($object)) {
                     $object = $orm->getAttributesResolver()->createObject($object);
                 }
+
+                show($item);exit(' @Checkpoint');
 
                 $object = $orm->hydrateEntity($item, $object);
 
@@ -234,18 +236,6 @@ class SelectorQuery extends Query
         return $on;
     }
 
-    protected function registerEvents(StatementInterface $stmt): StatementInterface
-    {
-        $stmt->addDispatcherDealer($this->getEventDispatcher());
-
-        return $stmt;
-    }
-
-    public function prepareStatement(): StatementInterface
-    {
-        return $this->registerEvents(parent::prepareStatement());
-    }
-
     public function getDb(): DatabaseAdapter
     {
         return $this->getORM()->getDb();
@@ -273,6 +263,26 @@ class SelectorQuery extends Query
                 static::class
             )
         );
+    }
+
+    /**
+     * When an object is cloned, PHP 5 will perform a shallow copy of all of the object's properties.
+     * Any properties that are references to other variables, will remain references.
+     * Once the cloning is complete, if a __clone() method is defined,
+     * then the newly created object's __clone() method will be called, to allow any necessary properties that need to
+     * be changed. NOT CALLABLE DIRECTLY.
+     *
+     * @return void
+     * @link https://php.net/manual/en/language.oop5.cloning.php
+     */
+    public function __clone(): void
+    {
+        parent::__clone();
+
+        $this->dispatcher->off(ItemFetchedEvent::class);
+        $this->dispatcher->off(HydrateEvent::class);
+
+        $this->bindEvents();
     }
 
     /**
