@@ -635,6 +635,39 @@ class EntityMapper implements EventAwareInterface
         return $items;
     }
 
+    public function copy(mixed $conditions = [], callable|iterable $newValue = null): array
+    {
+        $items = $this->findList($conditions, Collection::class);
+        $key = $this->getMainKey();
+
+        $creates = [];
+
+        /** @var Collection $item */
+        foreach ($items as $i => $item) {
+            $item = $item->dump();
+
+            unset($item[$key]);
+
+            if (is_callable($newValue)) {
+                $result = $newValue($item, $conditions);
+
+                if ($result) {
+                    $item = $result;
+                }
+            } else {
+                foreach ($newValue as $field => $value) {
+                    if ($value !== null) {
+                        $item[$field] = $value;
+                    }
+                }
+            }
+
+            $creates[] = $this->createOne($item);
+        }
+
+        return $creates;
+    }
+
     public function sync(iterable $items, mixed $conditions = [], ?array $compareKeys = null): array
     {
         // Handling conditions

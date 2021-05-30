@@ -108,4 +108,14 @@ abstract class AbstractSaveEvent extends AbstractEntityEvent
 
         return $this;
     }
+
+    public function isCreate(): bool
+    {
+        return $this->getType() === static::TYPE_CREATE;
+    }
+
+    public function isUpdate(): bool
+    {
+        return $this->getType() === static::TYPE_UPDATE;
+    }
 }

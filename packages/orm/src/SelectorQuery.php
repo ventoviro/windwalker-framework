@@ -94,8 +94,10 @@ class SelectorQuery extends Query implements EventAwareInterface
         );
     }
 
-    public function autoSelections(string $divider = '.'): static
+    public function autoSelections(string $divider = '.', array &$columns = null): static
     {
+        $columns ??= [];
+
         /** @var array<int, AsClause> $tables */
         $tables = array_values(Arr::collapse($this->getAllTables()));
 
@@ -116,6 +118,8 @@ class SelectorQuery extends Query implements EventAwareInterface
                 } else {
                     $as = $alias . $divider . $col;
                 }
+
+                $columns[] = $alias . $divider . $col;
 
                 $this->selectRaw(
                     '%n AS %r',
@@ -263,6 +267,7 @@ class SelectorQuery extends Query implements EventAwareInterface
         );
     }
 
+
     /**
      * When an object is cloned, PHP 5 will perform a shallow copy of all of the object's properties.
      * Any properties that are references to other variables, will remain references.
@@ -276,6 +281,8 @@ class SelectorQuery extends Query implements EventAwareInterface
     public function __clone(): void
     {
         parent::__clone();
+
+        $this->dispatcher = clone $this->dispatcher;
 
         $this->dispatcher->off(ItemFetchedEvent::class);
         $this->dispatcher->off(HydrateEvent::class);
