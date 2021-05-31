@@ -108,17 +108,18 @@ class Language implements LanguageInterface
     /**
      * load
      *
-     * @param  string  $file
-     * @param  string  $format
-     * @param  array   $options
+     * @param  string       $file
+     * @param  string|null  $format
+     * @param  string|null  $locale
+     * @param  array        $options
      *
      * @return  $this
      */
-    public function load(string $file, $format = 'ini', array $options = []): static
+    public function load(string $file, ?string $format = 'ini', ?string $locale = null,  array $options = []): static
     {
-        $string = $this->getFormatRegistry()->load($file, $format, $options);
+        $strings = $this->getFormatRegistry()->load($file, $format, $options);
 
-        $this->addStrings($string);
+        $this->addStrings($strings, $locale);
 
         return $this;
     }

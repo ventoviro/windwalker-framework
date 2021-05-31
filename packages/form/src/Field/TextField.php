@@ -115,7 +115,7 @@ class TextField extends AbstractInputField
     /**
      * setOptions
      *
-     * @param  array|Option[]  $options
+     * @param  array|DOMElement[]  $options
      *
      * @return  static
      */
@@ -127,7 +127,7 @@ class TextField extends AbstractInputField
     }
 
     /**
-     * @return Option[]
+     * @return DOMElement[]
      */
     public function getOptions(): array
     {

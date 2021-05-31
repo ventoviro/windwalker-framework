@@ -82,7 +82,7 @@ class FormatRegistry
             ->dump($data, $options);
     }
 
-    public function loadFile(string $file, ?string $format = null, array $options = [])
+    public function loadFile(string $file, ?string $format = null, array $options = []): mixed
     {
         if ($format === null) {
             $paths = explode('.', $file);

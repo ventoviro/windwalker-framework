@@ -242,7 +242,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
     public function setAttribute($name, $value): bool|DOMAttr
     {
         if ($value === true) {
-            return $this->setAttribute($name, '');
+            return $this->setAttribute($name, 'true');
         }
 
         if ($value === null || $value === false) {

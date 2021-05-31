@@ -37,8 +37,8 @@ class LanguageTest extends \PHPUnit\Framework\TestCase
     {
         $this->instance = new Language();
 
-        $this->instance->load(__DIR__ . '/fixtures/ini/en-GB.ini', 'ini')
-            ->load(__DIR__ . '/fixtures/ini/zh-TW.ini', 'ini');
+        $this->instance->load(__DIR__ . '/fixtures/ini/en-GB.ini', 'ini', 'en-GB')
+            ->load(__DIR__ . '/fixtures/ini/zh-TW.ini', 'ini', 'zh-TW');
     }
 
     /**
