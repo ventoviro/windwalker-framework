@@ -19,7 +19,7 @@ class DateTimeCast implements CastInterface
     /**
      * @inheritDoc
      */
-    public function cast(?string $value): mixed
+    public function cast(mixed $value): ?\DateTimeInterface
     {
         if ($value === null) {
             return null;

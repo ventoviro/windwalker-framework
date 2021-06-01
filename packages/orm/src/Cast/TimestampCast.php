@@ -21,7 +21,7 @@ class TimestampCast implements CastInterface
     /**
      * @inheritDoc
      */
-    public function cast(?string $value): mixed
+    public function cast(mixed $value): mixed
     {
         if ($value === null) {
             return null;

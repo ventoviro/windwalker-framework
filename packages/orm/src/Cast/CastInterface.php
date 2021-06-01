@@ -23,11 +23,11 @@ interface CastInterface
     /**
      * Cast to php type or object.
      *
-     * @param  string|null  $value
+     * @param  mixed  $value
      *
      * @return  mixed
      */
-    public function cast(?string $value): mixed;
+    public function cast(mixed $value): mixed;
 
     /**
      * Extract from php type or object to string or NULL for storing.

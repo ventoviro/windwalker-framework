@@ -419,6 +419,11 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
         return trim(Str::removeLeft(Str::removeRight($ele, '></root>'), '<root'));
     }
 
+    public function attributesToString(?string $type = null): string
+    {
+        return static::buildAttributes($this->getAttributes(), $type);
+    }
+
     /**
      * addClass
      *
