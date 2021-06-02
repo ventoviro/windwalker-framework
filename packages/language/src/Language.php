@@ -178,7 +178,7 @@ class Language implements LanguageInterface
             if ($this->isDebug()) {
                 $this->orphans[$fullId] = $this->backtrace($fullId);
 
-                $id = '??' . $id . '??';
+                $id = '??' . $fullId . '??';
             }
 
             return [null, $id];
@@ -204,7 +204,7 @@ class Language implements LanguageInterface
         return $this->replace($string, $args);
     }
 
-    public function choice(string $id, int|float $number, ...$args)
+    public function choice(string $id, int|float $number, ...$args): string
     {
         [$locale, $string] = $this->get($id);
 

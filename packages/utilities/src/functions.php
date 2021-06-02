@@ -149,6 +149,21 @@ namespace Windwalker {
         }
     }
 
+    if (!function_exists('\Windwalker\pipe')) {
+        /**
+         * Do some operation after value get.
+         *
+         * @param  mixed     $value
+         * @param  callable  $callable
+         *
+         * @return  mixed
+         */
+        function pipe(mixed $value, callable $callable): mixed
+        {
+            return $callable($value);
+        }
+    }
+
     if (!function_exists('\Windwalker\count')) {
         /**
          * Count NULL as 0 to workaround some code before php7.2
