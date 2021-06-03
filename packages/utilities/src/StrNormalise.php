@@ -101,7 +101,7 @@ class StrNormalise
      */
     public static function toKebabCase(string $input): string
     {
-        return static::toDashSeparated($input);
+        return strtolower(static::toDashSeparated($input));
     }
 
     /**

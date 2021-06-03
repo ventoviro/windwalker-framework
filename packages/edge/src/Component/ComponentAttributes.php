@@ -453,7 +453,7 @@ class ComponentAttributes implements \ArrayAccess, \IteratorAggregate
             $string .= ' ' . $key;
 
             if ($value !== true) {
-                $string .= '="' . str_replace('"', '\\"', trim($value)) . '"';
+                $string .= '="' . str_replace('"', '\\"', trim((string) $value)) . '"';
             }
         }
 

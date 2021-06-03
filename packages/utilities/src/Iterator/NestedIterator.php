@@ -269,6 +269,10 @@ class NestedIterator implements \OuterIterator
         }
 
         if ($iter instanceof \OuterIterator) {
+            if ($iter->getInnerIterator() === null) {
+                return true;
+            }
+
             return $this->checkRewindable($iter->getInnerIterator());
         }
 

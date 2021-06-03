@@ -259,7 +259,7 @@ class EdgeCompiler implements EdgeCompilerInterface
     protected function compileStatements(string $value): mixed
     {
         return preg_replace_callback(
-            '/\B@(@?\w+)([ \t]*)(\( ( (?>[^()]+) | (?3) )* \))?/x',
+            '/\B@(@?\w+(?:::\w+)?)([ \t]*)(\( ( (?>[^()]+) | (?3) )* \))?/x',
             [$this, 'compileStatement'],
             $value
         );
