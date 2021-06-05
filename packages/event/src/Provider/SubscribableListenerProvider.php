@@ -20,7 +20,7 @@ use Windwalker\Event\EventInterface;
 use Windwalker\Event\Listener\ListenerPriority;
 use Windwalker\Event\Listener\ListenersQueue;
 use Windwalker\Utilities\Assert\TypeAssert;
-use Windwalker\Utilities\StrNormalise;
+use Windwalker\Utilities\StrNormalize;
 
 use function Windwalker\disposable;
 
@@ -131,7 +131,7 @@ class SubscribableListenerProvider implements SubscribableListenerProviderInterf
      */
     private static function normalize(string $methodName): string
     {
-        return lcfirst(StrNormalise::toCamelCase($methodName));
+        return lcfirst(StrNormalize::toCamelCase($methodName));
     }
 
     /**

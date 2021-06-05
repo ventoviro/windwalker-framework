@@ -14,7 +14,7 @@ namespace Windwalker\Attributes;
 use JetBrains\PhpStorm\ArrayShape;
 use Windwalker\Filesystem\Filesystem;
 use Windwalker\Utilities\Reflection\ReflectAccessor;
-use Windwalker\Utilities\StrNormalise;
+use Windwalker\Utilities\StrNormalize;
 
 /**
  * The AttributesAccessor class.
@@ -78,7 +78,7 @@ class AttributesAccessor
             }
 
             $class = $namespace . '\\' . $file->getRelativePath() . '\\' . $file->getBasename('.php');
-            $class = StrNormalise::toClassNamespace($class);
+            $class = StrNormalize::toClassNamespace($class);
 
             if (class_exists($class)) {
                 $results[$class] = static::runAttributeIfExists(

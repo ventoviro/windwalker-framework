@@ -16,7 +16,7 @@ use Windwalker\Data\Collection;
 use Windwalker\Edge\Edge;
 use Windwalker\Utilities\Attributes\Prop;
 use Windwalker\Utilities\Str;
-use Windwalker\Utilities\StrNormalise;
+use Windwalker\Utilities\StrNormalize;
 
 use Windwalker\Utilities\Wrapper\RawWrapper;
 
@@ -212,7 +212,7 @@ class ComponentTagCompiler
 
         $data = $data->mapWithKeys(
             function ($value, $key) {
-                return [StrNormalise::toCamelCase($key) => $value];
+                return [StrNormalize::toCamelCase($key) => $value];
             }
         );
 
@@ -319,7 +319,7 @@ class ComponentTagCompiler
                 $property,
                 Prop::class,
                 function ($prop, \ReflectionProperty $property) use (&$attributes, &$props) {
-                    $propName = StrNormalise::toKebabCase($property->getName());
+                    $propName = StrNormalize::toKebabCase($property->getName());
 
                     if ($attributes[$propName] ?? null) {
                         $props[$property->getName()] = $attributes[$propName];

@@ -16,7 +16,7 @@ namespace Windwalker\Utilities;
  *
  * @since  __DEPLOY_VERSION__
  */
-class StrNormalise
+class StrNormalize
 {
     public static function splitCamelCase(string $str): array
     {

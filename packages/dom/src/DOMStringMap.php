@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\DOM;
 
-use Windwalker\Utilities\StrNormalise;
+use Windwalker\Utilities\StrNormalize;
 
 /**
  * The DOMStringMap class.
@@ -145,6 +145,6 @@ class DOMStringMap
      */
     private function toDataKey(string $name): string
     {
-        return 'data-' . StrNormalise::toDashSeparated($name);
+        return 'data-' . StrNormalize::toDashSeparated($name);
     }
 }

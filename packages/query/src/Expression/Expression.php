@@ -13,7 +13,7 @@ namespace Windwalker\Query\Expression;
 
 use Windwalker\Query\Clause\Clause;
 use Windwalker\Query\Query;
-use Windwalker\Utilities\StrNormalise;
+use Windwalker\Utilities\StrNormalize;
 
 /**
  * Class QueryExpression
@@ -69,7 +69,7 @@ class Expression
      */
     public function build(string $name, ...$args): mixed
     {
-        $method = StrNormalise::toCamelCase($name);
+        $method = StrNormalize::toCamelCase($name);
 
         if (method_exists($this, $method)) {
             return $this->$method(...$args);
@@ -155,6 +155,6 @@ class Expression
 
     public function __call($name, $args)
     {
-        return $this->build(StrNormalise::toSnakeCase($name), ...$args);
+        return $this->build(StrNormalize::toSnakeCase($name), ...$args);
     }
 }

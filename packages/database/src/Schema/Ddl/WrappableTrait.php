@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Database\Schema\Ddl;
 
 use Windwalker\Utilities\Arr;
-use Windwalker\Utilities\StrNormalise;
+use Windwalker\Utilities\StrNormalize;
 
 /**
  * Trait WrapableTrait
@@ -29,7 +29,7 @@ trait WrappableTrait
     public function fill(array $data): static
     {
         foreach ($data as $key => $datum) {
-            $prop = StrNormalise::toCamelCase($key);
+            $prop = StrNormalize::toCamelCase($key);
 
             if (method_exists($this, $prop)) {
                 $this->$prop($datum);

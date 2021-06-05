@@ -37,7 +37,7 @@ class Symbol
 
     private static function wrapValue(string $value): string
     {
-        return '__' . strtoupper(StrNormalise::toUnderscoreSeparated($value)) . '__';
+        return '__' . strtoupper(StrNormalize::toUnderscoreSeparated($value)) . '__';
     }
 
     public static function create(string $value): static

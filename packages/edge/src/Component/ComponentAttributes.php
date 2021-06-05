@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Edge\Component;
 
 use Windwalker\Utilities\Arr;
-use Windwalker\Utilities\StrNormalise;
+use Windwalker\Utilities\StrNormalize;
 
 use function Windwalker\collect;
 use function Windwalker\value;
@@ -198,7 +198,7 @@ class ComponentAttributes implements \ArrayAccess, \IteratorAggregate
             $key = is_numeric($key) ? $defaultValue : $key;
 
             $props[] = $key;
-            $props[] = StrNormalise::toKebabCase($key);
+            $props[] = StrNormalize::toKebabCase($key);
         }
 
         return $this->except($props);

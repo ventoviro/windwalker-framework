@@ -13,7 +13,7 @@ namespace Windwalker\Edge\Component;
 
 use Windwalker\Edge\Edge;
 use Windwalker\Utilities\Attributes\Prop;
-use Windwalker\Utilities\StrNormalise;
+use Windwalker\Utilities\StrNormalize;
 
 use function Windwalker\collect;
 
@@ -50,7 +50,7 @@ class DynamicComponent extends AbstractComponent
     public function render(): \Closure|string
     {
         $template = <<<'EOF'
-<?php extract(\Windwalker\collect($attributes->getAttributes())->mapWithKeys(function ($value, $key) { return [Windwalker\Utilities\StrNormalise::toCamelCase(str_replace([':', '.'], ' ', $key)) => $value]; })->dump(), EXTR_SKIP); ?>
+<?php extract(\Windwalker\collect($attributes->getAttributes())->mapWithKeys(function ($value, $key) { return [Windwalker\Utilities\StrNormalize::toCamelCase(str_replace([':', '.'], ' ', $key)) => $value]; })->dump(), EXTR_SKIP); ?>
 {{ props }}
 <x-{{ is }} {{ bindings }} {{ attributes }}>
 {{ slots }}
@@ -100,7 +100,7 @@ EOF;
                 '\',\'',
                 collect($bindings)->map(
                     function ($dataKey) {
-                        return StrNormalise::toCamelCase($dataKey);
+                        return StrNormalize::toCamelCase($dataKey);
                     }
                 )
                     ->dump()
@@ -119,7 +119,7 @@ EOF;
         return (string) collect($bindings)
             ->map(
                 function ($key) {
-                    return ':' . $key . '="$' . StrNormalise::toCamelCase(str_replace([':', '.'], ' ', $key)) . '"';
+                    return ':' . $key . '="$' . StrNormalize::toCamelCase(str_replace([':', '.'], ' ', $key)) . '"';
                 }
             )
             ->implode(' ');

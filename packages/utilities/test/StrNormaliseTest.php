@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Utilities\Test;
 
 use PHPUnit\Framework\TestCase;
-use Windwalker\Utilities\StrNormalise;
+use Windwalker\Utilities\StrNormalize;
 
 /**
  * StrNormaliseTest
@@ -177,7 +177,7 @@ class StrNormaliseTest extends TestCase
      */
     public function testSplitCamelCase($input, $expected)
     {
-        $this->assertEquals($expected, StrNormalise::splitCamelCase($input));
+        $this->assertEquals($expected, StrNormalize::splitCamelCase($input));
     }
 
     /**
@@ -193,7 +193,7 @@ class StrNormaliseTest extends TestCase
      */
     public function testToPascalCase($expected, $input)
     {
-        $this->assertEquals($expected, StrNormalise::toPascalCase($input));
+        $this->assertEquals($expected, StrNormalize::toPascalCase($input));
     }
 
     /**
@@ -208,7 +208,7 @@ class StrNormaliseTest extends TestCase
      */
     public function testToCamelCase($expected, $input)
     {
-        $this->assertEquals(lcfirst($expected), StrNormalise::toCamelCase($input));
+        $this->assertEquals(lcfirst($expected), StrNormalize::toCamelCase($input));
     }
 
     /**
@@ -224,7 +224,7 @@ class StrNormaliseTest extends TestCase
      */
     public function testToKebabCase($expected, $input)
     {
-        $this->assertEquals($expected, StrNormalise::toKebabCase($input));
+        $this->assertEquals($expected, StrNormalize::toKebabCase($input));
     }
 
     /**
@@ -240,7 +240,7 @@ class StrNormaliseTest extends TestCase
      */
     public function testToSpaceSeparated($expected, $input)
     {
-        $this->assertEquals($expected, StrNormalise::toSpaceSeparated($input));
+        $this->assertEquals($expected, StrNormalize::toSpaceSeparated($input));
     }
 
     /**
@@ -256,7 +256,7 @@ class StrNormaliseTest extends TestCase
      */
     public function testToUnderscoreSeparated($expected, $input)
     {
-        $this->assertEquals($expected, StrNormalise::toUnderscoreSeparated($input));
+        $this->assertEquals($expected, StrNormalize::toUnderscoreSeparated($input));
     }
 
     /**
@@ -272,7 +272,7 @@ class StrNormaliseTest extends TestCase
      */
     public function testToVariable($expected, $input)
     {
-        $this->assertEquals($expected, StrNormalise::toVariable($input));
+        $this->assertEquals($expected, StrNormalize::toVariable($input));
     }
 
     /**
@@ -288,6 +288,6 @@ class StrNormaliseTest extends TestCase
      */
     public function testToKey($expected, $input)
     {
-        $this->assertEquals($expected, StrNormalise::toKey($input));
+        $this->assertEquals($expected, StrNormalize::toKey($input));
     }
 }
