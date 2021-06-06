@@ -30,7 +30,7 @@ class StrNormalize
 
     public static function splitAll(string $str): array
     {
-        $strs = preg_split('#[ \-_\.]+#', $str);
+        $strs = preg_split('#[ \-_\.\\\\]+#', $str);
 
         $strs = array_map([static::class, 'splitCamelCase'], $strs);
 

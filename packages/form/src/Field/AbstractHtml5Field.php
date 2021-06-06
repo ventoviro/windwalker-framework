@@ -16,10 +16,10 @@ use Windwalker\Filter\Rule\Range;
 /**
  * The AbstractHtml5Field class.
  *
- * @method  $this  step(int $value)
+ * @method  $this  step(int|float|string $value)
  * @method  mixed  getStep()
- * @method  $this  patten(string $value)
- * @method  mixed  getPatten()
+ * @method  $this  pattern(string $value)
+ * @method  mixed  getPattern()
  *
  * @since  3.0.1
  */
