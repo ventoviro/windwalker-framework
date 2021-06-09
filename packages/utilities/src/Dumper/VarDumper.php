@@ -12,7 +12,9 @@ declare(strict_types=1);
 namespace Windwalker\Utilities\Dumper;
 
 use Symfony\Component\VarDumper\Caster\ReflectionCaster;
+use Symfony\Component\VarDumper\Cloner\Stub;
 use Symfony\Component\VarDumper\Cloner\VarCloner;
+use Windwalker\Session\FlashBag;
 
 /**
  * The VarDumper class.

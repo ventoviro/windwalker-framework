@@ -74,6 +74,10 @@ class Collection extends ArrayObject
                 $new->storage = $this->storage;
             }
         } elseif ($reference) {
+            if (!Arr::has($this->storage, $path)) {
+                $this->storage = Arr::set($this->storage, $path, []);
+            }
+
             $new->storage = &Arr::get($this->storage, $path);
         } else {
             $new->storage = Arr::get($this->storage, $path);

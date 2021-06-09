@@ -12,6 +12,8 @@ declare(strict_types=1);
 namespace Windwalker\Data\Format;
 
 use InvalidArgumentException;
+use Windwalker\Utilities\Contract\DumpableInterface;
+use Windwalker\Utilities\Reflection\ReflectAccessor;
 
 use function strlen;
 
@@ -205,5 +207,49 @@ class FormatRegistry
         $this->extMaps = [];
 
         return $this;
+    }
+
+    /**
+     * makeDumpable
+     *
+     * @param  mixed  $data
+     *
+     * @return  array
+     */
+    public static function makeDumpable(mixed $data): array
+    {
+        // Ensure the input data is an array.
+        if ($data instanceof DumpableInterface) {
+            $data = $data->dump(true);
+        } elseif ($data instanceof \Traversable) {
+            $data = iterator_to_array($data);
+        } elseif (is_object($data)) {
+            $data = ReflectAccessor::getPropertiesValues($data);
+        } else {
+            $data = (array) $data;
+        }
+
+        $data = array_map(
+            static function ($v) {
+                if (is_resource($v)) {
+                    return '[resource #' . get_resource_id($v) . ']';
+                }
+
+                if ($v instanceof \Closure) {
+                    return "[Object Closure]";
+                }
+
+                return $v;
+            },
+            $data,
+        );
+
+        foreach ($data as &$value) {
+            if (is_array($value) || is_object($value)) {
+                $value = static::makeDumpable($value);
+            }
+        }
+
+        return $data;
     }
 }

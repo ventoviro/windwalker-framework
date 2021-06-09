@@ -989,4 +989,12 @@ class Container implements ContainerInterface, IteratorAggregate, Countable, Arr
     {
         return $this->storage;
     }
+
+    /**
+     * @return int
+     */
+    public function getLevel(): int
+    {
+        return $this->level;
+    }
 }

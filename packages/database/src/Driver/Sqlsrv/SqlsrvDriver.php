@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Database\Driver\Sqlsrv;
 
 use Windwalker\Database\Driver\AbstractDriver;
+use Windwalker\Database\Driver\ConnectionInterface;
 use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\Query\Grammar\SQLiteGrammar;
 
@@ -55,6 +56,8 @@ class SqlsrvDriver extends AbstractDriver
      */
     public function getVersion(): string
     {
-        return (string) (sqlsrv_server_info($this->getConnection()->get())['SQLServerVersion'] ?? '');
+        return $this->useConnection(
+            fn (ConnectionInterface $conn) => (string) (sqlsrv_server_info($conn->get())['SQLServerVersion'] ?? '')
+        );
     }
 }

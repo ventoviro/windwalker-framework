@@ -23,9 +23,9 @@ class FlashBag
      *
      * @param  array|null  $storage
      */
-    public function __construct(?array &$storage)
+    public function __construct(?array $storage)
     {
-        $this->storage = &$storage;
+        $this->storage = $storage;
     }
 
     public function add(mixed $value, string $type = 'info'): void
@@ -75,7 +75,7 @@ class FlashBag
      *
      * @return  static  Return self to support chaining.
      */
-    public function setStorage(?array &$storage): static
+    public function setStorage(?array $storage): static
     {
         $this->storage = &$storage;
 

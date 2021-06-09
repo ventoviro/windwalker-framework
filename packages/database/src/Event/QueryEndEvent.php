@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Event;
 
+use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\Event\AbstractEvent;
 use Windwalker\Query\Query;
 
@@ -22,6 +23,7 @@ class QueryEndEvent extends AbstractEvent
     protected bool $result;
     protected string $sql;
     protected array $bounded;
+    protected StatementInterface $statement;
 
     /**
      * @var mixed
@@ -115,6 +117,26 @@ class QueryEndEvent extends AbstractEvent
     public function setBounded(array $bounded): static
     {
         $this->bounded = $bounded;
+
+        return $this;
+    }
+
+    /**
+     * @return StatementInterface
+     */
+    public function getStatement(): StatementInterface
+    {
+        return $this->statement;
+    }
+
+    /**
+     * @param  StatementInterface  $statement
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setStatement(StatementInterface $statement): static
+    {
+        $this->statement = $statement;
 
         return $this;
     }

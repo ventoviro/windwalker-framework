@@ -64,6 +64,6 @@ class PgsqlDriver extends AbstractDriver
      */
     public function getVersion(): string
     {
-        return pg_version($this->getConnection()->get())['server'] ?? '';
+        return $this->useConnection(fn (ConnectionInterface $conn) => pg_version($conn->get())['server'] ?? '');
     }
 }

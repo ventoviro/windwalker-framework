@@ -122,7 +122,9 @@ trait SimpleAccessibleTrait
             return $this->getStorage();
         }
 
-        return TypeCast::toArray($this->getStorage(), true, $onlyDumpable);
+        $data = $this->getStorage();
+
+        return TypeCast::toArray($data, true, $onlyDumpable);
     }
 
     /**

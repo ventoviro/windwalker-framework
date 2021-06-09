@@ -13,6 +13,7 @@ namespace Windwalker\Event\Attributes;
 
 use Windwalker\Attributes\AttributeHandler;
 use Windwalker\Attributes\AttributeInterface;
+use Windwalker\Event\EventListenableInterface;
 use Windwalker\Event\Listener\ListenerPriority;
 use Windwalker\Event\Provider\SubscribableListenerProviderInterface;
 use Windwalker\Utilities\Assert\Assert;
@@ -38,5 +39,14 @@ class ListenTo
         public bool $once = false,
     ) {
         //
+    }
+
+    public function listen(EventListenableInterface $dispatcher, callable $listener): void
+    {
+        if ($this->once) {
+            $listener = disposable($listener);
+        }
+
+        $dispatcher->on($this->event, $listener, $this->priority);
     }
 }

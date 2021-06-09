@@ -143,9 +143,8 @@ class PdoDriver extends AbstractDriver implements TransactionDriverInterface
      */
     public function getVersion(): string
     {
-        /** @var \PDO $pdo */
-        $pdo = $this->getConnection()->get();
-
-        return $pdo->getAttribute(\PDO::ATTR_SERVER_VERSION);
+        return $this->useConnection(
+            fn (ConnectionInterface $conn) => $conn->get()->getAttribute(\PDO::ATTR_SERVER_VERSION)
+        );
     }
 }

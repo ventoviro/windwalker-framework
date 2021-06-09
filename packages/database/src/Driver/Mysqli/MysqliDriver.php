@@ -116,9 +116,6 @@ class MysqliDriver extends AbstractDriver implements TransactionDriverInterface
      */
     public function getVersion(): string
     {
-        /** @var \mysqli $mysqli */
-        $mysqli = $this->getConnection()->get();
-
-        return (string) $mysqli->server_version;
+        return $this->useConnection(fn (ConnectionInterface $conn) => $conn->get()->server_version);
     }
 }

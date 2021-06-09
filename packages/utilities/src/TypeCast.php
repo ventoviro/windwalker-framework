@@ -17,6 +17,7 @@ use stdClass;
 use Traversable;
 use Windwalker\Utilities\Classes\PreventInitialTrait;
 use Windwalker\Utilities\Contract\DumpableInterface;
+use Windwalker\Utilities\Reflection\ReflectAccessor;
 
 /**
  * The TypeCast class.
@@ -74,14 +75,14 @@ abstract class TypeCast
         }
 
         if ($recursive) {
-            foreach ($data as &$value) {
+            foreach ($data as $k => $value) {
                 if (is_array($value)) {
-                    $value = static::toArray($value, $recursive, $onlyDumpable);
+                    $data[$k] = static::toArray($value, $recursive, $onlyDumpable);
                 } elseif (is_object($value)) {
                     if ($onlyDumpable && $value instanceof DumpableInterface) {
-                        $value = static::toArray($value, $recursive, $onlyDumpable);
+                        $data[$k] = static::toArray($value, $recursive, $onlyDumpable);
                     } elseif (!$onlyDumpable) {
-                        $value = static::toArray($value, $recursive, $onlyDumpable);
+                        $data[$k] = static::toArray($value, $recursive, $onlyDumpable);
                     }
                 }
             }

@@ -12,6 +12,8 @@ declare(strict_types=1);
 namespace Windwalker\DI;
 
 use Windwalker\Data\Collection;
+use Windwalker\Utilities\Arr;
+use Windwalker\Utilities\TypeCast;
 use Windwalker\Utilities\Wrapper\ValueReference;
 
 use function Windwalker\tap;
@@ -138,5 +140,40 @@ class Parameters extends Collection
                 yield $key => $value;
             }
         }
+    }
+
+    /**
+     * Creates a copy of storage.
+     *
+     * @param  bool  $recursive
+     *
+     * @param  bool  $onlyDumpable
+     *
+     * @return array
+     */
+    public function dump(bool $recursive = false, bool $onlyDumpable = false): array
+    {
+        $data = $this->storage;
+
+        $data = Arr::mapRecursive($data, function ($v) use ($data) {
+            if ($v instanceof ValueReference) {
+                return Arr::get($data, $v->getPath(), $v->getDelimiter());
+            }
+
+            return $v;
+        });
+
+        if ($recursive) {
+            $data = TypeCast::toArray($data, true, $onlyDumpable);
+        }
+
+        if ($this->parent) {
+            $data = Arr::mergeRecursive(
+                $this->parent->dump($recursive, $onlyDumpable),
+                $data
+            );
+        }
+
+        return $data;
     }
 }

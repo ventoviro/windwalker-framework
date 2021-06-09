@@ -144,7 +144,8 @@ abstract class AbstractStatement implements StatementInterface
             throw $event->getException();
         }
 
-        $this->emit(QueryEndEvent::class, compact('result'));
+        $statement = $this;
+        $this->emit(QueryEndEvent::class, compact('result', 'statement'));
 
         $this->executed = true;
 
