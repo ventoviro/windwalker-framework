@@ -61,7 +61,7 @@ use Windwalker\Utilities\Utf8String;
  * @method StringObject removeRight(string $search)
  * @method StringObject slice(int $start, int $end = null)
  * @method StringObject substring(int $start, int $end = null)
- * @method StringObject wrap($substring = ['"', '"'])
+ * @method StringObject surrounds($substring = ['"', '"'])
  * @method StringObject toggleCase()
  * @method StringObject truncate(int $length, string $suffix = '', bool $wordBreak = true)
  * @method StringObject map(callable $callback)
@@ -71,7 +71,7 @@ use Windwalker\Utilities\Utf8String;
  * @method StringObject toLowerCase()
  * @method int|bool     strpos(string $search)
  * @method int|bool     strrpos(string $search)
- * @method StringObject split(string $delimiter, ?int $limit = null)
+ * @method ArrayObject  split(string $delimiter, ?int $limit = null)
  *
  * @since  __DEPLOY_VERSION__
  */
@@ -131,6 +131,15 @@ class StringObject implements Countable, ArrayAccess, IteratorAggregate, \String
     public static function create(string $string = '', ?string $encoding = self::ENCODING_UTF8): StringObject
     {
         return new static($string, $encoding);
+    }
+    
+    public static function wrap(mixed $string = '', ?string $encoding = self::ENCODING_UTF8): StringObject
+    {
+        if ($string instanceof static) {
+            return $string;
+        }
+        
+        return new static((string) $string, $encoding);
     }
 
     /**

@@ -17,14 +17,14 @@ namespace Windwalker {
     /**
      * str
      *
-     * @param  string       $string
+     * @param  mixed        $string
      * @param  null|string  $encoding
      *
      * @return  StringObject
      */
     function str($string = '', ?string $encoding = StringObject::ENCODING_UTF8): StringObject
     {
-        return new StringObject((string) $string, $encoding);
+        return StringObject::wrap($string, $encoding);
     }
 
     /**

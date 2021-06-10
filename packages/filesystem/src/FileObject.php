@@ -470,7 +470,7 @@ class FileObject extends \SplFileInfo
         $result = file_put_contents($this->getPathname(), (string) $buffer);
 
         if (!$result) {
-            throw new FilesystemException(error_get_last()['message']);
+            throw new FilesystemException(error_get_last()['message'] ?? 'Unknown error');
         }
 
         return $this;

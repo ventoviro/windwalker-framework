@@ -15,7 +15,6 @@ use Windwalker\Scalars\ArrayObject;
 use Windwalker\Scalars\StringObject;
 use Windwalker\Utilities\Assert\ArgumentsAssert;
 use Windwalker\Utilities\Utf8String;
-
 use function Windwalker\tap;
 
 /**
@@ -28,7 +27,7 @@ trait StringModifyTrait
     /**
      * split
      *
-     * @param  int  $length
+     * @param int $length
      *
      * @return  ArrayObject
      */
@@ -42,9 +41,9 @@ trait StringModifyTrait
     /**
      * replace
      *
-     * @param  array|string  $search
-     * @param  array|string  $replacement
-     * @param  int|null      $count
+     * @param array|string $search
+     * @param array|string $replacement
+     * @param int|null     $count
      *
      * @return  static
      */
@@ -58,10 +57,33 @@ trait StringModifyTrait
     }
 
     /**
+     * replace
+     *
+     * @param array|string $search
+     * @param array|string $replacement
+     * @param int|null     $count
+     *
+     * @return  static
+     */
+    public function replaceCallback(
+        string $pattern,
+        callable $handler,
+        int $limit = -1,
+        ?int &$count = null,
+        int $flags = 0
+    ): static {
+        return $this->cloneInstance(
+            function (StringObject $new) use ($pattern, $handler, $flags, &$count, $limit) {
+                $new->string = preg_replace_callback($pattern, $handler, $new->string, $limit, $count, $flags);
+            }
+        );
+    }
+
+    /**
      * compare
      *
-     * @param  string  $compare
-     * @param  bool    $caseSensitive
+     * @param string $compare
+     * @param bool   $caseSensitive
      *
      * @return  int
      */
@@ -91,9 +113,9 @@ trait StringModifyTrait
     /**
      * substrReplace
      *
-     * @param  string  $replace
-     * @param  int     $start
-     * @param  int     $offset
+     * @param string $replace
+     * @param int    $start
+     * @param int    $offset
      *
      * @return  static
      */
@@ -109,7 +131,7 @@ trait StringModifyTrait
     /**
      * ltrim
      *
-     * @param  string|null  $charlist
+     * @param string|null $charlist
      *
      * @return  static
      */
@@ -125,7 +147,7 @@ trait StringModifyTrait
     /**
      * rtrim
      *
-     * @param  string|null  $charlist
+     * @param string|null $charlist
      *
      * @return  static
      */
@@ -141,7 +163,7 @@ trait StringModifyTrait
     /**
      * trim
      *
-     * @param  string|null  $charlist
+     * @param string|null $charlist
      *
      * @return  static
      */
@@ -199,7 +221,7 @@ trait StringModifyTrait
     /**
      * clearHtml
      *
-     * @param  string|null  $allowTags
+     * @param string|null $allowTags
      *
      * @return  static
      *
@@ -217,7 +239,7 @@ trait StringModifyTrait
     /**
      * append
      *
-     * @param  string|StringObject  $string
+     * @param string|StringObject $string
      *
      * @return  StringObject
      *
@@ -236,7 +258,7 @@ trait StringModifyTrait
     /**
      * prepend
      *
-     * @param  string|StringObject  $string
+     * @param string|StringObject $string
      *
      * @return  StringObject
      *

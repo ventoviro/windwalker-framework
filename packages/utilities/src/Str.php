@@ -555,7 +555,7 @@ class Str
      *
      * @return  string
      */
-    public static function wrap(string $string, $substring = ['"', '"']): string
+    public static function surrounds(string $string, string|array $substring = ['"', '"']): string
     {
         $substring = (array) $substring;
 

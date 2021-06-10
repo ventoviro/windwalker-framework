@@ -63,7 +63,9 @@ class StrInflector
      */
     public static function toPlural(string $word): string
     {
-        return static::getPossiblePluralize($word)[0];
+        $words = static::getPossiblePluralize($word);
+
+        return array_pop($words);
     }
 
     /**
@@ -91,7 +93,9 @@ class StrInflector
      */
     public static function toSingular(string $word): string
     {
-        return static::getPossibleSingularize($word)[0];
+        $words = static::getPossibleSingularize($word);
+
+        return array_pop($words);
     }
 
     /**
