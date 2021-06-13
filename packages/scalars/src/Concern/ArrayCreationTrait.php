@@ -39,7 +39,7 @@ trait ArrayCreationTrait
     /**
      * diff
      *
-     * @param  array[]|static[]  ...$args
+     * @param  array|static  ...$args
      *
      * @return  static
      *

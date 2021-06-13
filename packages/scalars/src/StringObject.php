@@ -23,6 +23,7 @@ use ReflectionParameter;
 use Traversable;
 use Windwalker\Scalars\Concern\StringInflectorTrait;
 use Windwalker\Scalars\Concern\StringModifyTrait;
+use Windwalker\Utilities\Classes\FlowControlTrait;
 use Windwalker\Utilities\Classes\ImmutableHelperTrait;
 use Windwalker\Utilities\Classes\MarcoableTrait;
 use Windwalker\Utilities\Contract\NullableInterface;
@@ -81,6 +82,7 @@ class StringObject implements Countable, ArrayAccess, IteratorAggregate, \String
     use ImmutableHelperTrait;
     use StringModifyTrait;
     use StringInflectorTrait;
+    use FlowControlTrait;
 
     /**
      * We only provides 3 default encoding constants of PHP.
@@ -132,13 +134,13 @@ class StringObject implements Countable, ArrayAccess, IteratorAggregate, \String
     {
         return new static($string, $encoding);
     }
-    
+
     public static function wrap(mixed $string = '', ?string $encoding = self::ENCODING_UTF8): StringObject
     {
         if ($string instanceof static) {
             return $string;
         }
-        
+
         return new static((string) $string, $encoding);
     }
 
@@ -473,21 +475,6 @@ class StringObject implements Countable, ArrayAccess, IteratorAggregate, \String
                 return $new->string = $callback($new->string, ...$args);
             }
         );
-    }
-
-    /**
-     * pipe
-     *
-     * @param  callable  $callback
-     * @param  array     $args
-     *
-     * @return  static
-     *
-     * @since  3.5.14
-     */
-    public function pipe(callable $callback, ...$args): static
-    {
-        return $callback($this, ...$args);
     }
 
     /**

@@ -22,6 +22,7 @@ use Windwalker\Utilities\Options\OptionAccessTrait;
 use Windwalker\Utilities\TypeCast;
 
 use function Windwalker\tap;
+use function Windwalker\uid;
 
 /**
  * The Session class.
@@ -131,6 +132,8 @@ class Session implements SessionInterface, ArrayAccessibleInterface
             // Must set cookie and update expires after session end.
             if ($this->getOption(static::OPTION_AUTO_COMMIT)) {
                 $this->destructor = fn () => $this->stop(true);
+
+                register_shutdown_function(fn () => $this->destruct());
             }
         }
 
@@ -151,7 +154,8 @@ class Session implements SessionInterface, ArrayAccessibleInterface
 
     public function stop(bool $unset = true): bool
     {
-        $this->destructor = null;
+        $storage = &$this->bridge->getStorage();
+        $storage['_flash'] = $this->getFlashBag()->all();
 
         return $this->bridge->writeClose($unset);
     }
@@ -383,6 +387,11 @@ class Session implements SessionInterface, ArrayAccessibleInterface
         return $this->getStorage();
     }
 
+    public function destroy(): void
+    {
+        $this->getBridge()->destroy();
+    }
+
     /**
      * Set session cookie parameters, this method should call before session started.
      *
@@ -441,6 +450,8 @@ class Session implements SessionInterface, ArrayAccessibleInterface
      */
     public function getFlashBag(): FlashBag
     {
+        $this->start();
+
         if ($this->flashBag === null) {
             $storage           = &$this->getStorage();
             $storage['_flash'] ??= [];
@@ -587,8 +598,15 @@ class Session implements SessionInterface, ArrayAccessibleInterface
 
     public function __destruct()
     {
+        $this->destruct();
+    }
+
+    public function destruct(): void
+    {
         if ($this->destructor) {
             ($this->destructor)();
+
+            $this->destructor = null;
         }
     }
 }

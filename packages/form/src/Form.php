@@ -116,7 +116,10 @@ class Form implements IteratorAggregate
         }
 
         if (!$field instanceof AbstractField) {
-            throw new InvalidArgumentException(__METHOD__ . ' argument 2 should be sub class of AbstractField.');
+            throw new InvalidArgumentException(
+                __METHOD__ . ' argument 2 should be sub class of AbstractField. '
+                . $field . ' given.'
+            );
         }
 
         $field->setName($name);
@@ -460,11 +463,11 @@ class Form implements IteratorAggregate
      *
      * @return string
      */
-    public function renderFields(Symbol|string|null $fieldset = null, string $namespace = '', array $options = []): string
+    public function renderFields(Symbol|string|null $fieldset = null, ?string $namespace = '', array $options = []): string
     {
         $output = '';
 
-        foreach ($this->getFields($fieldset, $namespace) as $field) {
+        foreach ($this->getFields($fieldset, (string) $namespace) as $field) {
             $output .= "\n" . $field->render($options);
         }
 

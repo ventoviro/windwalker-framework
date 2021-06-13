@@ -152,7 +152,7 @@ abstract class TypeCast
      */
     public static function toString(mixed $data, bool $dump = false): string
     {
-        if (is_callable($data)) {
+        if ($data instanceof \Closure) {
             return static::toString($data());
         }
 

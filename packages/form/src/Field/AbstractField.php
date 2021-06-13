@@ -144,6 +144,13 @@ abstract class AbstractField
                 'no_label' => false,
             ]
         );
+
+        $this->configure();
+    }
+
+    protected function configure(): void
+    {
+        //
     }
 
     protected function createInputElement(array $attrs = []): DOMElement

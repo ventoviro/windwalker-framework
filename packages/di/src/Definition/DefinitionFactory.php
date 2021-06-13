@@ -52,7 +52,7 @@ class DefinitionFactory
         return strtolower(trim($class1, '\\')) === strtolower(trim($class2, '\\'));
     }
 
-    public static function getClassName(object $obj): mixed
+    public static function getClassName(mixed $obj): mixed
     {
         if ($obj instanceof ObjectBuilderDefinition) {
             return $obj->getClass();

@@ -285,6 +285,7 @@ class DependencyResolver
                 && !$dependency->isAbstract()
                 && !$dependency->isInterface()
                 && !$dependency->isTrait()
+                && !$param->allowsNull()
             ) {
                 // Otherwise we create this object recursive
 

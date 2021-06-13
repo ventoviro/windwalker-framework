@@ -445,11 +445,11 @@ class Edge
      * addGlobal
      *
      * @param  string  $name
-     * @param  string  $value
+     * @param  mixed  $value
      *
      * @return  static
      */
-    public function addGlobal(string $name, string $value): static
+    public function addGlobal(string $name, mixed $value): static
     {
         $this->globals[$name] = $value;
 

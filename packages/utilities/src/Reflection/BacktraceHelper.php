@@ -93,7 +93,7 @@ class BacktraceHelper
                     $arg = Utf8String::substr($arg, 0, 20) . '...';
                 }
 
-                $arg = Str::wrap($arg);
+                $arg = Str::surrounds($arg);
             } elseif ($arg === null) {
                 $arg = 'NULL';
             } elseif (is_bool($arg)) {

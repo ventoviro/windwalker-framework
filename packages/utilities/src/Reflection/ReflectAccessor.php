@@ -16,11 +16,8 @@ use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
 use ReflectionProperty;
-use Windwalker\Utilities\Assert\Assert;
 use Windwalker\Utilities\Cache\RuntimeCacheTrait;
 use Windwalker\Utilities\TypeCast;
-
-use function Windwalker\ds;
 
 /**
  * The Reflector class.
@@ -241,11 +238,12 @@ class ReflectAccessor
         }
 
         if (is_string($value) && class_exists($value)) {
-            return static::$cacheStorage[$value] ??= new ReflectionClass($value);
+
+            return new ReflectionClass($value);
         }
 
         if (is_object($value) && !$value instanceof \Closure) {
-            return static::$cacheStorage[$value::class] ??= new \ReflectionObject($value);
+            return new \ReflectionObject($value);
         }
 
         if (is_callable($value)) {

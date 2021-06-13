@@ -57,6 +57,10 @@ class Inject implements ContainerAttributeInterface
         return function (...$args) use ($handler, $reflector) {
             $type = $reflector->getType();
 
+            if ($handler->getObject() === null) {
+                throw new \RuntimeException();
+            }
+
             if (!$type) {
                 throw new DependencyResolutionException(
                     sprintf(

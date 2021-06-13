@@ -28,6 +28,7 @@ use Windwalker\ORM\Event\{AbstractSaveEvent,
     BeforeDeleteEvent,
     BeforeSaveEvent,
     BeforeUpdateWhereEvent};
+use Windwalker\ORM\Hydrator\EntityHydrator;
 use Windwalker\ORM\Metadata\EntityMetadata;
 use Windwalker\Utilities\Arr;
 use Windwalker\Utilities\Assert\TypeAssert;
@@ -284,7 +285,9 @@ class EntityMapper implements EventAwareInterface
         $writeData = $data;
 
         $keyValues = Arr::only($writeData, (array) $condFields);
-        if ($oldData !== null) {
+
+        // Only compare if write data use full keys
+        if ($oldData !== null && count(array_intersect_key($writeData, $oldData)) === count($oldData)) {
             $writeData = array_diff_assoc($writeData, $oldData);
         }
 
@@ -804,10 +807,14 @@ class EntityMapper implements EventAwareInterface
 
     public function toCollection(array|object $data): Collection
     {
+        if (!EntityMetadata::isEntity($data)) {
+            return collect($data);
+        }
+
         $class = $this->getMetadata()->getClassName();
 
         if ($data instanceof $class) {
-            $data = $this->extract($class);
+            $data = $this->extract($data);
         } elseif (is_object($data)) {
             $data = TypeCast::toArray($data);
         }
@@ -822,8 +829,12 @@ class EntityMapper implements EventAwareInterface
 
     public function extract(object|array $entity): array
     {
+        if ($entity instanceof Collection) {
+            $entity = $entity->dump();
+        }
+
         if (is_array($entity)) {
-            return $entity;
+            return EntityHydrator::castArray($this->getMetadata(), $entity);
         }
 
         return $this->getORM()->extractEntity($entity);

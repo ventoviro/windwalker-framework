@@ -13,6 +13,7 @@ namespace Windwalker\Attributes;
 
 use JetBrains\PhpStorm\ArrayShape;
 use Windwalker\Filesystem\Filesystem;
+use Windwalker\Utilities\Classes\TraitHelper;
 use Windwalker\Utilities\Reflection\ReflectAccessor;
 use Windwalker\Utilities\StrNormalize;
 
@@ -129,6 +130,20 @@ class AttributesAccessor
         string|null $name = null,
         int $flags = 0
     ): ?array {
-        return ReflectAccessor::reflect($value)?->getAttributes($name, $flags);
+        $ref = ReflectAccessor::reflect($value);
+
+        if (!$ref) {
+            return null;
+        }
+
+        $attrs[] = $ref->getAttributes($name, $flags);
+
+        if ($ref instanceof \ReflectionClass) {
+            while ($ref = $ref->getParentClass()) {
+                $attrs[] = $ref->getAttributes($name, $flags);
+            }
+        }
+
+        return array_merge(...$attrs);
     }
 }

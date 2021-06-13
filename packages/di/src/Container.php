@@ -850,15 +850,15 @@ class Container implements ContainerInterface, IteratorAggregate, Countable, Arr
             ? [Arr::class, 'mergeRecursive']
             : 'array_merge';
 
-        $params->merge();
+        // $params->merge();
 
         $params->transform(
             function ($storage) use ($override, $merge, $data) {
                 if ($override) {
-                    return $merge($data, $storage);
+                    return $merge($storage, $data);
                 }
 
-                return $merge($storage, $data);
+                return $merge($data, $storage);
             }
         );
     }

@@ -80,7 +80,7 @@ class IniFormat implements FormatInterface
         try {
             return parse_ini_string(
                 $string,
-                $options['process_section'] ?? true,
+                $options['process_section'] ?? false,
                 $options['mode'] ?? INI_SCANNER_NORMAL
             );
         } catch (Throwable $e) {

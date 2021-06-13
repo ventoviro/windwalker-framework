@@ -13,6 +13,7 @@ namespace Windwalker\ORM;
 
 use Windwalker\Attributes\AttributesAwareTrait;
 use Windwalker\Attributes\AttributesResolver;
+use Windwalker\Data\Collection;
 use Windwalker\Database\DatabaseAdapter;
 use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\Database\Hydrator\FieldHydratorInterface;
@@ -234,6 +235,10 @@ class ORM
             return $entity;
         }
 
+        if ($entity instanceof Collection) {
+            return $entity->dump();
+        }
+
         return $this->getEntityHydrator()->extract($entity);
     }
 
@@ -244,6 +249,19 @@ class ORM
         }
 
         return $this->getEntityHydrator()->extractField($entity, $field);
+    }
+
+    public function toCollection(object|array $entity): Collection
+    {
+        if ($entity instanceof Collection) {
+            return $entity;
+        }
+
+        if (is_array($entity) || !EntityMetadata::isEntity($entity)) {
+            return Collection::wrap($entity);
+        }
+
+        return $this->mapper($entity::class)->toCollection($entity);
     }
 
     public function getEntityClass(string|object $entity): string

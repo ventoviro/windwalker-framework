@@ -132,7 +132,7 @@ class SelectorQuery extends Query implements EventAwareInterface
         return $this;
     }
 
-    public function groupByDivider(string $divider = '.'): static
+    public function groupByDivider(?string $divider = '.'): static
     {
         $this->groupDivider = $divider;
 

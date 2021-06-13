@@ -67,18 +67,7 @@ class EntityHydrator implements FieldHydratorInterface
 
             $propName = $prop->getName();
 
-            foreach ($metadata->getCastManager()->getFieldCasts($colName) as $cast) {
-                $value = $this->orm->getAttributesResolver()
-                    ->call(
-                        $cast[0],
-                        [
-                            $value,
-                            'orm' => $this->orm,
-                        ]
-                    );
-            }
-
-            $item[$propName] = $value;
+            $item[$propName] = static::castFieldForHydrate($metadata, $colName, $value);
         }
 
         return $this->hydrator->hydrate($item, $object);
@@ -117,19 +106,8 @@ class EntityHydrator implements FieldHydratorInterface
             }
 
             $value = $data[$propName];
-            $casts = $metadata->getCastManager()->getFieldCasts($colName);
-            $casts = array_reverse($casts);
 
-            foreach ($casts as $cast) {
-                $value = $this->orm->getAttributesResolver()
-                    ->call(
-                        $cast[1],
-                        [
-                            $value,
-                            'orm' => $this->orm,
-                        ]
-                    );
-            }
+            $value = static::castFieldForExtract($metadata, $colName, $value);
 
             $item[$colName] = $value;
         }
@@ -160,6 +138,72 @@ class EntityHydrator implements FieldHydratorInterface
             $prop = $column->getProperty()->getName();
         }
 
-        return $this->hydrator->extractField($object, $prop);
+        $value = $this->hydrator->extractField($object, $prop);
+
+        return static::castFieldForExtract($metadata, $column->getName(), $value);
+    }
+
+    public static function castFieldForExtract(EntityMetadata $metadata, $colName, mixed $value)
+    {
+        if (!$metadata->getColumn($colName)) {
+            return $value;
+        }
+
+        $casts = $metadata->getCastManager()->getFieldCasts($colName);
+        $casts = array_reverse($casts);
+
+        foreach ($casts as $cast) {
+            $value = $metadata->getORM()->getAttributesResolver()
+                ->call(
+                    $cast[1],
+                    [
+                        $value,
+                        'orm' => $metadata->getORM(),
+                    ]
+                );
+        }
+
+        return $value;
+    }
+
+    public static function castFieldForHydrate(EntityMetadata $metadata, $colName, mixed $value)
+    {
+        if (!$metadata->getColumn($colName)) {
+            return $value;
+        }
+
+        $casts = $metadata->getCastManager()->getFieldCasts($colName);
+
+        foreach ($casts as $cast) {
+            $value = $metadata->getORM()->getAttributesResolver()
+                ->call(
+                    $cast[0],
+                    [
+                        $value,
+                        'orm' => $metadata->getORM(),
+                    ]
+                );
+        }
+
+        return $value;
+    }
+
+    /**
+     * castArray
+     *
+     * @param  EntityMetadata  $metadata
+     * @param  array           $data
+     *
+     * @return  array
+     *
+     * @internal
+     */
+    public static function castArray(EntityMetadata $metadata, array $data): array
+    {
+        foreach ($data as $k => $datum) {
+            $data[$k] = static::castFieldForExtract($metadata, $k, $datum);
+        }
+
+        return $data;
     }
 }

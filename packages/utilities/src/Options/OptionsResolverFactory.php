@@ -31,4 +31,9 @@ class OptionsResolverFactory
 
         return self::once('options:' . $class, fn () => new OptionsResolver());
     }
+
+    public static function has(string $class): bool
+    {
+        return self::cacheHas('options:' . $class);
+    }
 }

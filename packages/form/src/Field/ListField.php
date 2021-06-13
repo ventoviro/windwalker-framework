@@ -16,6 +16,8 @@ use Windwalker\Data\Collection;
 use Windwalker\DOM\DOMElement;
 use Windwalker\DOM\HTMLFactory;
 
+use Windwalker\Utilities\TypeCast;
+
 use function Windwalker\DOM\h;
 use function Windwalker\value_compare;
 
@@ -114,11 +116,23 @@ class ListField extends AbstractField
     {
         $value = parent::getValue();
 
-        if (!is_array($value) && $this->isMultiple()) {
-            $value = Collection::explode(',', (string) $value)
-                ->map('trim')
-                ->filter('strlen')
-                ->dump();
+        if ($this->isMultiple()) {
+            if (is_array($value)) {
+                return $value;
+            }
+
+            if (is_json($value)) {
+                return json_decode($value, true);
+            }
+
+            if (is_string($value)) {
+                return Collection::explode(',', (string) $value)
+                    ->map('trim')
+                    ->filter('strlen')
+                    ->dump();
+            }
+
+            return TypeCast::toArray($value);
         } else {
             $value = (string) $value;
         }

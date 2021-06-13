@@ -459,7 +459,7 @@ class NestedSetMapper extends EntityMapper
         $parentId = $data['parent_id'] ?? null;
         $source = $event->getSource();
 
-        if (is_array($source) && $source['is_root'] ?? null) {
+        if (is_array($source) && ($source['is_root'] ?? null)) {
             $root = $this->select('id')
                 ->where('parent_id', $this->getEmptyParentId())
                 ->result();

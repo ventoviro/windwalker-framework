@@ -29,6 +29,11 @@ trait OptionsResolverTrait
      */
     protected function resolveOptions(array $options = [], ?callable $handler = null): void
     {
+        if (OptionsResolverFactory::has(static::class)) {
+            $this->options = OptionsResolverFactory::getByClass(static::class)->resolve($options);
+            return;
+        }
+
         $resolver = OptionsResolverFactory::getByClass(static::class);
 
         if ($handler) {
