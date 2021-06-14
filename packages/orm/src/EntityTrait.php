@@ -75,8 +75,12 @@ trait EntityTrait
         }
     }
 
-    public function toCollection(): Collection
+    public function toCollection(?ORM $orm = null): Collection
     {
+        if ($orm) {
+            return $orm->toCollection($this);
+        }
+
         return Collection::wrap($this->dump());
     }
 
