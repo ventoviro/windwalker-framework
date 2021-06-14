@@ -33,7 +33,7 @@ use Windwalker\Utilities\Symbol;
 /**
  * The Form class.
  */
-class Form implements IteratorAggregate
+class Form implements IteratorAggregate, \Countable
 {
     use ObjectBuilderAwareTrait;
     use OptionAccessTrait;
@@ -573,5 +573,18 @@ class Form implements IteratorAggregate
     public function getFieldset(string $name): ?Fieldset
     {
         return $this->fieldsets[$name] ?? null;
+    }
+
+    /**
+     * Count elements of an object
+     * @link https://php.net/manual/en/countable.count.php
+     * @return int The custom count as an integer.
+     * <p>
+     * The return value is cast to an integer.
+     * </p>
+     */
+    public function count(): int
+    {
+        return count($this->fields);
     }
 }
