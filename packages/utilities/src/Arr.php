@@ -1081,7 +1081,7 @@ abstract class Arr
         foreach ($queries as $key => $val) {
             if ($val instanceof WhereWrapper) {
                 $results[] = $val($array);
-            } elseif (is_callable($val)) {
+            } elseif ($val instanceof \Closure) {
                 $results[] = $val($array[$key], $key);
             } elseif (substr($key, -2) === '>=') {
                 $results[] = (static::get($array, trim(substr($key, 0, -2))) >= $val);
