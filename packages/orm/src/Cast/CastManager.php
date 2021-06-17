@@ -155,6 +155,10 @@ class CastManager
      */
     public function castToCallback(mixed $cast, int $options, $direction = 'cast'): callable
     {
+        if ($cast === null) {
+            return fn(mixed $value) => $value;
+        }
+
         if (is_callable($cast)) {
             return fn(mixed $value) => $cast($value);
         }

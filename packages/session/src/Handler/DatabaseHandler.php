@@ -11,9 +11,11 @@ declare(strict_types=1);
 
 namespace Windwalker\Session\Handler;
 
+use Windwalker\Core\Service\LoggerService;
 use Windwalker\Database\DatabaseAdapter;
 use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\Database\Platform\AbstractPlatform;
+use Windwalker\DI\Attributes\Inject;
 use Windwalker\Query\Bounded\ParamType;
 use Windwalker\Utilities\Options\OptionAccessTrait;
 
@@ -33,6 +35,9 @@ class DatabaseHandler extends AbstractHandler
      * @var DatabaseAdapter
      */
     protected DatabaseAdapter $db;
+
+    #[Inject]
+    protected LoggerService $logger;
 
     /**
      * isSupported

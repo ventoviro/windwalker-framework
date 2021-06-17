@@ -807,6 +807,10 @@ class EntityMapper implements EventAwareInterface
 
     public function toCollection(array|object $data): Collection
     {
+        if (is_array($data)) {
+            return collect($data);
+        }
+
         if (!EntityMetadata::isEntity($data)) {
             return collect($data);
         }

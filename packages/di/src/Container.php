@@ -380,8 +380,13 @@ class Container implements ContainerInterface, IteratorAggregate, Countable, Arr
         $this->parameters->reset();
     }
 
-    public function clearCache(): void
+    public function clearCache(?string $id = null): void
     {
+        if ($id !== null) {
+            $this->getDefinition($id)?->reset();
+            return;
+        }
+
         foreach ($this->storage as $storage) {
             $storage->reset();
         }

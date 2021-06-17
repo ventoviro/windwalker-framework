@@ -125,7 +125,7 @@ class Form implements IteratorAggregate, \Countable
         $field->setName($name);
 
         if ($namespace) {
-            $field->setNamespace($name);
+            $field->setNamespace($namespace);
         }
 
         return $this->addField($field, $fieldset);
