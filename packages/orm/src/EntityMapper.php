@@ -765,6 +765,17 @@ class EntityMapper implements EventAwareInterface
         return [$creates, $keep];
     }
 
+    public function prepareRelations(object $entity): object
+    {
+        $data = $this->extract($entity);
+
+        $this->getMetadata()
+            ->getRelationManager()
+            ->load($data, $entity);
+
+        return $entity;
+    }
+
     public function getKeys(): array
     {
         return $this->getMetadata()->getKeys();

@@ -31,7 +31,7 @@ trait MarcoableTrait
         static::$macros[$name] = $macro;
     }
 
-    public function do(string $name, ...$args)
+    public function do(string $name, ...$args): mixed
     {
         return $this->__call($name, $args);
     }
@@ -46,7 +46,7 @@ trait MarcoableTrait
         static::$macros = [];
     }
 
-    public static function __callStatic($name, $args)
+    public static function __callStatic(string $name, array $args): mixed
     {
         if (!static::hasMacro($name)) {
             throw new BadMethodCallException(

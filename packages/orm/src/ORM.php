@@ -191,6 +191,11 @@ class ORM
         return $this->createSelectorQuery()->delete($table, $alias);
     }
 
+    public function prepareRelations(object $entity): object
+    {
+        return $this->mapper($entity::class)->prepareRelations($entity);
+    }
+
     /**
      * createEntity
      *
