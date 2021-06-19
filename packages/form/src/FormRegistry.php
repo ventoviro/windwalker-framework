@@ -16,7 +16,7 @@ use Windwalker\Form\Renderer\FormRendererInterface;
 /**
  * The FormFactopry class.
  */
-class FormFactory
+class FormRegistry
 {
     public static ?Form $form = null;
 

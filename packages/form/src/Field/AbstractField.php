@@ -20,7 +20,7 @@ use Windwalker\Form\Field\Concern\{ManageFilterTrait,
     ManageRenderTrait,
     ManageWrapperTrait};
 use Windwalker\Form\Form;
-use Windwalker\Form\FormFactory;
+use Windwalker\Form\FormRegistry;
 use Windwalker\Form\FormNormalizer;
 use Windwalker\Utilities\Classes\FlowControlTrait;
 use Windwalker\Utilities\Options\StateAccessTrait;
@@ -133,7 +133,7 @@ abstract class AbstractField
         $this->input   = $this->createInputElement($attributes);
         $this->label   = h('label', [], $label);
         $this->wrapper = h('div', [], '');
-        $this->form    = FormFactory::form();
+        $this->form    = FormRegistry::form();
 
         $this->resetValidators();
         $this->resetFilters();
