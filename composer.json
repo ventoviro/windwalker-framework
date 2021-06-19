@@ -195,7 +195,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-4": "4.x-dev"
+            "dev-master": "4.x-dev"
         }
     },
     "provide": {
