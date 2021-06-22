@@ -43,7 +43,7 @@ class Position
      */
     public function __construct(
         protected mixed $referenceId = null,
-        protected int $position = self::AFTER
+        protected int $position = self::LAST_CHILD
     ) {
         //
     }
