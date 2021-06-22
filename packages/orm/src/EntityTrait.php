@@ -103,4 +103,43 @@ trait EntityTrait
 
         return $this->dump();
     }
+
+    public function __get(string $name): mixed
+    {
+        $getter = $this->getGetter($name);
+
+        if ($getter) {
+            return $this->$getter();
+        }
+
+        return $this->$name;
+    }
+
+    public function __isset(string $name): bool
+    {
+        $getter = $this->getGetter($name);
+
+        if ($getter) {
+            return $this->$getter() !== null;
+        }
+
+        return isset($this->$name);
+    }
+
+    private function getGetter(string $name): ?string
+    {
+        $getter = 'get' . ucfirst($name);
+
+        if (method_exists($this, $getter)) {
+            return $getter;
+        }
+
+        $getter = 'is' . ucfirst($name);
+
+        if (method_exists($this, $getter)) {
+            return $getter;
+        }
+
+        return null;
+    }
 }
