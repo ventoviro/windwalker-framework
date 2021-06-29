@@ -936,7 +936,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
     public function update(string $table, ?string $alias = null): static
     {
         $this->type   = static::TYPE_UPDATE;
-        $this->update = $this->clause('UPDATE', $this->as($table, $alias ?? false));
+        $this->update = $this->clause('UPDATE', $this->as($table, $alias));
 
         return $this;
     }

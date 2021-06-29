@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Query\Grammar;
 
+use Windwalker\Query\Clause\AsClause;
 use Windwalker\Query\Clause\Clause;
 use Windwalker\Query\DefaultConnection;
 use Windwalker\Query\Escaper;
@@ -213,8 +214,16 @@ abstract class AbstractGrammar
     {
         $sql['delete'] = $query->getDelete();
 
-        if ($form = $query->getFrom()) {
-            $sql['from'] = $form;
+        if ($from = $query->getFrom()) {
+            if (!$query->getJoin()) {
+                foreach ($from->getElements() as $element) {
+                    if ($element instanceof AsClause) {
+                        $element->alias(false);
+                    }
+                }
+            }
+
+            $sql['from'] = $from;
         }
 
         if ($join = $query->getJoin()) {
