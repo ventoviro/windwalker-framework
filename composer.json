@@ -234,5 +234,18 @@
         "windwalker/test": "self.version",
         "windwalker/uri": "self.version",
         "windwalker/utilities": "self.version"
+    },
+    "archive": {
+        "exclude": [
+            ".github",
+            ".idea",
+            "docs",
+            "build",
+            "packages/*/.github",
+            "packages/*/test",
+            "tmp",
+            ".travis.yml",
+            "yarn.lock",
+        ]
     }
 }
