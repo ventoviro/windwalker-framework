@@ -27,6 +27,8 @@ abstract class AbstractSaveEvent extends AbstractEntityEvent
 
     protected ?array $oldData = null;
 
+    protected int $options = 0;
+
     protected array|object $source = [];
 
     /**
@@ -117,5 +119,25 @@ abstract class AbstractSaveEvent extends AbstractEntityEvent
     public function isUpdate(): bool
     {
         return $this->getType() === static::TYPE_UPDATE;
+    }
+
+    /**
+     * @return int
+     */
+    public function &getOptions(): int
+    {
+        return $this->options;
+    }
+
+    /**
+     * @param  int  $options
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setOptions(int $options): static
+    {
+        $this->options = $options;
+
+        return $this;
     }
 }
