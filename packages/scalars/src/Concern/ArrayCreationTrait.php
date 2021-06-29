@@ -193,7 +193,7 @@ trait ArrayCreationTrait
      */
     public function rand(int $num = 1): static
     {
-        return $this->newInstance(array_rand($this->storage, $num));
+        return $this->newInstance((array) array_rand($this->storage, $num));
     }
 
     /**

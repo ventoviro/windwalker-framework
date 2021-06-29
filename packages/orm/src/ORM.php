@@ -38,6 +38,7 @@ use Windwalker\ORM\Event\BeforeDeleteEvent;
 use Windwalker\ORM\Event\BeforeSaveEvent;
 use Windwalker\ORM\Event\BeforeUpdateWhereEvent;
 use Windwalker\ORM\Hydrator\EntityHydrator;
+use Windwalker\ORM\Iterator\ResultIterator;
 use Windwalker\ORM\Metadata\EntityMetadata;
 use Windwalker\ORM\Metadata\EntityMetadataCollection;
 use Windwalker\Query\Query;
@@ -45,9 +46,10 @@ use Windwalker\Query\Query;
 /**
  * The ORM class.
  *
- * @method  object|null   findOne(string $entityClass, mixed $conditions)
- * @method  \Generator    findList(string $entityClass, mixed $conditions = [])
- * @method  string|null   findResult(string $entityClass, mixed $conditions)
+ * @method  object|null   findOne(string $entityClass, mixed $conditions = [])
+ * @method  ResultIterator findList(string $entityClass, mixed $conditions = [])
+ * @method  string|null   findResult(string $entityClass, mixed $conditions = [])
+ * @method  Collection   findColumn(string $entityClass, string $column, mixed $conditions = [])
  * @method  object|object[]  createOne(string $entityClass, array|object $item = [])
  * @method  iterable      createMultiple(string $entityClass, iterable $items)
  * @method  StatementInterface|null  updateOne(string $entityClass, array|object $item = [], array|string $condFields = null, bool $updateNulls = false)

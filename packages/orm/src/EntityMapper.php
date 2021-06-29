@@ -29,6 +29,7 @@ use Windwalker\ORM\Event\{AbstractSaveEvent,
     BeforeSaveEvent,
     BeforeUpdateWhereEvent};
 use Windwalker\ORM\Hydrator\EntityHydrator;
+use Windwalker\ORM\Iterator\ResultIterator;
 use Windwalker\ORM\Metadata\EntityMetadata;
 use Windwalker\Utilities\Arr;
 use Windwalker\Utilities\Assert\TypeAssert;
@@ -142,7 +143,7 @@ class EntityMapper implements EventAwareInterface
      *
      * @return  object|null
      */
-    public function findOne(mixed $conditions, ?string $className = null): ?object
+    public function findOne(mixed $conditions = [], ?string $className = null): ?object
     {
         $metadata = $this->getMetadata();
 
@@ -151,22 +152,31 @@ class EntityMapper implements EventAwareInterface
             ->get($className ?? $metadata->getClassName());
     }
 
-    public function findList(mixed $conditions = [], ?string $className = null): \Generator
+    public function findList(mixed $conditions = [], ?string $className = null): ResultIterator
     {
         $metadata = $this->getMetadata();
 
-        return $this->from($metadata->getClassName())
-            ->where($this->conditionsToWheres($conditions))
-            ->getIterator($className ?? $metadata->getClassName());
+        return new ResultIterator(
+            $this->from($metadata->getClassName())
+                ->where($this->conditionsToWheres($conditions))
+                ->getIterator($className ?? $metadata->getClassName())
+        );
     }
 
-    public function findResult(mixed $conditions): ?string
+    public function findResult(mixed $conditions = []): ?string
     {
         $metadata = $this->getMetadata();
 
         return $this->from($metadata->getClassName())
             ->where($this->conditionsToWheres($conditions))
             ->result();
+    }
+
+    public function findColumn(string $column, mixed $conditions = []): Collection
+    {
+        return $this->select($column)
+            ->where($this->conditionsToWheres($conditions))
+            ->loadColumn();
     }
 
     public function createOne(array|object $source = []): object
