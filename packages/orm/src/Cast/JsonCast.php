@@ -19,7 +19,7 @@ class JsonCast implements CastInterface
     /**
      * @inheritDoc
      */
-    public function cast(mixed $value): mixed
+    public function hydrate(mixed $value): mixed
     {
         if (!is_string($value)) {
             return $value;

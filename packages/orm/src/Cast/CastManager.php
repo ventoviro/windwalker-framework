@@ -92,7 +92,7 @@ class CastManager
                     }
 
                     $casts[] = [
-                        $this->castToCallback($cast, $options, 'cast'),
+                        $this->castToCallback($cast, $options, 'hydrate'),
                         $this->castToCallback($extract, $options, 'extract')
                     ];
                 }
@@ -153,14 +153,14 @@ class CastManager
      *
      * @return  callable
      */
-    public function castToCallback(mixed $cast, int $options, $direction = 'cast'): callable
+    public function castToCallback(mixed $cast, int $options, string $direction = 'hydrate'): callable
     {
         if ($cast === null) {
             return fn(mixed $value) => $value;
         }
 
         if (is_callable($cast)) {
-            return fn(mixed $value) => $cast($value);
+            return $cast;
         }
 
         if (is_string($cast)) {

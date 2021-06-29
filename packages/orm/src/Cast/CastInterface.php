@@ -27,7 +27,7 @@ interface CastInterface
      *
      * @return  mixed
      */
-    public function cast(mixed $value): mixed;
+    public function hydrate(mixed $value): mixed;
 
     /**
      * Extract from php type or object to string or NULL for storing.

@@ -21,6 +21,7 @@ use Windwalker\Event\Event;
 use Windwalker\Event\EventAwareInterface;
 use Windwalker\Event\EventAwareTrait;
 use Windwalker\Event\EventInterface;
+use Windwalker\ORM\Attributes\CastForSave;
 use Windwalker\ORM\Attributes\CurrentTime;
 use Windwalker\ORM\Event\{AbstractSaveEvent,
     AfterDeleteEvent,
@@ -926,6 +927,8 @@ class EntityMapper implements EventAwareInterface
                 if ($curr = AttributesAccessor::getFirstAttributeInstance($prop, CurrentTime::class)) {
                     $value = $curr->getCurrent();
                 }
+
+                $value = $this->castProperty($prop, $value);
             }
 
             if (!$updateNulls && $value === null) {
@@ -977,6 +980,29 @@ class EntityMapper implements EventAwareInterface
         }
 
         return $item;
+    }
+
+    protected function castProperty(\ReflectionProperty $prop, mixed $value): mixed
+    {
+        AttributesAccessor::runAttributeIfExists(
+            $prop,
+            CastForSave::class,
+            function (CastForSave $attr) use (&$value) {
+                $caster = $this->getMetadata()->getCastManager()
+                    ->castToCallback($attr->caster ?? $attr, $attr->options ?? 0);
+
+                $value = $this->getORM()->getAttributesResolver()->call(
+                    $caster,
+                    [
+                        $value,
+                        'orm' => $this->getORM()
+                    ]
+                );
+            },
+            \ReflectionAttribute::IS_INSTANCEOF
+        );
+
+        return $value;
     }
 
     /**

@@ -26,6 +26,11 @@ class AttributesResolver extends ObjectBuilder
     protected array $registry = [];
 
     /**
+     * @var callable
+     */
+    protected $invokeHandler;
+
+    /**
      * AttributesResolver constructor.
      *
      * @param  array  $options
@@ -138,6 +143,10 @@ class AttributesResolver extends ObjectBuilder
      */
     public function call(callable $callable, $args = [], ?object $context = null): mixed
     {
+        if ($this->invokeHandler) {
+            return ($this->invokeHandler)($callable, $args, $context);
+        }
+
         $args = $this->resolveCallArguments($callable, $args);
 
         return $this->resolveCallable($callable, $context)(...$args);
@@ -392,5 +401,25 @@ class AttributesResolver extends ObjectBuilder
     protected static function normalizeClassName(string $className): string
     {
         return strtolower(trim($className, '\\'));
+    }
+
+    /**
+     * @return callable
+     */
+    public function getInvokeHandler(): callable
+    {
+        return $this->invokeHandler;
+    }
+
+    /**
+     * @param  callable  $invokeHandler
+     *
+     * @return  static  Return self to support chaining.
+     */
+    public function setInvokeHandler(callable $invokeHandler): static
+    {
+        $this->invokeHandler = $invokeHandler;
+
+        return $this;
     }
 }

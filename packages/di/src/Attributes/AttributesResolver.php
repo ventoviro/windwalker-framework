@@ -133,4 +133,9 @@ class AttributesResolver extends BaseAttributesResolver
     {
         return new AttributeHandler($getter, $reflector, $object, $this, $this->container);
     }
+
+    public function call(callable $callable, $args = [], ?object $context = null): mixed
+    {
+        return $this->container->call($callable, $args, $context);
+    }
 }
