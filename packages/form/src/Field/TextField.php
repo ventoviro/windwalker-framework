@@ -54,7 +54,7 @@ class TextField extends AbstractInputField
                     $html,
                     h(
                         'datalist',
-                        [],
+                        ['id' => $this->buildListId()],
                         $this->options
                     ),
                 ]

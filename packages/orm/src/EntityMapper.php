@@ -1048,6 +1048,16 @@ class EntityMapper implements EventAwareInterface
         $methods = $this->getMetadata()->getMethodsOfAttribute($event::class);
 
         foreach ($methods as $method) {
+            if (!$method->isStatic()) {
+                throw new \LogicException(
+                    sprintf(
+                        "Entity event hook: %s::%s must be static method.",
+                        $this->metadata->getClassName(),
+                        $method->getName()
+                    )
+                );
+            }
+
             $result = $this->getORM()->getAttributesResolver()->call(
                 $method->getClosure(),
                 [
