@@ -21,6 +21,8 @@ class AfterSaveEvent extends AbstractSaveEvent
 {
     protected object $entity;
 
+    protected array $fullData = [];
+
     /**
      * @return object
      */
@@ -37,6 +39,32 @@ class AfterSaveEvent extends AbstractSaveEvent
     public function setEntity(object $entity): static
     {
         $this->entity = $entity;
+
+        return $this;
+    }
+
+    /**
+     * Get full data which set from BeforeSaveEvent.
+     *
+     * @return array
+     *
+     * @deprecated This is for B/C use.
+     */
+    public function getFullData(): array
+    {
+        return $this->fullData;
+    }
+
+    /**
+     * @param  array  $fullData
+     *
+     * @return  static  Return self to support chaining.
+     *
+     * @deprecated This is for B/C use.
+     */
+    public function setFullData(array $fullData): static
+    {
+        $this->fullData = $fullData;
 
         return $this;
     }

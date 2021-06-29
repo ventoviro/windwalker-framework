@@ -204,7 +204,7 @@ class EntityMapper implements EventAwareInterface
             compact('data', 'type', 'metadata', 'source')
         );
 
-        $data = $this->castForSave($event->getData());
+        $data = $this->castForSave($fullData = $event->getData());
 
         $data = $this->getDb()->getWriter()->insertOne(
             $metadata->getTableName(),
@@ -215,15 +215,15 @@ class EntityMapper implements EventAwareInterface
             ]
         );
 
-        if (is_array($source)) {
-            $source = $this->getORM()->getAttributesResolver()->createObject($className);
-        }
+        $entity = $this->toEntity($source);
 
-        $entity = $source;
+        if ($pk && isset($data[$pk])) {
+            $fullData[$pk] = $data[$pk];
+        }
 
         $event = $this->emitEvent(
             AfterSaveEvent::class,
-            compact('data', 'type', 'metadata', 'entity', 'source')
+            compact('data', 'type', 'metadata', 'entity', 'source', 'fullData')
         );
 
         $entity = $this->hydrate(

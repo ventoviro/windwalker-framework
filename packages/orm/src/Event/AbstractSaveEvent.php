@@ -32,7 +32,7 @@ abstract class AbstractSaveEvent extends AbstractEntityEvent
     /**
      * @return array
      */
-    public function getData(): array
+    public function &getData(): array
     {
         return $this->data;
     }
