@@ -42,20 +42,15 @@ class ServerRequestFactory
      * If any argument is not supplied, the corresponding superglobal value will
      * be used.
      *
-     * The ServerRequest created is then passed to the fromServer() method in
-     * order to marshal the request URI and headers.
-     *
-     * @param  array  $server      The $_SERVER superglobal variable.
-     * @param  array  $query       The $_GET superglobal variable.
-     * @param  array  $parsedBody  The $_POST superglobal variable.
-     * @param  array  $cookies     The $_COOKIE superglobal variable.
-     * @param  array  $files       The $_FILES superglobal variable.
+     * @param  array       $server      The $_SERVER superglobal variable.
+     * @param  array       $query       The $_GET superglobal variable.
+     * @param  array|null  $parsedBody  The $_POST superglobal variable.
+     * @param  array       $cookies     The $_COOKIE superglobal variable.
+     * @param  array       $files       The $_FILES superglobal variable.
      *
      * @return ServerRequestInterface
      *
-     * @throws InvalidArgumentException for invalid file values
-     * @see fromServer()
-     *
+     * @throws \JsonException
      */
     public static function createFromGlobals(
         array $server = [],
@@ -73,10 +68,14 @@ class ServerRequestFactory
 
         $decodedBody  = $_POST;
         $decodedFiles = $_FILES;
+        $method = strtoupper($method);
+        $type = (string) HeaderHelper::getValue($headers, 'Content-Type');
 
-        if (in_array(strtoupper($method), ['PUT', 'PATCH', 'DELETE', 'LINK', 'UNLINK'])) {
-            $type = (string) HeaderHelper::getValue($headers, 'Content-Type');
-
+        if ($method === 'POST') {
+            if (str_contains($type, 'application/json')) {
+                $decodedBody = json_decode($body->__toString(), true, 512, JSON_THROW_ON_ERROR);
+            }
+        } elseif (in_array($method, ['PUT', 'PATCH', 'DELETE', 'LINK', 'UNLINK'])) {
             if (str_contains($type, 'application/x-www-form-urlencoded')) {
                 parse_str($body->__toString(), $decodedBody);
             } elseif (str_contains($type, 'multipart/form-data')) {
