@@ -245,7 +245,7 @@
             "packages/*/test",
             "tmp",
             ".travis.yml",
-            "yarn.lock",
+            "yarn.lock"
         ]
     }
 }
