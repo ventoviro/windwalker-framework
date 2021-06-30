@@ -49,7 +49,7 @@ abstract class AbstractDriver implements HydratorAwareInterface
     /**
      * @var Query|string
      */
-    protected mixed $lastQuery;
+    protected mixed $lastQuery = null;
 
     /**
      * @var ?AbstractSchemaManager

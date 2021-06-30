@@ -914,7 +914,11 @@ abstract class Arr
                         $pType .= ':static';
                     }
 
-                    $elements[$pType] = $property->getValue($data);
+                    if ($property->isInitialized($data)) {
+                        $elements[$pType] = $property->getValue($data);
+                    } else {
+                        $elements[$pType] = '(Not initialized)';
+                    }
                 }
 
                 if ($data instanceof ArrayObject || $data instanceof ArrayIterator) {
