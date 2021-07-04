@@ -15,6 +15,7 @@ use FilesystemIterator;
 use Webmozart\Glob\Glob;
 use Windwalker\Filesystem\FileObject;
 use Windwalker\Filesystem\Filesystem;
+use Windwalker\Filesystem\Path;
 
 /**
  * Support node style double star finder.
@@ -33,6 +34,9 @@ function glob(string $pattern, int $flags = 0): array
     if (!class_exists(Glob::class)) {
         throw new \DomainException('Please install webmozart/glob first');
     }
+
+    // Webmozart/glob must use `/` in windows.
+    $pattern = Path::clean($pattern, '/');
 
     return Glob::glob($pattern, $flags);
 }

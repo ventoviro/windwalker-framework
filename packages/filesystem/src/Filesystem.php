@@ -84,6 +84,9 @@ class Filesystem
             throw new \DomainException('Please install webmozart/glob first');
         }
 
+        // Webmozart/glob must use `/` in windows.
+        $path = Path::clean($path, '/');
+
         return new FilesIterator(new GlobIterator($path, $flags), Glob::getBasePath($path));
     }
 
