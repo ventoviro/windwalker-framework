@@ -148,7 +148,7 @@ class Path
                 return $path;
             }
 
-            $prefix = $matches[1] . ':\\';
+            $prefix = $matches[1] . ':' . $ds;
             $path   = $matches[2];
         }
 
