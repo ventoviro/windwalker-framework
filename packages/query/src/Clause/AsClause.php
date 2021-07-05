@@ -118,11 +118,11 @@ class AsClause implements ClauseInterface
     /**
      * Method to get property Column
      *
-     * @return  string
+     * @return  mixed
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function getValue(): string
+    public function getValue(): mixed
     {
         return $this->value;
     }
