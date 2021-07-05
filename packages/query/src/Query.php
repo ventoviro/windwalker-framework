@@ -11,14 +11,11 @@ declare(strict_types=1);
 
 namespace Windwalker\Query;
 
-use Windwalker\Attributes\AttributesResolver;
 use Windwalker\Data\Collection;
 use Windwalker\Database\DatabaseAdapter;
 use Windwalker\Database\Driver\AbstractDriver;
 use Windwalker\Database\Driver\AbstractStatement;
 use Windwalker\Database\Driver\StatementInterface;
-use Windwalker\Database\Exception\DatabaseQueryException;
-use Windwalker\ORM\Attributes\Table;
 use Windwalker\ORM\ORM;
 use Windwalker\Query\Bounded\BindableInterface;
 use Windwalker\Query\Bounded\BindableTrait;
@@ -364,7 +361,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
                 $value($value = $this->createSubQuery());
             }
 
-            if ($value instanceof static) {
+            if ($value instanceof self) {
                 $alias = $alias ?? $value->getAlias();
 
                 $this->injectSubQuery($value, $alias);
@@ -602,7 +599,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
 
                 $this->bind(null, $vc);
             }
-        } elseif ($value instanceof static) {
+        } elseif ($value instanceof self) {
             // Process Aub query object
             $value = $this->val($value);
             $this->injectSubQuery($origin);
@@ -990,14 +987,14 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
         }
 
         foreach ($values as $value) {
-            if ($value instanceof static) {
+            if ($value instanceof self) {
                 if (!$this->values) {
                     $this->values = $this->createSubQuery();
                     $this->injectSubQuery($this->values);
                 }
 
                 ArgumentsAssert::assert(
-                    $this->values instanceof static,
+                    $this->values instanceof self,
                     'You must set sub query as values to {caller} since current mode is ' .
                     'INSERT ... SELECT ..., %s given',
                     $value
@@ -1071,7 +1068,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
 
         if ($value === null) {
             $value = $this->val(raw('NULL'));
-        } elseif ($value instanceof static) {
+        } elseif ($value instanceof self) {
             // Process Aub query object
             $value = $this->val($value);
             $this->injectSubQuery($origin);
@@ -1258,7 +1255,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
         }
 
         if ($names instanceof Clause) {
-            return $names->mapElements(fn ($item) => $this->quoteName($item, $flags));
+            return $names->mapElements(fn($item) => $this->quoteName($item, $flags));
         }
 
         $quoted = [];
