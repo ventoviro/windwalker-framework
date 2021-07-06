@@ -24,9 +24,11 @@ use Windwalker\Event\EventInterface;
 use Windwalker\ORM\Attributes\CastForSave;
 use Windwalker\ORM\Attributes\CurrentTime;
 use Windwalker\ORM\Event\{AbstractSaveEvent,
+    AfterCopyEvent,
     AfterDeleteEvent,
     AfterSaveEvent,
     AfterUpdateWhereEvent,
+    BeforeCopyEvent,
     BeforeDeleteEvent,
     BeforeSaveEvent,
     BeforeUpdateWhereEvent};
@@ -661,30 +663,46 @@ class EntityMapper implements EventAwareInterface
     {
         $items = $this->findList($conditions, Collection::class);
         $key = $this->getMainKey();
+        $metadata = $this->getMetadata();
+        $source = $conditions;
 
         $creates = [];
 
         /** @var Collection $item */
         foreach ($items as $i => $item) {
-            $item = $item->dump();
+            $oldData = $item->dump();
+            $data = $item->dump();
 
-            unset($item[$key]);
+            unset($data[$key]);
 
             if (is_callable($newValue)) {
-                $result = $newValue($item, $conditions);
+                $result = $newValue($data, $conditions);
 
                 if ($result) {
-                    $item = $result;
+                    $data = $result;
                 }
             } else {
                 foreach ($newValue as $field => $value) {
                     if ($value !== null) {
-                        $item[$field] = $value;
+                        $data[$field] = $value;
                     }
                 }
             }
 
-            $creates[] = $this->createOne($item, $options);
+            $type = BeforeCopyEvent::TYPE_COPY;
+            $event = $this->emitEvent(
+                BeforeCopyEvent::class,
+                compact('data', 'type', 'metadata', 'oldData', 'source', 'options')
+            );
+
+            $entity = $this->createOne($data = $event->getData(), $option = $event->getOptions());
+
+            $event = $this->emitEvent(
+                AfterCopyEvent::class,
+                compact('data', 'type', 'metadata', 'entity', 'oldData', 'source', 'options')
+            );
+
+            $creates[] = $event->getEntity();
         }
 
         return $creates;

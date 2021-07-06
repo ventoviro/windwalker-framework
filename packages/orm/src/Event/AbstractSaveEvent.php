@@ -20,6 +20,7 @@ abstract class AbstractSaveEvent extends AbstractEntityEvent
 {
     public const TYPE_CREATE = 'create';
     public const TYPE_UPDATE = 'update';
+    public const TYPE_COPY = 'copy';
 
     protected string $type;
 

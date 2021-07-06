@@ -31,9 +31,11 @@ use Windwalker\ORM\Attributes\OneToOne;
 use Windwalker\ORM\Attributes\PK;
 use Windwalker\ORM\Attributes\Table;
 use Windwalker\ORM\Attributes\Watch;
+use Windwalker\ORM\Event\AfterCopyEvent;
 use Windwalker\ORM\Event\AfterDeleteEvent;
 use Windwalker\ORM\Event\AfterSaveEvent;
 use Windwalker\ORM\Event\AfterUpdateWhereEvent;
+use Windwalker\ORM\Event\BeforeCopyEvent;
 use Windwalker\ORM\Event\BeforeDeleteEvent;
 use Windwalker\ORM\Event\BeforeSaveEvent;
 use Windwalker\ORM\Event\BeforeUpdateWhereEvent;
@@ -130,6 +132,8 @@ class ORM
         $ar->registerAttribute(AfterUpdateWhereEvent::class, \Attribute::TARGET_METHOD);
         $ar->registerAttribute(BeforeDeleteEvent::class, \Attribute::TARGET_METHOD);
         $ar->registerAttribute(AfterDeleteEvent::class, \Attribute::TARGET_METHOD);
+        $ar->registerAttribute(BeforeCopyEvent::class, \Attribute::TARGET_METHOD);
+        $ar->registerAttribute(AfterCopyEvent::class, \Attribute::TARGET_METHOD);
         $ar->registerAttribute(Watch::class, \Attribute::TARGET_METHOD);
     }
 
