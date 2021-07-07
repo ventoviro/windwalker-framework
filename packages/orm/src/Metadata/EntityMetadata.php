@@ -345,7 +345,7 @@ class EntityMetadata implements EventAwareInterface
         return $this->orm;
     }
 
-    public function getMapper(?string $mapperClass = null): EntityMapper
+    public function getEntityMapper(?string $mapperClass = null): EntityMapper
     {
         $args = [
             $this,

@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\ORM\Relation\Strategy;
 
 use Windwalker\Database\Driver\StatementInterface;
+use Windwalker\ORM\EntityMapper;
 use Windwalker\ORM\Metadata\EntityMetadata;
 use Windwalker\ORM\Relation\Action;
 use Windwalker\ORM\Relation\ForeignTable;
@@ -145,7 +146,7 @@ class ManyToMany extends AbstractRelation
 
             $mapData = $this->syncMapData([], $data, $foreignData);
 
-            $mapMetadata->getMapper()->deleteWhere($mapData);
+            $mapMetadata->getEntityMapper()->deleteWhere($mapData);
         }
     }
 
@@ -169,7 +170,7 @@ class ManyToMany extends AbstractRelation
 
             $mapData = $this->syncMapData([], $data, $foreignData);
 
-            $mapMetadata->getMapper()->deleteWhere($mapData);
+            $mapMetadata->getEntityMapper()->deleteWhere($mapData);
         }
 
         return $results;
@@ -402,10 +403,10 @@ class ManyToMany extends AbstractRelation
             $mapData = $mapEntity ? $this->getORM()->extractEntity($mapEntity) : [];
 
             // Create Foreign data
-            if ($foreignMetadata->getMapper()->isNew($foreignData)) {
+            if ($foreignMetadata->getEntityMapper()->isNew($foreignData)) {
                 $foreignData = $this->mergeMorphValues($foreignData);
 
-                $foreignEntity = $foreignMetadata->getMapper()
+                $foreignEntity = $foreignMetadata->getEntityMapper()
                     ->createOne($foreignData);
 
                 $foreignData = $this->getORM()->extractEntity($foreignEntity);
@@ -418,10 +419,10 @@ class ManyToMany extends AbstractRelation
             $mapEntity = $this->getORM()
                 ->hydrateEntity(
                     $mapData,
-                    $mapMetadata->getMapper()->toEntity($mapEntity ?? [])
+                    $mapMetadata->getEntityMapper()->toEntity($mapEntity ?? [])
                 );
 
-            $mapMetadata->getMapper()->createOne($mapEntity);
+            $mapMetadata->getEntityMapper()->createOne($mapEntity);
         }
     }
 
@@ -438,7 +439,7 @@ class ManyToMany extends AbstractRelation
 
             $mapData = $this->syncMapData([], $oldData, $foreignData);
 
-            $mapMetadata->getMapper()->deleteWhere($mapData);
+            $mapMetadata->getEntityMapper()->deleteWhere($mapData);
         }
     }
 
@@ -459,7 +460,7 @@ class ManyToMany extends AbstractRelation
 
             // Otherwise create new one
             $oldMapData = $mapEntity ? $this->getORM()->extractEntity($mapEntity) : [];
-            $mapEntity ??= $mapMetadata->getMapper()->toEntity([]);
+            $mapEntity ??= $mapMetadata->getEntityMapper()->toEntity([]);
 
             // Sync old values to map data
             $oldMapData = $this->syncMapData($oldMapData, $oldData, $foreignData);
@@ -467,7 +468,7 @@ class ManyToMany extends AbstractRelation
 
             if ($this->onUpdate === Action::CASCADE) {
                 // Try get DB map if exists
-                $mapData = $mapMetadata->getMapper()
+                $mapData = $mapMetadata->getEntityMapper()
                     ->select()
                     ->where($oldMapConditions)
                     ->get()
@@ -482,14 +483,14 @@ class ManyToMany extends AbstractRelation
                 }
 
                 if ($mapMetadata->getMainKey()) {
-                    $mapMetadata->getMapper()
+                    $mapMetadata->getEntityMapper()
                         ->updateOne(
                             $mapData,
                             null,
-                            true
+                            EntityMapper::UPDATE_NULLS
                         );
                 } else {
-                    $mapMetadata->getMapper()
+                    $mapMetadata->getEntityMapper()
                         ->updateWhere(
                             $mapData,
                             $oldMapConditions
@@ -501,7 +502,7 @@ class ManyToMany extends AbstractRelation
 
             // Handle Set NULL
             if ($this->onUpdate === Action::SET_NULL && $this->isMapDataDifferent($data, $oldMapData)) {
-                $mapMetadata->getMapper()->deleteWhere($oldMapConditions);
+                $mapMetadata->getEntityMapper()->deleteWhere($oldMapConditions);
             }
         }
     }

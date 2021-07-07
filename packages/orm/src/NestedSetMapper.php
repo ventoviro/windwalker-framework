@@ -265,7 +265,7 @@ class NestedSetMapper extends EntityMapper
     public function setPosition(
         NestedEntityInterface $entity,
         mixed $referenceId,
-        int $position = Position::AFTER
+        int $position = Position::LAST_CHILD
     ): static {
         // Make sure the location is valid.
         ArgumentsAssert::assert(
@@ -762,11 +762,26 @@ class NestedSetMapper extends EntityMapper
         return $root;
     }
 
-    public function rebuild(mixed $source, int $lft = null, int $level = 0, ?string $path = null): int
+    /**
+     * rebuild
+     *
+     * @param  mixed|null   $source
+     * @param  int|null     $lft
+     * @param  int          $level
+     * @param  string|null  $path
+     *
+     * @return  int  Return the right value of this node + 1
+     */
+    public function rebuild(mixed $source = null, int $lft = null, int $level = 0, ?string $path = null): int
     {
         $buildPath = $this->isPathable();
 
-        $parent   = $this->sourceToEntity($source);
+        if ($source === null) {
+            $parent = $this->getRoot();
+        } else {
+            $parent = $this->sourceToEntity($source);
+        }
+
         $parentData = $this->extract($parent);
         $parentId = $parentData[$this->getMainKey()];
         $lft      = $lft ?? $parentData['lft'];

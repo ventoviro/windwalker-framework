@@ -148,7 +148,7 @@ class ORM
      */
     public function mapper(string $entityClass, ?string $mapperClass = null): EntityMapper
     {
-        return $this->getEntityMetadata($entityClass)->getMapper($mapperClass);
+        return $this->getEntityMetadata($entityClass)->getEntityMapper($mapperClass);
     }
 
     public function from(mixed $tables, ?string $alias = null): SelectorQuery
