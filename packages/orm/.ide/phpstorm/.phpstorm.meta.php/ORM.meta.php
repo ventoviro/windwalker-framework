@@ -27,6 +27,11 @@ namespace PHPSTORM_META {
     );
 
     override(
+        \Windwalker\ORM\ORM::createOne(0),
+        type(0)
+    );
+
+    override(
         \Windwalker\ORM\SelectorQuery::get(0),
         map(
             [
