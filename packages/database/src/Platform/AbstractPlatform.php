@@ -214,7 +214,9 @@ abstract class AbstractPlatform
                 ::build(
                     'CREATE DATABASE',
                     !empty($options['if_not_exists']) ? 'IF NOT EXISTS' : null,
-                    $this->db->quoteName($name)
+                    $this->db->quoteName($name),
+                    'CHARACTER SET=' . ($options['charset'] ?? 'utf8mb4'),
+                    'COLLATE=' . ($options['collation'] ?? 'utf8mb4_unicode_ci'),
                 )
         );
     }
