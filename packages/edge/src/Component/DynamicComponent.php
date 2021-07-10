@@ -49,7 +49,11 @@ class DynamicComponent extends AbstractComponent
      */
     public function render(): \Closure|string
     {
-        $template = <<<'EOF'
+        return function ($edge, $data) {
+            try {
+                $bindings = $this->bindings($class = $this->classForComponent());
+
+                $template = <<<'EOF'
 <?php extract(\Windwalker\collect($attributes->getAttributes())->mapWithKeys(function ($value, $key) { return [Windwalker\Utilities\StrNormalize::toCamelCase(str_replace([':', '.'], ' ', $key)) => $value]; })->dump(), EXTR_SKIP); ?>
 {{ props }}
 <x-{{ is }} {{ bindings }} {{ attributes }}>
@@ -58,28 +62,50 @@ class DynamicComponent extends AbstractComponent
 </x-{{ is }}>
 EOF;
 
-        return function ($edge, $data) use ($template) {
-            $bindings = $this->bindings($class = $this->classForComponent());
+                return str_replace(
+                    [
+                        '{{ is }}',
+                        '{{ props }}',
+                        '{{ bindings }}',
+                        '{{ attributes }}',
+                        '{{ slots }}',
+                        '{{ defaultSlot }}',
+                    ],
+                    [
+                        $this->is,
+                        $this->compileProps($bindings),
+                        $this->compileBindings($bindings),
+                        class_exists($class) ? '{{ $attributes }}' : '',
+                        $this->compileSlots($data['__edge_slots']),
+                        '{!! $slot ?? "" !!}',
+                    ],
+                    $template
+                );
+            } catch (\OutOfRangeException) {
+                $template = <<<'EOF'
+<?php extract(\Windwalker\collect($attributes->getAttributes())->mapWithKeys(function ($value, $key) { return [Windwalker\Utilities\StrNormalize::toCamelCase(str_replace([':', '.'], ' ', $key)) => $value]; })->dump(), EXTR_SKIP); ?>
+<{{ is }} {{ attributes }}>
+{{ slots }}
+{{ defaultSlot }}
+</{{ is }}>
+EOF;
 
-            return str_replace(
-                [
-                    '{{ is }}',
-                    '{{ props }}',
-                    '{{ bindings }}',
-                    '{{ attributes }}',
-                    '{{ slots }}',
-                    '{{ defaultSlot }}',
-                ],
-                [
-                    $this->is,
-                    $this->compileProps($bindings),
-                    $this->compileBindings($bindings),
-                    class_exists($class) ? '{{ $attributes }}' : '',
-                    $this->compileSlots($data['__edge_slots']),
-                    '{!! $slot ?? "" !!}',
-                ],
-                $template
-            );
+                return str_replace(
+                    [
+                        '{{ is }}',
+                        '{{ attributes }}',
+                        '{{ slots }}',
+                        '{{ defaultSlot }}',
+                    ],
+                    [
+                        $this->is,
+                        '{!! $attributes !!}',
+                        $this->compileSlots($data['__edge_slots']),
+                        '{!! $slot ?? "" !!}',
+                    ],
+                    $template
+                );
+            }
         };
     }
 

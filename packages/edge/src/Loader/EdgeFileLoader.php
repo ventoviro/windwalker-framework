@@ -210,6 +210,10 @@ class EdgeFileLoader implements EdgeLoaderInterface
      */
     public function has(string $key): bool
     {
-        return $this->doFind($key) !== null;
+        try {
+            return $this->doFind($key) !== null;
+        } catch (LayoutNotFoundException) {
+            return false;
+        }
     }
 }

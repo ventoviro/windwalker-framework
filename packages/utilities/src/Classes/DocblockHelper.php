@@ -93,6 +93,11 @@ class DocblockHelper
             );
 
             preg_match('/\s+public\s+[static]*\s*function\s+(\w+)\((.*?)\)/ms', $body, $matches);
+
+            if (!$matches) {
+                continue;
+            }
+
             $func = $matches[1];
             $body = $matches[2];
             $body = trim(Str::collapseWhitespaces(str_replace("\n", ' ', $body)));

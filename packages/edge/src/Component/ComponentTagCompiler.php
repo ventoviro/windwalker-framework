@@ -280,7 +280,7 @@ class ComponentTagCompiler
                 return $component;
             }
 
-            throw new \InvalidArgumentException(
+            throw new \OutOfRangeException(
                 "Unable to locate class or view [{$class}] for component [{$component}]."
             );
         }
@@ -289,7 +289,7 @@ class ComponentTagCompiler
             return $component;
         }
 
-        throw new \InvalidArgumentException(
+        throw new \OutOfRangeException(
             "Unable to locate a class or view for component [{$component}]."
         );
     }

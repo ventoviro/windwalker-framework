@@ -14,6 +14,8 @@ namespace Windwalker\Edge\Component;
 use Windwalker\Utilities\Arr;
 use Windwalker\Utilities\StrNormalize;
 
+use Windwalker\Utilities\TypeCast;
+
 use function Windwalker\collect;
 use function Windwalker\value;
 
@@ -453,7 +455,8 @@ class ComponentAttributes implements \ArrayAccess, \IteratorAggregate
             $string .= ' ' . $key;
 
             if ($value !== true) {
-                $string .= '="' . str_replace('"', '\\"', trim((string) $value)) . '"';
+                $value = TypeCast::toString($value, false);
+                $string .= '="' . e(trim($value)) . '"';
             }
         }
 
