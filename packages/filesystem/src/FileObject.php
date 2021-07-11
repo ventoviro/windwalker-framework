@@ -535,14 +535,18 @@ class FileObject extends SplFileInfo
 
         // In case of restricted permissions we zap it one way or the other
         // as long as the owner is either the webserver or the ftp
-        if ($this->isDir()) {
-            $result = @rmdir($path);
-        } else {
-            $result = @unlink($path);
-        }
-
-        if (!$result) {
-            new FilesystemException(error_get_last()['message']);
+        try {
+            if ($this->isDir()) {
+                $result = rmdir($path);
+            } else {
+                $result = unlink($path);
+            }
+        } catch (\Throwable $e) {
+            throw new FilesystemException(
+                $e->getMessage(),
+                $e->getCode(),
+                $e
+            );
         }
 
         return $this;
