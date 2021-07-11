@@ -46,6 +46,10 @@ class ResultSet implements \IteratorAggregate, \Countable
 
     public function isSuccess(): bool
     {
+        if ($this->results === []) {
+            return false;
+        }
+
         return $this->getFirstFailure() === null;
     }
 

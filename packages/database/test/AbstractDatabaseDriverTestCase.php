@@ -31,7 +31,7 @@ abstract class AbstractDatabaseDriverTestCase extends TestCase
 
     protected static string $platform = '';
 
-    protected static string $dbname = '';
+    protected static ?string $dbname = '';
 
     /**
      * @var \PDO

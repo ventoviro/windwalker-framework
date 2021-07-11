@@ -45,7 +45,7 @@
         "mustache/mustache": "^2.0",
         "myclabs/php-enum": "^1.7",
         "opis/closure": "4.x-dev||^4.0",
-        "phpunit/phpunit": "^8.4||^9.0",
+        "phpunit/phpunit": "^8.4||^9.0||^10.0",
         "psr/http-server-handler": "^1.0",
         "psr/http-server-middleware": "^1.0",
         "react/event-loop": "^1.1",
