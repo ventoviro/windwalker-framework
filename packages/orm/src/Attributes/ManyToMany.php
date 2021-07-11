@@ -11,13 +11,15 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Attributes;
 
+use Attribute;
+use ReflectionProperty;
 use Windwalker\ORM\Relation\RelationManager;
 use Windwalker\ORM\Relation\Strategy\RelationConfigureInterface;
 
 /**
  * The ManyToMany class.
  */
-#[\Attribute]
+#[Attribute]
 class ManyToMany extends AbstractRelationAttribute
 {
     /**
@@ -31,7 +33,7 @@ class ManyToMany extends AbstractRelationAttribute
         parent::__construct($mapTable, ...$mapColumns);
     }
 
-    protected function createRelation(RelationManager $rm, \ReflectionProperty $prop): RelationConfigureInterface
+    protected function createRelation(RelationManager $rm, ReflectionProperty $prop): RelationConfigureInterface
     {
         return $rm->manyToMany($prop->getName())->targetTo($this->target, ...$this->columns);
     }

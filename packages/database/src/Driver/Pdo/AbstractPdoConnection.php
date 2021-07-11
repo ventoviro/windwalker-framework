@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Driver\Pdo;
 
+use PDO;
 use Windwalker\Database\Driver\AbstractConnection;
 
 /**
@@ -26,9 +27,9 @@ abstract class AbstractPdoConnection extends AbstractConnection
     protected static string $dbtype = '';
 
     protected static array $defaultAttributes = [
-        \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-        \PDO::ATTR_EMULATE_PREPARES => true,
-        \PDO::ATTR_STRINGIFY_FETCHES => false
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_EMULATE_PREPARES => true,
+        PDO::ATTR_STRINGIFY_FETCHES => false,
     ];
 
     /**
@@ -38,11 +39,11 @@ abstract class AbstractPdoConnection extends AbstractConnection
      */
     public static function isSupported(): bool
     {
-        if (!class_exists(\PDO::class)) {
+        if (!class_exists(PDO::class)) {
             return false;
         }
 
-        return in_array(strtolower(static::$dbtype), \PDO::getAvailableDrivers(), true);
+        return in_array(strtolower(static::$dbtype), PDO::getAvailableDrivers(), true);
     }
 
     /**
@@ -62,16 +63,16 @@ abstract class AbstractPdoConnection extends AbstractConnection
      *
      * @param  array  $options
      *
-     * @return  \PDO
+     * @return  PDO
      */
-    protected function doConnect(array $options): \PDO
+    protected function doConnect(array $options): PDO
     {
         $attrs = array_replace(
             static::$defaultAttributes,
             $options['driverOptions'] ?? []
         );
 
-        return new \PDO(
+        return new PDO(
             $options['dsn'],
             $options['user'] ?? null,
             $options['password'] ?? null,
@@ -80,9 +81,9 @@ abstract class AbstractPdoConnection extends AbstractConnection
     }
 
     /**
-     * @return \PDO|null
+     * @return PDO|null
      */
-    public function get(): ?\PDO
+    public function get(): ?PDO
     {
         return parent::get();
     }

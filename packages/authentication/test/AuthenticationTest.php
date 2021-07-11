@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Authentication\Test;
 
+use PHPUnit\Framework\TestCase;
 use Windwalker\Authentication\Authentication;
 use Windwalker\Authentication\AuthResult;
 use Windwalker\Authentication\Credential;
@@ -22,7 +23,7 @@ use Windwalker\Authentication\Test\Mock\MockMethod;
  *
  * @since 2.0
  */
-class AuthenticationTest extends \PHPUnit\Framework\TestCase
+class AuthenticationTest extends TestCase
 {
     /**
      * Test instance.
@@ -141,7 +142,7 @@ class AuthenticationTest extends \PHPUnit\Framework\TestCase
         $credential = ['username' => 'flower', 'password' => '1234'];
 
         $result = $this->instance->authenticate($credential);
-        $result = array_map(fn (AuthResult $r) => $r->getStatus(), $result->getResults());
+        $result = array_map(fn(AuthResult $r) => $r->getStatus(), $result->getResults());
 
         self::assertEquals(
             [

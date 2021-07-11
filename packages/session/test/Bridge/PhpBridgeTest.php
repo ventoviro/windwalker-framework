@@ -11,9 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Session\Test\Bridge;
 
+use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
-use org\bovigo\vfs\vfsStream;
-use org\bovigo\vfs\visitor\vfsStreamStructureVisitor;
 use PHPUnit\Framework\TestCase;
 use Windwalker\Session\Bridge\PhpBridge;
 use Windwalker\Session\Handler\FilesystemHandler;
@@ -55,7 +54,7 @@ class PhpBridgeTest extends TestCase
         self::assertEquals(
             [
                 'flower' => 'Sakura',
-                'animal' => 'Cat'
+                'animal' => 'Cat',
             ],
             $data
         );
@@ -79,7 +78,7 @@ class PhpBridgeTest extends TestCase
         self::assertEquals(
             [
                 'flower' => 'Rose',
-                'tree' => 'Oak'
+                'tree' => 'Oak',
             ],
             $data
         );
@@ -121,7 +120,7 @@ class PhpBridgeTest extends TestCase
     {
         $this->createInstance(
             [
-                PhpBridge::OPTION_WITH_SUPER_GLOBAL => true
+                PhpBridge::OPTION_WITH_SUPER_GLOBAL => true,
             ]
         );
 
@@ -131,7 +130,7 @@ class PhpBridgeTest extends TestCase
         self::assertEquals(
             [
                 'flower' => 'Sakura',
-                'animal' => 'Cat'
+                'animal' => 'Cat',
             ],
             $_SESSION
         );
@@ -151,9 +150,9 @@ class PhpBridgeTest extends TestCase
     {
         $this->instance->setSessionName('WW_SESS');
 
-        $handler = \Mockery::mock(HandlerInterface::class);
+        $handler = Mockery::mock(HandlerInterface::class);
         $handler->shouldReceive('open')
-            ->withArgs(fn ($savePath, $name) => $name === 'WW_SESS');
+            ->withArgs(fn($savePath, $name) => $name === 'WW_SESS');
         $handler->shouldReceive('write')
             ->andReturnTrue();
         $handler->shouldIgnoreMissing();
@@ -169,7 +168,7 @@ class PhpBridgeTest extends TestCase
     {
         $this->createInstance(
             [
-                'use_strict_mode' => true
+                'use_strict_mode' => true,
             ]
         );
 
@@ -201,7 +200,7 @@ class PhpBridgeTest extends TestCase
         $this->createInstance(
             [
                 'gc_probability' => 0,
-                'gc_divisor' => 1000
+                'gc_divisor' => 1000,
             ]
         );
 
@@ -299,7 +298,7 @@ class PhpBridgeTest extends TestCase
             [
                 'flower' => 'Sakura',
                 'animal' => 'Cat',
-                'tree' => 'Palm'
+                'tree' => 'Palm',
             ],
             $data
         );
@@ -315,7 +314,7 @@ class PhpBridgeTest extends TestCase
             [
                 'flower' => 'Sakura',
                 'animal' => 'Cat',
-                'tree' => 'Palm'
+                'tree' => 'Palm',
             ],
             unserialize(file_get_contents('vfs://root/tmp/sess_' . static::$sess1))
         );
@@ -342,7 +341,7 @@ class PhpBridgeTest extends TestCase
             [
                 'flower' => 'Sakura',
                 'animal' => 'Cat',
-                'tree' => 'Palm'
+                'tree' => 'Palm',
             ],
             $data
         );

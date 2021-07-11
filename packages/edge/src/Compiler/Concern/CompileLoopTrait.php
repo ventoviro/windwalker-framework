@@ -99,7 +99,7 @@ trait CompileLoopTrait
      */
     protected function compileEndwhile(string $expression): string
     {
-        return '<?php endwhile; ?>';
+        return '<?php endwhile ?>';
     }
 
     /**
@@ -111,7 +111,7 @@ trait CompileLoopTrait
      */
     protected function compileEndfor(string $expression): string
     {
-        return '<?php endfor; ?>';
+        return '<?php endfor ?>';
     }
 
     /**
@@ -123,7 +123,7 @@ trait CompileLoopTrait
      */
     protected function compileEndforeach(string $expression): string
     {
-        return '<?php endforeach; ?>';
+        return '<?php endforeach ?>';
     }
 
     /**
@@ -135,6 +135,6 @@ trait CompileLoopTrait
      */
     protected function compileEndforelse(string $expression): string
     {
-        return '<?php endif; ?>';
+        return '<?php endif ?>';
     }
 }

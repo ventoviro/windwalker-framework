@@ -58,8 +58,8 @@ class UriNormalizer
                 } elseif ($paths[$i] === '..' && ($i > 1 || ($i == 1 && $paths[0] !== ''))) {
                     unset($paths[$i], $paths[$i - 1]);
                     $paths = array_values($paths);
-                    $i     -= 2;
-                    $n     -= 2;
+                    $i -= 2;
+                    $n -= 2;
                 }
             }
         }

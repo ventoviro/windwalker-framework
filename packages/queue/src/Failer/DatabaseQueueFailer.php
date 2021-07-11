@@ -11,6 +11,10 @@ declare(strict_types=1);
 
 namespace Windwalker\Queue\Failer;
 
+use DateTime;
+use InvalidArgumentException;
+use JsonException;
+use RuntimeException;
 use Windwalker\Database\DatabaseAdapter;
 
 use function Windwalker\collect;
@@ -39,8 +43,8 @@ class DatabaseQueueFailer implements QueueFailerInterface
     /**
      * DatabaseQueueFailer constructor.
      *
-     * @param DatabaseAdapter $db
-     * @param string                 $table
+     * @param  DatabaseAdapter  $db
+     * @param  string           $table
      */
     public function __construct(DatabaseAdapter $db, string $table = 'queue_failed_jobs')
     {
@@ -67,7 +71,7 @@ class DatabaseQueueFailer implements QueueFailerInterface
      * @param  string  $exception
      *
      * @return  int|string
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function add(string $connection, string $channel, string $body, string $exception): int|string
     {
@@ -78,7 +82,7 @@ class DatabaseQueueFailer implements QueueFailerInterface
             'exception'
         );
 
-        $data['created'] = new \DateTime('now');
+        $data['created'] = new DateTime('now');
 
         $data = $this->db->getWriter()->insertOne($this->table, $data, 'id');
 
@@ -89,8 +93,8 @@ class DatabaseQueueFailer implements QueueFailerInterface
      * all
      *
      * @return  array
-     * @throws \RuntimeException
-     * @throws \InvalidArgumentException
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function all(): array
     {
@@ -110,9 +114,9 @@ class DatabaseQueueFailer implements QueueFailerInterface
     public function get(mixed $conditions): ?array
     {
         $item = $this->db->select('*')
-            ->from($this->table)
-            ->where('id', $conditions)
-            ->get() ?? collect();
+                ->from($this->table)
+                ->where('id', $conditions)
+                ->get() ?? collect();
 
         return $item->dump();
     }

@@ -22,6 +22,7 @@ trait JobEventTrait
     use QueueEventTrait;
 
     protected QueueMessage $message;
+
     protected JobInterface $job;
 
     /**

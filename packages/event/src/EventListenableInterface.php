@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Event;
 
+use InvalidArgumentException;
+
 /**
  * Interface DispatcherInterface
  */
@@ -25,7 +27,7 @@ interface EventListenableInterface
      *
      * @return  static  This method is chainable.
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      * @since   2.0
      */
     public function subscribe(object $subscriber, ?int $priority = null): static;

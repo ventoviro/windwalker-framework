@@ -11,14 +11,11 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Test\Driver;
 
-use Windwalker\Database\DatabaseAdapter;
 use Windwalker\Database\DatabaseFactory;
 use Windwalker\Database\Driver\AbstractDriver;
 use Windwalker\Database\Event\QueryEndEvent;
 use Windwalker\Database\Exception\DatabaseQueryException;
-use Windwalker\Database\Platform\AbstractPlatform;
 use Windwalker\Database\Test\AbstractDatabaseDriverTestCase;
-use Windwalker\Event\EventInterface;
 use Windwalker\Utilities\TypeCast;
 
 /**
@@ -83,7 +80,7 @@ abstract class AbstractDriverTest extends AbstractDatabaseDriverTestCase
 
     public function testPrepareWithQuery(): void
     {
-        $id    = 1;
+        $id = 1;
 
         $query = static::createQuery()
             ->select('*')
@@ -194,7 +191,7 @@ abstract class AbstractDriverTest extends AbstractDatabaseDriverTestCase
             [
                 'Test',
                 'YO',
-                '{}'
+                '{}',
             ]
         );
 
@@ -338,7 +335,7 @@ abstract class AbstractDriverTest extends AbstractDatabaseDriverTestCase
 
     protected static function createDriver(?array $params = null): AbstractDriver
     {
-        $params           = $params ?? self::getTestParams();
+        $params = $params ?? self::getTestParams();
         $params['driver'] = static::$driverName;
 
         return (new DatabaseFactory())->createDriver(static::$driverName, $params);

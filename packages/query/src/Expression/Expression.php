@@ -50,7 +50,7 @@ class Expression
     /**
      * isExpression
      *
-     * @param   string $value
+     * @param  string  $value
      *
      * @return  boolean
      */
@@ -108,8 +108,8 @@ class Expression
      * Usage:
      * $query->select($query->concat(['a', 'b']));
      *
-     * @param   array  $values    An array of values to concatenate.
-     * @param   string $separator As separator to place between each value.
+     * @param  array   $values     An array of values to concatenate.
+     * @param  string  $separator  As separator to place between each value.
      *
      * @return  Clause  The concatenated values.
      *
@@ -129,8 +129,8 @@ class Expression
     /**
      * caseCondition
      *
-     * @param   array  $cases
-     * @param   string $else
+     * @param  array   $cases
+     * @param  string  $else
      *
      * @return  string
      *

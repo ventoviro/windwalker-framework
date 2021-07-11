@@ -191,12 +191,12 @@ class MySQLPlatform extends AbstractPlatform
                 $permittedValues = $matches[1];
 
                 if (
-                    preg_match_all(
-                        "/\\s*'((?:[^']++|'')*+)'\\s*(?:,|\$)/",
-                        $permittedValues,
-                        $matches,
-                        PREG_PATTERN_ORDER
-                    )
+                preg_match_all(
+                    "/\\s*'((?:[^']++|'')*+)'\\s*(?:,|\$)/",
+                    $permittedValues,
+                    $matches,
+                    PREG_PATTERN_ORDER
+                )
                 ) {
                     $permittedValues = str_replace("''", "'", $matches[1]);
                 } else {
@@ -305,15 +305,15 @@ class MySQLPlatform extends AbstractPlatform
 
         $rcItems = $this->db->prepare($query)->all()->keyBy('CONSTRAINT_NAME');
 
-        $realName    = null;
+        $realName = null;
         $constraints = [];
 
         foreach ($constraintItems as $name => $row) {
             $kcuItems = $kcuGroup[$name] ?? new Collection();
-            $rcItem   = $rcItems[$name] ?? new Collection();
+            $rcItem = $rcItems[$name] ?? new Collection();
 
             $realName = $row['CONSTRAINT_NAME'];
-            $isFK     = ('FOREIGN KEY' === $row['CONSTRAINT_TYPE']);
+            $isFK = ('FOREIGN KEY' === $row['CONSTRAINT_TYPE']);
 
             if ($isFK || $schema !== null) {
                 $name = $realName;
@@ -330,11 +330,11 @@ class MySQLPlatform extends AbstractPlatform
 
             if ($isFK) {
                 $constraints[$name]['referenced_table_schema'] = $kcuItems[0]['REFERENCED_TABLE_SCHEMA'];
-                $constraints[$name]['referenced_table_name']   = $kcuItems[0]['REFERENCED_TABLE_NAME'];
-                $constraints[$name]['referenced_columns']      = [];
-                $constraints[$name]['match_option']            = $rcItem['MATCH_OPTION'];
-                $constraints[$name]['update_rule']             = $rcItem['UPDATE_RULE'];
-                $constraints[$name]['delete_rule']             = $rcItem['DELETE_RULE'];
+                $constraints[$name]['referenced_table_name'] = $kcuItems[0]['REFERENCED_TABLE_NAME'];
+                $constraints[$name]['referenced_columns'] = [];
+                $constraints[$name]['match_option'] = $rcItem['MATCH_OPTION'];
+                $constraints[$name]['update_rule'] = $rcItem['UPDATE_RULE'];
+                $constraints[$name]['delete_rule'] = $rcItem['DELETE_RULE'];
             }
 
             foreach ($kcuItems as $kcuItem) {
@@ -362,17 +362,17 @@ class MySQLPlatform extends AbstractPlatform
 
         foreach ($indexGroup as $keys) {
             $index = [];
-            $name  = $keys[0]['INDEX_NAME'];
+            $name = $keys[0]['INDEX_NAME'];
 
             if ($schema === null) {
                 $name = $keys[0]['TABLE_NAME'] . '_' . $name;
             }
 
-            $index['table_schema']  = $keys[0]['TABLE_SCHEMA'];
-            $index['table_name']    = $keys[0]['TABLE_NAME'];
-            $index['is_unique']     = (string) $keys[0]['NON_UNIQUE'] === '0';
-            $index['is_primary']    = $keys[0]['INDEX_NAME'] === 'PRIMARY';
-            $index['index_name']    = $keys[0]['INDEX_NAME'];
+            $index['table_schema'] = $keys[0]['TABLE_SCHEMA'];
+            $index['table_name'] = $keys[0]['TABLE_NAME'];
+            $index['is_unique'] = (string) $keys[0]['NON_UNIQUE'] === '0';
+            $index['is_primary'] = $keys[0]['INDEX_NAME'] === 'PRIMARY';
+            $index['index_name'] = $keys[0]['INDEX_NAME'];
             $index['index_comment'] = $keys[0]['INDEX_COMMENT'];
 
             $index['columns'] = [];
@@ -414,9 +414,9 @@ class MySQLPlatform extends AbstractPlatform
             'collate' => 'utf8mb4_unicode_ci',
         ];
 
-        $options   = array_merge($defaultOptions, $options);
-        $columns   = [];
-        $table     = $schema->getTable();
+        $options = array_merge($defaultOptions, $options);
+        $columns = [];
+        $table = $schema->getTable();
         $tableName = $this->db->quoteName($table->schemaName . '.' . $table->getName());
         $primaries = [];
 
@@ -548,7 +548,7 @@ class MySQLPlatform extends AbstractPlatform
         $expr = parent::getKeyColumnExpression($column);
 
         $subParts = $column->getErratas()['sub_parts'] ?? null;
-        $length   = $column->getCharacterMaximumLength();
+        $length = $column->getCharacterMaximumLength();
 
         $types = [
             'varchar',

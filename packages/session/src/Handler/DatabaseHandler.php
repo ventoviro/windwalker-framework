@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Session\Handler;
 
+use Exception;
 use Windwalker\Database\DatabaseAdapter;
 use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\Database\Platform\AbstractPlatform;
@@ -74,7 +75,7 @@ class DatabaseHandler extends AbstractHandler
      *
      * @return  string  The session data.
      *
-     * @throws \Exception
+     * @throws Exception
      * @since   2.0
      */
     protected function doRead(string $id): ?string
@@ -111,34 +112,36 @@ class DatabaseHandler extends AbstractHandler
             return true;
         }
 
-        $this->db->transaction(function () use ($id, $data, $columns): StatementInterface {
-            $item = [
-                $columns['data'] => $data,
-                $columns['time'] => (int) time(),
-                $columns['id'] => $id,
-            ];
+        $this->db->transaction(
+            function () use ($id, $data, $columns): StatementInterface {
+                $item = [
+                    $columns['data'] => $data,
+                    $columns['time'] => (int) time(),
+                    $columns['id'] => $id,
+                ];
 
-            $sess = $this->db->createQuery()
-                ->select('*')
-                ->from($this->getOption('table'))
-                ->where($columns['id'], $id)
-                ->forUpdate()
-                ->get();
+                $sess = $this->db->createQuery()
+                    ->select('*')
+                    ->from($this->getOption('table'))
+                    ->where($columns['id'], $id)
+                    ->forUpdate()
+                    ->get();
 
-            if ($sess === null) {
-                return $this->db->getWriter()->insertOne(
+                if ($sess === null) {
+                    return $this->db->getWriter()->insertOne(
+                        $this->getOption('table'),
+                        $item,
+                        $columns['id']
+                    );
+                }
+
+                return $this->db->getWriter()->updateOne(
                     $this->getOption('table'),
                     $item,
                     $columns['id']
                 );
             }
-
-            return $this->db->getWriter()->updateOne(
-                $this->getOption('table'),
-                $item,
-                $columns['id']
-            );
-        });
+        );
 
         return true;
     }
@@ -150,7 +153,7 @@ class DatabaseHandler extends AbstractHandler
      *
      * @return  boolean  True on success, false otherwise.
      *
-     * @throws \Exception
+     * @throws Exception
      * @since   2.0
      */
     public function destroy($id): bool
@@ -171,7 +174,7 @@ class DatabaseHandler extends AbstractHandler
      *
      * @return  boolean  True on success, false otherwise.
      *
-     * @throws  \Exception
+     * @throws  Exception
      * @since   2.0
      */
     public function gc($lifetime): bool

@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Pool\Stack;
 
+use LogicException;
 use Swoole\Coroutine\Channel;
 use Windwalker\Pool\ConnectionInterface;
 use Windwalker\Pool\Exception\WaitTimeoutException;
@@ -50,7 +51,7 @@ class SwooleStack implements StackInterface
     public function pop(?int $timeout = null): ConnectionInterface
     {
         if (!$this->channel) {
-            throw new \LogicException('Channel not exists in ' . static::class);
+            throw new LogicException('Channel not exists in ' . static::class);
         }
 
         $conn = $this->channel->pop($timeout ?? -1);

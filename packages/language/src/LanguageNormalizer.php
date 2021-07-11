@@ -21,7 +21,7 @@ abstract class LanguageNormalizer
     /**
      * toLanguageKey
      *
-     * @param string $lang
+     * @param  string  $lang
      *
      * @return  string
      */
@@ -53,7 +53,7 @@ abstract class LanguageNormalizer
     /**
      * toLanguageKey
      *
-     * @param string $key
+     * @param  string  $key
      *
      * @return  string
      */
@@ -68,8 +68,8 @@ abstract class LanguageNormalizer
     /**
      * shortLangCode
      *
-     * @param string $code
-     * @param string $separator
+     * @param  string  $code
+     * @param  string  $separator
      *
      * @return  string
      *
@@ -89,7 +89,7 @@ abstract class LanguageNormalizer
     /**
      * extract
      *
-     * @param string $code
+     * @param  string  $code
      *
      * @return  array
      *

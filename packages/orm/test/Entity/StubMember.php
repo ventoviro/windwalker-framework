@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Test\Entity;
 
+use DateTimeImmutable;
 use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Cast;
 use Windwalker\ORM\Attributes\Column;
@@ -57,9 +58,10 @@ class StubMember implements EntityInterface
 
     #[Column('registered')]
     #[Cast(DateTimeCast::class)]
-    protected ?\DateTimeImmutable $registered = null;
+    protected ?DateTimeImmutable $registered = null;
 
     protected ?StubLicense $studentLicense = null;
+
     protected ?StubLicense $teacherLicense = null;
 
     #[ManyToMany]
@@ -72,8 +74,9 @@ class StubMember implements EntityInterface
     protected ?StubMemberActionMap $map = null;
 
     #[EntitySetup]
-    public static function setup(EntityMetadata $metadata): void
-    {
+    public static function setup(
+        EntityMetadata $metadata
+    ): void {
         $rm = $metadata->getRelationManager();
 
         $rm->oneToOne('studentLicense')
@@ -206,19 +209,19 @@ class StubMember implements EntityInterface
     }
 
     /**
-     * @return \DateTimeImmutable|null
+     * @return DateTimeImmutable|null
      */
-    public function getRegistered(): ?\DateTimeImmutable
+    public function getRegistered(): ?DateTimeImmutable
     {
         return $this->registered;
     }
 
     /**
-     * @param  \DateTimeImmutable|null  $registered
+     * @param  DateTimeImmutable|null  $registered
      *
      * @return  static  Return self to support chaining.
      */
-    public function setRegistered(?\DateTimeImmutable $registered): static
+    public function setRegistered(?DateTimeImmutable $registered): static
     {
         $this->registered = $registered;
 

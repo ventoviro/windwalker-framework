@@ -11,12 +11,12 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Event;
 
-use Windwalker\Database\Driver\StatementInterface;
+use Attribute;
 
 /**
  * The BeforeSaveEvent class.
  */
-#[\Attribute(\Attribute::TARGET_METHOD)]
+#[Attribute(Attribute::TARGET_METHOD)]
 class AfterSaveEvent extends AbstractSaveEvent
 {
     protected object $entity;

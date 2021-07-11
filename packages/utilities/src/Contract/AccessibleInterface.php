@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Windwalker\Utilities\Contract;
 
-use ArrayAccess;
 use Countable;
 use IteratorAggregate;
 use JsonSerializable;

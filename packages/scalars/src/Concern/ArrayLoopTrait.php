@@ -191,7 +191,7 @@ trait ArrayLoopTrait
      */
     public function partition(callable $callback, $keepKey = false): array
     {
-        $true  = [];
+        $true = [];
         $false = [];
 
         if (is_string($callback)) {
@@ -209,7 +209,7 @@ trait ArrayLoopTrait
         }
 
         if (!$keepKey) {
-            $true  = array_values($true);
+            $true = array_values($true);
             $false = array_values($false);
         }
 

@@ -16,8 +16,6 @@ use Windwalker\Query\Query;
 
 use function Windwalker\Query\clause;
 use function Windwalker\Query\qn;
-use function Windwalker\Query\val;
-use function Windwalker\raw;
 
 /**
  * The PostgresqlGrammar class.
@@ -39,7 +37,7 @@ class PostgreSQLGrammar extends AbstractGrammar
      */
     public function compileLimit(Query $query, array $sql): array
     {
-        $limit  = (int) $query->getLimit();
+        $limit = (int) $query->getLimit();
         $offset = (int) $query->getOffset();
 
         if ($limit > 0) {
@@ -53,13 +51,13 @@ class PostgreSQLGrammar extends AbstractGrammar
         return $sql;
     }
 
-    public function compileJsonSelector(Query $query,
+    public function compileJsonSelector(
+        Query $query,
         string $column,
         array $paths,
         bool $unQuoteLast = true,
         bool $instant = false
-    ): Clause
-    {
+    ): Clause {
         $newPaths = [];
 
         foreach ($paths as $path) {

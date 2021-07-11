@@ -44,7 +44,7 @@ abstract class HeaderHelper
         string $name,
         mixed $default = null
     ): mixed {
-        $name    = strtolower($name);
+        $name = strtolower($name);
         $headers = array_change_key_case($headers, CASE_LOWER);
 
         if (array_key_exists($name, $headers)) {
@@ -86,7 +86,7 @@ abstract class HeaderHelper
      */
     public static function filter(mixed $value): string
     {
-        $value  = (string) $value;
+        $value = (string) $value;
         $length = strlen($value);
         $string = '';
 

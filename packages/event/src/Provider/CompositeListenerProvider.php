@@ -11,7 +11,11 @@ declare(strict_types=1);
 
 namespace Windwalker\Event\Provider;
 
+use Closure;
+use Generator;
 use Psr\EventDispatcher\ListenerProviderInterface;
+use ReflectionException;
+use ReflectionFunction;
 use Windwalker\Event\Event;
 use Windwalker\Event\EventInterface;
 use Windwalker\Event\Listener\ListenerCallable;
@@ -126,7 +130,7 @@ class CompositeListenerProvider implements SubscribableListenerProviderInterface
      *
      * @return  void
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     private function removeIfNecessary(object $event, callable $listener): void
     {
@@ -150,7 +154,7 @@ class CompositeListenerProvider implements SubscribableListenerProviderInterface
      *
      * @return  static
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function remove(mixed $listenerOrSubscriber): static
     {
@@ -174,7 +178,7 @@ class CompositeListenerProvider implements SubscribableListenerProviderInterface
      * @param  callable|object|null   $listenerOrSubscriber
      *
      * @return  static
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function off(string|EventInterface $event, callable|object|null $listenerOrSubscriber = null): static
     {
@@ -211,7 +215,7 @@ class CompositeListenerProvider implements SubscribableListenerProviderInterface
      *
      * @return  void
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     private function offSubscriber(ListenersQueue $queue, object $subscriber): void
     {
@@ -219,8 +223,8 @@ class CompositeListenerProvider implements SubscribableListenerProviderInterface
         foreach ($queue as $listener) {
             $callable = $listener;
 
-            if ($callable instanceof \Closure) {
-                $ref  = new \ReflectionFunction($callable);
+            if ($callable instanceof Closure) {
+                $ref = new ReflectionFunction($callable);
                 $that = $ref->getClosureThis();
             } elseif (is_array($callable)) {
                 $that = $callable[0];
@@ -245,16 +249,16 @@ class CompositeListenerProvider implements SubscribableListenerProviderInterface
     {
         return !is_array($listener)
             && !is_string($listener)
-            && !$listener instanceof \Closure
+            && !$listener instanceof Closure
             && !$listener instanceof CallableProxy;
     }
 
     /**
      * providerIterator
      *
-     * @return  \Generator|ListenerProviderInterface[]
+     * @return  Generator|ListenerProviderInterface[]
      */
-    private function providerIterator(): \Generator
+    private function providerIterator(): Generator
     {
         yield $this->mainProvider;
 

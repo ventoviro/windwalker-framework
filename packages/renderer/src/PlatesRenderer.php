@@ -51,7 +51,7 @@ class PlatesRenderer extends AbstractEngineRenderer implements LayoutConverterIn
         /** @var Plates $engine */
         $engine = $this->createEngine($options);
 
-        return fn (array $data) => $engine->render($layout, $data, $options['attributes'] ?? []);
+        return fn(array $data) => $engine->render($layout, $data, $options['attributes'] ?? []);
     }
 
     public function handleLayout(string $layout, string $ext): string

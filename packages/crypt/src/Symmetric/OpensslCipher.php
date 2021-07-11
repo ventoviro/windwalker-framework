@@ -88,8 +88,8 @@ class OpensslCipher implements CipherInterface
         $length = CryptHelper::strlen($message);
 
         // Split string
-        $salt      = CryptHelper::substr($message, 0, static::PBKDF2_SALT_BYTE_SIZE);
-        $iv        = CryptHelper::substr($message, static::PBKDF2_SALT_BYTE_SIZE, $this->getIVSize());
+        $salt = CryptHelper::substr($message, 0, static::PBKDF2_SALT_BYTE_SIZE);
+        $iv = CryptHelper::substr($message, static::PBKDF2_SALT_BYTE_SIZE, $this->getIVSize());
         $encrypted = CryptHelper::substr(
             $message,
             static::PBKDF2_SALT_BYTE_SIZE + $this->getIVSize(),

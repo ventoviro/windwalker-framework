@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Test\Driver\Pdo;
 
+use RuntimeException;
 use Windwalker\Database\Driver\Pdo\PdoSqliteConnection;
 
 /**
@@ -29,7 +30,7 @@ class PdoSqliteConnectionTest extends AbstractPdoConnectionTest
         // Direct to self so that sqlite unable to create db
         $conn->setOption('database', __DIR__);
 
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $conn->connect();
     }
 }

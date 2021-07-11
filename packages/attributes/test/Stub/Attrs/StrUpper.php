@@ -11,16 +11,18 @@ declare(strict_types=1);
 
 namespace Windwalker\Attributes\Test\Stub\Attrs;
 
+use Attribute;
+use Closure;
 use Windwalker\Attributes\AttributeHandler;
 use Windwalker\Scalars\StringObject;
 
 /**
  * The StrUpper class.
  */
-#[\Attribute]
+#[Attribute]
 class StrUpper
 {
-    public function __invoke(AttributeHandler $handler): \Closure
+    public function __invoke(AttributeHandler $handler): Closure
     {
         return function (...$args) use ($handler) {
             $value = $handler(...$args);

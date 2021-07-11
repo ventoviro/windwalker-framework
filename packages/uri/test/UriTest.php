@@ -355,9 +355,9 @@ class UriTest extends TestCase
         self::assertThat(
             $this->instance->toString(),
             self::equalTo(
-                // phpcs:disable
+            // phpcs:disable
                 'ftp://root:secret@www.example.org:8888/this/is/a/path/to/a/file?somevar=somevalue&somevar2=somevalue2#someFragment'
-                // phpcs:enable
+            // phpcs:enable
             )
         );
     }

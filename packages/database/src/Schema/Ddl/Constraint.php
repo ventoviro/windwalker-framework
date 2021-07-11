@@ -61,7 +61,7 @@ class Constraint
         ?string $tableName = null
     ) {
         $this->constraintName = $constraintName;
-        $this->tableName      = $tableName;
+        $this->tableName = $tableName;
         $this->constraintType = $constraintType;
     }
 

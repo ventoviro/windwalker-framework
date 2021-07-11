@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Attributes;
 
+use Attribute;
 use JetBrains\PhpStorm\ExpectedValues;
 use Windwalker\ORM\Relation\Action;
 use Windwalker\ORM\Relation\Strategy\RelationConfigureInterface;
@@ -18,7 +19,7 @@ use Windwalker\ORM\Relation\Strategy\RelationConfigureInterface;
 /**
  * The OnUpdate class.
  */
-#[\Attribute]
+#[Attribute]
 class OnUpdate implements RelationConfigureAttributeInterface
 {
     /**

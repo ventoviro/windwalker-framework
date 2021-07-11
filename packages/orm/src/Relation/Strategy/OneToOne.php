@@ -89,6 +89,7 @@ class OneToOne extends AbstractRelation
 
         if ($this->onDelete === Action::CASCADE) {
             $this->deleteAllRelatives($data);
+
             return;
         }
 

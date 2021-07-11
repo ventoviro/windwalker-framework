@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Renderer;
 
+use Closure;
 use SplPriorityQueue;
 use Windwalker\Edge\Exception\LayoutNotFoundException;
 use Windwalker\Filesystem\Path;
@@ -18,7 +19,6 @@ use Windwalker\Utilities\Arr;
 use Windwalker\Utilities\Assert\LogicAssert;
 use Windwalker\Utilities\Cache\InstanceCacheTrait;
 use Windwalker\Utilities\Classes\ObjectBuilderAwareTrait;
-use Windwalker\Utilities\Iterator\PriorityQueue;
 use Windwalker\Utilities\Options\OptionAccessTrait;
 use Windwalker\Utilities\Paths\PathsAwareTrait;
 use Windwalker\Utilities\Str;
@@ -38,23 +38,23 @@ class CompositeRenderer implements RendererInterface, TemplateFactoryInterface, 
     protected array $factories = [
         'edge' => [
             EdgeRenderer::class,
-            ['edge.php']
+            ['edge.php'],
         ],
         'blade' => [
             BladeRenderer::class,
-            ['blade.php']
+            ['blade.php'],
         ],
         'plates' => [
             PlatesRenderer::class,
-            ['php']
+            ['php'],
         ],
         'mustache' => [
             MustacheRenderer::class,
-            ['mustache']
+            ['mustache'],
         ],
         'twig' => [
             TwigRenderer::class,
-            ['twig']
+            ['twig'],
         ],
     ];
 
@@ -64,7 +64,7 @@ class CompositeRenderer implements RendererInterface, TemplateFactoryInterface, 
      * Class init.
      *
      * @param  string|array|SplPriorityQueue  $paths
-     * @param  array                   $options
+     * @param  array                          $options
      */
     public function __construct(SplPriorityQueue|string|array $paths = [], array $options = [])
     {
@@ -79,7 +79,7 @@ class CompositeRenderer implements RendererInterface, TemplateFactoryInterface, 
     /**
      * @inheritDoc
      */
-    public function make(string $layout, array $options = []): \Closure
+    public function make(string $layout, array $options = []): Closure
     {
         $options = Arr::mergeRecursive($this->getOptions(), $options);
 
@@ -139,7 +139,7 @@ class CompositeRenderer implements RendererInterface, TemplateFactoryInterface, 
     /**
      * finFile
      *
-     * @param  string       $layout
+     * @param  string  $layout
      *
      * @return array|null
      */
@@ -187,11 +187,14 @@ class CompositeRenderer implements RendererInterface, TemplateFactoryInterface, 
 
     public function getRenderer(string $type, array $options = []): TemplateFactoryInterface
     {
-        return $this->once('renderer.' . $type, function () use ($options, $type) {
-            [$factory, $exts] = $this->getFactory($type);
+        return $this->once(
+            'renderer.' . $type,
+            function () use ($options, $type) {
+                [$factory, $exts] = $this->getFactory($type);
 
-            return $this->getObjectBuilder()->createObject($factory, $options);
-        });
+                return $this->getObjectBuilder()->createObject($factory, $options);
+            }
+        );
     }
 
     public function addFactory(string $type, string $class, array $extensions = []): void
@@ -277,7 +280,7 @@ class CompositeRenderer implements RendererInterface, TemplateFactoryInterface, 
         return [
             $filePath,
             $path,
-            ltrim($filename, '/\\')
+            ltrim($filename, '/\\'),
         ];
     }
 

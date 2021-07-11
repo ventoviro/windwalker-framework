@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace Windwalker\Event\Listener;
 
+use Countable;
+use IteratorAggregate;
+use SplPriorityQueue;
 use Windwalker\Utilities\Proxy\CallableProxy;
 
 /**
@@ -18,7 +21,7 @@ use Windwalker\Utilities\Proxy\CallableProxy;
  *
  * @since 2.0
  */
-class ListenersQueue implements \IteratorAggregate, \Countable
+class ListenersQueue implements IteratorAggregate, Countable
 {
     /**
      * @var ListenerCallable[]
@@ -127,14 +130,14 @@ class ListenersQueue implements \IteratorAggregate, \Countable
     /**
      * Get the inner queue with its cursor on top of the heap.
      *
-     * @return  \SplPriorityQueue  The inner queue.
+     * @return  SplPriorityQueue  The inner queue.
      *
      * @since   2.0
      */
-    public function getIterator(): \SplPriorityQueue
+    public function getIterator(): SplPriorityQueue
     {
         // SplPriorityQueue queue is a heap.
-        $queue = new \SplPriorityQueue();
+        $queue = new SplPriorityQueue();
 
         foreach ($this->queue as $item) {
             $queue->insert(...$item);

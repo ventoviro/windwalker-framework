@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Test;
 
-use Windwalker\Database\Test\AbstractDatabaseTestCase;
+use DateTimeImmutable;
 use Windwalker\ORM\EntityMapper;
 use Windwalker\ORM\Test\Entity\StubArticle;
 
@@ -30,7 +30,7 @@ class EntityEventTest extends AbstractORMTestCase
         $article->setTitle('Hello');
         $article->setCategoryId(1);
         $article->setContent('World');
-        $article->setCreated(new \DateTimeImmutable('now'));
+        $article->setCreated(new DateTimeImmutable('now'));
         $article->setState(1);
 
         /** @var StubArticle $article */

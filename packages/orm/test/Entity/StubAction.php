@@ -47,8 +47,9 @@ class StubAction implements EntityInterface
     protected ?StubMemberActionMap $map = null;
 
     #[EntitySetup]
-    public static function setup(EntityMetadata $metadata)
-    {
+    public static function setup(
+        EntityMetadata $metadata
+    ) {
         $rm = $metadata->getRelationManager();
 
         $rm->manyToMany('members')

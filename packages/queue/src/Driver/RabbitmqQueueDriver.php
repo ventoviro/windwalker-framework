@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Queue\Driver;
 
+use DomainException;
 use PhpAmqpLib\Channel\AMQPChannel;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -48,8 +49,8 @@ class RabbitmqQueueDriver implements QueueDriverInterface
     /**
      * RabbitmqQueueDriver constructor.
      *
-     * @param string $channel
-     * @param array  $options
+     * @param  string  $channel
+     * @param  array   $options
      */
     public function __construct(string $channel, array $options = [])
     {
@@ -147,7 +148,7 @@ class RabbitmqQueueDriver implements QueueDriverInterface
     /**
      * release
      *
-     * @param QueueMessage|string $message
+     * @param  QueueMessage|string  $message
      *
      * @return static
      */
@@ -165,7 +166,7 @@ class RabbitmqQueueDriver implements QueueDriverInterface
     /**
      * channelDeclare
      *
-     * @param string $channel
+     * @param  string  $channel
      *
      * @return  void
      */
@@ -177,15 +178,15 @@ class RabbitmqQueueDriver implements QueueDriverInterface
     /**
      * getAMQPConnection
      *
-     * @param array $options
+     * @param  array  $options
      *
      * @return  AMQPStreamConnection
-     * @throws \DomainException
+     * @throws DomainException
      */
     public function getAMQPConnection(array $options): AMQPStreamConnection
     {
         if (!class_exists(AMQPStreamConnection::class)) {
-            throw new \DomainException('Please install php-amqplib/php-amqplib first.');
+            throw new DomainException('Please install php-amqplib/php-amqplib first.');
         }
 
         $defaultOptions = [

@@ -11,9 +11,9 @@ declare(strict_types=1);
 
 namespace Windwalker\Query\Bounded;
 
+use PDO;
 use Windwalker\Query\Escaper;
 use Windwalker\Query\Query;
-use Windwalker\Utilities\TypeCast;
 
 /**
  * The QueryHelper class.
@@ -32,8 +32,8 @@ class BoundedHelper
     public static function replaceParams(string $sql, string $sign = '?', array $params = []): array
     {
         $values = [];
-        $i      = 0;
-        $s      = 1;
+        $i = 0;
+        $s = 1;
 
         $sql = (string) preg_replace_callback(
             '/(:[\w_]+|\?)/',
@@ -73,7 +73,7 @@ class BoundedHelper
     /**
      * simulatePrepared
      *
-     * @param  \PDO|callable|Query|mixed  $escaper
+     * @param  PDO|callable|Query|mixed  $escaper
      * @param  string                     $sql
      * @param  array                      $bounded
      *

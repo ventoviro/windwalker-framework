@@ -11,8 +11,6 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Test\Driver\Mysqli;
 
-use PHPUnit\Framework\TestCase;
-use Windwalker\Database\Driver\Mysqli\MysqliDriver;
 use Windwalker\Database\Platform\AbstractPlatform;
 use Windwalker\Database\Test\Driver\AbstractDriverTest;
 

@@ -11,13 +11,14 @@ declare(strict_types=1);
 
 namespace Windwalker\Session;
 
+use Countable;
+use JsonSerializable;
 use Windwalker\Utilities\Contract\AccessorAccessibleInterface;
-use Windwalker\Utilities\Contract\ArrayAccessibleInterface;
 
 /**
  * Interface SessionInterface
  */
-interface SessionInterface extends \Countable, \JsonSerializable, AccessorAccessibleInterface
+interface SessionInterface extends Countable, JsonSerializable, AccessorAccessibleInterface
 {
     public const OPTION_AUTO_COMMIT = 'auto_commit';
 

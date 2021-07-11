@@ -11,10 +11,12 @@ declare(strict_types=1);
 
 namespace Windwalker\Pool;
 
+use Countable;
+
 /**
  * Interface PoolInterface
  */
-interface PoolInterface extends \Countable
+interface PoolInterface extends Countable
 {
     /**
      * Initialize pool
@@ -47,7 +49,7 @@ interface PoolInterface extends \Countable
     /**
      * Release connection to pool
      *
-     * @param ConnectionInterface $connection
+     * @param  ConnectionInterface  $connection
      */
     public function release(ConnectionInterface $connection): void;
 

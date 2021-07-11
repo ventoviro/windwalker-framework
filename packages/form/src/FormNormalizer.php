@@ -21,7 +21,7 @@ class FormNormalizer
     public static function clearNamespace(string $ns): string
     {
         $nss = explode('/', $ns);
-        $ns  = implode('/', array_filter(array_map('trim', $nss), 'strlen'));
+        $ns = implode('/', array_filter(array_map('trim', $nss), 'strlen'));
 
         return $ns;
     }

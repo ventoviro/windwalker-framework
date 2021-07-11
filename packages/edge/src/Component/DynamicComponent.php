@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Edge\Component;
 
+use Closure;
+use LogicException;
 use Windwalker\Edge\Edge;
 use Windwalker\Utilities\Attributes\Prop;
 use Windwalker\Utilities\StrNormalize;
@@ -45,9 +47,9 @@ class DynamicComponent extends AbstractComponent
     /**
      * Get the view / contents that represent the component.
      *
-     * @return \Closure|string
+     * @return Closure|string
      */
-    public function render(): \Closure|string
+    public function render(): Closure|string
     {
         // phpcs:disable
         $template = <<<'EOF'
@@ -58,6 +60,7 @@ class DynamicComponent extends AbstractComponent
 {{ defaultSlot }}
 </x-{{ is }}>
 EOF;
+
         // phpcs:enable
 
         return function ($edge, $data) use ($template) {
@@ -202,7 +205,7 @@ EOF;
         }
 
         if (!$extension) {
-            throw new \LogicException(
+            throw new LogicException(
                 sprintf(
                     'Extension: %s not found.',
                     ComponentExtension::class

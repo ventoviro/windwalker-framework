@@ -11,13 +11,14 @@ declare(strict_types=1);
 
 namespace Windwalker\Utilities;
 
+use BadMethodCallException;
+use Closure;
 use InvalidArgumentException;
 use JetBrains\PhpStorm\Pure;
 use stdClass;
 use Traversable;
 use Windwalker\Utilities\Classes\PreventInitialTrait;
 use Windwalker\Utilities\Contract\DumpableInterface;
-use Windwalker\Utilities\Reflection\ReflectAccessor;
 
 /**
  * The TypeCast class.
@@ -101,8 +102,9 @@ abstract class TypeCast
      * @since  3.5
      */
     #[Pure]
-    public static function toIterable(mixed $iterable): iterable
-    {
+    public static function toIterable(
+        mixed $iterable
+    ): iterable {
         if (is_iterable($iterable)) {
             return $iterable;
         }
@@ -152,7 +154,7 @@ abstract class TypeCast
      */
     public static function toString(mixed $data, bool $dump = false): string
     {
-        if ($data instanceof \Closure) {
+        if ($data instanceof Closure) {
             return static::toString($data());
         }
 
@@ -356,7 +358,7 @@ abstract class TypeCast
             return static::try($args[0], strtolower(substr($name, 3)), $args[1] ?? false);
         }
 
-        throw new \BadMethodCallException(
+        throw new BadMethodCallException(
             sprintf(
                 'Method: %s::%s() not found',
                 static::class,

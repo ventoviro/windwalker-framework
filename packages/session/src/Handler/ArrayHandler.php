@@ -82,7 +82,7 @@ class ArrayHandler extends AbstractHandler
     {
         $past = time() - $lifetime;
 
-        $this->sessions = array_filter($this->sessions, fn ($sess) => $sess['time'] >= $past);
+        $this->sessions = array_filter($this->sessions, fn($sess) => $sess['time'] >= $past);
 
         return true;
     }

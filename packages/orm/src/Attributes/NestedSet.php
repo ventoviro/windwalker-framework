@@ -11,12 +11,13 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Attributes;
 
+use Attribute;
 use Windwalker\ORM\NestedSetMapper;
 
 /**
  * The NestedSet class.
  */
-#[\Attribute]
+#[Attribute]
 class NestedSet extends Table
 {
     protected array $defaultOptions = [
@@ -24,7 +25,7 @@ class NestedSet extends Table
             'children' => 'children',
             'ancestors' => 'ancestors',
             'tree' => 'tree',
-        ]
+        ],
     ];
 
     /**

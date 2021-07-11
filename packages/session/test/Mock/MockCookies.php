@@ -19,6 +19,7 @@ use Windwalker\Session\Cookie\Cookies;
 class MockCookies extends Cookies
 {
     public array $cookies = [];
+
     public array $cookieData = [];
 
     /**

@@ -11,19 +11,19 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Attributes;
 
+use Attribute;
 use Windwalker\Attributes\AttributeHandler;
 use Windwalker\Attributes\AttributeInterface;
 use Windwalker\ORM\EntityMapper;
 use Windwalker\ORM\Metadata\EntityMetadata;
 use Windwalker\Utilities\Options\OptionAccessTrait;
-use Windwalker\Utilities\Reflection\ReflectAccessor;
 use Windwalker\Utilities\StrInflector;
 
 /**
  * The Table class.
  */
-#[\Attribute]
-class Table  implements AttributeInterface
+#[Attribute]
+class Table implements AttributeInterface
 {
     use ORMAttributeTrait;
     use OptionAccessTrait;

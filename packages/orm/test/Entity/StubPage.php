@@ -13,7 +13,6 @@ namespace Windwalker\ORM\Test\Entity;
 
 use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Column;
-use Windwalker\ORM\Attributes\Mapping;
 use Windwalker\ORM\Attributes\PK;
 use Windwalker\ORM\Attributes\Table;
 use Windwalker\ORM\EntityInterface;

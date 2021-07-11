@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace Windwalker\Edge\Component;
 
+use ArrayAccess;
+use ArrayIterator;
+use IteratorAggregate;
 use Windwalker\Utilities\Arr;
 use Windwalker\Utilities\StrNormalize;
 use Windwalker\Utilities\TypeCast;
@@ -21,7 +24,7 @@ use function Windwalker\value;
 /**
  * The ComponentAttributes class.
  */
-class ComponentAttributes implements \ArrayAccess, \IteratorAggregate
+class ComponentAttributes implements ArrayAccess, IteratorAggregate
 {
     /**
      * The raw array of attributes.
@@ -430,11 +433,11 @@ class ComponentAttributes implements \ArrayAccess, \IteratorAggregate
     /**
      * Get an iterator for the items.
      *
-     * @return \ArrayIterator
+     * @return ArrayIterator
      */
     public function getIterator()
     {
-        return new \ArrayIterator($this->attributes);
+        return new ArrayIterator($this->attributes);
     }
 
     /**

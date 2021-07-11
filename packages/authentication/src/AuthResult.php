@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Authentication;
 
+use Throwable;
+
 /**
  * The AuthenticationResult class.
  */
@@ -32,20 +34,20 @@ class AuthResult
 
     protected array $credential = [];
 
-    public ?\Throwable $exception = null;
+    public ?Throwable $exception = null;
 
     /**
      * AuthResult constructor.
      *
      * @param  string           $status
      * @param  array            $credential
-     * @param  \Throwable|null  $e
+     * @param  Throwable|null  $e
      */
-    public function __construct(string $status, array $credential, \Throwable $e = null)
+    public function __construct(string $status, array $credential, Throwable $e = null)
     {
-        $this->status     = $status;
+        $this->status = $status;
         $this->credential = $credential;
-        $this->exception  = $e;
+        $this->exception = $e;
     }
 
     public function isSuccess(): bool
@@ -58,7 +60,7 @@ class AuthResult
         return !$this->isSuccess();
     }
 
-    public function getException(): ?\Throwable
+    public function getException(): ?Throwable
     {
         return $this->exception;
     }

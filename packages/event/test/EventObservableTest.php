@@ -73,7 +73,7 @@ class EventObservableTest extends TestCase
 
     public function testObserveSwoole(): void
     {
-        $loop      = new StreamSelectLoop();
+        $loop = new StreamSelectLoop();
         $scheduler = new EventLoopScheduler($loop);
         Scheduler::setDefaultFactory(
             function () use ($scheduler) {

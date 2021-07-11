@@ -11,19 +11,17 @@ declare(strict_types=1);
 
 namespace Windwalker\Query\Grammar;
 
+use BadMethodCallException;
+use InvalidArgumentException;
+use Stringable;
 use Windwalker\Query\Clause\AsClause;
 use Windwalker\Query\Clause\Clause;
 use Windwalker\Query\DefaultConnection;
 use Windwalker\Query\Escaper;
 use Windwalker\Query\Query;
-use Windwalker\Utilities\Assert\ArgumentsAssert;
 use Windwalker\Utilities\TypeCast;
 use Windwalker\Utilities\Wrapper\RawWrapper;
-use Windwalker\Utilities\Wrapper\WrapperInterface;
 
-use function Windwalker\Query\clause;
-use function Windwalker\Query\qn;
-use function Windwalker\Query\val;
 use function Windwalker\value;
 
 /**
@@ -101,13 +99,13 @@ abstract class AbstractGrammar
     public function compile(string $type, Query $query): string
     {
         if ($type === '') {
-            throw new \InvalidArgumentException('Type shouldn\'t be empty string');
+            throw new InvalidArgumentException('Type shouldn\'t be empty string');
         }
 
         $method = 'compile' . ucfirst($type);
 
         if (!method_exists($this, $method)) {
-            throw new \BadMethodCallException(
+            throw new BadMethodCallException(
                 sprintf(
                     '%s dose not support "%s" compiled',
                     static::class,
@@ -263,7 +261,7 @@ abstract class AbstractGrammar
         return static::quoteName((string) $name, $ignoreDot);
     }
 
-    public static function quoteName(string|\Stringable $name, bool $ignoreDot = false): string
+    public static function quoteName(string|Stringable $name, bool $ignoreDot = false): string
     {
         if ($name instanceof RawWrapper) {
             return value($name);
@@ -304,7 +302,7 @@ abstract class AbstractGrammar
      */
     public function compileLimit(Query $query, array $sql): array
     {
-        $limit  = $query->getLimit();
+        $limit = $query->getLimit();
         $offset = $query->getOffset();
 
         if ($limit !== null) {

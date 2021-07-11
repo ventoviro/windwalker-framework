@@ -58,7 +58,7 @@ class ButtonField extends AbstractField
         );
 
         $input['type'] = $this->getButtonType() ?? static::ELEMENT_BUTTON;
-        $input['id']   = $this->getId();
+        $input['id'] = $this->getId();
 
         return $input;
     }

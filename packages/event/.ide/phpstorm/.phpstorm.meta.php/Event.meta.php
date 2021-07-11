@@ -10,6 +10,7 @@
 declare(strict_types=1);
 
 namespace PHPSTORM_META {
+
     override(
         \Windwalker\Event\EventEmitterInterface::emit(0),
         type(0)

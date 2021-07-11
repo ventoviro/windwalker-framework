@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Test\Entity;
 
-use Windwalker\Data\Collection;
+use DateTimeImmutable;
 use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Cast;
 use Windwalker\ORM\Attributes\Column;
@@ -20,7 +20,6 @@ use Windwalker\ORM\Attributes\PK;
 use Windwalker\ORM\Attributes\Table;
 use Windwalker\ORM\Cast\JsonCast;
 use Windwalker\ORM\Metadata\EntityMetadata;
-use Windwalker\ORM\TableAwareInterface;
 
 /**
  * The User class.
@@ -46,15 +45,16 @@ class StubUser
     protected string $avatar;
 
     #[Column('registered')]
-    #[Cast(\DateTimeImmutable::class)]
-    protected \DateTimeImmutable $registered;
+    #[Cast(DateTimeImmutable::class)]
+    protected DateTimeImmutable $registered;
 
     #[Cast(JsonCast::class)]
     protected array $params = [];
 
     #[EntitySetup]
-    public static function setup(EntityMetadata $metadata)
-    {
+    public static function setup(
+        EntityMetadata $metadata
+    ) {
         $relation = $metadata->getRelationManager();
 
         $relation->manyToOne('category_id')

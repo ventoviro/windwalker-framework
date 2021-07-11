@@ -11,8 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Test\Reseter;
 
-use Windwalker\Database\Test\AbstractDatabaseTestCase;
-use Windwalker\Query\Grammar\AbstractGrammar;
+use PDO;
 
 /**
  * The AbstractMySQLTestCase class.
@@ -21,7 +20,7 @@ class MySQLReseter extends AbstractReseter
 {
     protected static string $platform = 'MySQL';
 
-    public function createDatabase(\PDO $pdo, string $dbname): void
+    public function createDatabase(PDO $pdo, string $dbname): void
     {
         $pdo->exec('DROP DATABASE IF EXISTS ' . static::qn($dbname));
 
@@ -31,7 +30,7 @@ class MySQLReseter extends AbstractReseter
         $pdo->exec('CREATE DATABASE ' . static::qn($dbname));
     }
 
-    public function clearAllTables(\PDO $pdo, string $dbname): void
+    public function clearAllTables(PDO $pdo, string $dbname): void
     {
         // Drop Tables
         $tables = $pdo->query(
@@ -41,7 +40,7 @@ class MySQLReseter extends AbstractReseter
                 ->where('TABLE_TYPE', 'BASE TABLE')
                 ->where('TABLE_SCHEMA', '=', $dbname)
                 ->render(true)
-        )->fetchAll(\PDO::FETCH_COLUMN) ?: [];
+        )->fetchAll(PDO::FETCH_COLUMN) ?: [];
 
         if ($tables) {
             foreach ($tables as $table) {
@@ -57,7 +56,7 @@ class MySQLReseter extends AbstractReseter
                 ->where('TABLE_TYPE', 'VIEW')
                 ->where('TABLE_SCHEMA', '=', $dbname)
                 ->render(true)
-        )->fetchAll(\PDO::FETCH_COLUMN) ?: [];
+        )->fetchAll(PDO::FETCH_COLUMN) ?: [];
 
         if ($tables) {
             foreach ($tables as $table) {

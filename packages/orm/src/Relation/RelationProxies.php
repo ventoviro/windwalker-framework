@@ -11,12 +11,15 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Relation;
 
+use Closure;
+use WeakMap;
+
 /**
  * The RelationProxy class.
  */
 class RelationProxies
 {
-    protected static ?\WeakMap $instances = null;
+    protected static ?WeakMap $instances = null;
 
     public static function set(object $entity, string $prop, callable $getter): void
     {
@@ -43,7 +46,7 @@ class RelationProxies
             return null;
         }
 
-        if ($result instanceof \Closure) {
+        if ($result instanceof Closure) {
             self::getMap()[$entity][$prop] = $result = $result();
         }
 
@@ -55,8 +58,8 @@ class RelationProxies
         self::getMap()[$entity][$prop] = null;
     }
 
-    public static function getMap(): \WeakMap
+    public static function getMap(): WeakMap
     {
-        return self::$instances ??= new \WeakMap();
+        return self::$instances ??= new WeakMap();
     }
 }

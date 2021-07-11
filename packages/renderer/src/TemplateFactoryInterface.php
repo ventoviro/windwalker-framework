@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Renderer;
 
+use Closure;
+
 /**
  * Interface RendererFactoryInterface
  */
@@ -22,7 +24,7 @@ interface TemplateFactoryInterface
      * @param  string  $layout
      * @param  array   $options
      *
-     * @return  \Closure
+     * @return  Closure
      */
-    public function make(string $layout, array $options = []): \Closure;
+    public function make(string $layout, array $options = []): Closure;
 }

@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Windwalker\Filter\Rule;
 
 use Windwalker\Filter\AbstractFilterVar;
-use Windwalker\Filter\AbstractRegexFilter;
 
 /**
  * The Email class.

@@ -331,7 +331,7 @@ class HttpClient implements HttpClientInterface, AsyncHttpClientInterface
                 $uri = $uri->withVar($k, $v);
             }
 
-            $url  = (string) $uri;
+            $url = (string) $uri;
             $body = null;
         }
 

@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Utilities\Test\Reflection;
 
+use JsonSerializable;
 use PHPUnit\Framework\TestCase;
 use Windwalker\Utilities\Reflection\ReflectAccessor;
 
@@ -26,11 +27,15 @@ class ReflectAccessorTest extends TestCase
      */
     public function testSetValueWithSafeType(): void
     {
-        $foo = new class implements \JsonSerializable {
+        $foo = new class implements JsonSerializable {
             protected ?int $id;
+
             protected int|string|null $price;
+
             protected int $parentId;
+
             protected string $content;
+
             protected $foo;
 
             public function jsonSerialize(): array

@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Platform;
 
+use LogicException;
 use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\Database\Schema\Ddl\Column;
 use Windwalker\Database\Schema\Ddl\Constraint;
@@ -54,7 +55,7 @@ class SQLServerPlatform extends AbstractPlatform
                     'TABLE_TYPE',
                     raw('NULL AS VIEW_DEFINITION'),
                     raw('NULL AS CHECK_OPTION'),
-                    raw('NULL AS IS_UPDATABLE')
+                    raw('NULL AS IS_UPDATABLE'),
                 ]
             )
             ->from('INFORMATION_SCHEMA.TABLES')
@@ -81,7 +82,7 @@ class SQLServerPlatform extends AbstractPlatform
                     raw('\'VIEW\' AS TABLE_TYPE'),
                     'VIEW_DEFINITION',
                     'CHECK_OPTION',
-                    'IS_UPDATABLE'
+                    'IS_UPDATABLE',
                 ]
             )
             ->from('INFORMATION_SCHEMA.VIEWS')
@@ -253,7 +254,7 @@ class SQLServerPlatform extends AbstractPlatform
                 'ic',
                 [
                     ['col.column_id', '=', 'ic.column_id'],
-                    ['ic.object_id', '=', 'tbl.object_id']
+                    ['ic.object_id', '=', 'tbl.object_id'],
                 ]
             )
             ->leftJoin(
@@ -261,15 +262,17 @@ class SQLServerPlatform extends AbstractPlatform
                 'idx',
                 [
                     ['idx.object_id', '=', 'tbl.object_id'],
-                    ['idx.index_id', '=', 'ic.index_id']
+                    ['idx.index_id', '=', 'ic.index_id'],
                 ]
             )
             ->where('tbl.name', $this->db->replacePrefix($table))
-            ->orWhere(function (Query $query) {
-                $query->where('idx.name', '!=', null);
-                $query->where('col.is_identity', 1);
-                $query->where('idx.is_primary_key', 1);
-            });
+            ->orWhere(
+                function (Query $query) {
+                    $query->where('idx.name', '!=', null);
+                    $query->where('col.is_identity', 1);
+                    $query->where('idx.is_primary_key', 1);
+                }
+            );
     }
 
     public function dropColumn(string $table, string $name, ?string $schema = null): StatementInterface
@@ -332,9 +335,11 @@ class SQLServerPlatform extends AbstractPlatform
         $constraintGroup = $this->loadConstraintsStatement($table, $schema)
             ->all()
             ->mapProxy()
-            ->apply(static function (array $storage) {
-                return array_change_key_case($storage, CASE_LOWER);
-            })
+            ->apply(
+                static function (array $storage) {
+                    return array_change_key_case($storage, CASE_LOWER);
+                }
+            )
             ->group('constraint_name');
 
         $constraints = [];
@@ -356,11 +361,11 @@ class SQLServerPlatform extends AbstractPlatform
 
             if ($isFK) {
                 $constraints[$name]['referenced_table_schema'] = $rows[0]['referenced_table_schema'];
-                $constraints[$name]['referenced_table_name']   = $rows[0]['referenced_table_name'];
-                $constraints[$name]['referenced_columns']      = [];
-                $constraints[$name]['match_option']            = $rows[0]['match_option'];
-                $constraints[$name]['update_rule']             = $rows[0]['update_rule'];
-                $constraints[$name]['delete_rule']             = $rows[0]['delete_rule'];
+                $constraints[$name]['referenced_table_name'] = $rows[0]['referenced_table_name'];
+                $constraints[$name]['referenced_columns'] = [];
+                $constraints[$name]['match_option'] = $rows[0]['match_option'];
+                $constraints[$name]['update_rule'] = $rows[0]['update_rule'];
+                $constraints[$name]['delete_rule'] = $rows[0]['delete_rule'];
             }
 
             foreach ($rows as $row) {
@@ -393,7 +398,7 @@ class SQLServerPlatform extends AbstractPlatform
 
         foreach ($indexGroup as $keys) {
             $index = [];
-            $name  = $keys[0]['index_name'];
+            $name = $keys[0]['index_name'];
 
             if ($keys[0]['is_primary_key']) {
                 $name = 'PK__' . $keys[0]['table_name'];
@@ -403,11 +408,11 @@ class SQLServerPlatform extends AbstractPlatform
                 $name = $keys[0]['table_name'] . '_' . $name;
             }
 
-            $index['table_schema']  = $keys[0]['schema_name'];
-            $index['table_name']    = $keys[0]['table_name'];
-            $index['is_unique']     = (bool) $keys[0]['is_unique'];
-            $index['is_primary']    = (bool) ($keys[0]['is_primary_key'] ?: $keys[0]['is_identity']);
-            $index['index_name']    = $keys[0]['index_name'];
+            $index['table_schema'] = $keys[0]['schema_name'];
+            $index['table_name'] = $keys[0]['table_name'];
+            $index['is_unique'] = (bool) $keys[0]['is_unique'];
+            $index['is_primary'] = (bool) ($keys[0]['is_primary_key'] ?: $keys[0]['is_identity']);
+            $index['index_name'] = $keys[0]['index_name'];
             $index['index_comment'] = '';
 
             $index['columns'] = [];
@@ -522,7 +527,7 @@ class SQLServerPlatform extends AbstractPlatform
 
         $options = array_merge($defaultOptions, $options);
         $columns = [];
-        $table   = $schema->getTable();
+        $table = $schema->getTable();
         $tableName = $this->db->quoteName($table->schemaName . '.' . $table->getName());
         $comments = [];
         $primaries = [];
@@ -607,8 +612,8 @@ class SQLServerPlatform extends AbstractPlatform
         // Drop all foreign key reference to this table
         // @see https://social.msdn.microsoft.com/Forums/sqlserver/en-US/219f8a19-0026-49a1-a086-11c5d57d9c97/tsql-to-drop-all-constraints?forum=transactsql
         $dropFK = <<<SQL
-declare @str varchar(max)
-declare cur cursor for
+DECLARE @str VARCHAR(MAX)
+DECLARE cur CURSOR FOR
 
     SELECT 'ALTER TABLE ' + '[' + s.name + '].[' + t.name + '] DROP CONSTRAINT ['+ f.name + ']'
     FROM sys.foreign_keys AS f
@@ -617,7 +622,7 @@ declare cur cursor for
     WHERE s.name = %q AND f.referenced_object_id = object_id(%q)
     ORDER BY t.type
 
-open cur
+OPEN cur
 FETCH NEXT FROM cur INTO @str
 WHILE (@@fetch_status = 0) BEGIN
     PRINT @str
@@ -625,8 +630,8 @@ WHILE (@@fetch_status = 0) BEGIN
     FETCH NEXT FROM cur INTO @str
 END
 
-close cur
-deallocate cur;
+CLOSE cur
+DEALLOCATE cur;
 SQL;
 
         return $this->db->execute(
@@ -662,7 +667,7 @@ SQL;
         $type = $column->getDataType();
         $types = [
             'text',
-            'json'
+            'json',
         ];
 
         if (in_array($type, $types, true)) {
@@ -683,17 +688,17 @@ SQL;
             $this->getGrammar()::build(
                 'exec sp_addextendedproperty',
                 ...$query->quote(
-                    [
-                         'MS_Description',
-                         $comment,
-                         'SCHEMA',
-                         'dbo',
-                         'TABLE',
-                         $table,
-                         $type,
-                         $name
-                    ]
-                )
+                [
+                    'MS_Description',
+                    $comment,
+                    'SCHEMA',
+                    'dbo',
+                    'TABLE',
+                    $table,
+                    $type,
+                    $name,
+                ]
+            )
             )
         );
     }
@@ -826,7 +831,7 @@ SQL;
      */
     public function renameColumn(string $table, string $from, string $to, ?string $schema = null): StatementInterface
     {
-        throw new \LogicException('Currently not support rename column');
+        throw new LogicException('Currently not support rename column');
     }
 
     /**

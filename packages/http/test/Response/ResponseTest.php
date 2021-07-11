@@ -61,7 +61,7 @@ class ResponseTest extends TestCase
         self::assertEquals([], $res->getHeaders());
 
         // Test with params
-        $body    = fopen($tmpfile = tempnam(sys_get_temp_dir(), 'windwalker'), 'wb+');
+        $body = fopen($tmpfile = tempnam(sys_get_temp_dir(), 'windwalker'), 'wb+');
         $headers = [
             'X-Foo' => ['Flower', 'Sakura'],
             'Content-Type' => 'application/json',
@@ -78,7 +78,7 @@ class ResponseTest extends TestCase
 
         // Test with object params
         $body = new Stream();
-        $res  = new Response($body);
+        $res = new Response($body);
 
         self::assertSame($body, $res->getBody());
     }

@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Test\Entity;
 
+use DateTimeImmutable;
 use Windwalker\ORM\Attributes\Cast;
 use Windwalker\ORM\Attributes\Column;
 use Windwalker\ORM\Attributes\Table;
@@ -37,7 +38,7 @@ class StubSakuraRoseMap implements EntityInterface
 
     #[Column('created')]
     #[Cast(DateTimeCast::class)]
-    protected ?\DateTimeImmutable $created = null;
+    protected ?DateTimeImmutable $created = null;
 
     /**
      * @return string
@@ -100,19 +101,19 @@ class StubSakuraRoseMap implements EntityInterface
     }
 
     /**
-     * @return \DateTimeImmutable
+     * @return DateTimeImmutable
      */
-    public function getCreated(): \DateTimeImmutable
+    public function getCreated(): DateTimeImmutable
     {
         return $this->created;
     }
 
     /**
-     * @param  \DateTimeImmutable  $created
+     * @param  DateTimeImmutable  $created
      *
      * @return  static  Return self to support chaining.
      */
-    public function setCreated(\DateTimeImmutable $created): static
+    public function setCreated(DateTimeImmutable $created): static
     {
         $this->created = $created;
 

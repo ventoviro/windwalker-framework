@@ -20,7 +20,6 @@ use Windwalker\Edge\Compiler\Concern\CompileLayoutTrait;
 use Windwalker\Edge\Compiler\Concern\CompileLoopTrait;
 use Windwalker\Edge\Compiler\Concern\CompileRawPhpTrait;
 use Windwalker\Edge\Compiler\Concern\CompileStackTrait;
-use Windwalker\Edge\Component\ComponentAttributes;
 
 /**
  * The EdgeCompiler class.

@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Relation;
 
+use LogicException;
+
 /**
  * The ForeignTable class.
  */
@@ -100,7 +102,7 @@ class ForeignTable
         $conflict = array_intersect(array_keys($this->morphs), $this->fks);
 
         if ($conflict !== []) {
-            throw new \LogicException(
+            throw new LogicException(
                 sprintf(
                     'Morph key nad Foreign key conflict: (%s).',
                     implode(',', $conflict)

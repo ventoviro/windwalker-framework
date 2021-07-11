@@ -11,18 +11,16 @@ declare(strict_types=1);
 
 namespace Windwalker\Session;
 
+use LogicException;
 use Windwalker\Session\Bridge\BridgeInterface;
 use Windwalker\Session\Bridge\NativeBridge;
 use Windwalker\Session\Cookie\Cookies;
 use Windwalker\Session\Cookie\CookiesInterface;
-use Windwalker\Utilities\Accessible\SimpleAccessibleTrait;
 use Windwalker\Utilities\Contract\ArrayAccessibleInterface;
 use Windwalker\Utilities\Options\OptionAccessTrait;
-
 use Windwalker\Utilities\TypeCast;
 
 use function Windwalker\tap;
-use function Windwalker\uid;
 
 /**
  * The Session class.
@@ -61,12 +59,12 @@ class Session implements SessionInterface, ArrayAccessibleInterface
             $options
         );
 
-        $this->bridge  = $bridge ?? new NativeBridge();
+        $this->bridge = $bridge ?? new NativeBridge();
         $this->cookies = $cookies ?? Cookies::create()
-            ->httpOnly(true)
-            ->expires('+30days')
-            ->secure(false)
-            ->sameSite(Cookies::SAMESITE_LAX);
+                ->httpOnly(true)
+                ->expires('+30days')
+                ->secure(false)
+                ->sameSite(Cookies::SAMESITE_LAX);
     }
 
     public function registerINI(): void
@@ -136,7 +134,7 @@ class Session implements SessionInterface, ArrayAccessibleInterface
             if ($this->getOption(static::OPTION_AUTO_COMMIT)) {
                 $this->destructor = [$this, 'stop'];
 
-                register_shutdown_function(fn () => $this->destruct());
+                register_shutdown_function(fn() => $this->destruct());
             }
         }
 
@@ -166,7 +164,7 @@ class Session implements SessionInterface, ArrayAccessibleInterface
     public function fork(?string $newId = null): Session
     {
         if (!$this->isStarted()) {
-            throw new \LogicException(
+            throw new LogicException(
                 static::class
                 . '::fork() only work after started, before started, you can use clone to copy it.'
             );
@@ -182,7 +180,7 @@ class Session implements SessionInterface, ArrayAccessibleInterface
         } else {
             // If use our implemented php bridge, we can fork it with specific ID.
             if ($this->bridge instanceof NativeBridge) {
-                throw new \LogicException('Fork with specific ID does not supports NativeBridge');
+                throw new LogicException('Fork with specific ID does not supports NativeBridge');
             }
 
             $data = $new->getStorage();
@@ -456,7 +454,7 @@ class Session implements SessionInterface, ArrayAccessibleInterface
         $this->start();
 
         if ($this->flashBag === null) {
-            $storage           = &$this->getStorage();
+            $storage = &$this->getStorage();
             $storage['_flash'] ??= [];
 
             $this->flashBag = new FlashBag($storage['_flash']);
@@ -584,8 +582,8 @@ class Session implements SessionInterface, ArrayAccessibleInterface
      */
     public function __clone()
     {
-        $this->bridge   = clone $this->bridge;
-        $this->cookies  = clone $this->cookies;
+        $this->bridge = clone $this->bridge;
+        $this->cookies = clone $this->cookies;
         $this->flashBag = $this->flashBag ? clone $this->flashBag : $this->flashBag;
     }
 

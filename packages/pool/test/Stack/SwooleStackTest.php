@@ -38,9 +38,12 @@ class SwooleStackTest extends TestCase
 
                 $conn = $this->instance->pop();
 
-                Timer::after(300, function () use ($conn) {
-                    $this->instance->push($conn);
-                });
+                Timer::after(
+                    300,
+                    function () use ($conn) {
+                        $this->instance->push($conn);
+                    }
+                );
 
                 $conn = $this->instance->pop();
                 $v = $conn;

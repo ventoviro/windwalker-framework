@@ -222,7 +222,7 @@ class CurlTransport extends AbstractTransport
 
         // If an explicit timeout is given user it.
         if ($timeout = $this->getOption('timeout')) {
-            $opt[CURLOPT_TIMEOUT]        = (int) $timeout;
+            $opt[CURLOPT_TIMEOUT] = (int) $timeout;
             $opt[CURLOPT_CONNECTTIMEOUT] = (int) $timeout;
         }
 

@@ -17,6 +17,8 @@ use Windwalker\Crypt\Key;
 use Windwalker\Crypt\SafeEncoder;
 use Windwalker\Crypt\Symmetric\OpensslCipher;
 
+use function openssl_get_cipher_methods;
+
 /**
  * Test class of OpensslCipher
  *
@@ -63,7 +65,7 @@ class OpensslCipherTest extends TestCase
      */
     public function testEncrypt(string $method): void
     {
-        $methods = \openssl_get_cipher_methods(true);
+        $methods = openssl_get_cipher_methods(true);
 
         if (!in_array(strtolower($method), $methods, true)) {
             self::markTestSkipped('Algorithm: ' . $method . ' no support.');

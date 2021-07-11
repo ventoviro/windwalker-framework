@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Driver\Pdo;
 
+use PDO;
 use Windwalker\Database\DatabaseFactory;
 use Windwalker\Database\Driver\AbstractDriver;
 use Windwalker\Database\Driver\ConnectionInterface;
@@ -69,7 +70,7 @@ class PdoDriver extends AbstractDriver implements TransactionDriverInterface
     {
         return $this->useConnection(
             function (ConnectionInterface $conn) use ($value) {
-                /** @var \PDO $pdo */
+                /** @var PDO $pdo */
                 $pdo = $conn->get();
 
                 return $pdo->quote($value);
@@ -104,7 +105,7 @@ class PdoDriver extends AbstractDriver implements TransactionDriverInterface
     {
         $connection = $this->getConnection();
 
-        /** @var \PDO $pdo */
+        /** @var PDO $pdo */
         $pdo = $connection->get();
 
         $this->connection = $connection;
@@ -117,7 +118,7 @@ class PdoDriver extends AbstractDriver implements TransactionDriverInterface
      */
     public function transactionCommit(): bool
     {
-        /** @var \PDO $pdo */
+        /** @var PDO $pdo */
         $pdo = $this->getConnection()->get();
 
         return $pdo->commit();
@@ -128,12 +129,15 @@ class PdoDriver extends AbstractDriver implements TransactionDriverInterface
      */
     public function transactionRollback(): bool
     {
-        /** @var \PDO $pdo */
+        /** @var PDO $pdo */
         $pdo = $this->getConnection()->get();
 
-        return \Windwalker\tap($pdo->rollBack(), function () {
-            $this->connection = null;
-        });
+        return \Windwalker\tap(
+            $pdo->rollBack(),
+            function () {
+                $this->connection = null;
+            }
+        );
     }
 
     /**
@@ -144,7 +148,7 @@ class PdoDriver extends AbstractDriver implements TransactionDriverInterface
     public function getVersion(): string
     {
         return $this->useConnection(
-            fn (ConnectionInterface $conn) => $conn->get()->getAttribute(\PDO::ATTR_SERVER_VERSION)
+            fn(ConnectionInterface $conn) => $conn->get()->getAttribute(PDO::ATTR_SERVER_VERSION)
         );
     }
 }

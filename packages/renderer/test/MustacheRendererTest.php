@@ -154,6 +154,7 @@ HTML;
 }
 
 // phpcs:disable
+
 /**
  * The Chris class.
  *

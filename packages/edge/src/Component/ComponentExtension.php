@@ -45,7 +45,7 @@ class ComponentExtension implements EdgeExtensionInterface, ParsersExtensionInte
     public function getParsers(): array
     {
         return [
-            [$this, 'parseComponents']
+            [$this, 'parseComponents'],
         ];
     }
 

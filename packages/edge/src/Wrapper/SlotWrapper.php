@@ -11,17 +11,20 @@ declare(strict_types=1);
 
 namespace Windwalker\Edge\Wrapper;
 
+use Closure;
+use Stringable;
+
 /**
  * The SlotWrapper class.
  */
-class SlotWrapper implements \Stringable
+class SlotWrapper implements Stringable
 {
     /**
      * SlotWrapper constructor.
      *
-     * @param  \Closure  $slotCallback
+     * @param  Closure  $slotCallback
      */
-    public function __construct(protected \Closure $slotCallback)
+    public function __construct(protected Closure $slotCallback)
     {
     }
 

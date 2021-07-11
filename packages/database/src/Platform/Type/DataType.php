@@ -206,7 +206,7 @@ class DataType
     /**
      * parseTypeName
      *
-     * @param string $type
+     * @param  string  $type
      *
      * @return  string
      *

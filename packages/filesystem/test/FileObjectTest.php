@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Filesystem\Test;
 
+use SplFileInfo;
 use Windwalker\Filesystem\Exception\FileNotFoundException;
 use Windwalker\Filesystem\Exception\FilesystemException;
 use Windwalker\Filesystem\FileObject;
@@ -34,7 +35,7 @@ class FileObjectTest extends AbstractVfsTestCase
 
     public function testItemsFirst(): void
     {
-        $fs    = new FileObject('vfs://root/files');
+        $fs = new FileObject('vfs://root/files');
         $files = $fs->files(true);
 
         self::assertPathEquals('vfs://root/files/folder1/level2/file3', $files->first()->getPathname());
@@ -196,7 +197,7 @@ class FileObjectTest extends AbstractVfsTestCase
 
         $items->rewind();
 
-        $this->assertInstanceOf(\SplFileInfo::class, $items->current());
+        $this->assertInstanceOf(SplFileInfo::class, $items->current());
 
         // list non-exists folder
         restore_error_handler();

@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Iterator;
 
+use Countable;
+use Iterator;
 use Windwalker\Data\Collection;
 use Windwalker\Database\Driver\AbstractStatement;
 
@@ -19,7 +21,7 @@ use Windwalker\Database\Driver\AbstractStatement;
  *
  * @since 2.0
  */
-class StatementIterator implements \Countable, \Iterator
+class StatementIterator implements Countable, Iterator
 {
     /**
      * Property reader.
@@ -63,9 +65,9 @@ class StatementIterator implements \Countable, \Iterator
      */
     public function __construct(AbstractStatement $stmt, $class = Collection::class, array $args = [])
     {
-        $this->stmt  = $stmt;
+        $this->stmt = $stmt;
         $this->class = $class;
-        $this->args  = $args;
+        $this->args = $args;
 
         $this->next();
     }

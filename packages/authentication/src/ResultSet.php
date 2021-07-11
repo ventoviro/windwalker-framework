@@ -11,12 +11,14 @@ declare(strict_types=1);
 
 namespace Windwalker\Authentication;
 
-use Windwalker\Form\ValidateResult;
+use Countable;
+use Generator;
+use IteratorAggregate;
 
 /**
  * The AuthResultSet class.
  */
-class ResultSet implements \IteratorAggregate, \Countable
+class ResultSet implements IteratorAggregate, Countable
 {
     /**
      * @var AuthResult[]
@@ -98,7 +100,7 @@ class ResultSet implements \IteratorAggregate, \Countable
     /**
      * @inheritDoc
      */
-    public function getIterator(): \Generator
+    public function getIterator(): Generator
     {
         foreach ($this->results as $k => $result) {
             yield $k => $result;

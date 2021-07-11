@@ -11,12 +11,14 @@ declare(strict_types=1);
 
 namespace Windwalker\Attributes\Test\Stub\Attrs;
 
+use Attribute;
+use Closure;
 use Windwalker\Attributes\AttributeHandler;
 
 /**
  * The ValueImplode class.
  */
-#[\Attribute]
+#[Attribute]
 class ValueImplode
 {
     protected string $sep = '';
@@ -31,7 +33,7 @@ class ValueImplode
         $this->sep = $sep;
     }
 
-    public function __invoke(AttributeHandler $handler): \Closure
+    public function __invoke(AttributeHandler $handler): Closure
     {
         return function (...$args) use ($handler) {
             $value = $handler(...$args);

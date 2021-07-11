@@ -20,7 +20,7 @@ class HelloInner
     /**
      * HelloInner constructor.
      *
-     * @param mixed $bar
+     * @param  mixed  $bar
      */
     public function __construct(public $bar)
     {

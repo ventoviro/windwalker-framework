@@ -204,7 +204,7 @@ SQL
 
         // Only offset will not work
         self::assertSqlEquals(
-            // phpcs:disable
+        // phpcs:disable
             'SELECT * FROM (SELECT *, ROW_NUMBER() OVER (ORDER BY (SELECT 0)) AS RowNumber FROM ( SELECT * FROM [foo] ORDER BY [id] ) AS A) AS A WHERE RowNumber > 10',
             // phpcs:enable
             $q->render()
@@ -219,7 +219,7 @@ SQL
             ->offset(15);
 
         self::assertSqlEquals(
-            // phpcs:disable
+        // phpcs:disable
             'SELECT * FROM (SELECT *, ROW_NUMBER() OVER (ORDER BY (SELECT 0)) AS RowNumber FROM ( SELECT TOP 20 * FROM [foo] ORDER BY [id] ) AS A) AS A WHERE RowNumber > 15',
             // phpcs:enable
             $q->render()

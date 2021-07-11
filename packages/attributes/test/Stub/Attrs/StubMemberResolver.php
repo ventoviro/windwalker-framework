@@ -11,13 +11,14 @@ declare(strict_types=1);
 
 namespace Windwalker\Attributes\Test\Stub\Attrs;
 
+use Attribute;
 use Windwalker\Attributes\AttributeHandler;
 use Windwalker\Attributes\AttributeInterface;
 
 /**
  * The StubMemberResolver class.
  */
-#[\Attribute]
+#[Attribute]
 class StubMemberResolver implements AttributeInterface
 {
     /**

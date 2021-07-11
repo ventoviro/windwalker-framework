@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Relation\Strategy;
 
+use ReflectionException;
 use Windwalker\ORM\EntityMapper;
 use Windwalker\ORM\Relation\Action;
 use Windwalker\ORM\Relation\RelationCollection;
@@ -39,7 +40,7 @@ class OneToMany extends AbstractRelation
 
     /**
      * @inheritDoc
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function save(array $data, object $entity, ?array $oldData = null): void
     {
@@ -80,6 +81,7 @@ class OneToMany extends AbstractRelation
 
         if ($this->onDelete === Action::CASCADE) {
             $this->deleteAllRelatives($data);
+
             return;
         }
 
@@ -121,7 +123,7 @@ class OneToMany extends AbstractRelation
 
     protected function getDetachDiff(iterable $items, array $oldItems, array $compareKeys, array $ownerData): array
     {
-        $keep    = [];
+        $keep = [];
         $detaches = [];
 
         foreach ($oldItems as $old) {
@@ -144,7 +146,7 @@ class OneToMany extends AbstractRelation
 
     protected function getAttachDiff(iterable $items, array $oldItems, array $compareKeys, array $ownerData): array
     {
-        $keep    = [];
+        $keep = [];
         $creates = [];
 
         foreach ($items as $item) {

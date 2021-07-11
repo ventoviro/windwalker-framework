@@ -11,6 +11,10 @@ declare(strict_types=1);
 
 namespace Windwalker\Utilities\Classes;
 
+use ReflectionClass;
+use ReflectionMethod;
+use ReflectionType;
+use ReflectionUnionType;
 use Windwalker\Utilities\Str;
 
 /**
@@ -54,15 +58,15 @@ class DocblockHelper
      */
     public static function listMethods(
         mixed $class,
-        int $flags = \ReflectionMethod::IS_PUBLIC | \ReflectionMethod::IS_STATIC
+        int $flags = ReflectionMethod::IS_PUBLIC | ReflectionMethod::IS_STATIC
     ): string {
-        $ref = new \ReflectionClass($class);
+        $ref = new ReflectionClass($class);
 
         $methods = $ref->getMethods($flags);
 
         $lines = [];
 
-        /** @var \ReflectionMethod $method */
+        /** @var ReflectionMethod $method */
         foreach ($methods as $method) {
             $type = $method->getReturnType();
 
@@ -83,7 +87,7 @@ class DocblockHelper
             }
 
             $source = file($method->getFileName());
-            $body   = implode(
+            $body = implode(
                 "",
                 array_slice(
                     $source,
@@ -108,16 +112,16 @@ class DocblockHelper
         return static::renderDocblock(implode("\n", $lines));
     }
 
-    public static function typeToString(\ReflectionType $type): string
+    public static function typeToString(ReflectionType $type): string
     {
-        if ($type instanceof \ReflectionUnionType) {
+        if ($type instanceof ReflectionUnionType) {
             $types = $type->getTypes();
         } else {
             $types = [$type];
         }
 
         $types = array_map(
-            function (\ReflectionType $type) {
+            function (ReflectionType $type) {
                 $name = $type->getName();
 
                 if (class_exists($name) || interface_exists($name)) {

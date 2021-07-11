@@ -11,9 +11,9 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM;
 
+use InvalidArgumentException;
 use Windwalker\Data\Collection;
 use Windwalker\Database\DatabaseAdapter;
-use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\Database\Event\HydrateEvent;
 use Windwalker\Database\Event\ItemFetchedEvent;
 use Windwalker\Event\EventAwareInterface;
@@ -32,7 +32,7 @@ use const Windwalker\Query\QN_IGNORE_DOTS;
  * The SelectAction class.
  *
  * @property-read DatabaseAdapter $db
- * @property-read ORM $orm
+ * @property-read ORM             $orm
  *
  * Query methods.
  */
@@ -67,7 +67,7 @@ class SelectorQuery extends Query implements EventAwareInterface
         $this->on(
             HydrateEvent::class,
             function (HydrateEvent $event) {
-                $orm  = $this->getORM();
+                $orm = $this->getORM();
                 $item = $event->getItem();
 
                 if ($item === null) {
@@ -179,7 +179,7 @@ class SelectorQuery extends Query implements EventAwareInterface
     {
         /** @var AsClause|null $fromClause */
         $fromClause = $this->getFrom()?->getElements()[0] ?? null;
-        $from       = $fromClause?->getValue();
+        $from = $fromClause?->getValue();
 
         if (!$from) {
             return $on;
@@ -187,15 +187,15 @@ class SelectorQuery extends Query implements EventAwareInterface
 
         $fromMetadata = $this->getORM()->getEntityMetadata($from);
         $joinMetadata = $this->getORM()->getEntityMetadata($table);
-        $relation     = null;
+        $relation = null;
 
         $fromAlias = $fromMetadata->getTableAlias();
-        $alias     ??= $joinMetadata->getTableAlias();
+        $alias ??= $joinMetadata->getTableAlias();
 
         foreach ($fromMetadata->getRelationManager()->getRelations() as $relation) {
             if ($relation instanceof ManyToMany) {
                 $mapMetadata = $relation->getMapMetadata();
-                $mapAlias    = $mapMetadata->getTableAlias();
+                $mapAlias = $mapMetadata->getTableAlias();
 
                 if ($relation->getMapTable() === $table) {
                     foreach ($relation->getMapForeignKeys() as $ok => $mfk) {
@@ -258,7 +258,7 @@ class SelectorQuery extends Query implements EventAwareInterface
             return $this->getORM();
         }
 
-        throw new \InvalidArgumentException(
+        throw new InvalidArgumentException(
             sprintf(
                 'Property is %s undefined in %s',
                 $name,
@@ -266,7 +266,6 @@ class SelectorQuery extends Query implements EventAwareInterface
             )
         );
     }
-
 
     /**
      * When an object is cloned, PHP 5 will perform a shallow copy of all of the object's properties.

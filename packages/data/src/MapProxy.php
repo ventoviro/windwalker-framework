@@ -38,7 +38,7 @@ class MapProxy
     public function __construct(Collection $collection, ?string $column = null)
     {
         $this->collection = $collection;
-        $this->column     = $column;
+        $this->column = $column;
     }
 
     private function mapCollection(string $name, array $args): Collection

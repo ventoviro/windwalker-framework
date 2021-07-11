@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Queue\Job;
 
+use Closure;
 use Opis\Closure\SerializableClosure;
 
 /**
@@ -42,7 +43,7 @@ class CallableJob implements JobInterface
      */
     public function __construct(callable $callback, ?string $name = null)
     {
-        if ($callback instanceof \Closure) {
+        if ($callback instanceof Closure) {
             $callback = new SerializableClosure($callback);
         }
 

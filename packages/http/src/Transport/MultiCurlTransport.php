@@ -85,8 +85,8 @@ class MultiCurlTransport implements AsyncTransportInterface
 
         curl_multi_close($this->mh);
 
-        $this->mh      = null;
-        $this->tasks   = [];
+        $this->mh = null;
+        $this->tasks = [];
         $this->promise = null;
 
         return $this;
@@ -132,8 +132,8 @@ class MultiCurlTransport implements AsyncTransportInterface
                     return;
                 }
 
-                $active   = null;
-                $mh       = $this->getMainHandle();
+                $active = null;
+                $mh = $this->getMainHandle();
                 $promises = [];
 
                 do {
@@ -162,8 +162,8 @@ class MultiCurlTransport implements AsyncTransportInterface
 
                 foreach ($this->tasks as $task) {
                     /** @var Promise $promise */
-                    $handle     = $task['handle'];
-                    $promise    = $task['promise'];
+                    $handle = $task['handle'];
+                    $promise = $task['promise'];
                     $promises[] = $promise;
 
                     $error = curl_error($handle);

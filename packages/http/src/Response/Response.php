@@ -100,12 +100,12 @@ class Response implements ResponseInterface
                 throw new InvalidArgumentException('Invalid header name');
             }
 
-            $normalized                     = strtolower($name);
+            $normalized = strtolower($name);
             $this->headerNames[$normalized] = $name;
-            $this->headers[$name]           = $value;
+            $this->headers[$name] = $value;
         }
 
-        $this->stream     = $stream;
+        $this->stream = $stream;
         $this->statusCode = $status;
     }
 
@@ -150,8 +150,8 @@ class Response implements ResponseInterface
             throw new InvalidArgumentException('Invalid status code: ' . $code);
         }
 
-        $new               = clone $this;
-        $new->statusCode   = (int) $code;
+        $new = clone $this;
+        $new->statusCode = (int) $code;
         $new->reasonPhrase = $reasonPhrase;
 
         return $new;

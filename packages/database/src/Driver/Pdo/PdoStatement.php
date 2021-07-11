@@ -11,14 +11,12 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Driver\Pdo;
 
-use Windwalker\Data\Collection;
+use PDO;
 use Windwalker\Database\Driver\AbstractStatement;
 use Windwalker\Database\Driver\ConnectionInterface;
 use Windwalker\Database\Driver\DriverInterface;
 use Windwalker\Database\Exception\StatementException;
 use Windwalker\Query\Bounded\ParamType;
-
-use function Windwalker\collect;
 
 /**
  * The PdoStatement class.
@@ -33,7 +31,7 @@ class PdoStatement extends AbstractStatement
     protected mixed $cursor = null;
 
     /**
-     * @var \PDO
+     * @var PDO
      */
     protected mixed $conn = null;
 
@@ -42,26 +40,28 @@ class PdoStatement extends AbstractStatement
      */
     protected function doExecute(?array $params = null): bool
     {
-        return $this->driver->useConnection(function (ConnectionInterface $conn) use ($params) {
-            /** @var \PDO $pdo */
-            $this->conn = $pdo = $conn->get();
+        return $this->driver->useConnection(
+            function (ConnectionInterface $conn) use ($params) {
+                /** @var PDO $pdo */
+                $this->conn = $pdo = $conn->get();
 
-            $this->cursor = $stmt = $pdo->prepare($this->query, $this->options);
+                $this->cursor = $stmt = $pdo->prepare($this->query, $this->options);
 
-            foreach ($this->getBounded() as $key => $bound) {
-                $key = is_int($key) ? $key + 1 : $key;
+                foreach ($this->getBounded() as $key => $bound) {
+                    $key = is_int($key) ? $key + 1 : $key;
 
-                $stmt->bindParam(
-                    $key,
-                    $bound['value'],
-                    ParamType::convertToPDO($bound['dataType'] ?? null),
-                    $bound['length'] ?? 0,
-                    $bound['driverOptions'] ?? null
-                );
+                    $stmt->bindParam(
+                        $key,
+                        $bound['value'],
+                        ParamType::convertToPDO($bound['dataType'] ?? null),
+                        $bound['length'] ?? 0,
+                        $bound['driverOptions'] ?? null
+                    );
+                }
+
+                return (bool) $this->cursor->execute($params);
             }
-
-            return (bool) $this->cursor->execute($params);
-        });
+        );
     }
 
     /**
@@ -71,7 +71,7 @@ class PdoStatement extends AbstractStatement
     {
         $this->execute();
 
-        $item = $this->cursor->fetch(\PDO::FETCH_ASSOC);
+        $item = $this->cursor->fetch(PDO::FETCH_ASSOC);
 
         return $item !== false ? $item : null;
     }

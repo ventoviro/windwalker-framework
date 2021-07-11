@@ -11,9 +11,9 @@ declare(strict_types=1);
 
 namespace Windwalker\Utilities\Accessible;
 
+use Generator;
 use Windwalker\Utilities\Contract\AccessibleInterface;
 use Windwalker\Utilities\Contract\NullableInterface;
-use Windwalker\Utilities\TypeCast;
 
 /**
  * The Accessible trait which implements AccessibleInterface.
@@ -150,11 +150,11 @@ trait AccessibleTrait
     /**
      * Get storage iterator.
      *
-     * @return  \Generator
+     * @return  Generator
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function &getIterator(): \Generator
+    public function &getIterator(): Generator
     {
         foreach ($this->storage as $key => &$value) {
             yield $key => $value;

@@ -11,11 +11,16 @@ declare(strict_types=1);
 
 namespace Windwalker\Utilities\Reflection;
 
+use Closure;
 use InvalidArgumentException;
+use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
+use ReflectionObject;
 use ReflectionProperty;
+use ReflectionUnionType;
+use Reflector;
 use Windwalker\Utilities\Cache\RuntimeCacheTrait;
 use Windwalker\Utilities\TypeCast;
 
@@ -107,7 +112,7 @@ class ReflectAccessor
         $object->$propertyName = $value;
     }
 
-    protected static function safeTypeCast(\ReflectionProperty $prop, mixed $value): mixed
+    protected static function safeTypeCast(ReflectionProperty $prop, mixed $value): mixed
     {
         $typeRef = $prop->getType();
 
@@ -115,7 +120,7 @@ class ReflectAccessor
             return $value;
         }
 
-        if ($typeRef instanceof \ReflectionUnionType) {
+        if ($typeRef instanceof ReflectionUnionType) {
             $types = $typeRef->getTypes();
         } else {
             $types = [$typeRef];
@@ -231,9 +236,9 @@ class ReflectAccessor
         return $method->invokeArgs(is_object($object) ? $object : null, $args);
     }
 
-    public static function reflect(mixed $value): \Reflector
+    public static function reflect(mixed $value): Reflector
     {
-        if ($value instanceof \Reflector) {
+        if ($value instanceof Reflector) {
             return $value;
         }
 
@@ -241,15 +246,15 @@ class ReflectAccessor
             return new ReflectionClass($value);
         }
 
-        if (is_object($value) && !$value instanceof \Closure) {
-            return new \ReflectionObject($value);
+        if (is_object($value) && !$value instanceof Closure) {
+            return new ReflectionObject($value);
         }
 
         if (is_callable($value)) {
             return (new ReflectionCallable($value))->getReflector();
         }
 
-        throw new \InvalidArgumentException(
+        throw new InvalidArgumentException(
             sprintf(
                 'Unable to reflect value of: %s',
                 get_debug_type($value)
@@ -300,17 +305,17 @@ class ReflectAccessor
     /**
      * getNoRepeatAttributes
      *
-     * @param  \Reflector   $ref
+     * @param  Reflector   $ref
      * @param  string|null  $name
      * @param  int          $flags
      *
-     * @return  \ReflectionAttribute[]
+     * @return  ReflectionAttribute[]
      */
-    public static function getNoRepeatAttributes(\Reflector $ref, ?string $name = null, int $flags = 0): array
+    public static function getNoRepeatAttributes(Reflector $ref, ?string $name = null, int $flags = 0): array
     {
         $attrs = [];
 
-        /** @var \ReflectionAttribute $attribute */
+        /** @var ReflectionAttribute $attribute */
         foreach ($ref->getAttributes($name, $flags) as $attribute) {
             $attrs[$attribute->getName()] = $attribute;
         }

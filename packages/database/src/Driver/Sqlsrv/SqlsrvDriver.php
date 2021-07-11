@@ -57,7 +57,7 @@ class SqlsrvDriver extends AbstractDriver
     public function getVersion(): string
     {
         return $this->useConnection(
-            fn (ConnectionInterface $conn) => (string) (sqlsrv_server_info($conn->get())['SQLServerVersion'] ?? '')
+            fn(ConnectionInterface $conn) => (string) (sqlsrv_server_info($conn->get())['SQLServerVersion'] ?? '')
         );
     }
 }

@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Utilities\Assert;
 
+use Closure;
+use ReflectionFunction;
 use Throwable;
 use Windwalker\Utilities\SimpleTemplate;
 use Windwalker\Utilities\Str;
@@ -35,7 +37,7 @@ class Assert
      */
     public function __construct(callable $exceptionHandler, ?string $caller = null)
     {
-        $this->caller           = $caller ?? static::getCaller(2);
+        $this->caller = $caller ?? static::getCaller(2);
         $this->exceptionHandler = $exceptionHandler;
     }
 
@@ -119,8 +121,8 @@ class Assert
             return 'BOOL (FALSE)';
         }
 
-        if ($value instanceof \Closure) {
-            $ref = new \ReflectionFunction($value);
+        if ($value instanceof Closure) {
+            $ref = new ReflectionFunction($value);
             $classRef = $ref->getClosureScopeClass();
             $line = $ref->getStartLine() . ':' . $ref->getEndLine();
 

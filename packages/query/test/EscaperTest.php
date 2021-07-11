@@ -12,10 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Query\Test;
 
 use PHPUnit\Framework\TestCase;
-use Windwalker\Query\Bounded\BoundedHelper;
 use Windwalker\Query\Escaper;
-use Windwalker\Query\Query;
-use Windwalker\Query\Test\Mock\MockEscaper;
 
 /**
  * The EscaperTest class.

@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Hydrator;
 
+use ArrayAccess;
+use stdClass;
+use Traversable;
 use Windwalker\Utilities\Contract\AccessorAccessibleInterface;
 use Windwalker\Utilities\Contract\DumpableInterface;
 use Windwalker\Utilities\Reflection\ReflectAccessor;
@@ -29,7 +32,7 @@ class SimpleHydrator implements HydratorInterface, FieldHydratorInterface
             return (new AccessibleHydrator())->extract($object);
         }
 
-        if ($object instanceof \Traversable) {
+        if ($object instanceof Traversable) {
             return iterator_to_array($object);
         }
 
@@ -45,11 +48,11 @@ class SimpleHydrator implements HydratorInterface, FieldHydratorInterface
             return (new AccessibleHydrator())->hydrate($data, $object);
         }
 
-        if ($object instanceof \ArrayAccess) {
+        if ($object instanceof ArrayAccess) {
             foreach ($data as $key => $datum) {
                 $object[$key] = $datum;
             }
-        } elseif ($object instanceof \stdClass) {
+        } elseif ($object instanceof stdClass) {
             foreach ($data as $key => $datum) {
                 $object->$key = $datum;
             }
@@ -75,7 +78,7 @@ class SimpleHydrator implements HydratorInterface, FieldHydratorInterface
             return ReflectAccessor::getValue($object, $field);
         }
 
-        if ($object instanceof \Traversable) {
+        if ($object instanceof Traversable) {
             return iterator_to_array($object)[$field] ?? null;
         }
 

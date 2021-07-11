@@ -50,7 +50,7 @@ abstract class AbstractEngineRenderer implements
                 'context' => null,
                 'paths' => [],
                 'root_path' => null,
-                'debug' => null
+                'debug' => null,
             ],
             $options
         );

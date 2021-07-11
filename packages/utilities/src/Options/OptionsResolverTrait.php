@@ -17,6 +17,7 @@ namespace Windwalker\Utilities\Options;
 trait OptionsResolverTrait
 {
     protected array $options = [];
+
     private static array $resolversByClass = [];
 
     /**
@@ -31,6 +32,7 @@ trait OptionsResolverTrait
     {
         if (OptionsResolverFactory::has(static::class)) {
             $this->options = OptionsResolverFactory::getByClass(static::class)->resolve($options);
+
             return;
         }
 

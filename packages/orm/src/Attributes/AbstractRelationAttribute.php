@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Attributes;
 
+use ReflectionAttribute;
+use ReflectionProperty;
 use Windwalker\Attributes\AttributeHandler;
 use Windwalker\Attributes\AttributeInterface;
 use Windwalker\ORM\Metadata\EntityMetadata;
@@ -44,12 +46,12 @@ abstract class AbstractRelationAttribute implements AttributeInterface
      */
     protected function handle(EntityMetadata $metadata, AttributeHandler $handler): callable
     {
-        /** @var \ReflectionProperty $prop */
+        /** @var ReflectionProperty $prop */
         $prop = $handler->getReflector();
-        $rm   = $metadata->getRelationManager();
-        $rel  = $this->createRelation($rm, $prop);
+        $rm = $metadata->getRelationManager();
+        $rel = $this->createRelation($rm, $prop);
 
-        $attrs = $prop->getAttributes(RelationConfigureAttributeInterface::class, \ReflectionAttribute::IS_INSTANCEOF);
+        $attrs = $prop->getAttributes(RelationConfigureAttributeInterface::class, ReflectionAttribute::IS_INSTANCEOF);
 
         foreach ($attrs as $attr) {
             /** @var RelationConfigureAttributeInterface $attrInstance */
@@ -63,6 +65,6 @@ abstract class AbstractRelationAttribute implements AttributeInterface
 
     abstract protected function createRelation(
         RelationManager $rm,
-        \ReflectionProperty $prop
+        ReflectionProperty $prop
     ): RelationConfigureInterface;
 }

@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Crypt\Test\Symmetric;
 
 use PHPUnit\Framework\TestCase;
+use SodiumException;
 use Windwalker\Crypt\HiddenString;
 use Windwalker\Crypt\Key;
 use Windwalker\Crypt\Symmetric\SodiumCipher;
@@ -56,7 +57,7 @@ class SodiumCipherTest extends TestCase
      *
      * @return void
      *
-     * @throws \SodiumException
+     * @throws SodiumException
      */
     public function testEncrypt()
     {

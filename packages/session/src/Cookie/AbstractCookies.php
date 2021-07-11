@@ -11,16 +11,24 @@ declare(strict_types=1);
 
 namespace Windwalker\Session\Cookie;
 
+use DateTimeImmutable;
+use DateTimeInterface;
+
 /**
  * The AbstractCookies class.
  */
 abstract class AbstractCookies implements CookiesInterface
 {
     protected int $expires = 0;
+
     protected string $path = '';
+
     protected string $domain = '';
+
     protected bool $secure = false;
+
     protected bool $httpOnly = false;
+
     protected string $sameSite = self::SAMESITE_LAX;
 
     /**
@@ -60,18 +68,18 @@ abstract class AbstractCookies implements CookiesInterface
     }
 
     /**
-     * @param  \DateTimeInterface|int|string  $expires  Timestamp, DateTime or time modify string.
+     * @param  DateTimeInterface|int|string  $expires  Timestamp, DateTime or time modify string.
      *
      * @return static Return self to support chaining.
      */
-    public function expires(int|string|\DateTimeInterface $expires): static
+    public function expires(int|string|DateTimeInterface $expires): static
     {
         if (is_string($expires) && !is_numeric($expires)) {
-            $date = new \DateTimeImmutable('now');
+            $date = new DateTimeImmutable('now');
             $expires = $date->modify($expires)->getTimestamp();
         }
 
-        if ($expires instanceof \DateTimeInterface) {
+        if ($expires instanceof DateTimeInterface) {
             $expires = $expires->getTimestamp();
         }
 

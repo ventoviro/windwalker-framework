@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Event;
 
-use Windwalker\Data\Collection;
 use Windwalker\Event\AbstractEvent;
 
 /**

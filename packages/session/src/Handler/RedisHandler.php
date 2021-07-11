@@ -11,7 +11,10 @@ declare(strict_types=1);
 
 namespace Windwalker\Session\Handler;
 
+use Predis\ClientInterface;
 use Predis\Response\ErrorInterface;
+use Redis;
+use RedisArray;
 use Windwalker\Utilities\Assert\ArgumentsAssert;
 use Windwalker\Utilities\Options\OptionAccessTrait;
 
@@ -23,21 +26,21 @@ class RedisHandler extends AbstractHandler
     use OptionAccessTrait;
 
     /**
-     * @var \Redis|\RedisArray|\Predis\ClientInterface
+     * @var Redis|RedisArray|ClientInterface
      */
     protected $driver;
 
     /**
      * RedisHandler constructor.
      *
-     * @param  \Predis\ClientInterface|\Redis|\RedisArray|RedisCaster  $driver
+     * @param  ClientInterface|Redis|RedisArray|RedisCaster  $driver
      */
     public function __construct($driver, array $options = [])
     {
         ArgumentsAssert::assert(
-            $driver instanceof \Redis
-            || $driver instanceof \RedisArray
-            || $driver instanceof \Predis\ClientInterface,
+            $driver instanceof Redis
+            || $driver instanceof RedisArray
+            || $driver instanceof ClientInterface,
             '{caller} argument 1 should be Redis instance, %s given.',
             $driver
         );
@@ -45,7 +48,7 @@ class RedisHandler extends AbstractHandler
         $this->prepareOptions(
             [
                 'prefix' => 'ww_sess_',
-                'ttl' => null
+                'ttl' => null,
             ],
             $options
         );
@@ -156,9 +159,9 @@ class RedisHandler extends AbstractHandler
     }
 
     /**
-     * @return \Predis\ClientInterface|\Redis|\RedisArray
+     * @return ClientInterface|Redis|RedisArray
      */
-    public function getDriver(): \Predis\ClientInterface|RedisCaster|\Redis|\RedisArray
+    public function getDriver(): ClientInterface|RedisCaster|Redis|RedisArray
     {
         return $this->driver;
     }

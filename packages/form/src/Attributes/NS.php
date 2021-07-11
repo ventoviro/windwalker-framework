@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Form\Attributes;
 
+use Attribute;
 use Windwalker\Attributes\AttributeHandler;
 use Windwalker\Attributes\AttributeInterface;
 use Windwalker\Form\Form;
@@ -18,7 +19,7 @@ use Windwalker\Form\Form;
 /**
  * The Namespace group class.
  */
-#[\Attribute]
+#[Attribute]
 class NS implements AttributeInterface
 {
     public string $name;

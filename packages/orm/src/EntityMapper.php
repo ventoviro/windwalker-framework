@@ -11,6 +11,12 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM;
 
+use DateTimeInterface;
+use InvalidArgumentException;
+use JsonException;
+use LogicException;
+use ReflectionAttribute;
+use ReflectionProperty;
 use Windwalker\Attributes\AttributesAccessor;
 use Windwalker\Cache\Serializer\JsonSerializer;
 use Windwalker\Data\Collection;
@@ -40,6 +46,7 @@ use Windwalker\Utilities\Assert\TypeAssert;
 use Windwalker\Utilities\Reflection\ReflectAccessor;
 use Windwalker\Utilities\TypeCast;
 
+use function is_object;
 use function Windwalker\collect;
 
 /**
@@ -75,7 +82,7 @@ class EntityMapper implements EventAwareInterface
      */
     public function __construct(EntityMetadata $metadata, ORM $orm)
     {
-        $this->orm      = $orm;
+        $this->orm = $orm;
         $this->metadata = $metadata;
 
         $this->init();
@@ -123,7 +130,7 @@ class EntityMapper implements EventAwareInterface
 
     public function update(?string $alias = null): SelectorQuery
     {
-        return $this->createSelectorQuery()->update($this->getMetadata()->getClassName() ,$alias);
+        return $this->createSelectorQuery()->update($this->getMetadata()->getClassName(), $alias);
     }
 
     public function delete(?string $alias = null): SelectorQuery
@@ -191,9 +198,9 @@ class EntityMapper implements EventAwareInterface
 
     public function createOne(array|object $source = [], int $options = 0): object
     {
-        $pk        = $this->getMainKey();
-        $metadata  = $this->getMetadata();
-        $aiColumn  = $this->getAutoIncrementColumn();
+        $pk = $this->getMainKey();
+        $metadata = $this->getMetadata();
+        $aiColumn = $this->getAutoIncrementColumn();
         $className = $metadata->getClassName();
 
         TypeAssert::assert(
@@ -269,7 +276,7 @@ class EntityMapper implements EventAwareInterface
         }
 
         if (!$condFields) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'Condition fields empty or Entity has no keys when updating data.'
             );
         }
@@ -348,7 +355,7 @@ class EntityMapper implements EventAwareInterface
      *
      * @return  StatementInterface[]
      *
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function updateMultiple(iterable $items, array|string $condFields = null, int $options = 0): array
     {
@@ -454,7 +461,7 @@ class EntityMapper implements EventAwareInterface
         $aiColumnName = $this->getAutoIncrementColumn(true);
 
         if ($aiColumnName === null) {
-            throw new \LogicException(
+            throw new LogicException(
                 sprintf(
                     '%s must has an auto-increment column in Entity to check isNew.',
                     $this->getMetadata()->getClassName()
@@ -486,8 +493,12 @@ class EntityMapper implements EventAwareInterface
         return $this->saveMultiple([$item], $condFields, $options)[0];
     }
 
-    public function findOneOrCreate(mixed $conditions, mixed $initData = null, bool $mergeConditions = true, int $options = 0): object
-    {
+    public function findOneOrCreate(
+        mixed $conditions,
+        mixed $initData = null,
+        bool $mergeConditions = true,
+        int $options = 0
+    ): object {
         $item = $this->findOne($conditions);
 
         if ($item) {
@@ -565,7 +576,7 @@ class EntityMapper implements EventAwareInterface
         // Event
 
         $metadata = $this->getMetadata();
-        $writer   = $this->getDb()->getWriter();
+        $writer = $this->getDb()->getWriter();
         $entityObject = null;
 
         // Handle Entity
@@ -575,7 +586,7 @@ class EntityMapper implements EventAwareInterface
             $conditions = Arr::only($this->extract($conditions), $this->getKeys());
 
             if (in_array(null, $conditions, true) || in_array('', $conditions, true)) {
-                throw new \InvalidArgumentException(
+                throw new InvalidArgumentException(
                     sprintf(
                         'Unable to delete Entity: %s since the keys value contains NULL or empty string.',
                         $conditions::class
@@ -604,8 +615,8 @@ class EntityMapper implements EventAwareInterface
         foreach ($delItems as $item) {
             if (!$keys) {
                 $conditions = $this->conditionsToWheres($item);
-                $data       = null;
-                $entity     = null;
+                $data = null;
+                $entity = null;
             } elseif ($entityObject !== null) {
                 $entity = $entityObject;
                 $data = $this->extract($entityObject);
@@ -711,7 +722,7 @@ class EntityMapper implements EventAwareInterface
     public function sync(iterable $items, mixed $conditions = [], ?array $compareKeys = null, int $options = 0): array
     {
         // Handling conditions
-        $metadata   = $this->getMetadata();
+        $metadata = $this->getMetadata();
         $conditions = $this->conditionsToWheres($conditions);
 
         $oldItems = $this->getORM()
@@ -758,7 +769,7 @@ class EntityMapper implements EventAwareInterface
 
     protected function getDeleteDiff(iterable $items, array $oldItems, array $compareKeys): array
     {
-        $keep    = [];
+        $keep = [];
         $deletes = [];
 
         foreach ($oldItems as $old) {
@@ -781,7 +792,7 @@ class EntityMapper implements EventAwareInterface
 
     protected function getCreateDiff(iterable $items, array $oldItems, array $compareKeys): array
     {
-        $keep    = [];
+        $keep = [];
         $creates = [];
 
         foreach ($items as $item) {
@@ -907,7 +918,7 @@ class EntityMapper implements EventAwareInterface
             if ($key) {
                 $conditions = [$key => $conditions];
             } else {
-                throw new \LogicException(
+                throw new LogicException(
                     sprintf(
                         'Conditions cannot be scalars since %s has no keys',
                         $metadata->getClassName()
@@ -932,7 +943,7 @@ class EntityMapper implements EventAwareInterface
 
         $item = [];
 
-        $db       = $this->getDb();
+        $db = $this->getDb();
         $dataType = $db->getPlatform()->getDataType();
 
         foreach ($this->getTableColumns() as $field => $column) {
@@ -954,7 +965,7 @@ class EntityMapper implements EventAwareInterface
             }
 
             // Convert value type
-            if ($value instanceof \DateTimeInterface) {
+            if ($value instanceof DateTimeInterface) {
                 $value = $value->format($db->getDateFormat());
             }
 
@@ -962,7 +973,7 @@ class EntityMapper implements EventAwareInterface
                 $value = json_encode($value);
             }
 
-            if (\is_object($value) && method_exists($value, '__toString')) {
+            if (is_object($value) && method_exists($value, '__toString')) {
                 $value = (string) $value;
             }
 
@@ -978,7 +989,7 @@ class EntityMapper implements EventAwareInterface
                 } elseif ($column->getColumnDefault() !== null) {
                     $item[$field] = $column->getColumnDefault();
                 } else {
-                    $def          = $dataType::getDefaultValue($column->getDataType());
+                    $def = $dataType::getDefaultValue($column->getDataType());
                     $item[$field] = $def !== false ? $def : '';
                 }
             } elseif ($value === '') {
@@ -986,7 +997,7 @@ class EntityMapper implements EventAwareInterface
                 if ($column->getIsNullable()) {
                     $item[$field] = null;
                 } else {
-                    $def          = $dataType::getDefaultValue($column->getDataType());
+                    $def = $dataType::getDefaultValue($column->getDataType());
                     $item[$field] = $def !== false ? $def : '';
                 }
             } else {
@@ -1000,7 +1011,7 @@ class EntityMapper implements EventAwareInterface
         return $item;
     }
 
-    protected function castProperty(\ReflectionProperty $prop, mixed $value): mixed
+    protected function castProperty(ReflectionProperty $prop, mixed $value): mixed
     {
         AttributesAccessor::runAttributeIfExists(
             $prop,
@@ -1013,11 +1024,11 @@ class EntityMapper implements EventAwareInterface
                     $caster,
                     [
                         $value,
-                        'orm' => $this->getORM()
+                        'orm' => $this->getORM(),
                     ]
                 );
             },
-            \ReflectionAttribute::IS_INSTANCEOF
+            ReflectionAttribute::IS_INSTANCEOF
         );
 
         return $value;
@@ -1093,7 +1104,7 @@ class EntityMapper implements EventAwareInterface
 
         foreach ($methods as $method) {
             if (!$method->isStatic()) {
-                throw new \LogicException(
+                throw new LogicException(
                     sprintf(
                         "Entity event hook: %s::%s must be static method.",
                         $this->metadata->getClassName(),
@@ -1106,7 +1117,7 @@ class EntityMapper implements EventAwareInterface
                 $method->getClosure(),
                 [
                     $event::class => $event,
-                    'event' => $event
+                    'event' => $event,
                 ]
             );
 

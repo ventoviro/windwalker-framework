@@ -28,7 +28,11 @@ interface LanguageInterface
      * @return  array
      */
     #[ArrayShape(['string', 'string'])]
-    public function get(string $id, ?string $locale = null, bool $fallback = true): array;
+    public function get(
+        string $id,
+        ?string $locale = null,
+        bool $fallback = true
+    ): array;
 
     public function trans(string $id, ...$args): string;
 

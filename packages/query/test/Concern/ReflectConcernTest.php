@@ -13,12 +13,10 @@ namespace Windwalker\Query\Test\Concern;
 
 use PHPUnit\Framework\TestCase;
 use Windwalker\Query\Clause\AsClause;
-use Windwalker\Query\Grammar\AbstractGrammar;
 use Windwalker\Query\Grammar\BaseGrammar;
 use Windwalker\Query\Query;
 use Windwalker\Query\Test\Mock\MockEscaper;
 use Windwalker\Utilities\Arr;
-use Windwalker\Utilities\Classes\DocblockHelper;
 
 /**
  * The ReflectConcernTest class.
@@ -43,7 +41,7 @@ class ReflectConcernTest extends TestCase
                 'u',
                 'c',
                 's',
-                'g'
+                'g',
             ],
             array_map(
                 [$this->instance, 'stripNameQuote'],
@@ -55,7 +53,7 @@ class ReflectConcernTest extends TestCase
             [
                 'FROM',
                 'LEFT JOIN',
-                'RIGHT JOIN'
+                'RIGHT JOIN',
             ],
             array_keys($tables)
         );

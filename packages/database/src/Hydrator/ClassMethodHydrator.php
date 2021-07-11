@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Hydrator;
 
+use LogicException;
+
 /**
  * The ClassMethodHydrator class.
  *
@@ -23,7 +25,7 @@ class ClassMethodHydrator implements HydratorInterface
      */
     public function extract(object $object): array
     {
-        throw new \LogicException('This class not implemented yet.');
+        throw new LogicException('This class not implemented yet.');
     }
 
     /**
@@ -31,6 +33,6 @@ class ClassMethodHydrator implements HydratorInterface
      */
     public function hydrate(array $data, object $object): object
     {
-        throw new \LogicException('This class not implemented yet.');
+        throw new LogicException('This class not implemented yet.');
     }
 }

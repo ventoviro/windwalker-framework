@@ -11,7 +11,9 @@ declare(strict_types=1);
 
 namespace Windwalker\Data\Format;
 
+use Closure;
 use InvalidArgumentException;
+use Traversable;
 use Windwalker\Utilities\Contract\DumpableInterface;
 use Windwalker\Utilities\Reflection\ReflectAccessor;
 
@@ -88,7 +90,7 @@ class FormatRegistry
     {
         if ($format === null) {
             $paths = explode('.', $file);
-            $ext   = $paths[array_key_last($paths)];
+            $ext = $paths[array_key_last($paths)];
 
             $format = $this->resolveFileFormat($ext);
         }
@@ -221,7 +223,7 @@ class FormatRegistry
         // Ensure the input data is an array.
         if ($data instanceof DumpableInterface) {
             $data = $data->dump(true);
-        } elseif ($data instanceof \Traversable) {
+        } elseif ($data instanceof Traversable) {
             $data = iterator_to_array($data);
         } elseif (is_object($data)) {
             $data = ReflectAccessor::getPropertiesValues($data);
@@ -235,7 +237,7 @@ class FormatRegistry
                     return '[resource #' . get_resource_id($v) . ']';
                 }
 
-                if ($v instanceof \Closure) {
+                if ($v instanceof Closure) {
                     return "[Object Closure]";
                 }
 

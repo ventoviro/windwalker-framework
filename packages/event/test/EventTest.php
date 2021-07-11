@@ -84,7 +84,7 @@ class EventTest extends TestCase
         self::assertEquals(
             [
                 'flower' => 'rose',
-                'starship' => 'Enterprise'
+                'starship' => 'Enterprise',
             ],
             $event->getArguments()
         );
@@ -115,7 +115,7 @@ class EventTest extends TestCase
         self::assertEquals(
             [
                 'flower' => 'Sakura',
-                'starship' => 'Enterprise'
+                'starship' => 'Enterprise',
             ],
             $event->getArguments()
         );
@@ -162,7 +162,7 @@ class EventTest extends TestCase
         self::assertEquals(
             [
                 'flower' => 'Olive',
-                'starship' => 'Enterprise'
+                'starship' => 'Enterprise',
             ],
             $this->instance->getArguments()
         );
@@ -170,10 +170,12 @@ class EventTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->instance = new Event('onHelloWelcome', [
+        $this->instance = new Event(
+            'onHelloWelcome', [
             'flower' => 'Sakura',
-            'starship' => 'Enterprise'
-        ]);
+            'starship' => 'Enterprise',
+        ]
+        );
     }
 
     protected function tearDown(): void

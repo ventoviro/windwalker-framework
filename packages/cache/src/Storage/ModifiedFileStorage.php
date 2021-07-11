@@ -34,7 +34,7 @@ class ModifiedFileStorage extends FileStorage
 
     public function isModified(string $key): bool
     {
-        $uri  = $this->fetchStreamUri($key);
+        $uri = $this->fetchStreamUri($key);
         $time = filemtime($uri);
 
         $lastModified = 0;

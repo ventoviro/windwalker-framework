@@ -11,12 +11,13 @@ declare(strict_types=1);
 
 namespace Windwalker\Utilities\Iterator;
 
+use FilterIterator;
 use Iterator;
 
 /**
  * The UniqueIterator class.
  */
-class UniqueIterator extends \FilterIterator
+class UniqueIterator extends FilterIterator
 {
     /**
      * @var array

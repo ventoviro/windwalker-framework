@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Cast;
 
+use JsonException;
+
 /**
  * The JsonCast class.
  */
@@ -34,7 +36,7 @@ class JsonCast implements CastInterface
 
     /**
      * @inheritDoc
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function extract(mixed $value): ?string
     {

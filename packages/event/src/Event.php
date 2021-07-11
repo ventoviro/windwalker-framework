@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Event;
 
+use Serializable;
 use Windwalker\Utilities\Accessible\AccessibleTrait;
 use Windwalker\Utilities\Contract\AccessibleInterface;
 
@@ -19,7 +20,7 @@ use Windwalker\Utilities\Contract\AccessibleInterface;
  *
  * @since 2.0
  */
-class Event extends AbstractEvent implements \Serializable, AccessibleInterface
+class Event extends AbstractEvent implements Serializable, AccessibleInterface
 {
     use AccessibleTrait;
 

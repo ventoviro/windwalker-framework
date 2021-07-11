@@ -12,7 +12,11 @@ declare(strict_types=1);
 namespace Windwalker\Database\Test;
 
 use Asika\SqlSplitter\SqlSplitter;
+use LogicException;
+use PDO;
+use PDOException;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Windwalker\Database\DatabaseFactory;
 use Windwalker\Database\Driver\Pdo\AbstractPdoConnection;
 use Windwalker\Database\Driver\Pdo\DsnHelper;
@@ -34,9 +38,9 @@ abstract class AbstractDatabaseDriverTestCase extends TestCase
     protected static ?string $dbname = '';
 
     /**
-     * @var \PDO
+     * @var PDO
      */
-    protected static ?\PDO $baseConn;
+    protected static ?PDO $baseConn;
 
     /**
      * @inheritDoc
@@ -59,7 +63,7 @@ abstract class AbstractDatabaseDriverTestCase extends TestCase
         $connClass = 'Windwalker\Database\Driver\Pdo\Pdo' . ucfirst($platform) . 'Connection';
 
         if (!class_exists($connClass) || !is_subclass_of($connClass, AbstractPdoConnection::class)) {
-            throw new \LogicException(
+            throw new LogicException(
                 sprintf(
                     '%s should exists and extends %s',
                     $connClass,
@@ -89,16 +93,16 @@ abstract class AbstractDatabaseDriverTestCase extends TestCase
         static::setupDatabase();
     }
 
-    protected static function createBaseConnect(array $params, string $connClass): \PDO
+    protected static function createBaseConnect(array $params, string $connClass): PDO
     {
         $dsn = $connClass::getParameters($params)['dsn'];
 
-        return new \PDO(
+        return new PDO(
             $dsn,
             $params['user'] ?? null,
             $params['password'] ?? null,
             [
-                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             ]
         );
     }
@@ -120,7 +124,7 @@ abstract class AbstractDatabaseDriverTestCase extends TestCase
     protected static function importFromFile(string $file): void
     {
         if (!is_file($file)) {
-            throw new \RuntimeException('File not found: ' . $file);
+            throw new RuntimeException('File not found: ' . $file);
         }
 
         self::importIterator(
@@ -146,8 +150,8 @@ abstract class AbstractDatabaseDriverTestCase extends TestCase
 
             try {
                 static::$baseConn->exec($query);
-            } catch (\PDOException $e) {
-                throw new \PDOException(
+            } catch (PDOException $e) {
+                throw new PDOException(
                     $e->getMessage() . ' - SQ: ' . $query,
                     (int) $e->getCode(),
                     $e
@@ -188,7 +192,7 @@ abstract class AbstractDatabaseDriverTestCase extends TestCase
     /**
      * getGrammar
      *
-     * @param mixed $escaper
+     * @param  mixed  $escaper
      *
      * @return  AbstractGrammar
      */

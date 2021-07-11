@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Promise\Scheduler;
 
+use LogicException;
 use Swoole\Coroutine\Channel;
 use Swoole\Event;
 
@@ -70,7 +71,7 @@ class SwooleScheduler implements SchedulerInterface
         $chan = $cursor->get();
 
         if (!$chan instanceof Channel) {
-            throw new \LogicException('Cursor should be ' . Channel::class);
+            throw new LogicException('Cursor should be ' . Channel::class);
         }
 
         // SwooleAsync should always called into coroutine,
@@ -91,7 +92,7 @@ class SwooleScheduler implements SchedulerInterface
         $chan = $cursor->get();
 
         if (!$chan instanceof Channel) {
-            throw new \LogicException('Cursor should be ' . Channel::class);
+            throw new LogicException('Cursor should be ' . Channel::class);
         }
 
         // Done() may be called at next event loop,

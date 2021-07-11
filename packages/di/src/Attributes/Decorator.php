@@ -32,7 +32,7 @@ class Decorator implements ContainerAttributeInterface
     public function __construct(string $class, ...$args)
     {
         $this->class = $class;
-        $this->args  = $args;
+        $this->args = $args;
     }
 
     public function __invoke(AttributeHandler $handler): callable

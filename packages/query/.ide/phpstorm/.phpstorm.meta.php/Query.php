@@ -105,6 +105,5 @@ namespace PHPSTORM_META {
         1,
         argumentsSet('order_directions')
     );
-
     // todo: add row lock hints
 }

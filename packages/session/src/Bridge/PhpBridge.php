@@ -11,6 +11,10 @@ declare(strict_types=1);
 
 namespace Windwalker\Session\Bridge;
 
+use Exception;
+use RuntimeException;
+use SessionIdInterface;
+use SessionUpdateTimestampHandlerInterface;
 use Windwalker\Data\Format\FormatInterface;
 use Windwalker\Session\Handler\HandlerInterface;
 use Windwalker\Session\Handler\NativeHandler;
@@ -51,7 +55,7 @@ class PhpBridge implements BridgeInterface
         HandlerInterface $handler = null,
         ?FormatInterface $serializer = null
     ) {
-        $this->handler    = $handler ?? new NativeHandler();
+        $this->handler = $handler ?? new NativeHandler();
         $this->serializer = $serializer;
 
         $this->prepareOptions(
@@ -67,7 +71,7 @@ class PhpBridge implements BridgeInterface
      * start
      *
      * @return  bool
-     * @throws \Exception
+     * @throws Exception
      */
     public function start(): bool
     {
@@ -83,7 +87,7 @@ class PhpBridge implements BridgeInterface
             $id === null
             || (
                 $this->getOptionAndINI('use_strict_mode')
-                && $this->handler instanceof \SessionUpdateTimestampHandlerInterface
+                && $this->handler instanceof SessionUpdateTimestampHandlerInterface
                 && !$this->handler->validateId($id)
             )
         ) {
@@ -165,7 +169,7 @@ class PhpBridge implements BridgeInterface
      * @param  bool  $saveOld
      *
      * @return  bool
-     * @throws \Exception
+     * @throws Exception
      */
     public function regenerate(bool $deleteOld = false, bool $saveOld = true): bool
     {
@@ -209,7 +213,7 @@ class PhpBridge implements BridgeInterface
         if (
             $this->getOptionAndINI('lazy_write')
             && $this->origin === $data
-            && $this->handler instanceof \SessionUpdateTimestampHandlerInterface
+            && $this->handler instanceof SessionUpdateTimestampHandlerInterface
         ) {
             $r = $this->handler->updateTimestamp($this->getId(), $data);
         } else {
@@ -240,7 +244,7 @@ class PhpBridge implements BridgeInterface
     public function gcEnabled(): bool
     {
         $probability = (int) $this->getOptionAndINI('gc_probability');
-        $divisor     = (int) $this->getOptionAndINI('gc_divisor');
+        $divisor = (int) $this->getOptionAndINI('gc_divisor');
 
         if ($probability === 0 || $divisor === 0) {
             return false;
@@ -292,11 +296,11 @@ class PhpBridge implements BridgeInterface
      *
      * @return  string
      *
-     * @throws \Exception
+     * @throws Exception
      */
     protected function createId(): string
     {
-        if ($this->handler instanceof \SessionIdInterface) {
+        if ($this->handler instanceof SessionIdInterface) {
             return $this->handler->create_sid();
         }
 
@@ -348,7 +352,7 @@ class PhpBridge implements BridgeInterface
     public function setHandler(HandlerInterface $handler): static
     {
         if ($this->getStatus() === PHP_SESSION_ACTIVE) {
-            throw new \RuntimeException('Cannot change handler during session active.');
+            throw new RuntimeException('Cannot change handler during session active.');
         }
 
         $this->handler = $handler;
@@ -364,7 +368,7 @@ class PhpBridge implements BridgeInterface
     public function setSerializer(?FormatInterface $serializer): static
     {
         if ($this->getStatus() === PHP_SESSION_ACTIVE) {
-            throw new \RuntimeException('Cannot change serializer during session active.');
+            throw new RuntimeException('Cannot change serializer during session active.');
         }
 
         $this->serializer = $serializer;

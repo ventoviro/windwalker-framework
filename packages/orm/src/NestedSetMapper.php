@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM;
 
+use InvalidArgumentException;
+use LogicException;
 use Windwalker\Data\Collection;
 use Windwalker\Database\Event\HydrateEvent;
 use Windwalker\Event\EventInterface;
@@ -163,7 +165,7 @@ class NestedSetMapper extends EntityMapper
         );
 
         $metadata = $this->getMetadata();
-        $key      = $metadata->getMainKey();
+        $key = $metadata->getMainKey();
 
         $pk = $this->entityToPk($pkOrEntity);
 
@@ -190,7 +192,7 @@ class NestedSetMapper extends EntityMapper
         );
 
         $metadata = $this->getMetadata();
-        $key      = $metadata->getMainKey();
+        $key = $metadata->getMainKey();
 
         $pk = $this->entityToPk($pkOrEntity);
 
@@ -218,7 +220,7 @@ class NestedSetMapper extends EntityMapper
         );
 
         $metadata = $this->getMetadata();
-        $key      = $metadata->getMainKey();
+        $key = $metadata->getMainKey();
 
         $pk = $this->entityToPk($pkOrEntity);
 
@@ -328,7 +330,7 @@ class NestedSetMapper extends EntityMapper
         $pk = $this->getMainKey();
 
         if ($pk === null) {
-            throw new \LogicException(
+            throw new LogicException(
                 'Primary key not set for entity: ' . $this->getMetadata()->getClassName()
             );
         }
@@ -353,8 +355,8 @@ class NestedSetMapper extends EntityMapper
     {
         $data = $event->getData();
         /** @var NestedEntityInterface $entity */
-        $entity    = $this->toEntity($event->getSource());
-        $position  = $entity->getPosition();
+        $entity = $this->toEntity($event->getSource());
+        $position = $entity->getPosition();
         $className = $this->getMetadata()->getClassName();
 
         $k = $this->getMainKey();
@@ -501,7 +503,7 @@ class NestedSetMapper extends EntityMapper
                 $tree = $this->getTree($pk);
 
                 // Parent should not be child.
-                if ($tree->map(fn (object $entity) => $this->extract($entity)[$k])->contains($parentId)) {
+                if ($tree->map(fn(object $entity) => $this->extract($entity)[$k])->contains($parentId)) {
                     throw new NestedHandleException('Parent should not be child.');
                 }
             }
@@ -511,7 +513,7 @@ class NestedSetMapper extends EntityMapper
     public function move(array|object $source, int $delta, mixed $conditions = []): false|NestedEntityInterface
     {
         $node = $this->sourceToEntity($source);
-        $k    = $this->getMainKey();
+        $k = $this->getMainKey();
 
         $query = $this->select($k)
             ->where('parent_id', $node->getParentId())
@@ -528,7 +530,7 @@ class NestedSetMapper extends EntityMapper
 
             $position = Position::BEFORE;
         } else {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 __METHOD__ . '() argument #2 should not be 0.'
             );
         }
@@ -646,7 +648,7 @@ class NestedSetMapper extends EntityMapper
          * where it needs to be in the tree for left ids (also works for right ids).
          */
 
-        $offset      = $newData['lft'] - $node->getLft();
+        $offset = $newData['lft'] - $node->getLft();
         $levelOffset = $newData['level'] - $node->getLevel();
 
         // Move the nodes back into position in the tree using the calculated offsets.
@@ -784,7 +786,7 @@ class NestedSetMapper extends EntityMapper
 
         $parentData = $this->extract($parent);
         $parentId = $parentData[$this->getMainKey()];
-        $lft      = $lft ?? $parentData['lft'];
+        $lft = $lft ?? $parentData['lft'];
 
         if ($buildPath) {
             $path = $path ?? $parentData['path'];
@@ -943,7 +945,7 @@ class NestedSetMapper extends EntityMapper
                 'lft' => 0,
                 'rgt' => 1,
                 'level' => 0,
-                'is_root' => true
+                'is_root' => true,
             ],
             $data
         );
@@ -962,7 +964,7 @@ class NestedSetMapper extends EntityMapper
     /**
      * sourceToEntity
      *
-     * @param  mixed        $source
+     * @param  mixed  $source
      *
      * @return  object|NestedEntityInterface
      */
@@ -1018,49 +1020,49 @@ class NestedSetMapper extends EntityMapper
             throw new NestedHandleException('Node width less than 2.');
         }
 
-        $k      = $this->getMainKey();
+        $k = $this->getMainKey();
         $result = [];
 
         switch ($position) {
             case Position::FIRST_CHILD:
-                $leftWhere  = ['lft', '>', $reference->getLft()];
+                $leftWhere = ['lft', '>', $reference->getLft()];
                 $rightWhere = ['rgt', '>=', $reference->getLft()];
 
-                $result['lft']       = $reference->getLft() + 1;
-                $result['rgt']       = $reference->getLft() + $width;
+                $result['lft'] = $reference->getLft() + 1;
+                $result['rgt'] = $reference->getLft() + $width;
                 $result['parent_id'] = $reference->getPrimaryKeyValue();
-                $result['level']     = $reference->getLevel() + 1;
+                $result['level'] = $reference->getLevel() + 1;
                 break;
 
             case Position::LAST_CHILD:
-                $leftWhere  = ['lft', '>', $reference->getRgt()];
+                $leftWhere = ['lft', '>', $reference->getRgt()];
                 $rightWhere = ['rgt', '>=', $reference->getRgt()];
 
-                $result['lft']       = $reference->getRgt();
-                $result['rgt']       = $reference->getRgt() + $width - 1;
+                $result['lft'] = $reference->getRgt();
+                $result['rgt'] = $reference->getRgt() + $width - 1;
                 $result['parent_id'] = $reference->getPrimaryKeyValue();
-                $result['level']     = $reference->getLevel() + 1;
+                $result['level'] = $reference->getLevel() + 1;
                 break;
 
             case Position::BEFORE:
-                $leftWhere  = ['lft', '>=', $reference->getLft()];
+                $leftWhere = ['lft', '>=', $reference->getLft()];
                 $rightWhere = ['rgt', '>=', $reference->getLft()];
 
-                $result['lft']       = $reference->getLft();
-                $result['rgt']       = $reference->getLft() + $width - 1;
+                $result['lft'] = $reference->getLft();
+                $result['rgt'] = $reference->getLft() + $width - 1;
                 $result['parent_id'] = $reference->getParentId();
-                $result['level']     = $reference->getLevel();
+                $result['level'] = $reference->getLevel();
                 break;
 
             case Position::AFTER:
             default:
-                $leftWhere  = ['lft', '>', $reference->getRgt()];
+                $leftWhere = ['lft', '>', $reference->getRgt()];
                 $rightWhere = ['rgt', '>', $reference->getRgt()];
 
-                $result['lft']       = $reference->getRgt() + 1;
-                $result['rgt']       = $reference->getRgt() + $width;
+                $result['lft'] = $reference->getRgt() + 1;
+                $result['rgt'] = $reference->getRgt() + $width;
                 $result['parent_id'] = $reference->getParentId();
-                $result['level']     = $reference->getLevel();
+                $result['level'] = $reference->getLevel();
                 break;
         }
 

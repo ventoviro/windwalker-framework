@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Filesystem\Test;
 
 use org\bovigo\vfs\vfsStream;
+use org\bovigo\vfs\vfsStreamDirectory;
 use Windwalker\Filesystem\PathCollection;
 
 use function Windwalker\fs;
@@ -288,7 +289,7 @@ class PathCollectionTest extends AbstractVfsTestCase
         self::markTestIncomplete(); // TODO: Complete this test
     }
 
-    protected function setUpNestedFiles(): \org\bovigo\vfs\vfsStreamDirectory
+    protected function setUpNestedFiles(): vfsStreamDirectory
     {
         return vfsStream::setup(
             'root',

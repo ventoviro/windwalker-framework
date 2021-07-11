@@ -12,16 +12,11 @@ declare(strict_types=1);
 namespace Windwalker\Queue\Test;
 
 use PHPUnit\Framework\TestCase;
-use Windwalker\Database\Test\AbstractDatabaseTestCase;
 use Windwalker\Queue\Driver\DatabaseQueueDriver;
 use Windwalker\Queue\Event\LoopEndEvent;
 use Windwalker\Queue\Queue;
 use Windwalker\Queue\Worker;
-
 use Windwalker\Test\Traits\DatabaseTestTrait;
-use Windwalker\Utilities\Cache\RuntimeCacheTrait;
-
-use function Windwalker\closure;
 
 /**
  * The WorkerTest class.
@@ -51,7 +46,7 @@ class WorkerTest extends TestCase
             'hello'
         );
 
-        $this->instance->on(LoopEndEvent::class, fn () => $this->instance->stop());
+        $this->instance->on(LoopEndEvent::class, fn() => $this->instance->stop());
 
         $this->instance->loop(['default', 'hello'], ['sleep' => 0.1]);
 

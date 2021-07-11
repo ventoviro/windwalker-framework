@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Queue\Event;
 
+use Throwable;
 use Windwalker\Event\AbstractEvent;
 use Windwalker\Queue\Worker;
 
@@ -20,8 +21,10 @@ use Windwalker\Queue\Worker;
 class LoopFailureEvent extends AbstractEvent
 {
     protected Worker $worker;
+
     protected string $message;
-    protected \Throwable $exception;
+
+    protected Throwable $exception;
 
     /**
      * @return Worker
@@ -64,19 +67,19 @@ class LoopFailureEvent extends AbstractEvent
     }
 
     /**
-     * @return \Throwable
+     * @return Throwable
      */
-    public function getException(): \Throwable
+    public function getException(): Throwable
     {
         return $this->exception;
     }
 
     /**
-     * @param  \Throwable  $exception
+     * @param  Throwable  $exception
      *
      * @return  static  Return self to support chaining.
      */
-    public function setException(\Throwable $exception): static
+    public function setException(Throwable $exception): static
     {
         $this->exception = $exception;
 

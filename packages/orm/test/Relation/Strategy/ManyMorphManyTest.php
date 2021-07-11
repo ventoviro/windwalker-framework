@@ -11,16 +11,11 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Test\Relation\Strategy;
 
-use Windwalker\Database\Schema\Schema;
-use Windwalker\ORM\EntityMapper;
 use Windwalker\ORM\Relation\Action;
 use Windwalker\ORM\Test\AbstractORMTestCase;
 use Windwalker\ORM\Test\Entity\StubAction;
 use Windwalker\ORM\Test\Entity\StubMember;
 use Windwalker\ORM\Test\Entity\StubMemberActionMap;
-use Windwalker\ORM\Test\Entity\StubSakura;
-use Windwalker\ORM\Test\Entity\StubSakuraRoseMap;
-use Windwalker\Utilities\Classes\DocblockHelper;
 
 /**
  * The ManyMorphMany class.
@@ -42,7 +37,7 @@ class ManyMorphManyTest extends AbstractORMTestCase
                 'ACS10002',
                 'ACS10003',
                 'ACS10004',
-                'ACS10005'
+                'ACS10005',
             ],
             $actions->loadColumn('no')->unique()->values()->dump()
         );
@@ -53,7 +48,7 @@ class ManyMorphManyTest extends AbstractORMTestCase
         );
 
         $mapTypes = $actions->all()
-            ->map(fn (StubAction $action) => $action->getMap()?->getType())
+            ->map(fn(StubAction $action) => $action->getMap()?->getType())
             ->unique()
             ->dump();
 
@@ -114,7 +109,7 @@ class ManyMorphManyTest extends AbstractORMTestCase
             [
                 $map->getMemberNo(),
                 $map->getActionNo(),
-                $map->getType()
+                $map->getType(),
             ]
         );
     }
@@ -145,7 +140,7 @@ class ManyMorphManyTest extends AbstractORMTestCase
                 'ACS10003',
                 'ACS10004',
                 'ACS10005',
-                'MMA003'
+                'MMA003',
             ],
             $newMember->getActions()->loadColumn('no')
                 ->unique()
@@ -166,7 +161,7 @@ class ManyMorphManyTest extends AbstractORMTestCase
             [
                 StubAction::newInstance()
                     ->setNo('MMA004')
-                    ->setTitle('Action Create 4')
+                    ->setTitle('Action Create 4'),
             ]
         );
 
@@ -177,7 +172,7 @@ class ManyMorphManyTest extends AbstractORMTestCase
 
         self::assertEquals(
             [
-                'MMA004'
+                'MMA004',
             ],
             $newMember->getActions()->loadColumn('no')
                 ->unique()
@@ -213,7 +208,7 @@ class ManyMorphManyTest extends AbstractORMTestCase
                 'U00002-2',
             ],
             $newMember->getActions()->all()
-                ->map(fn (StubAction $action) => $action->getMap()->getMemberNo())
+                ->map(fn(StubAction $action) => $action->getMap()->getMemberNo())
                 ->unique()
                 ->values()
                 ->dump()
@@ -239,7 +234,7 @@ class ManyMorphManyTest extends AbstractORMTestCase
         self::assertEquals(
             [],
             $newMember->getActions()->all()
-                ->map(fn (StubAction $action) => $action->getMap()->getMemberNo())
+                ->map(fn(StubAction $action) => $action->getMap()->getMemberNo())
                 ->unique()
                 ->values()
                 ->dump()
@@ -268,7 +263,7 @@ class ManyMorphManyTest extends AbstractORMTestCase
         $nos = $actions1->column('no')->unique()->values()->dump();
 
         /** @var StubMember $member */
-        $memberMapper->deleteWhere(['no' =>'U00005']);
+        $memberMapper->deleteWhere(['no' => 'U00005']);
 
         $actions2 = self::$orm->select()
             ->from(StubAction::class)
@@ -311,7 +306,7 @@ class ManyMorphManyTest extends AbstractORMTestCase
         $nos = $actions1->column('no')->unique()->values()->dump();
 
         /** @var StubMember $member */
-        $memberMapper->deleteWhere(['no' =>'U00006']);
+        $memberMapper->deleteWhere(['no' => 'U00006']);
 
         $actions2 = self::$orm->select()
             ->from(StubAction::class)

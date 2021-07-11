@@ -137,9 +137,9 @@ class StreamOutput extends Output
         if (preg_match('/(?P<unit>[\w]+)\s+(?P<first>\d+)-(?P<last>\d+)\/(?P<length>\d+|\*)/', $header, $matches)) {
             $return = [];
 
-            $return['unit']   = $matches['unit'];
-            $return['first']  = (int) $matches['first'];
-            $return['last']   = (int) $matches['last'];
+            $return['unit'] = $matches['unit'];
+            $return['first'] = (int) $matches['first'];
+            $return['last'] = (int) $matches['last'];
             $return['length'] = is_numeric($matches['length']) ? (int) $matches['length'] : '*';
 
             return $return;

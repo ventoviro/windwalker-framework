@@ -77,7 +77,7 @@ class ComponentTest extends TestCase
         $v = $this->instance->render('components.tags');
 
         self::assertDomStringEqualsDomString(
-<<<HTML
+            <<<HTML
 <div>
     <h3>Class Component</h3>
     Foo Hello World

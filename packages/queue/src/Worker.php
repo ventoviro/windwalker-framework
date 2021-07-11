@@ -11,8 +11,11 @@ declare(strict_types=1);
 
 namespace Windwalker\Queue;
 
+use DateTimeImmutable;
+use Exception;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use Throwable;
 use Windwalker\Event\EventAwareTrait;
 use Windwalker\Event\EventListenableInterface;
 use Windwalker\Queue\Event\AfterJobRunEvent;
@@ -88,7 +91,7 @@ class Worker implements EventListenableInterface
      */
     public function __construct(Queue $queue, ?LoggerInterface $logger = null)
     {
-        $this->queue  = $queue;
+        $this->queue = $queue;
         $this->logger = $logger ?? new NullLogger();
     }
 
@@ -99,14 +102,14 @@ class Worker implements EventListenableInterface
      * @param  array         $options
      *
      * @return  void
-     * @throws \Exception
+     * @throws Exception
      */
     public function loop(string|array $channel, array $options = [])
     {
         gc_enable();
 
         // Last Restart
-        $this->lastRestart = (int) (new \DateTimeImmutable('now'))->format('U');
+        $this->lastRestart = (int) (new DateTimeImmutable('now'))->format('U');
 
         // Log PID
         $this->pid = getmypid();
@@ -119,7 +122,7 @@ class Worker implements EventListenableInterface
             $this->gc();
 
             $worker = $this;
-            $queue  = $this->queue;
+            $queue = $this->queue;
 
             // @loop start
             $this->emit(LoopStartEvent::class, compact('worker', 'queue'));
@@ -130,7 +133,7 @@ class Worker implements EventListenableInterface
             if (($options['force'] ?? null) || $this->canLoop()) {
                 try {
                     $this->runNextJob($channel, $options);
-                } catch (\Exception $exception) {
+                } catch (Exception $exception) {
                     $message = sprintf('Worker failure in a loop cycle: %s', $exception->getMessage());
 
                     $this->logger->error($message);
@@ -217,7 +220,7 @@ class Worker implements EventListenableInterface
             );
 
             $this->queue->delete($message);
-        } catch (\Throwable $t) {
+        } catch (Throwable $t) {
             $this->handleJobException($job, $message, $options, $t);
         } finally {
             if (!$message->isDeleted()) {
@@ -338,11 +341,11 @@ class Worker implements EventListenableInterface
      * @param  JobInterface  $job
      * @param  QueueMessage  $message
      * @param  array         $options
-     * @param  \Throwable    $e
+     * @param  Throwable    $e
      *
      * @return void
      */
-    protected function handleJobException(mixed $job, QueueMessage $message, array $options, \Throwable $e): void
+    protected function handleJobException(mixed $job, QueueMessage $message, array $options, Throwable $e): void
     {
         if (!$job instanceof JobInterface) {
             $job = new NullJob();

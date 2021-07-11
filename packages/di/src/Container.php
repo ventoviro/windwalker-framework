@@ -114,8 +114,8 @@ class Container implements ContainerInterface, IteratorAggregate, Countable, Arr
      */
     public function __construct(?Container $parent = null, int $options = 0)
     {
-        $this->parent     = $parent;
-        $this->options    = $options;
+        $this->parent = $parent;
+        $this->options = $options;
         $this->parameters = new Parameters();
 
         $this->dependencyResolver = new DependencyResolver($this);
@@ -365,6 +365,7 @@ class Container implements ContainerInterface, IteratorAggregate, Countable, Arr
                 $parentDefinition = clone $parentDefinition;
 
                 $this->setDefinition($id, $parentDefinition);
+
                 return $parentDefinition;
             }
         }
@@ -374,9 +375,9 @@ class Container implements ContainerInterface, IteratorAggregate, Countable, Arr
 
     public function clear(): void
     {
-        $this->storage  = [];
+        $this->storage = [];
         $this->builders = [];
-        $this->aliases  = [];
+        $this->aliases = [];
         $this->parameters->reset();
     }
 
@@ -384,6 +385,7 @@ class Container implements ContainerInterface, IteratorAggregate, Countable, Arr
     {
         if ($id !== null) {
             $this->getDefinition($id)?->reset();
+
             return;
         }
 
@@ -751,9 +753,9 @@ class Container implements ContainerInterface, IteratorAggregate, Countable, Arr
      */
     public function createChild(): static
     {
-        $child        = new static($this);
+        $child = new static($this);
         $child->level = $this->level + 1;
-        $params       = $this->getParameters()->createChild();
+        $params = $this->getParameters()->createChild();
         $child->setParameters($params->reset());
 
         $child->setAttributesResolver(clone $this->getAttributesResolver());
@@ -774,7 +776,7 @@ class Container implements ContainerInterface, IteratorAggregate, Countable, Arr
 
         while ($parent) {
             $parents[] = $parent;
-            $parent    = $this->getParent();
+            $parent = $this->getParent();
         }
 
         return $parents;

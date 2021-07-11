@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace Windwalker\Renderer\Test;
 
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Windwalker\Dom\Test\AbstractDomTestCase;
-use Windwalker\Renderer\Test\Stub\StubTwigExtension;
 use Windwalker\Renderer\TwigRenderer;
 use Windwalker\Test\Traits\DOMTestTrait;
 
@@ -51,7 +51,7 @@ class TwigRendererTest extends TestCase
         static::$path = realpath(__DIR__ . '/Tmpl/twig');
 
         if (!static::$path) {
-            throw new \RuntimeException('Path not exists');
+            throw new RuntimeException('Path not exists');
         }
 
         $this->instance = new TwigRenderer(['paths' => static::$path]);

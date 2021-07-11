@@ -51,11 +51,11 @@ class EdgeTest extends TestCase
         );
 
         // Clear tmp
-        $files = glob(__DIR__ . '/../tmp/~*');
-
-        foreach ($files as $file) {
-            unlink($file);
-        }
+        // $files = glob(__DIR__ . '/../tmp/~*');
+        //
+        // foreach ($files as $file) {
+        //     unlink($file);
+        // }
     }
 
     /**

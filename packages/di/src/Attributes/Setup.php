@@ -11,10 +11,13 @@ declare(strict_types=1);
 
 namespace Windwalker\DI\Attributes;
 
+use Attribute;
+use ReflectionMethod;
+
 /**
  * The Boot class.
  */
-#[\Attribute(\Attribute::TARGET_METHOD)]
+#[Attribute(Attribute::TARGET_METHOD)]
 class Setup implements ContainerAttributeInterface
 {
     public function __invoke(AttributeHandler $handler): callable
@@ -22,7 +25,7 @@ class Setup implements ContainerAttributeInterface
         $ref = $handler->getReflector();
         $instance = $handler->getObject();
 
-        if ($ref instanceof \ReflectionMethod && $instance) {
+        if ($ref instanceof ReflectionMethod && $instance) {
             $ref->invoke($instance);
         }
 

@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Filter;
 
-use Windwalker\Data\Collection;
+use OutOfRangeException;
 use Windwalker\Filter\Rule\Absolute;
 use Windwalker\Filter\Rule\Alnum;
 use Windwalker\Filter\Rule\CastTo;
@@ -66,7 +66,7 @@ class FilterFactory
 
     public function createMap(array $map, array $options = []): array
     {
-        return Arr::mapRecursive($map, fn ($syntax) => $this->createChainFromSyntax($syntax, $options));
+        return Arr::mapRecursive($map, fn($syntax) => $this->createChainFromSyntax($syntax, $options));
     }
 
     /**
@@ -155,7 +155,7 @@ class FilterFactory
     public function getFactory(string $type): callable
     {
         if (!isset($this->factories[$type])) {
-            throw new \OutOfRangeException("Filter type: $type not found.");
+            throw new OutOfRangeException("Filter type: $type not found.");
         }
 
         return $this->factories[$type];
@@ -172,7 +172,7 @@ class FilterFactory
     public function addFactory(string $type, callable|string $factory): static
     {
         if (is_string($factory)) {
-            $factory = fn () => new $factory();
+            $factory = fn() => new $factory();
         }
 
         $this->factories[$type] = $factory;
@@ -249,9 +249,8 @@ class FilterFactory
             )
         );
         $this->addFactory('required', Required::class);
-        $this->addFactory('default', fn (array $options) => new DefaultValue(array_key_first($options)));
-        $this->addFactory('func', fn (array $options) => new CallbackFilter(array_key_first($options)));
-
+        $this->addFactory('default', fn(array $options) => new DefaultValue(array_key_first($options)));
+        $this->addFactory('func', fn(array $options) => new CallbackFilter(array_key_first($options)));
 
         // types
         $types = [
@@ -260,7 +259,7 @@ class FilterFactory
             'float',
             'array',
             'bool',
-            'object'
+            'object',
         ];
 
         foreach ($types as $type) {

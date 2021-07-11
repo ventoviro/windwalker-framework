@@ -14,10 +14,8 @@ namespace Windwalker\Query\Grammar;
 use Windwalker\Query\Clause\Clause;
 use Windwalker\Query\Query;
 
-use function Windwalker\Query\clause;
 use function Windwalker\Query\expr;
 use function Windwalker\Query\qn;
-use function Windwalker\Query\val;
 
 /**
  * The SqlsrvGrammar class.
@@ -56,7 +54,7 @@ class SQLServerGrammar extends AbstractGrammar
 
             if ($query->getIncrementField()) {
                 $elements = $sql['insert']->getElements();
-                $table    = $elements[array_key_first($elements)];
+                $table = $elements[array_key_first($elements)];
 
                 $sql = array_merge(
                     ['id_insert_on' => sprintf('SET IDENTITY_INSERT %s ON;', $table)],
@@ -71,7 +69,7 @@ class SQLServerGrammar extends AbstractGrammar
 
     public function compileLimit(Query $query, array $sql): array
     {
-        $limit  = $query->getLimit();
+        $limit = $query->getLimit();
         $offset = (int) $query->getOffset();
 
         $q = implode(' ', $sql);
@@ -100,13 +98,13 @@ class SQLServerGrammar extends AbstractGrammar
         );
     }
 
-    public function compileJsonSelector(Query $query,
+    public function compileJsonSelector(
+        Query $query,
         string $column,
         array $paths,
         bool $unQuoteLast = true,
         bool $instant = false
-    ): Clause
-    {
+    ): Clause {
         $vc = $query->quoteOrVal('$.' . implode('.', $paths), $instant);
 
         $expr = $unQuoteLast
@@ -211,8 +209,8 @@ class SQLServerGrammar extends AbstractGrammar
         // Drop all foreign key reference to this table
         // @see https://social.msdn.microsoft.com/Forums/sqlserver/en-US/219f8a19-0026-49a1-a086-11c5d57d9c97/tsql-to-drop-all-constraints?forum=transactsql
         $dropFK = <<<SQL
-declare @str varchar(max)
-declare cur cursor for
+DECLARE @str VARCHAR(MAX)
+DECLARE cur CURSOR FOR
 
     SELECT 'ALTER TABLE ' + '[' + s.name + '].[' + t.name + '] DROP CONSTRAINT ['+ f.name + ']'
     FROM sys.foreign_keys AS f
@@ -221,7 +219,7 @@ declare cur cursor for
     WHERE s.name = 'dbo' AND f.referenced_object_id = object_id(%q)
     ORDER BY t.type
 
-open cur
+OPEN cur
 FETCH NEXT FROM cur INTO @str
 WHILE (@@fetch_status = 0) BEGIN
     PRINT @str
@@ -229,8 +227,8 @@ WHILE (@@fetch_status = 0) BEGIN
     FETCH NEXT FROM cur INTO @str
 END
 
-close cur
-deallocate cur;
+CLOSE cur
+DEALLOCATE cur;
 SQL;
 
         return static::build(

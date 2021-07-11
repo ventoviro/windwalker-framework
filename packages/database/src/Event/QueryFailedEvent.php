@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Event;
 
+use Throwable;
 use Windwalker\Event\AbstractEvent;
 use Windwalker\Query\Query;
 
@@ -19,8 +20,10 @@ use Windwalker\Query\Query;
  */
 class QueryFailedEvent extends AbstractEvent
 {
-    protected \Throwable $exception;
+    protected Throwable $exception;
+
     protected string $sql;
+
     protected array $bounded;
 
     /**
@@ -120,19 +123,19 @@ class QueryFailedEvent extends AbstractEvent
     }
 
     /**
-     * @return \Throwable
+     * @return Throwable
      */
-    public function getException(): \Throwable
+    public function getException(): Throwable
     {
         return $this->exception;
     }
 
     /**
-     * @param  \Throwable  $exception
+     * @param  Throwable  $exception
      *
      * @return  static  Return self to support chaining.
      */
-    public function setException(\Throwable $exception): static
+    public function setException(Throwable $exception): static
     {
         $this->exception = $exception;
 

@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace Windwalker\Utilities\Test\Assert;
 
 use PHPUnit\Framework\TestCase;
-use Throwable;
 use TypeError;
 use Windwalker\Utilities\Assert\Assert;
 use Windwalker\Utilities\Assert\TypeAssert;
@@ -37,7 +36,7 @@ class TypeAssertTest extends TestCase
                 '{caller} with wrong type %s.',
                 123
             );
-        } catch (\TypeError $e) {
+        } catch (TypeError $e) {
             self::assertEquals(
                 'Windwalker\Utilities\Test\Assert\TypeAssertTest::testStaticAssert() with wrong type integer(123).',
                 $e->getMessage()
@@ -62,7 +61,7 @@ class TypeAssertTest extends TestCase
     {
         try {
             self::createInstance($caller)->throwException($message, $value);
-        } catch (\TypeError $e) {
+        } catch (TypeError $e) {
             self::assertEquals($expected, $e->getMessage());
         }
     }
@@ -111,6 +110,6 @@ class TypeAssertTest extends TestCase
     {
         $caller ??= Assert::getCaller(2);
 
-        return new Assert(fn ($msg) => new TypeError($msg), $caller);
+        return new Assert(fn($msg) => new TypeError($msg), $caller);
     }
 }

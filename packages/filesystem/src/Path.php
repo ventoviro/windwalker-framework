@@ -11,7 +11,9 @@ declare(strict_types=1);
 
 namespace Windwalker\Filesystem;
 
+use InvalidArgumentException;
 use JetBrains\PhpStorm\Pure;
+use UnexpectedValueException;
 use Windwalker\Utilities\Arr;
 use Windwalker\Utilities\Str;
 
@@ -122,8 +124,8 @@ class Path
      *
      * @return  string  The cleaned path.
      *
-     * @throws  \UnexpectedValueException If $path is not a string.
-     * @throws  \InvalidArgumentException
+     * @throws  UnexpectedValueException If $path is not a string.
+     * @throws  InvalidArgumentException
      * @since   2.0
      */
     public static function clean(string $path, string $ds = DIRECTORY_SEPARATOR): string
@@ -142,14 +144,14 @@ class Path
             }
 
             $prefix = $extracted[0] . '://';
-            $path   = $extracted[1];
+            $path = $extracted[1];
         } elseif (preg_match('/(\w+):[\/\\\\](.*)/', $path, $matches)) {
             if ($matches[2] === '') {
                 return $path;
             }
 
             $prefix = $matches[1] . ':' . $ds;
-            $path   = $matches[2];
+            $path = $matches[2];
         }
 
         $path = trim($path, ' ');
@@ -178,8 +180,8 @@ class Path
      */
     public static function normalize(string $path, string $ds = DIRECTORY_SEPARATOR): string
     {
-        $parts    = [];
-        $path     = static::clean($path, $ds);
+        $parts = [];
+        $path = static::clean($path, $ds);
         $segments = explode($ds, $path);
 
         foreach ($segments as $segment) {
@@ -213,7 +215,7 @@ class Path
      * @param  int     $sensitive  Sensitive file name case.
      *
      * @return  bool
-     * @throws \UnexpectedValueException
+     * @throws UnexpectedValueException
      */
     public static function exists(string $path, int $sensitive = self::CASE_OS_DEFAULT): bool
     {
@@ -222,7 +224,7 @@ class Path
         }
 
         $path = static::normalize($path, DIRECTORY_SEPARATOR);
-        $it   = Filesystem::items(dirname($path));
+        $it = Filesystem::items(dirname($path));
 
         if (static::CASE_INSENSITIVE === $sensitive) {
             $lowerfile = strtolower($path);
@@ -360,8 +362,9 @@ class Path
      * @since  3.4.5
      */
     #[Pure]
-    public static function makeUtf8Safe(string $file): bool|string
-    {
+    public static function makeUtf8Safe(
+        string $file
+    ): bool|string {
         $file = mb_ereg_replace("([^\w\s\d\-_~,;\[\]\(\).])", '', $file);
 
         return mb_ereg_replace("([\.]{2,})", '', $file);
@@ -370,7 +373,7 @@ class Path
     /**
      * Returns whether a path is absolute.
      *
-     * @param string $path A path string.
+     * @param  string  $path  A path string.
      *
      * @return bool Returns true if the path is absolute, false if it is
      *              relative or empty.
@@ -413,7 +416,7 @@ class Path
     /**
      * Returns whether a path is relative.
      *
-     * @param string $path A path string.
+     * @param  string  $path  A path string.
      *
      * @return bool Returns true if the path is relative or empty, false if
      *              it is absolute.

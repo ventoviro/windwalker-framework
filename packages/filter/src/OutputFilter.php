@@ -26,9 +26,9 @@ class OutputFilter
      * Object parameters that are non-string, array, object or start with underscore
      * will be converted
      *
-     * @param   object   $mixed         An object to be parsed
-     * @param   integer  $quoteStyle    The optional quote style for the htmlspecialchars function
-     * @param   mixed    $exclude_keys  An optional string single field name or array of field names not
+     * @param  object   $mixed          An object to be parsed
+     * @param  integer  $quoteStyle     The optional quote style for the htmlspecialchars function
+     * @param  mixed    $exclude_keys   An optional string single field name or array of field names not
      *                                  to be parsed (eg, for a textarea)
      *
      * @return  object
@@ -59,7 +59,7 @@ class OutputFilter
     /**
      * This method processes a string and replaces all instances of & with &amp; in links only.
      *
-     * @param   string $input String to process
+     * @param  string  $input  String to process
      *
      * @return  string  Processed string
      */
@@ -82,7 +82,7 @@ class OutputFilter
      * This method processes a string and replaces all accented UTF-8 characters by unaccented
      * ASCII-7 "equivalents", whitespaces are replaced by hyphens and the string is lowercase.
      *
-     * @param   string $string String to process
+     * @param  string  $string  String to process
      *
      * @return  string  Processed string
      *
@@ -110,7 +110,7 @@ class OutputFilter
     /**
      * This method implements unicode slugs instead of transliteration.
      *
-     * @param   string $string String to process
+     * @param  string  $string  String to process
      *
      * @return  string  Processed string
      *
@@ -144,7 +144,7 @@ class OutputFilter
     /**
      * Replaces &amp; with & for XHTML compliance
      *
-     * @param   string $text Text to process
+     * @param  string  $text  Text to process
      *
      * @return  string  Processed string.
      */
@@ -163,7 +163,7 @@ class OutputFilter
     /**
      * Cleans text of all formatting and scripting code
      *
-     * @param   string $text Text to clean
+     * @param  string  $text  Text to clean
      *
      * @return  string  Cleaned text.
      */
@@ -185,7 +185,7 @@ class OutputFilter
     /**
      * Strip img-tags from string
      *
-     * @param   string $string Sting to be cleaned.
+     * @param  string  $string  Sting to be cleaned.
      *
      * @return  string  Cleaned string
      */
@@ -197,7 +197,7 @@ class OutputFilter
     /**
      * Strip iframe-tags from string
      *
-     * @param   string $string Sting to be cleaned.
+     * @param  string  $string  Sting to be cleaned.
      *
      * @return  string  Cleaned string
      */
@@ -209,7 +209,7 @@ class OutputFilter
     /**
      * stripScript
      *
-     * @param string $string
+     * @param  string  $string
      *
      * @return  string
      */
@@ -221,7 +221,7 @@ class OutputFilter
     /**
      * stripStyle
      *
-     * @param string $string
+     * @param  string  $string
      *
      * @return  mixed
      */
@@ -233,7 +233,7 @@ class OutputFilter
     /**
      * stripLinks
      *
-     * @param   string $string
+     * @param  string  $string
      *
      * @return  mixed
      */

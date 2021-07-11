@@ -11,6 +11,13 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Metadata;
 
+use Closure;
+use InvalidArgumentException;
+use ReflectionAttribute;
+use ReflectionClass;
+use ReflectionException;
+use ReflectionMethod;
+use ReflectionProperty;
 use Windwalker\Event\EventAwareInterface;
 use Windwalker\Event\EventAwareTrait;
 use Windwalker\ORM\Attributes\{Column, PK, Table, Watch};
@@ -51,14 +58,14 @@ class EntityMetadata implements EventAwareInterface
     protected array $keys = [];
 
     /**
-     * @var \ReflectionProperty[]
+     * @var ReflectionProperty[]
      */
     protected ?array $properties = null;
 
     protected array $propertyColumns = [];
 
     /**
-     * @var \ReflectionMethod[]
+     * @var ReflectionMethod[]
      */
     protected ?array $methods = null;
 
@@ -103,9 +110,9 @@ class EntityMetadata implements EventAwareInterface
 
     public static function isEntity(string|object $object): bool
     {
-        $class = new \ReflectionClass($object);
+        $class = new ReflectionClass($object);
 
-        return $class->getAttributes(Table::class, \ReflectionAttribute::IS_INSTANCEOF) !== [];
+        return $class->getAttributes(Table::class, ReflectionAttribute::IS_INSTANCEOF) !== [];
     }
 
     public function setup(): static
@@ -118,7 +125,7 @@ class EntityMetadata implements EventAwareInterface
         $resolver->resolveObjectDecorate($ref);
 
         if (!$this->tableName) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 sprintf(
                     '%s has no table info.',
                     $this->className
@@ -133,9 +140,9 @@ class EntityMetadata implements EventAwareInterface
         return $this;
     }
 
-    public function addAttributeMap(string $attrName, \ReflectionProperty|\ReflectionMethod $ref): void
+    public function addAttributeMap(string $attrName, ReflectionProperty|ReflectionMethod $ref): void
     {
-        $type = $ref instanceof \ReflectionProperty ? 'props' : 'methods';
+        $type = $ref instanceof ReflectionProperty ? 'props' : 'methods';
 
         $this->attributeMaps[$attrName][$type][$ref->getName()] = $ref;
     }
@@ -145,7 +152,7 @@ class EntityMetadata implements EventAwareInterface
      *
      * @param  string  $attributeClass
      *
-     * @return  \ReflectionMethod[]
+     * @return  ReflectionMethod[]
      */
     public function getMethodsOfAttribute(string $attributeClass): array
     {
@@ -157,7 +164,7 @@ class EntityMetadata implements EventAwareInterface
      *
      * @param  string  $attributeClass
      *
-     * @return  \ReflectionProperty[]
+     * @return  ReflectionProperty[]
      */
     public function getPropertiesOfAttribute(string $attributeClass): array
     {
@@ -181,10 +188,10 @@ class EntityMetadata implements EventAwareInterface
         }
 
         $tableAttr = $this->getReflector()
-            ->getAttributes(Table::class, \ReflectionAttribute::IS_INSTANCEOF)[0]?->newInstance();
+            ->getAttributes(Table::class, ReflectionAttribute::IS_INSTANCEOF)[0]?->newInstance();
 
         if (!$tableAttr) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 sprintf(
                     '%s has no table info.',
                     $this->className
@@ -254,19 +261,19 @@ class EntityMetadata implements EventAwareInterface
     /**
      * getMethods
      *
-     * @return  array<int, \ReflectionMethod>
+     * @return  array<int, ReflectionMethod>
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function getMethods(): array
     {
         return $this->methods ??= ReflectAccessor::getReflectMethods(
             $this->className,
-            \ReflectionMethod::IS_STATIC | \ReflectionMethod::IS_PROTECTED | \ReflectionMethod::IS_PUBLIC
+            ReflectionMethod::IS_STATIC | ReflectionMethod::IS_PROTECTED | ReflectionMethod::IS_PUBLIC
         );
     }
 
-    public function getMethod(string $name): ?\ReflectionMethod
+    public function getMethod(string $name): ?ReflectionMethod
     {
         return $this->getMethods()[$name] ?? null;
     }
@@ -274,18 +281,18 @@ class EntityMetadata implements EventAwareInterface
     /**
      * getProperties
      *
-     * @return  array<int, \ReflectionProperty>
-     * @throws \ReflectionException
+     * @return  array<int, ReflectionProperty>
+     * @throws ReflectionException
      */
     public function getProperties(): array
     {
         return $this->properties ??= ReflectAccessor::getReflectProperties(
             $this->className,
-            \ReflectionProperty::IS_PUBLIC | \ReflectionProperty::IS_PROTECTED | \ReflectionProperty::IS_PRIVATE
+            ReflectionProperty::IS_PUBLIC | ReflectionProperty::IS_PROTECTED | ReflectionProperty::IS_PRIVATE
         );
     }
 
-    public function getProperty(string $name): ?\ReflectionProperty
+    public function getProperty(string $name): ?ReflectionProperty
     {
         return $this->getProperties()[$name] ?? null;
     }
@@ -308,13 +315,13 @@ class EntityMetadata implements EventAwareInterface
     /**
      * ReflectionClass creation is very fast that no need to cache it.
      *
-     * @return  \ReflectionClass
+     * @return  ReflectionClass
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
-    public function getReflector(): \ReflectionClass
+    public function getReflector(): ReflectionClass
     {
-        return new \ReflectionClass($this->className);
+        return new ReflectionClass($this->className);
     }
 
     /**
@@ -416,7 +423,7 @@ class EntityMetadata implements EventAwareInterface
         return $this->mapperClass;
     }
 
-    public function watch(string $column, callable $method, int $options = 0): \Closure
+    public function watch(string $column, callable $method, int $options = 0): Closure
     {
         $unwatches = [];
 

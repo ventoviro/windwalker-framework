@@ -20,8 +20,6 @@ use Windwalker\Authentication\AuthResult;
  */
 interface MethodInterface
 {
-
-
     /**
      * authenticate
      *

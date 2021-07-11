@@ -11,6 +11,10 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Manager;
 
+use InvalidArgumentException;
+use JsonException;
+use RuntimeException;
+use Traversable;
 use Windwalker\Database\DatabaseAdapter;
 use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\Query\Query;
@@ -51,7 +55,7 @@ class WriterManager
      *
      * @return array|object
      *
-     * @throws \JsonException
+     * @throws JsonException
      * @since   2.0
      */
     public function insertOne(string $table, array|object $data, ?string $key = null, array $options = []): array|object
@@ -116,7 +120,7 @@ class WriterManager
      *
      * @return StatementInterface
      *
-     * @throws \JsonException
+     * @throws JsonException
      * @since   2.0
      */
     public function updateOne(
@@ -128,7 +132,7 @@ class WriterManager
         $options = array_merge(
             [
                 'updateNulls' => true,
-                'filterFields' => []
+                'filterFields' => [],
             ],
             $options
         );
@@ -138,7 +142,7 @@ class WriterManager
         $key = (array) $key;
 
         if ($key === []) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 'Condition fields cannot be empty array when updating data.'
             );
         }
@@ -193,7 +197,7 @@ class WriterManager
      * @param  array         $options  Options.
      *
      * @return  mixed
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function saveOne(string $table, array|object $data, array|string|null $key, array $options = []): mixed
     {
@@ -219,7 +223,7 @@ class WriterManager
      * @param  array        $options
      *
      * @return array[]|object[]
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function insertMultiple(string $table, iterable $items, ?string $key = null, array $options = []): array
     {
@@ -241,7 +245,7 @@ class WriterManager
      * @param  array         $options
      *
      * @return StatementInterface[]
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function updateMultiple(string $table, iterable $items, array|string $key, array $options = []): array
     {
@@ -262,15 +266,15 @@ class WriterManager
      * @param  array|string|null  $key    The name of the primary key.
      * @param  array              $options
      *
-     * @return array|\Traversable
-     * @throws \JsonException
+     * @return array|Traversable
+     * @throws JsonException
      */
     public function saveMultiple(
         string $table,
         iterable $items,
         array|string|null $key,
         array $options = []
-    ): \Traversable|array {
+    ): Traversable|array {
         $result = [];
 
         foreach ($items as $k => $item) {
@@ -428,11 +432,11 @@ class WriterManager
      */
     public function filterFields(string $table, array $item): array
     {
-        $schema       = $this->db->getTable($table)->getSchema();
+        $schema = $this->db->getTable($table)->getSchema();
         $tableManager = $schema->getTable($table);
 
         if (!$tableManager) {
-            throw new \RuntimeException(
+            throw new RuntimeException(
                 sprintf(
                     'Table: %s not exists in Schema: %s',
                     $table,

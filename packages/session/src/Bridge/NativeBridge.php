@@ -36,7 +36,7 @@ class NativeBridge implements BridgeInterface
 
         $this->prepareOptions(
             [
-                'auto_commit' => false
+                'auto_commit' => false,
             ],
             $options
         );

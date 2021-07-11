@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Windwalker\Filter\Rule;
 
-use Windwalker\Filter\AbstractCallbackFilter;
 use Windwalker\Filter\AbstractFilter;
 use Windwalker\Utilities\TypeCast;
 
@@ -32,7 +31,7 @@ class CastTo extends AbstractFilter
      */
     public function __construct(string $type, bool $strict = false)
     {
-        $this->type   = $type;
+        $this->type = $type;
         $this->strict = $strict;
     }
 

@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace Windwalker\Authorization;
 
+use InvalidArgumentException;
+use OutOfBoundsException;
+
 /**
  * The Authorization class.
  *
@@ -37,7 +40,7 @@ class Authorization implements AuthorizationInterface
     public function authorise(string $policy, mixed $user, mixed ...$args): bool
     {
         if (!$this->hasPolicy($policy)) {
-            throw new \OutOfBoundsException(sprintf('Policy "%s" not exists', $policy));
+            throw new OutOfBoundsException(sprintf('Policy "%s" not exists', $policy));
         }
 
         return $this->getPolicy($policy)->authorise($user, ...$args);
@@ -58,7 +61,7 @@ class Authorization implements AuthorizationInterface
         }
 
         if (!$handler instanceof PolicyInterface) {
-            throw new \InvalidArgumentException('Not a valid policy, please give a callable or PolicyInterface');
+            throw new InvalidArgumentException('Not a valid policy, please give a callable or PolicyInterface');
         }
 
         $this->policies[$name] = $handler;
@@ -69,7 +72,7 @@ class Authorization implements AuthorizationInterface
     /**
      * getPolicy
      *
-     * @param   string $name
+     * @param  string  $name
      *
      * @return  ?PolicyInterface
      */
@@ -81,7 +84,7 @@ class Authorization implements AuthorizationInterface
     /**
      * registerPolicy
      *
-     * @param PolicyProviderInterface $policy
+     * @param  PolicyProviderInterface  $policy
      *
      * @return  static
      */
@@ -95,7 +98,7 @@ class Authorization implements AuthorizationInterface
     /**
      * hasPolicy
      *
-     * @param   string $name
+     * @param  string  $name
      *
      * @return  boolean
      */
@@ -117,7 +120,7 @@ class Authorization implements AuthorizationInterface
     /**
      * Method to set property policies
      *
-     * @param   PolicyInterface[] $policies
+     * @param  PolicyInterface[]  $policies
      *
      * @return  static  Return self to support chaining.
      */

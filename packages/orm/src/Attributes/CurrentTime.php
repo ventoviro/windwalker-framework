@@ -11,12 +11,14 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Attributes;
 
+use Attribute;
+use DateTimeImmutable;
 use Windwalker\Filter\FilterInterface;
 
 /**
  * The CurrentTime class.
  */
-#[\Attribute]
+#[Attribute]
 class CurrentTime implements FilterInterface
 {
     protected string $time = 'now';
@@ -31,12 +33,12 @@ class CurrentTime implements FilterInterface
         $this->time = $time;
     }
 
-    public function getCurrent(): \DateTimeImmutable
+    public function getCurrent(): DateTimeImmutable
     {
-        return new \DateTimeImmutable($this->time);
+        return new DateTimeImmutable($this->time);
     }
 
-    public function filter(mixed $value): \DateTimeImmutable
+    public function filter(mixed $value): DateTimeImmutable
     {
         return $this->getCurrent();
     }

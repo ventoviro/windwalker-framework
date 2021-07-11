@@ -11,7 +11,9 @@ declare(strict_types=1);
 
 namespace Windwalker\Stream;
 
+use InvalidArgumentException;
 use JetBrains\PhpStorm\Pure;
+use RuntimeException;
 
 /**
  * The ArrayStream class.
@@ -106,11 +108,11 @@ class StringStream extends Stream
         $this->stream = $stream;
 
         if (is_resource($stream)) {
-            throw new \InvalidArgumentException('StringStream do not support resource.');
+            throw new InvalidArgumentException('StringStream do not support resource.');
         }
 
         if (is_array($stream) || (is_object($stream) && !is_callable([$stream, '__toString']))) {
-            throw new \InvalidArgumentException('StringStream only support string as resource.');
+            throw new InvalidArgumentException('StringStream only support string as resource.');
         }
 
         if (!str_contains('+', $mode)) {
@@ -134,8 +136,8 @@ class StringStream extends Stream
         $resource = $this->resource;
 
         $this->resource = null;
-        $this->stream   = null;
-        $this->pointer  = 0;
+        $this->stream = null;
+        $this->pointer = 0;
         $this->seekable = true;
         $this->writable = true;
 
@@ -161,12 +163,12 @@ class StringStream extends Stream
      * Returns the current position of the file read/write pointer
      *
      * @return int Position of the file pointer
-     * @throws \RuntimeException on error.
+     * @throws RuntimeException on error.
      */
     public function tell(): int
     {
         if ($this->resource === null) {
-            throw new \RuntimeException('No resource set.');
+            throw new RuntimeException('No resource set.');
         }
 
         return $this->pointer;
@@ -207,12 +209,12 @@ class StringStream extends Stream
      *
      * @return boolean
      *
-     * @throws \RuntimeException on failure.
+     * @throws RuntimeException on failure.
      */
     public function seek($offset, $whence = SEEK_SET): bool
     {
         if (!$this->isSeekable()) {
-            throw new \RuntimeException('Stream is not seekable');
+            throw new RuntimeException('Stream is not seekable');
         }
 
         if ($whence == SEEK_SET) {
@@ -225,7 +227,7 @@ class StringStream extends Stream
         }
 
         if ($this->pointer < 0) {
-            throw new \RuntimeException('Position should not less than 0.');
+            throw new RuntimeException('Position should not less than 0.');
         }
 
         return true;
@@ -237,7 +239,7 @@ class StringStream extends Stream
      * If the stream is not seekable, this method will raise an exception;
      * otherwise, it will perform a seek(0).
      *
-     * @throws \RuntimeException on failure.
+     * @throws RuntimeException on failure.
      * @link http://www.php.net/manual/en/function.fseek.php
      * @see  seek()
      */
@@ -264,14 +266,14 @@ class StringStream extends Stream
      * @param  string  $string  The string that is to be written.
      *
      * @return int Returns the number of bytes written to the stream.
-     * @throws \RuntimeException on failure.
+     * @throws RuntimeException on failure.
      */
     public function write($string): int
     {
         $length = strlen($string);
 
         $start = substr($this->resource, 0, $this->pointer);
-        $end   = substr($this->resource, $this->pointer + $length);
+        $end = substr($this->resource, $this->pointer + $length);
 
         $this->resource = $start . $string . $end;
 
@@ -299,7 +301,7 @@ class StringStream extends Stream
      *
      * @return string Returns the data read from the stream, or an empty string
      *     if no bytes are available.
-     * @throws \RuntimeException if an error occurs.
+     * @throws RuntimeException if an error occurs.
      */
     public function read($length): string
     {
@@ -307,7 +309,7 @@ class StringStream extends Stream
 
         $result = substr($this->resource, $this->readPosition, $length);
 
-        $this->pointer      += $length;
+        $this->pointer += $length;
         $this->readPosition = $this->pointer;
 
         return $result;
@@ -317,7 +319,7 @@ class StringStream extends Stream
      * Returns the remaining contents in a string
      *
      * @return string
-     * @throws \RuntimeException if unable to read or an error occurs while
+     * @throws RuntimeException if unable to read or an error occurs while
      *     reading.
      */
     public function getContents(): string
@@ -353,10 +355,10 @@ class StringStream extends Stream
     {
         $metadata = $this->metadata;
 
-        $metadata['eof']          = $this->eof();
-        $metadata['seekable']     = $this->isSeekable();
+        $metadata['eof'] = $this->eof();
+        $metadata['seekable'] = $this->isSeekable();
         $metadata['unread_bytes'] = $this->getSize() - $this->pointer;
-        $metadata['mode']         = 'rb';
+        $metadata['mode'] = 'rb';
 
         if ($this->isWritable()) {
             $metadata['mode'] = 'r+b';

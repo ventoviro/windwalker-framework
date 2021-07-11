@@ -96,7 +96,7 @@ trait MessageTrait
             );
         }
 
-        $new           = clone $this;
+        $new = clone $this;
         $new->protocol = $version;
 
         return $new;
@@ -292,7 +292,7 @@ trait MessageTrait
         }
 
         $normalized = strtolower($name);
-        $original   = $this->headerNames[$normalized];
+        $original = $this->headerNames[$normalized];
 
         $new = clone $this;
 
@@ -350,7 +350,7 @@ trait MessageTrait
         $name = HeaderHelper::normalizeHeaderName($name);
 
         $new->headerNames[$normalized] = $name;
-        $new->headers[$name]           = [];
+        $new->headers[$name] = [];
 
         return $new;
     }

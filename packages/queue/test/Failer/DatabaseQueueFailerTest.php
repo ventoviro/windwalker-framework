@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Queue\Test\Failer;
 
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Windwalker\Queue\Failer\DatabaseQueueFailer;
 use Windwalker\Queue\Failer\QueueFailerInterface;
 use Windwalker\Test\Traits\DatabaseTestTrait;
@@ -37,13 +38,13 @@ class DatabaseQueueFailerTest extends TestCase
             'test',
             'default',
             '{}',
-            \RuntimeException::class
+            RuntimeException::class
         );
         $r = $this->instance->add(
             'hello',
             'world',
             '{}',
-            \RuntimeException::class
+            RuntimeException::class
         );
 
         self::assertEquals(
@@ -65,7 +66,7 @@ class DatabaseQueueFailerTest extends TestCase
             $item->body
         );
         self::assertEquals(
-            \RuntimeException::class,
+            RuntimeException::class,
             $item->exception
         );
     }

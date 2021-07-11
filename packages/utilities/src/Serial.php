@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Utilities;
 
+use WeakMap;
+
 /**
  * The Serial class.
  */
@@ -18,7 +20,7 @@ class Serial
 {
     protected static array $sequences = [];
 
-    protected static ?\WeakMap $map = null;
+    protected static ?WeakMap $map = null;
 
     public static function get(string|object $name): int
     {
@@ -39,6 +41,7 @@ class Serial
     {
         if (is_string($name)) {
             static::$sequences[$name] = $value;
+
             return;
         }
 
@@ -51,6 +54,7 @@ class Serial
     {
         if (is_string($name)) {
             static::$sequences[$name] = 0;
+
             return;
         }
 
@@ -66,12 +70,12 @@ class Serial
         static::resetMap();
     }
 
-    protected static function resetMap(): \WeakMap
+    protected static function resetMap(): WeakMap
     {
-        return static::$map = new \WeakMap();
+        return static::$map = new WeakMap();
     }
 
-    protected static function getMap(): \WeakMap
+    protected static function getMap(): WeakMap
     {
         return static::$map ??= static::resetMap();
     }

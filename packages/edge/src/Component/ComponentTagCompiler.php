@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace Windwalker\Edge\Component;
 
+use InvalidArgumentException;
+use ReflectionClass;
+use ReflectionProperty;
 use Windwalker\Attributes\AttributesAccessor;
 use Windwalker\Data\Collection;
 use Windwalker\Edge\Edge;
@@ -68,7 +71,7 @@ class ComponentTagCompiler
      *
      * @return string
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function compileTags(string $value): string
     {
@@ -86,7 +89,7 @@ class ComponentTagCompiler
      *
      * @return string
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     protected function compileOpeningTags(string $value): string
     {
@@ -143,7 +146,7 @@ class ComponentTagCompiler
      *
      * @return string
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     protected function compileSelfClosingTags(string $value): string
     {
@@ -201,7 +204,7 @@ class ComponentTagCompiler
      *
      * @return string
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     protected function componentString(string $component, array $attributes): string
     {
@@ -258,7 +261,7 @@ class ComponentTagCompiler
      *
      * @return string
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function componentClass(string $component): string
     {
@@ -280,7 +283,7 @@ class ComponentTagCompiler
                 return $component;
             }
 
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 "Unable to locate class or view [{$class}] for component [{$component}]."
             );
         }
@@ -289,7 +292,7 @@ class ComponentTagCompiler
             return $component;
         }
 
-        throw new \InvalidArgumentException(
+        throw new InvalidArgumentException(
             "Unable to locate a class or view for component [{$component}]."
         );
     }
@@ -311,14 +314,14 @@ class ComponentTagCompiler
             return [collect($attributes), collect($attributes)];
         }
 
-        $properties = (new \ReflectionClass($class))->getProperties();
+        $properties = (new ReflectionClass($class))->getProperties();
         $props = [];
 
         foreach ($properties as $property) {
             AttributesAccessor::runAttributeIfExists(
                 $property,
                 Prop::class,
-                function ($prop, \ReflectionProperty $property) use (&$attributes, &$props) {
+                function ($prop, ReflectionProperty $property) use (&$attributes, &$props) {
                     $propName = StrNormalize::toKebabCase($property->getName());
 
                     if ($attributes[$propName] ?? null) {

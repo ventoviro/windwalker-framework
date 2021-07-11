@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Edge\Component;
 
+use Closure;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionProperty;
@@ -60,16 +61,16 @@ abstract class AbstractComponent
     /**
      * Get the view / view contents that represent the component.
      *
-     * @return \Closure|string
+     * @return Closure|string
      */
-    abstract public function render(): \Closure|string;
+    abstract public function render(): Closure|string;
 
     /**
      * Resolve the Blade view or view file that should be used when rendering the component.
      *
-     * @return \Closure|string
+     * @return Closure|string
      */
-    public function resolveView(): \Closure|string
+    public function resolveView(): Closure|string
     {
         return $this->render();
     }
@@ -99,7 +100,7 @@ abstract class AbstractComponent
         $class = get_class($this);
 
         if (!isset(static::$propertyCache[$class])) {
-            $reflection = new \ReflectionClass($this);
+            $reflection = new ReflectionClass($this);
 
             static::$propertyCache[$class] = collect($reflection->getProperties(ReflectionProperty::IS_PUBLIC))
                 ->reject(
@@ -165,7 +166,7 @@ abstract class AbstractComponent
     /**
      * Create a callable variable from the given method.
      *
-     * @param  \ReflectionMethod  $method
+     * @param  ReflectionMethod  $method
      *
      * @return mixed
      */
@@ -173,7 +174,7 @@ abstract class AbstractComponent
     {
         return $method->getNumberOfParameters() === 0
             ? $this->createInvokableVariable($method->getName())
-            : \Closure::fromCallable([$this, $method->getName()]);
+            : Closure::fromCallable([$this, $method->getName()]);
     }
 
     /**

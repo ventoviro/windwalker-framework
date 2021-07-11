@@ -11,8 +11,6 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Test\Schema;
 
-use PHPUnit\Framework\TestCase;
-use Windwalker\Database\Manager\TableManager;
 use Windwalker\Database\Schema\Schema;
 use Windwalker\Database\Test\AbstractDatabaseTestCase;
 

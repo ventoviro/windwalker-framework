@@ -11,22 +11,24 @@ declare(strict_types=1);
 
 namespace Windwalker\Event\Events;
 
+use Throwable;
+
 /**
  * Trait ErrorEventTrait
  */
 trait ErrorEventTrait
 {
     /**
-     * @var \Throwable
+     * @var Throwable
      */
-    protected \Throwable $exception;
+    protected Throwable $exception;
 
-    public function getException(): \Throwable
+    public function getException(): Throwable
     {
         return $this->exception;
     }
 
-    public function setException(\Throwable $exception): static
+    public function setException(Throwable $exception): static
     {
         $this->exception = $exception;
 

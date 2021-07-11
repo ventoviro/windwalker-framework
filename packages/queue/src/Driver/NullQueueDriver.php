@@ -59,7 +59,7 @@ class NullQueueDriver implements QueueDriverInterface
     /**
      * release
      *
-     * @param QueueMessage|string $message
+     * @param  QueueMessage|string  $message
      *
      * @return static
      */

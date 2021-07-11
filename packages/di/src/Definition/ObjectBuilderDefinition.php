@@ -79,7 +79,7 @@ class ObjectBuilderDefinition implements DefinitionInterface
     public function __construct(callable|string $class, ?Container $container = null)
     {
         $this->container = $container;
-        $this->class     = $class;
+        $this->class = $class;
     }
 
     /**
@@ -225,8 +225,8 @@ class ObjectBuilderDefinition implements DefinitionInterface
     public function reset(): static
     {
         $this->arguments = [];
-        $this->caches    = [];
-        $this->extends   = [];
+        $this->caches = [];
+        $this->extends = [];
 
         return $this;
     }

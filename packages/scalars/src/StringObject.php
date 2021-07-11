@@ -20,6 +20,7 @@ use ReflectionException;
 use ReflectionMethod;
 use ReflectionObject;
 use ReflectionParameter;
+use Stringable;
 use Traversable;
 use Windwalker\Scalars\Concern\StringInflectorTrait;
 use Windwalker\Scalars\Concern\StringModifyTrait;
@@ -76,7 +77,7 @@ use Windwalker\Utilities\Utf8String;
  *
  * @since  __DEPLOY_VERSION__
  */
-class StringObject implements Countable, ArrayAccess, IteratorAggregate, \Stringable, NullableInterface
+class StringObject implements Countable, ArrayAccess, IteratorAggregate, Stringable, NullableInterface
 {
     use MarcoableTrait;
     use ImmutableHelperTrait;
@@ -118,7 +119,7 @@ class StringObject implements Countable, ArrayAccess, IteratorAggregate, \String
      */
     public function __construct($string = '', ?string $encoding = self::ENCODING_UTF8)
     {
-        $this->string   = (string) $string;
+        $this->string = (string) $string;
         $this->encoding = $encoding ?? static::ENCODING_UTF8;
     }
 

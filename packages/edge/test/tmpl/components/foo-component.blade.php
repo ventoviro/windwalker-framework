@@ -1,7 +1,10 @@
 <?php
 /**
- * @var \Windwalker\Edge\Component\ComponentAttributes $attributes
+ * @var ComponentAttributes $attributes
  */
+
+use Windwalker\Edge\Component\ComponentAttributes;
+
 ?>
 @props(['type' => 'info', 'message' => 'unknown message'])
 

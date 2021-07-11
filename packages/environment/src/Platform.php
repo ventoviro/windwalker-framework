@@ -42,7 +42,7 @@ class Platform
     /**
      * Platform constructor.
      *
-     * @param array $server
+     * @param  array  $server
      */
     public function __construct(array $server = [])
     {
@@ -134,7 +134,7 @@ class Platform
     /**
      * Method to set property os
      *
-     * @param   string $os
+     * @param  string  $os
      *
      * @return  static  Return self to support chaining.
      */
@@ -158,7 +158,7 @@ class Platform
     /**
      * Method to set property uname
      *
-     * @param   string $uname
+     * @param  string  $uname
      *
      * @return  static  Return self to support chaining.
      */
@@ -182,7 +182,7 @@ class Platform
     /**
      * getRoot
      *
-     * @param bool $full
+     * @param  bool  $full
      *
      * @return  string
      */
@@ -204,7 +204,7 @@ class Platform
     /**
      * getEntry
      *
-     * @param   bool $full
+     * @param  bool  $full
      *
      * @return  string
      */
@@ -232,7 +232,7 @@ class Platform
     /**
      * getRequestUri
      *
-     * @param   bool $withParams
+     * @param  bool  $withParams
      *
      * @return  string
      */
@@ -278,8 +278,8 @@ class Platform
     /**
      * getServerParam
      *
-     * @param string $key
-     * @param mixed  $default
+     * @param  string  $key
+     * @param  mixed   $default
      *
      * @return  mixed
      */

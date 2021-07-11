@@ -1,4 +1,5 @@
 <?php
+
 $foo = 'Foo Attr';
 ?>
 

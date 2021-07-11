@@ -11,8 +11,9 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Driver\Mysqli;
 
-use JetBrains\PhpStorm\Pure;
-use Windwalker\Data\Collection;
+use mysqli;
+use mysqli_result;
+use mysqli_stmt;
 use Windwalker\Database\Driver\AbstractStatement;
 use Windwalker\Database\Driver\ConnectionInterface;
 use Windwalker\Database\Driver\DriverInterface;
@@ -20,27 +21,25 @@ use Windwalker\Database\Exception\StatementException;
 use Windwalker\Query\Bounded\BoundedHelper;
 use Windwalker\Query\Bounded\ParamType;
 
-use function Windwalker\collect;
-
 /**
  * The MysqliStatement class.
  */
 class MysqliStatement extends AbstractStatement
 {
     /**
-     * @var \mysqli_stmt
+     * @var mysqli_stmt
      */
     protected mixed $cursor = null;
 
     /**
-     * @var \mysqli
+     * @var mysqli
      */
     protected mixed $conn = null;
 
     /**
-     * @var \mysqli_result|bool|null
+     * @var mysqli_result|bool|null
      */
-    protected \mysqli_result|bool|null $result = null;
+    protected mysqli_result|bool|null $result = null;
 
     /**
      * @inheritDoc
@@ -53,7 +52,7 @@ class MysqliStatement extends AbstractStatement
                 static function ($param) {
                     return [
                         'value' => $param,
-                        'dataType' => ParamType::guessType($param)
+                        'dataType' => ParamType::guessType($param),
                     ];
                 },
                 $params
@@ -64,31 +63,33 @@ class MysqliStatement extends AbstractStatement
 
         [$query, $params] = BoundedHelper::replaceParams($this->query, '?', $params);
 
-        $this->driver->useConnection(function (ConnectionInterface $conn) use ($params, $query) {
-            $this->conn = $conn->get();
-            $this->cursor = $stmt = $this->conn->prepare($query);
+        $this->driver->useConnection(
+            function (ConnectionInterface $conn) use ($params, $query) {
+                $this->conn = $conn->get();
+                $this->cursor = $stmt = $this->conn->prepare($query);
 
-            if ($params !== []) {
-                $types = '';
-                $args = [];
+                if ($params !== []) {
+                    $types = '';
+                    $args = [];
 
-                foreach ($params as $param) {
-                    $type = $param['dataType'] ?? ParamType::guessType($param['value']);
+                    foreach ($params as $param) {
+                        $type = $param['dataType'] ?? ParamType::guessType($param['value']);
 
-                    $types .= ParamType::convertToMysqli($type);
-                    $args[] = &$param['value'];
+                        $types .= ParamType::convertToMysqli($type);
+                        $args[] = &$param['value'];
+                    }
+
+                    $stmt->bind_param(
+                        $types,
+                        ...$args
+                    );
                 }
 
-                $stmt->bind_param(
-                    $types,
-                    ...$args
-                );
+                $stmt->execute();
+
+                $this->result = $stmt->get_result();
             }
-
-            $stmt->execute();
-
-            $this->result = $stmt->get_result();
-        });
+        );
 
         return true;
     }

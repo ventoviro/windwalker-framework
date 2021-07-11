@@ -11,14 +11,11 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Driver\Sqlsrv;
 
-use Windwalker\Data\Collection;
 use Windwalker\Database\Driver\AbstractStatement;
 use Windwalker\Database\Driver\ConnectionInterface;
 use Windwalker\Database\Exception\StatementException;
 use Windwalker\Query\Bounded\BoundedHelper;
 use Windwalker\Query\Bounded\ParamType;
-
-use function Windwalker\collect;
 
 /**
  * The SqlsrvStatement class.
@@ -62,13 +59,15 @@ class SqlsrvStatement extends AbstractStatement
             $args[] = &$param['value'];
         }
 
-        return $this->driver->useConnection(function (ConnectionInterface $conn) use ($args, $query) {
-            $this->conn = $resource = $conn->get();
+        return $this->driver->useConnection(
+            function (ConnectionInterface $conn) use ($args, $query) {
+                $this->conn = $resource = $conn->get();
 
-            $this->cursor = sqlsrv_prepare($resource, $query, $args);
+                $this->cursor = sqlsrv_prepare($resource, $query, $args);
 
-            return sqlsrv_execute($this->cursor);
-        });
+                return sqlsrv_execute($this->cursor);
+            }
+        );
     }
 
     /**

@@ -71,8 +71,8 @@ class DualIterator implements Iterator
      */
     public function __construct(Iterator $lhs, Iterator $rhs, $flags = 0x33)
     {
-        $this->lhs   = $lhs;
-        $this->rhs   = $rhs;
+        $this->lhs = $lhs;
+        $this->rhs = $rhs;
         $this->flags = $flags;
     }
 

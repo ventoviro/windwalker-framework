@@ -11,6 +11,20 @@ declare(strict_types=1);
 
 namespace Windwalker\Crypt;
 
+use InvalidArgumentException;
+
+use SodiumException;
+
+use function chr;
+use function mb_substr;
+
+use function sodium_crypto_generichash;
+
+use function str_repeat;
+
+use const SODIUM_CRYPTO_GENERICHASH_BYTES;
+use const SODIUM_CRYPTO_GENERICHASH_KEYBYTES;
+
 /**
  * The CryptHelper class.
  *
@@ -61,7 +75,7 @@ class CryptHelper
      *
      * @return string
      *
-     * @throws \SodiumException
+     * @throws SodiumException
      */
     public static function hkdfBlake2b(
         string $ikm,
@@ -70,35 +84,35 @@ class CryptHelper
         string $salt = ''
     ): string {
         // Sanity-check the desired output length.
-        if ($length < 0 || $length > (255 * \SODIUM_CRYPTO_GENERICHASH_KEYBYTES)) {
-            throw new \InvalidArgumentException(
+        if ($length < 0 || $length > (255 * SODIUM_CRYPTO_GENERICHASH_KEYBYTES)) {
+            throw new InvalidArgumentException(
                 'Argument 2: Bad HKDF Digest Length'
             );
         }
 
         // "If [salt] not provided, is set to a string of HashLen zeroes."
         if (empty($salt)) {
-            $salt = \str_repeat("\x00", \SODIUM_CRYPTO_GENERICHASH_KEYBYTES);
+            $salt = str_repeat("\x00", SODIUM_CRYPTO_GENERICHASH_KEYBYTES);
         }
 
         // HKDF-Extract:
         // PRK = HMAC-Hash(salt, IKM)
         // The salt is the HMAC key.
-        $prk = \sodium_crypto_generichash($ikm, $salt);
+        $prk = sodium_crypto_generichash($ikm, $salt);
 
         // @note $prk should less than SODIUM_CRYPTO_GENERICHASH_KEYBYTES.
 
         // HKDF-Expand:
         // T(0) = ''
-        $t          = '';
+        $t = '';
         $last_block = '';
 
         for ($block_index = 1; static::strlen($t) < $length; ++$block_index) {
             // T(i) = HMAC-Hash(PRK, T(i-1) | info | 0x??)
-            $last_block = \sodium_crypto_generichash(
-                $last_block . $info . \chr($block_index),
+            $last_block = sodium_crypto_generichash(
+                $last_block . $info . chr($block_index),
                 $prk,
-                \SODIUM_CRYPTO_GENERICHASH_BYTES
+                SODIUM_CRYPTO_GENERICHASH_BYTES
             );
             // T = T(1) | T(2) | T(3) | ... | T(N)
             $t .= $last_block;
@@ -143,7 +157,7 @@ class CryptHelper
             return '';
         }
 
-        return \mb_substr($str, $start, $length, '8bit');
+        return mb_substr($str, $start, $length, '8bit');
     }
 
     /**
@@ -158,7 +172,7 @@ class CryptHelper
     {
         $len = mb_strlen($string);
 
-        $new   = '';
+        $new = '';
         $chunk = max($len >> 1, 1);
 
         for ($i = 0; $i < $len; $i += $chunk) {

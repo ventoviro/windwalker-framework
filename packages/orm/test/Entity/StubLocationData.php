@@ -11,20 +11,22 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Test\Entity;
 
-use Windwalker\ORM\EntityInterface;
-use Windwalker\ORM\EntityTrait;
+use stdClass;
 use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Column;
 use Windwalker\ORM\Attributes\PK;
 use Windwalker\ORM\Attributes\Table;
+use Windwalker\ORM\EntityInterface;
+use Windwalker\ORM\EntityTrait;
 
 /**
  * The LocationData class.
  */
 #[Table('location_data')]
-class StubLocationData  implements EntityInterface
+class StubLocationData implements EntityInterface
 {
     use EntityTrait;
+
     #[Column('id'), PK, AutoIncrement]
     protected ?int $id = null;
 
@@ -32,7 +34,7 @@ class StubLocationData  implements EntityInterface
     protected string $locationNo = '';
 
     #[Column('data')]
-    protected string|\stdClass $data = '';
+    protected string|stdClass $data = '';
 
     /**
      * @return string

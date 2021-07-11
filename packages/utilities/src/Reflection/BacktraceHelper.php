@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Utilities\Reflection;
 
+use ReflectionClass;
+use ReflectionException;
 use Windwalker\Utilities\Str;
 use Windwalker\Utilities\Utf8String;
 
@@ -72,22 +74,22 @@ class BacktraceHelper
      * @param  string|null  $replaceRoot
      *
      * @return  array
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public static function normalizeBacktrace(array $trace, ?string $replaceRoot = null): array
     {
         $args = [];
 
         $trace['class'] ??= null;
-        $trace['args']  ??= [];
-        $trace['file']  ??= null;
-        $trace['line']  ??= null;
+        $trace['args'] ??= [];
+        $trace['file'] ??= null;
+        $trace['line'] ??= null;
 
         foreach ((array) $trace['args'] as $arg) {
             if (is_array($arg)) {
                 $arg = 'Array';
             } elseif (is_object($arg)) {
-                $arg = (new \ReflectionClass($arg))->getShortName();
+                $arg = (new ReflectionClass($arg))->getShortName();
             } elseif (is_string($arg)) {
                 if (Utf8String::strlen($arg) > 20) {
                     $arg = Utf8String::substr($arg, 0, 20) . '...';

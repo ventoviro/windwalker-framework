@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Promise\Test;
 
+use Throwable;
 use Windwalker\Promise\ExtendedPromiseInterface;
 use Windwalker\Promise\Scheduler\DeferredScheduler;
 use Windwalker\Promise\Scheduler\ImmediateScheduler;
@@ -99,7 +100,7 @@ class FunctionsTest extends AbstractPromiseTestCase
      *
      * @return  void
      *
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function testCoroutine(): void
     {
@@ -144,7 +145,7 @@ class FunctionsTest extends AbstractPromiseTestCase
      *
      * @return  void
      *
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function testCoroutineable(): void
     {

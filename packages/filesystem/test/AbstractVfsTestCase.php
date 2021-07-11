@@ -14,11 +14,10 @@ namespace Windwalker\Filesystem\Test;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use org\bovigo\vfs\visitor\vfsStreamStructureVisitor;
+use org\bovigo\vfs\visitor\vfsStreamVisitor;
 use PHPUnit\Framework\TestCase;
 use Windwalker\Filesystem\FileObject;
 use Windwalker\Filesystem\Path;
-
-use function Evenement\Tests\setGlobalTestData;
 
 /**
  * The AbstractFilesystemTest class.
@@ -104,7 +103,7 @@ abstract class AbstractVfsTestCase extends TestCase
         parent::tearDown();
     }
 
-    protected function inspectVfs(): \org\bovigo\vfs\visitor\vfsStreamVisitor
+    protected function inspectVfs(): vfsStreamVisitor
     {
         return vfsStream::inspect(new vfsStreamStructureVisitor());
     }

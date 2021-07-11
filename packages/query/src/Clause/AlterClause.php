@@ -36,7 +36,7 @@ class AlterClause implements ClauseInterface
      */
     public function __construct(Query $query)
     {
-        $this->query  = $query;
+        $this->query = $query;
         $this->clause = $query->clause('ALTER', [], ",\n");
     }
 
@@ -151,7 +151,7 @@ class AlterClause implements ClauseInterface
             [
                 'MODIFY COLUMN',
                 $this->query->quoteName($columnName),
-                $expression
+                $expression,
             ]
         );
     }

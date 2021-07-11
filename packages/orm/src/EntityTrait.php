@@ -11,13 +11,15 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM;
 
+use ReflectionAttribute;
+use ReflectionClass;
+use ReflectionProperty;
 use Windwalker\Data\Collection;
 use Windwalker\ORM\Attributes\MapperClass;
 use Windwalker\ORM\Attributes\Table;
 use Windwalker\ORM\Relation\RelationCollection;
 use Windwalker\ORM\Relation\RelationProxies;
 use Windwalker\ORM\Relation\Strategy\RelationStrategyInterface;
-use Windwalker\Utilities\Contract\DumpableInterface;
 use Windwalker\Utilities\TypeCast;
 
 /**
@@ -27,8 +29,8 @@ trait EntityTrait
 {
     public static function table(): ?string
     {
-        return (new \ReflectionClass(static::class))
-            ->getAttributes(Table::class, \ReflectionAttribute::IS_INSTANCEOF)[0]
+        return (new ReflectionClass(static::class))
+            ->getAttributes(Table::class, ReflectionAttribute::IS_INSTANCEOF)[0]
             ?->newInstance()
             ?->getName();
     }
@@ -51,7 +53,10 @@ trait EntityTrait
 
     protected function loadCollection(string $propName)
     {
-        return $this->$propName ??= RelationProxies::call($this, $propName) ?? new RelationCollection(static::class, null);
+        return $this->$propName ??= RelationProxies::call($this, $propName) ?? new RelationCollection(
+                static::class,
+                null
+            );
     }
 
     public function loadAllRelations(): void
@@ -66,8 +71,8 @@ trait EntityTrait
     public function clearRelations(): void
     {
         foreach ($this->dump() as $prop => $value) {
-            $ref = new \ReflectionProperty($this, $prop);
-            $attrs = $ref->getAttributes(RelationStrategyInterface::class, \ReflectionAttribute::IS_INSTANCEOF);
+            $ref = new ReflectionProperty($this, $prop);
+            $attrs = $ref->getAttributes(RelationStrategyInterface::class, ReflectionAttribute::IS_INSTANCEOF);
 
             if ($attrs) {
                 $this->$prop = null;

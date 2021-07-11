@@ -12,6 +12,8 @@ declare(strict_types=1);
 namespace Windwalker\Renderer;
 
 use Closure;
+use Mustache_Engine;
+use Mustache_Loader_FilesystemLoader;
 
 /**
  * The MustacheRenderer class.
@@ -28,9 +30,9 @@ class MustacheRenderer extends AbstractEngineRenderer implements LayoutConverter
     public function getDefaultBuilder(): Closure
     {
         return function (array $options = []) {
-            $engine = new \Mustache_Engine($options['mustache'] ?? []);
+            $engine = new Mustache_Engine($options['mustache'] ?? []);
             $engine->setLoader(
-                new \Mustache_Loader_FilesystemLoader(
+                new Mustache_Loader_FilesystemLoader(
                     $options['base_dir'] ?? $options['paths'][0] ?? '',
                     $options
                 )
@@ -45,10 +47,10 @@ class MustacheRenderer extends AbstractEngineRenderer implements LayoutConverter
      */
     public function make(string $layout, array $options = []): Closure
     {
-        /** @var \Mustache_Engine $engine */
+        /** @var Mustache_Engine $engine */
         $engine = $this->createEngine($options);
 
-        return fn (array $data = []) => $engine->render($layout, $data);
+        return fn(array $data = []) => $engine->render($layout, $data);
     }
 
     public function handleLayout(string $layout, string $ext): string

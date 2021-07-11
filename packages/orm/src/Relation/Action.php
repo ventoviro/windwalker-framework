@@ -22,7 +22,7 @@ class Action
      *
      * @const  string
      */
-    public const CASCADE   = 'CASCADE';
+    public const CASCADE = 'CASCADE';
 
     /**
      * Rejects the delete or update operation for the parent table.
@@ -38,19 +38,20 @@ class Action
      *
      * @const  string
      */
-    public const RESTRICT  = 'NO ACTION';
+    public const RESTRICT = 'NO ACTION';
 
     /**
-     * Delete or update the row from the parent table, and set the foreign key column or columns in the child table to NULL.
+     * Delete or update the row from the parent table, and set the foreign key column or columns in the child table to
+     * NULL.
      *
      * @const  string
      */
-    public const SET_NULL  = 'SET NULL';
+    public const SET_NULL = 'SET NULL';
 
     public const ACTIONS = [
         self::NO_ACTION,
         self::SET_NULL,
         self::CASCADE,
-        self::RESTRICT
+        self::RESTRICT,
     ];
 }

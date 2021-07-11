@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Attributes;
 
+use Attribute;
+use ReflectionProperty;
 use Windwalker\Attributes\AttributeHandler;
 use Windwalker\Attributes\AttributeInterface;
 use Windwalker\Cache\Exception\LogicException;
@@ -19,8 +21,8 @@ use Windwalker\ORM\Metadata\EntityMetadata;
 /**
  * The PK class.
  */
-#[\Attribute]
-class PK  implements AttributeInterface
+#[Attribute]
+class PK implements AttributeInterface
 {
     use ORMAttributeTrait;
 
@@ -33,7 +35,7 @@ class PK  implements AttributeInterface
      */
     public function handle(EntityMetadata $metadata, AttributeHandler $handler): callable
     {
-        /** @var \ReflectionProperty $prop */
+        /** @var ReflectionProperty $prop */
         $prop = $handler->getReflector();
 
         $metadata->addAttributeMap(static::class, $prop);

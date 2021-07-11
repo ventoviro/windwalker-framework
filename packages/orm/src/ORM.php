@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM;
 
+use Attribute;
+use BadMethodCallException;
+use ReflectionException;
 use Windwalker\Attributes\AttributesAwareTrait;
 use Windwalker\Attributes\AttributesResolver;
 use Windwalker\Data\Collection;
@@ -54,17 +57,25 @@ use Windwalker\Query\Query;
  * @method  Collection   findColumn(string $entityClass, string $column, mixed $conditions = [])
  * @method  object  createOne(string $entityClass, array|object $item = [])
  * @method  iterable      createMultiple(string $entityClass, iterable $items)
- * @method  StatementInterface|null  updateOne(string $entityClass, array|object $item = [], array|string $condFields = null, int $options = 0)
- * @method  object[]      updateMultiple(string $entityClass, iterable $items, array|string $condFields = null, int $options = 0)
+ * @method  StatementInterface|null  updateOne(string $entityClass, array|object $item = [], array|string $condFields =
+ *          null, int $options = 0)
+ * @method  object[]      updateMultiple(string $entityClass, iterable $items, array|string $condFields = null, int
+ *          $options = 0)
  * @method  StatementInterface  updateWhere(string $entityClass, array|object $data, mixed $conditions = null)
- * @method  StatementInterface[]  updateBatch(string $entityClass, array|object $data, mixed $conditions = null, int $options = 0)
- * @method  iterable|object[] saveMultiple(string $entityClass, iterable $items, string|array $condFields = null, int $options = 0)
- * @method  object        saveOne(string $entityClass, array|object $item, array|string $condFields = null, int $options = 0)
- * @method  object        findOneOrCreate(string $entityClass, mixed $conditions, mixed $initData = null, bool $mergeConditions = true)
- * @method  object        updateOneOrCreate(string $entityClass, array|object $item, mixed $initData = null, ?array $condFields = null, int $options = 0)
+ * @method  StatementInterface[]  updateBatch(string $entityClass, array|object $data, mixed $conditions = null, int
+ *          $options = 0)
+ * @method  iterable|object[] saveMultiple(string $entityClass, iterable $items, string|array $condFields = null, int
+ *          $options = 0)
+ * @method  object        saveOne(string $entityClass, array|object $item, array|string $condFields = null, int
+ *          $options = 0)
+ * @method  object        findOneOrCreate(string $entityClass, mixed $conditions, mixed $initData = null, bool
+ *          $mergeConditions = true)
+ * @method  object        updateOneOrCreate(string $entityClass, array|object $item, mixed $initData = null, ?array
+ *          $condFields = null, int $options = 0)
  * @method  StatementInterface[]  deleteWhere(string $entityClass, mixed $conditions)
  * @method  iterable|object[]     flush(string $entityClass, iterable $items, mixed $conditions = [])
- * @method  StatementInterface[]  sync(string $entityClass, iterable $items, mixed $conditions = [], ?array $compareKeys = null)
+ * @method  StatementInterface[]  sync(string $entityClass, iterable $items, mixed $conditions = [], ?array
+ *          $compareKeys = null)
  */
 class ORM
 {
@@ -110,31 +121,31 @@ class ORM
     {
         $ar->setOption('orm', $this);
 
-        $ar->registerAttribute(AutoIncrement::class, \Attribute::TARGET_PROPERTY);
-        $ar->registerAttribute(Cast::class, \Attribute::TARGET_PROPERTY);
-        $ar->registerAttribute(CastNullable::class, \Attribute::TARGET_PROPERTY);
-        $ar->registerAttribute(Column::class, \Attribute::TARGET_PROPERTY);
-        $ar->registerAttribute(Mapping::class, \Attribute::TARGET_PROPERTY);
-        $ar->registerAttribute(PK::class, \Attribute::TARGET_PROPERTY);
+        $ar->registerAttribute(AutoIncrement::class, Attribute::TARGET_PROPERTY);
+        $ar->registerAttribute(Cast::class, Attribute::TARGET_PROPERTY);
+        $ar->registerAttribute(CastNullable::class, Attribute::TARGET_PROPERTY);
+        $ar->registerAttribute(Column::class, Attribute::TARGET_PROPERTY);
+        $ar->registerAttribute(Mapping::class, Attribute::TARGET_PROPERTY);
+        $ar->registerAttribute(PK::class, Attribute::TARGET_PROPERTY);
 
-        $ar->registerAttribute(OneToOne::class, \Attribute::TARGET_PROPERTY);
-        $ar->registerAttribute(OneToMany::class, \Attribute::TARGET_PROPERTY);
-        $ar->registerAttribute(ManyToOne::class, \Attribute::TARGET_PROPERTY);
-        $ar->registerAttribute(ManyToMany::class, \Attribute::TARGET_PROPERTY);
+        $ar->registerAttribute(OneToOne::class, Attribute::TARGET_PROPERTY);
+        $ar->registerAttribute(OneToMany::class, Attribute::TARGET_PROPERTY);
+        $ar->registerAttribute(ManyToOne::class, Attribute::TARGET_PROPERTY);
+        $ar->registerAttribute(ManyToMany::class, Attribute::TARGET_PROPERTY);
 
-        $ar->registerAttribute(Table::class, \Attribute::TARGET_CLASS);
-        $ar->registerAttribute(NestedSet::class, \Attribute::TARGET_CLASS);
+        $ar->registerAttribute(Table::class, Attribute::TARGET_CLASS);
+        $ar->registerAttribute(NestedSet::class, Attribute::TARGET_CLASS);
 
-        $ar->registerAttribute(EntitySetup::class, \Attribute::TARGET_METHOD);
-        $ar->registerAttribute(BeforeSaveEvent::class, \Attribute::TARGET_METHOD);
-        $ar->registerAttribute(AfterSaveEvent::class, \Attribute::TARGET_METHOD);
-        $ar->registerAttribute(BeforeUpdateWhereEvent::class, \Attribute::TARGET_METHOD);
-        $ar->registerAttribute(AfterUpdateWhereEvent::class, \Attribute::TARGET_METHOD);
-        $ar->registerAttribute(BeforeDeleteEvent::class, \Attribute::TARGET_METHOD);
-        $ar->registerAttribute(AfterDeleteEvent::class, \Attribute::TARGET_METHOD);
-        $ar->registerAttribute(BeforeCopyEvent::class, \Attribute::TARGET_METHOD);
-        $ar->registerAttribute(AfterCopyEvent::class, \Attribute::TARGET_METHOD);
-        $ar->registerAttribute(Watch::class, \Attribute::TARGET_METHOD);
+        $ar->registerAttribute(EntitySetup::class, Attribute::TARGET_METHOD);
+        $ar->registerAttribute(BeforeSaveEvent::class, Attribute::TARGET_METHOD);
+        $ar->registerAttribute(AfterSaveEvent::class, Attribute::TARGET_METHOD);
+        $ar->registerAttribute(BeforeUpdateWhereEvent::class, Attribute::TARGET_METHOD);
+        $ar->registerAttribute(AfterUpdateWhereEvent::class, Attribute::TARGET_METHOD);
+        $ar->registerAttribute(BeforeDeleteEvent::class, Attribute::TARGET_METHOD);
+        $ar->registerAttribute(AfterDeleteEvent::class, Attribute::TARGET_METHOD);
+        $ar->registerAttribute(BeforeCopyEvent::class, Attribute::TARGET_METHOD);
+        $ar->registerAttribute(AfterCopyEvent::class, Attribute::TARGET_METHOD);
+        $ar->registerAttribute(Watch::class, Attribute::TARGET_METHOD);
     }
 
     /**
@@ -144,7 +155,7 @@ class ORM
      * @param  string|null  $mapperClass
      *
      * @return  EntityMapper
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function mapper(string $entityClass, ?string $mapperClass = null): EntityMapper
     {
@@ -209,7 +220,7 @@ class ORM
      *
      * @return  object
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function createEntity(string $entityClass, array $data = []): object
     {
@@ -229,7 +240,7 @@ class ORM
      * @param  object  $entity
      *
      * @return  object
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function hydrateEntity(array $data, object $entity): object
     {
@@ -331,7 +342,7 @@ class ORM
 
     /**
      * @return FieldHydratorInterface
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function getEntityHydrator(): FieldHydratorInterface
     {
@@ -368,7 +379,7 @@ class ORM
             return $this->mapper($entity)->$name(...$args);
         }
 
-        throw new \BadMethodCallException(
+        throw new BadMethodCallException(
             sprintf(
                 'Call to undefined method %s::%s()',
                 static::class,

@@ -75,7 +75,7 @@ class Loop
     public function loop(int $index, mixed $key): static
     {
         $this->index = $index;
-        $this->key   = $key;
+        $this->key = $key;
 
         return $this;
     }

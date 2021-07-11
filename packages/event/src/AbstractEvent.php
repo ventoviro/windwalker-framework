@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Event;
 
+use ReflectionClass;
 use Windwalker\Utilities\Assert\ArgumentsAssert;
 
 /**
@@ -106,7 +107,7 @@ abstract class AbstractEvent implements EventInterface
     {
         $new = clone $this;
 
-        $new->name    = $name;
+        $new->name = $name;
         $new->stopped = false;
         $new->merge($args);
 
@@ -186,7 +187,7 @@ abstract class AbstractEvent implements EventInterface
      */
     public function clear(): static
     {
-        $props = (new \ReflectionClass($this))->getDefaultProperties();
+        $props = (new ReflectionClass($this))->getDefaultProperties();
 
         unset($props['name'], $props['stopped']);
 

@@ -17,7 +17,9 @@ namespace Windwalker\ORM\Cast;
 interface CastInterface
 {
     public const TYPE_CAST = 1;
+
     public const CONSTRUCTOR = 2;
+
     public const HYDRATE = 3;
 
     /**

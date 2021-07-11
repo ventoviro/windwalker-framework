@@ -11,12 +11,13 @@ declare(strict_types=1);
 
 namespace Windwalker\Pool\Stack;
 
+use Countable;
 use Windwalker\Pool\ConnectionInterface;
 
 /**
  * Interface DriverInterface
  */
-interface StackInterface extends \Countable
+interface StackInterface extends Countable
 {
     /**
      * Push a connection into pool.

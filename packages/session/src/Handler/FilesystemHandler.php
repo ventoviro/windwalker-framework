@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Session\Handler;
 
+use DomainException;
 use Windwalker\Filesystem\FileObject;
 use Windwalker\Filesystem\Filesystem;
 use Windwalker\Utilities\Options\OptionAccessTrait;
@@ -33,12 +34,12 @@ class FilesystemHandler extends AbstractHandler
     public function __construct(?string $path = null, array $options = [])
     {
         if (!class_exists(Filesystem::class)) {
-            throw new \DomainException('Please install windwalker/filesystem ^4.0');
+            throw new DomainException('Please install windwalker/filesystem ^4.0');
         }
 
         $this->prepareOptions(
             [
-                'prefix' => 'sess_'
+                'prefix' => 'sess_',
             ],
             $options
         );
@@ -118,7 +119,7 @@ class FilesystemHandler extends AbstractHandler
         $past = time() - $maxlifetime;
 
         $files = Filesystem::files($this->path)
-            ->filter(fn (FileObject $file) => $file->getMTime() < $past);
+            ->filter(fn(FileObject $file) => $file->getMTime() < $past);
 
         /** @var FileObject $file */
         foreach ($files as $file) {

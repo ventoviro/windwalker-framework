@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace Windwalker\Queue\Driver;
 
+use DateTimeImmutable;
+use Exception;
+use Throwable;
 use Windwalker\Database\DatabaseAdapter;
 use Windwalker\Query\Query;
 use Windwalker\Queue\QueueMessage;
@@ -49,8 +52,8 @@ class DatabaseQueueDriver implements QueueDriverInterface
         string $table = 'queue_jobs',
         int $timeout = 60
     ) {
-        $this->db      = $db;
-        $this->table   = $table;
+        $this->db = $db;
+        $this->table = $table;
         $this->channel = $channel;
         $this->timeout = $timeout;
     }
@@ -61,11 +64,11 @@ class DatabaseQueueDriver implements QueueDriverInterface
      * @param  QueueMessage  $message
      *
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
     public function push(QueueMessage $message): string
     {
-        $time = new \DateTimeImmutable('now');
+        $time = new DateTimeImmutable('now');
 
         $data = [
             'channel' => $message->getChannel() ?: $this->channel,
@@ -87,13 +90,13 @@ class DatabaseQueueDriver implements QueueDriverInterface
      * @param  string|null  $channel
      *
      * @return QueueMessage|null
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function pop(?string $channel = null): ?QueueMessage
     {
         $channel = $channel ?: $this->channel;
 
-        $now = new \DateTimeImmutable('now');
+        $now = new DateTimeImmutable('now');
 
         $query = $this->db->getQuery(true);
 
@@ -167,13 +170,13 @@ class DatabaseQueueDriver implements QueueDriverInterface
      * @param  QueueMessage|string  $message
      *
      * @return static
-     * @throws \Exception
+     * @throws Exception
      */
     public function release(QueueMessage $message): static
     {
         $channel = $message->getChannel() ?: $this->channel;
 
-        $time = new \DateTimeImmutable('now');
+        $time = new DateTimeImmutable('now');
         $time = $time->modify('+' . $message->getDelay() . 'seconds');
 
         $values = [

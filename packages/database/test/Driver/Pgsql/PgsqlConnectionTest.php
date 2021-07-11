@@ -14,7 +14,6 @@ namespace Windwalker\Database\Test\Driver\Pgsql;
 use Windwalker\Database\Driver\AbstractConnection;
 use Windwalker\Database\Driver\Pgsql\PgsqlConnection;
 use Windwalker\Database\Test\Driver\AbstractConnectionTest;
-use Windwalker\Database\Test\Reseter\PostgreSQLReseter;
 
 /**
  * The PgsqlConnectionTest class.

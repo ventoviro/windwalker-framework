@@ -11,8 +11,6 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Test;
 
-use PHPUnit\Framework\TestCase;
-use Windwalker\ORM\Attributes\NestedSet;
 use Windwalker\ORM\Exception\NestedHandleException;
 use Windwalker\ORM\Nested\NestedEntityInterface;
 use Windwalker\ORM\Nested\Position;
@@ -89,7 +87,7 @@ class NestedSetMapperTest extends AbstractORMTestCase
             [2, 3],
             [
                 $ent->getLft(),
-                $ent->getRgt()
+                $ent->getRgt(),
             ]
         );
 
@@ -107,7 +105,7 @@ class NestedSetMapperTest extends AbstractORMTestCase
             [6, 7],
             [
                 $ent->getLft(),
-                $ent->getRgt()
+                $ent->getRgt(),
             ]
         );
 
@@ -122,7 +120,7 @@ class NestedSetMapperTest extends AbstractORMTestCase
             [1, 2],
             [
                 $ent->getLft(),
-                $ent->getRgt()
+                $ent->getRgt(),
             ]
         );
 
@@ -137,7 +135,7 @@ class NestedSetMapperTest extends AbstractORMTestCase
             [11, 12],
             [
                 $ent->getLft(),
-                $ent->getRgt()
+                $ent->getRgt(),
             ]
         );
     }
@@ -298,7 +296,7 @@ class NestedSetMapperTest extends AbstractORMTestCase
                 'flower/olive',
                 'sunflower',
                 'rose',
-                'orchid'
+                'orchid',
             ],
             $paths
         );
@@ -368,7 +366,7 @@ class NestedSetMapperTest extends AbstractORMTestCase
         $mapper->createRoot(
             [
                 'title' => 'root',
-                'access' => 1
+                'access' => 1,
             ]
         );
     }

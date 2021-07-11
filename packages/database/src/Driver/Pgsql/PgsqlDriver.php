@@ -14,7 +14,6 @@ namespace Windwalker\Database\Driver\Pgsql;
 use Windwalker\Database\Driver\AbstractDriver;
 use Windwalker\Database\Driver\ConnectionInterface;
 use Windwalker\Database\Driver\StatementInterface;
-use Windwalker\Database\Platform\PostgreSQLPlatform;
 
 /**
  * The PgsqlDriver class.
@@ -64,6 +63,6 @@ class PgsqlDriver extends AbstractDriver
      */
     public function getVersion(): string
     {
-        return $this->useConnection(fn (ConnectionInterface $conn) => pg_version($conn->get())['server'] ?? '');
+        return $this->useConnection(fn(ConnectionInterface $conn) => pg_version($conn->get())['server'] ?? '');
     }
 }

@@ -61,22 +61,22 @@ class PostgreSQLQueryTest extends QueryTest
             [
                 'foo ->> bar',
                 true,
-                '"foo"->>\'bar\''
+                '"foo"->>\'bar\'',
             ],
             [
                 'foo->bar[1]->>yoo',
                 true,
-                '"foo"->\'bar\'->1->>\'yoo\''
+                '"foo"->\'bar\'->1->>\'yoo\'',
             ],
             [
                 'foo->bar[1]->>\'yoo\'',
                 true,
-                '"foo"->\'bar\'->1->>\'yoo\''
+                '"foo"->\'bar\'->1->>\'yoo\'',
             ],
             [
                 'foo->bar[1]->\'yoo\'',
                 false,
-                '"foo"->\'bar\'->1->\'yoo\''
+                '"foo"->\'bar\'->1->\'yoo\'',
             ],
         ];
     }

@@ -34,8 +34,8 @@ class CallbackCookies implements CookiesInterface
      */
     public function __construct(?callable $getter = null, ?callable $setter = null)
     {
-        $this->getter = $getter ?? fn () => true;
-        $this->setter = $setter ?? fn () => null;
+        $this->getter = $getter ?? fn() => true;
+        $this->setter = $setter ?? fn() => null;
     }
 
     /**

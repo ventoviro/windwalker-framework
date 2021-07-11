@@ -12,6 +12,8 @@ declare(strict_types=1);
 namespace Windwalker\Stream\Test;
 
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
+use RuntimeException;
 use Windwalker\Stream\Stream;
 use Windwalker\Utilities\Reflection\ReflectAccessor;
 
@@ -25,7 +27,7 @@ class StreamTest extends TestCase
     /**
      * Test instance.
      *
-     * @var \Windwalker\Stream\Stream
+     * @var Stream
      */
     protected $instance;
 
@@ -63,7 +65,7 @@ class StreamTest extends TestCase
     public function testConstruct()
     {
         $resource = fopen('php://memory', Stream::MODE_READ_WRITE_RESET);
-        $stream   = new Stream($resource);
+        $stream = new Stream($resource);
 
         $this->assertInstanceOf('Windwalker\Stream\Stream', $stream);
 
@@ -104,7 +106,7 @@ class StreamTest extends TestCase
      * @return void
      *
      * @covers \Windwalker\Stream\Stream::close
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function testClose()
     {
@@ -128,12 +130,12 @@ class StreamTest extends TestCase
      * @return void
      *
      * @covers \Windwalker\Stream\Stream::detach
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function testDetach()
     {
         $resource = fopen('php://memory', Stream::MODE_READ_WRITE_RESET);
-        $stream   = new Stream($resource);
+        $stream = new Stream($resource);
 
         $this->assertSame($resource, $stream->detach());
         self::assertEmpty(ReflectAccessor::getValue($stream, 'resource'));
@@ -182,7 +184,7 @@ class StreamTest extends TestCase
         $stream->detach();
 
         $this->expectException(
-            \RuntimeException::class
+            RuntimeException::class
         );
 
         $stream->tell();
@@ -200,7 +202,7 @@ class StreamTest extends TestCase
         $this->createTempFile();
         file_put_contents($this->tmpnam, 'FOO BAR');
         $resource = fopen($this->tmpnam, Stream::MODE_READ_ONLY_FROM_BEGIN);
-        $stream   = new Stream($resource);
+        $stream = new Stream($resource);
 
         fseek($resource, 2);
         $this->assertFalse($stream->eof());
@@ -236,7 +238,7 @@ class StreamTest extends TestCase
 
         file_put_contents($this->tmpnam, 'FOO BAR');
         $resource = fopen($this->tmpnam, Stream::MODE_READ_WRITE_RESET);
-        $stream   = new Stream($resource);
+        $stream = new Stream($resource);
 
         $this->assertTrue($stream->isSeekable());
     }
@@ -254,7 +256,7 @@ class StreamTest extends TestCase
         file_put_contents($this->tmpnam, 'FOO BAR');
 
         $resource = fopen($this->tmpnam, Stream::MODE_READ_ONLY_FROM_BEGIN);
-        $stream   = new Stream($resource);
+        $stream = new Stream($resource);
 
         $this->assertTrue($stream->seek(2));
         $this->assertEquals(2, $stream->tell());

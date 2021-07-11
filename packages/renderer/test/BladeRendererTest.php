@@ -13,6 +13,7 @@ namespace Windwalker\Renderer\Test;
 
 use Illuminate\Contracts\View\Factory;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Windwalker\Filesystem\Filesystem;
 use Windwalker\Renderer\BladeRenderer;
 use Windwalker\Test\Traits\DOMTestTrait;
@@ -51,7 +52,7 @@ class BladeRendererTest extends TestCase
         static::$path = realpath(__DIR__ . '/Tmpl/blade');
 
         if (!static::$path) {
-            throw new \RuntimeException('Path not exists');
+            throw new RuntimeException('Path not exists');
         }
 
         Filesystem::mkdir(__DIR__ . '/cache');
@@ -59,7 +60,7 @@ class BladeRendererTest extends TestCase
         $this->instance = new BladeRenderer(
             [
                 'cache_path' => __DIR__ . '/cache',
-                'paths' => [static::$path]
+                'paths' => [static::$path],
             ]
         );
     }

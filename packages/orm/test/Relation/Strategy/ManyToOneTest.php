@@ -13,7 +13,6 @@ namespace Windwalker\ORM\Test\Relation\Strategy;
 
 use Windwalker\ORM\Relation\Action;
 use Windwalker\ORM\Test\AbstractORMTestCase;
-use Windwalker\ORM\Test\Entity\StubLocation;
 use Windwalker\ORM\Test\Entity\StubSakura;
 
 /**

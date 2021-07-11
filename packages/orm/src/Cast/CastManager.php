@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Cast;
 
+use InvalidArgumentException;
 use Windwalker\ORM\Attributes\Cast;
 use Windwalker\ORM\Metadata\EntityMetadata;
 use Windwalker\ORM\ORM;
@@ -93,7 +94,7 @@ class CastManager
 
                     $casts[] = [
                         $this->castToCallback($cast, $options, 'hydrate'),
-                        $this->castToCallback($extract, $options, 'extract')
+                        $this->castToCallback($extract, $options, 'extract'),
                     ];
                 }
 
@@ -219,7 +220,7 @@ class CastManager
                 ->hydrate($value, $cast);
         }
 
-        throw new \InvalidArgumentException(
+        throw new InvalidArgumentException(
             sprintf(
                 'Unsupported cast type: %s',
                 get_debug_type($cast)

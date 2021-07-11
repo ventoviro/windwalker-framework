@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\DI\Attributes;
 
+use ReflectionException;
 use ReflectionObject;
 use Reflector;
 use Windwalker\Attributes\AttributeHandler as BaseAttributeHandler;
@@ -65,7 +66,7 @@ class AttributesResolver extends BaseAttributesResolver
      * @param  mixed   ...$args
      *
      * @return  object
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function createObject(string $class, ...$args): object
     {
@@ -75,12 +76,12 @@ class AttributesResolver extends BaseAttributesResolver
     /**
      * Resolve class constructor and return create function.
      *
-     * @param  string         $class
+     * @param  string  $class
      * @param  callable|null  $builder
      *
      * @return  BaseAttributeHandler
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function resolveClassCreate(string $class, ?callable $builder = null): BaseAttributeHandler
     {
@@ -109,6 +110,7 @@ class AttributesResolver extends BaseAttributesResolver
          * Container builder use `(array $args, int $options)` signature.
          * So we must add 2 argument to polyfill it.
          */
+
         return $this->resolveObjectDecorate($object)($args, $options);
     }
 
@@ -129,8 +131,11 @@ class AttributesResolver extends BaseAttributesResolver
     /**
      * @inheritDoc
      */
-    protected function createHandler(callable $getter, Reflector $reflector, ?object $object = null): BaseAttributeHandler
-    {
+    protected function createHandler(
+        callable $getter,
+        Reflector $reflector,
+        ?object $object = null
+    ): BaseAttributeHandler {
         return new AttributeHandler($getter, $reflector, $object, $this, $this->container);
     }
 

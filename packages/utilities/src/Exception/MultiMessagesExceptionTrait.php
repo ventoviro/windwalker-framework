@@ -8,6 +8,8 @@
 
 namespace Windwalker\Utilities\Exception;
 
+use Throwable;
+
 /**
  * The MultiMessagesExceptionTrait class.
  *
@@ -27,9 +29,9 @@ trait MultiMessagesExceptionTrait
      *
      * @param  string|array|null  $messages
      * @param  int                $code
-     * @param  \Throwable|null    $previous
+     * @param  Throwable|null    $previous
      */
-    public function __construct(string|array $messages = null, int $code = 0, ?\Throwable $previous = null)
+    public function __construct(string|array $messages = null, int $code = 0, ?Throwable $previous = null)
     {
         $this->messages = (array) $messages;
 
@@ -55,7 +57,7 @@ trait MultiMessagesExceptionTrait
     /**
      * Method to set property messages
      *
-     * @param   array $messages
+     * @param  array  $messages
      *
      * @return  static  Return self to support chaining.
      */

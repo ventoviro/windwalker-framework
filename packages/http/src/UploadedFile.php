@@ -99,7 +99,7 @@ class UploadedFile implements UploadedFileInterface
     ) {
         if ($error === UPLOAD_ERR_OK) {
             if (is_string($file)) {
-                $this->file   = $file;
+                $this->file = $file;
                 $this->stream = new Stream($file, Stream::MODE_READ_WRITE_FROM_BEGIN);
             } elseif (is_resource($file)) {
                 $this->stream = new Stream($file);
@@ -128,9 +128,9 @@ class UploadedFile implements UploadedFileInterface
             throw new InvalidArgumentException('Media type must be null or a string');
         }
 
-        $this->error           = $error;
-        $this->size            = $size;
-        $this->clientFilename  = $clientFilename;
+        $this->error = $error;
+        $this->size = $size;
+        $this->clientFilename = $clientFilename;
         $this->clientMediaType = $clientMediaType;
 
         $this->sapi = PHP_SAPI;

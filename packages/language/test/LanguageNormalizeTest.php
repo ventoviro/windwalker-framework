@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Language\Test;
 
+use PHPUnit\Framework\TestCase;
 use Windwalker\Language\LanguageNormalizer;
 
 /**
@@ -18,7 +19,7 @@ use Windwalker\Language\LanguageNormalizer;
  *
  * @since 2.0
  */
-class LanguageNormalizeTest extends \PHPUnit\Framework\TestCase
+class LanguageNormalizeTest extends TestCase
 {
     /**
      * getToTagCases
@@ -73,8 +74,8 @@ class LanguageNormalizeTest extends \PHPUnit\Framework\TestCase
     /**
      * Method to test toLanguageKey().
      *
-     * @param string $origin
-     * @param string $expected
+     * @param  string  $origin
+     * @param  string  $expected
      *
      * @return void
      *

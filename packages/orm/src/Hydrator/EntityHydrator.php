@@ -11,15 +11,13 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Hydrator;
 
-use Windwalker\Attributes\AttributesResolver;
+use stdClass;
+use Throwable;
 use Windwalker\Database\Hydrator\FieldHydratorInterface;
-use Windwalker\Database\Hydrator\HydratorInterface;
-use Windwalker\ORM\Attributes\Column;
 use Windwalker\ORM\Attributes\Mapping;
 use Windwalker\ORM\Exception\CastingException;
 use Windwalker\ORM\Metadata\EntityMetadata;
 use Windwalker\ORM\ORM;
-use Windwalker\Utilities\TypeCast;
 
 /**
  * The EntityHydrator class.
@@ -47,8 +45,8 @@ class EntityHydrator implements FieldHydratorInterface
 
         $metadata = $this->orm->getEntityMetadata($object);
 
-        $item    = [];
-        $props   = $metadata->getProperties();
+        $item = [];
+        $props = $metadata->getProperties();
         $columns = $metadata->getColumns();
 
         foreach ($data as $colName => $value) {
@@ -84,7 +82,7 @@ class EntityHydrator implements FieldHydratorInterface
             return $this->hydrator->extract($object);
         }
 
-        if ($object instanceof \stdClass) {
+        if ($object instanceof stdClass) {
             return get_object_vars($object);
         }
 
@@ -96,7 +94,7 @@ class EntityHydrator implements FieldHydratorInterface
         foreach ($metadata->getColumns() as $column) {
             $prop = $column->getProperty();
 
-            $colName  = $column->getName();
+            $colName = $column->getName();
             $propName = $prop->getName();
 
             if (!array_key_exists($propName, $data)) {
@@ -126,7 +124,7 @@ class EntityHydrator implements FieldHydratorInterface
             return $this->hydrator->extractField($object, $field);
         }
 
-        if ($object instanceof \stdClass) {
+        if ($object instanceof stdClass) {
             return $object->$field;
         }
 
@@ -164,7 +162,7 @@ class EntityHydrator implements FieldHydratorInterface
                             'orm' => $metadata->getORM(),
                         ]
                     );
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 $castName = is_object($cast[1]) ? $cast[1]::class : json_encode($cast[1]);
 
                 throw new CastingException(
@@ -203,7 +201,7 @@ class EntityHydrator implements FieldHydratorInterface
                             'orm' => $metadata->getORM(),
                         ]
                     );
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 $castName = is_object($cast[0]) ? $cast[0]::class : json_encode($cast[0]);
 
                 throw new CastingException(

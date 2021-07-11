@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Test\Manager;
 
+use PDO;
 use Windwalker\Database\Manager\TableManager;
 use Windwalker\Database\Schema\Ddl\Constraint;
 use Windwalker\Database\Schema\Schema;
@@ -28,7 +29,7 @@ class MySQLTableManagerTest extends AbstractDatabaseTestCase
         $table = self::$db->getTable('enterprise');
 
         $logs = $this->logQueries(
-            fn () => $table->create(
+            fn() => $table->create(
                 static function (Schema $schema) {
                     $schema->primary('id');
                     $schema->char('type')->length(25);
@@ -109,7 +110,7 @@ class MySQLTableManagerTest extends AbstractDatabaseTestCase
     public function testGetConstraints(): void
     {
         $constraints = $this->instance->getConstraints();
-        $constraints = array_filter($constraints, fn (Constraint $item) => $item->constraintType !== 'CHECK');
+        $constraints = array_filter($constraints, fn(Constraint $item) => $item->constraintType !== 'CHECK');
 
         self::assertEquals(
             ['PRIMARY', 'idx_enterprise_alias'],
@@ -131,7 +132,7 @@ class MySQLTableManagerTest extends AbstractDatabaseTestCase
                 'TABLE_TYPE' => 'BASE TABLE',
                 'VIEW_DEFINITION' => null,
                 'CHECK_OPTION' => null,
-                'IS_UPDATABLE' => null
+                'IS_UPDATABLE' => null,
             ],
             $detail
         );
@@ -143,19 +144,21 @@ class MySQLTableManagerTest extends AbstractDatabaseTestCase
     public function testUpdate(): void
     {
         $logs = $this->logQueries(
-            fn () => $this->instance->update(function (Schema $schema) {
-                // New column
-                $schema->varchar('captain')->length(512)->after('catid');
-                $schema->varchar('first_officer')->length(512)->after('captain');
+            fn() => $this->instance->update(
+                function (Schema $schema) {
+                    // New column
+                    $schema->varchar('captain')->length(512)->after('catid');
+                    $schema->varchar('first_officer')->length(512)->after('captain');
 
-                // Update column
-                $schema->char('alias')->length(25)
-                    ->nullable(true)
-                    ->defaultValue('');
+                    // Update column
+                    $schema->char('alias')->length(25)
+                        ->nullable(true)
+                        ->defaultValue('');
 
-                // New index
-                $schema->addIndex('captain');
-            })
+                    // New index
+                    $schema->addIndex('captain');
+                }
+            )
         );
 
         self::assertSqlFormatEquals(
@@ -303,7 +306,7 @@ class MySQLTableManagerTest extends AbstractDatabaseTestCase
     public function testAddConstraint(): void
     {
         $logs = $this->logQueries(
-            fn () => $this->instance->addConstraint(
+            fn() => $this->instance->addConstraint(
                 ['captain', 'first_officer'],
                 Constraint::TYPE_UNIQUE
             )
@@ -405,7 +408,7 @@ SQL,
      */
     public function testTruncate(): void
     {
-        $logs = $this->logQueries(fn () => $this->instance->truncate());
+        $logs = $this->logQueries(fn() => $this->instance->truncate());
 
         self::assertEquals('TRUNCATE TABLE `enterprise`', $logs[0]);
     }
@@ -431,7 +434,7 @@ SQL,
                 'created',
                 'updated',
                 'deleted',
-                'params'
+                'params',
             ],
             $cols
         );
@@ -473,7 +476,7 @@ SQL,
                 'created',
                 'updated',
                 'deleted',
-                'params'
+                'params',
             ],
             $this->instance->getColumnNames()
         );
@@ -555,7 +558,7 @@ SQL,
                 'idx_enterprise_catid_type',
                 'idx_enterprise_title',
                 'idx_enterprise_created',
-                'idx_enterprise_start_date_title'
+                'idx_enterprise_start_date_title',
             ],
             $indexes
         );
@@ -570,7 +573,7 @@ SQL,
     {
         $this->instance->schemaName = self::$db->getDriver()->getOption('dbname');
 
-        $logs = $this->logQueries(fn () => $this->instance->getColumns());
+        $logs = $this->logQueries(fn() => $this->instance->getColumns());
 
         self::assertSqlFormatEquals(
             <<<SQL
@@ -601,7 +604,7 @@ SQL,
     {
         $this->instance->dropConstraint('idx_enterprise_alias');
 
-        $ver = self::$baseConn->getAttribute(\PDO::ATTR_SERVER_VERSION);
+        $ver = self::$baseConn->getAttribute(PDO::ATTR_SERVER_VERSION);
 
         $expect = ['PRIMARY'];
 

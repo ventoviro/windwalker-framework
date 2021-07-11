@@ -14,10 +14,8 @@ namespace Windwalker\Query\Grammar;
 use Windwalker\Query\Clause\Clause;
 use Windwalker\Query\Query;
 
-use function Windwalker\Query\clause;
 use function Windwalker\Query\expr;
 use function Windwalker\Query\qn;
-use function Windwalker\Query\val;
 use function Windwalker\raw;
 
 /**

@@ -11,21 +11,24 @@ declare(strict_types=1);
 
 namespace Windwalker\Crypt\Symmetric;
 
+use SodiumException;
 use Windwalker\Crypt\CryptHelper;
 use Windwalker\Crypt\Exception\CryptException;
 use Windwalker\Crypt\HiddenString;
 use Windwalker\Crypt\Key;
 use Windwalker\Crypt\SafeEncoder;
 
+use function sodium_memzero;
+
 /**
  * The Openssl Cipher class.
  *
- * @note   This cipher class referenced Eugene Fidelin and Peter Mortensen's code to prevent
+ * @note        This cipher class referenced Eugene Fidelin and Peter Mortensen's code to prevent
  *        Chosen-Cipher and Timing attack.
  *
- * @see    http://stackoverflow.com/a/19445173
+ * @see         http://stackoverflow.com/a/19445173
  *
- * @since  2.0
+ * @since       2.0
  *
  * @deprecated  Use SodiumCipher instead.
  */
@@ -38,9 +41,9 @@ class LegacyOpensslCipher extends OpensslCipher
     {
         [$hmac, $salt, $iv, $encrypted] = explode(':', $str);
 
-        $hmac      = SafeEncoder::decode($encoder, $hmac);
-        $salt      = SafeEncoder::decode($encoder, $salt);
-        $iv        = SafeEncoder::decode($encoder, $iv);
+        $hmac = SafeEncoder::decode($encoder, $hmac);
+        $salt = SafeEncoder::decode($encoder, $salt);
+        $iv = SafeEncoder::decode($encoder, $iv);
         $encrypted = SafeEncoder::decode($encoder, $encrypted);
 
         [, $hmacKey] = $this->derivateSecureKeys($key->get(), $salt);
@@ -61,13 +64,13 @@ class LegacyOpensslCipher extends OpensslCipher
 
         if (function_exists('sodium_memzero')) {
             try {
-                \sodium_memzero($calc);
-                \sodium_memzero($salt);
-                \sodium_memzero($iv);
-                \sodium_memzero($hmacKey);
-                \sodium_memzero($encrypted);
-                \sodium_memzero($encKey);
-            } catch (\SodiumException $e) {
+                sodium_memzero($calc);
+                sodium_memzero($salt);
+                sodium_memzero($iv);
+                sodium_memzero($hmacKey);
+                sodium_memzero($encrypted);
+                sodium_memzero($encKey);
+            } catch (SodiumException $e) {
                 // No actions
             }
         }
@@ -112,13 +115,13 @@ class LegacyOpensslCipher extends OpensslCipher
 
         if (function_exists('sodium_memzero')) {
             try {
-                \sodium_memzero($encKey);
-                \sodium_memzero($hmacKey);
-                \sodium_memzero($iv);
-                \sodium_memzero($salt);
-                \sodium_memzero($encrypted);
-                \sodium_memzero($hmac);
-            } catch (\SodiumException $e) {
+                sodium_memzero($encKey);
+                sodium_memzero($hmacKey);
+                sodium_memzero($iv);
+                sodium_memzero($salt);
+                sodium_memzero($encrypted);
+                sodium_memzero($hmac);
+            } catch (SodiumException $e) {
                 // No actions
             }
         }
