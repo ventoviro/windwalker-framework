@@ -53,7 +53,8 @@ trait EntityTrait
 
     protected function loadCollection(string $propName)
     {
-        return $this->$propName ??= RelationProxies::call($this, $propName) ?? new RelationCollection(
+        return $this->$propName ??= RelationProxies::call($this, $propName)
+            ?? new RelationCollection(
                 static::class,
                 null
             );

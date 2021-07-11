@@ -688,17 +688,17 @@ SQL;
             $this->getGrammar()::build(
                 'exec sp_addextendedproperty',
                 ...$query->quote(
-                [
-                    'MS_Description',
-                    $comment,
-                    'SCHEMA',
-                    'dbo',
-                    'TABLE',
-                    $table,
-                    $type,
-                    $name,
-                ]
-            )
+                    [
+                        'MS_Description',
+                        $comment,
+                        'SCHEMA',
+                        'dbo',
+                        'TABLE',
+                        $table,
+                        $type,
+                        $name,
+                    ]
+                )
             )
         );
     }

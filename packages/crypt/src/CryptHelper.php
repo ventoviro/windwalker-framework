@@ -12,14 +12,11 @@ declare(strict_types=1);
 namespace Windwalker\Crypt;
 
 use InvalidArgumentException;
-
 use SodiumException;
 
 use function chr;
 use function mb_substr;
-
 use function sodium_crypto_generichash;
-
 use function str_repeat;
 
 use const SODIUM_CRYPTO_GENERICHASH_BYTES;

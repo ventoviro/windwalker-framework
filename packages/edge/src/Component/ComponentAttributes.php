@@ -263,7 +263,8 @@ class ComponentAttributes implements ArrayAccess, IteratorAggregate
 
         $attributes = $appendableAttributes->mapWithKeys(
             function ($value, $key) use ($attributeDefaults, $escape) {
-                $defaultsValue = isset($attributeDefaults[$key]) && $attributeDefaults[$key] instanceof AppendableAttributeValue
+                $defaultsValue = isset($attributeDefaults[$key])
+                && $attributeDefaults[$key] instanceof AppendableAttributeValue
                     ? $this->resolveAppendableAttributeDefault($attributeDefaults, $key, $escape)
                     : ($attributeDefaults[$key] ?? '');
 
@@ -345,8 +346,7 @@ class ComponentAttributes implements ArrayAccess, IteratorAggregate
         if (
             isset($attributes['attributes']) &&
             (
-                $attributes['attributes'] instanceof self
-                || is_array($attributes['attributes'])
+                $attributes['attributes'] instanceof self || is_array($attributes['attributes'])
             )
         ) {
             $parentBag = static::wrap($attributes['attributes']);

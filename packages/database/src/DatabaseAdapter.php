@@ -287,8 +287,12 @@ class DatabaseAdapter implements EventListenableInterface, HydratorAwareInterfac
     public function countWith(Query|string $query): int
     {
         // Use fast COUNT(*) on Query objects if there no GROUP BY or HAVING clause:
-        if ($query instanceof Query && $query->getType() === Query::TYPE_SELECT
-            && $query->getGroup() === null && $query->getHaving() === null) {
+        if (
+            $query instanceof Query
+            && $query->getType() === Query::TYPE_SELECT
+            && $query->getGroup() === null
+            && $query->getHaving() === null
+        ) {
             $query = clone $query;
 
             $query->clear('select', 'order', 'limit')->selectRaw('COUNT(*)');

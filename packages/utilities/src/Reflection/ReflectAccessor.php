@@ -264,7 +264,8 @@ class ReflectAccessor
 
     public static function getReflectProperties(
         object|string $object,
-        ?int $filters = ReflectionProperty::IS_PUBLIC | ReflectionProperty::IS_PRIVATE | ReflectionProperty::IS_PROTECTED
+        ?int $filters = ReflectionProperty::IS_PUBLIC | ReflectionProperty::IS_PRIVATE
+        | ReflectionProperty::IS_PROTECTED
     ): array {
         $ref = new ReflectionClass($object);
 

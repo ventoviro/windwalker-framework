@@ -56,13 +56,13 @@ use function Windwalker\collect;
  */
 class EntityMapper implements EventAwareInterface
 {
+    use EventAwareTrait;
+
     public const UPDATE_NULLS = 1 << 0;
 
     public const IGNORE_EVENTS = 1 << 1;
 
     public const IGNORE_OLD_DATA = 1 << 2;
-
-    use EventAwareTrait;
 
     /**
      * @var ORM
