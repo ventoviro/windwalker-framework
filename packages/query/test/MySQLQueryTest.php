@@ -56,19 +56,19 @@ class MySQLQueryTest extends QueryTest
         return [
             [
                 'foo ->> bar',
-                'JSON_UNQUOTE(JSON_EXTRACT(`foo`, \'$.bar\'))'
+                'JSON_UNQUOTE(JSON_EXTRACT(`foo`, \'$.bar\'))',
             ],
             [
                 'foo->bar[1]->>yoo',
-                'JSON_UNQUOTE(JSON_EXTRACT(`foo`, \'$.bar[1].yoo\'))'
+                'JSON_UNQUOTE(JSON_EXTRACT(`foo`, \'$.bar[1].yoo\'))',
             ],
             [
                 'foo->bar[1]->>\'yoo\'',
-                'JSON_UNQUOTE(JSON_EXTRACT(`foo`, \'$.bar[1].yoo\'))'
+                'JSON_UNQUOTE(JSON_EXTRACT(`foo`, \'$.bar[1].yoo\'))',
             ],
             [
                 'foo->bar[1]->\'yoo\'',
-                'JSON_EXTRACT(`foo`, \'$.bar[1].yoo\')'
+                'JSON_EXTRACT(`foo`, \'$.bar[1].yoo\')',
             ],
         ];
     }

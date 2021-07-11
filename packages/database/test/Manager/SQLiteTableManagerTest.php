@@ -35,7 +35,7 @@ class SQLiteTableManagerTest extends AbstractDatabaseTestCase
         $table = self::$db->getTable('enterprise');
 
         $logs = $this->logQueries(
-            fn () => $table->create(
+            fn() => $table->create(
                 static function (Schema $schema) {
                     $schema->primary('id');
                     $schema->char('type')->length(25);
@@ -85,18 +85,18 @@ class SQLiteTableManagerTest extends AbstractDatabaseTestCase
               AND `name` NOT LIKE 'sqlite_%'
             ORDER BY `name`;
             CREATE TABLE IF NOT EXISTS `enterprise` (
-             `id` integer NOT NULL,
-            `type` char(25) NOT NULL DEFAULT '',
-            `catid` integer DEFAULT NULL,
-            `alias` varchar(255) NOT NULL DEFAULT '',
-            `title` varchar(255) NOT NULL DEFAULT 'H',
-            `price` decimal(20,6) NOT NULL DEFAULT 0,
+             `id` INTEGER NOT NULL,
+            `type` CHAR(25) NOT NULL DEFAULT '',
+            `catid` INTEGER DEFAULT NULL,
+            `alias` VARCHAR(255) NOT NULL DEFAULT '',
+            `title` VARCHAR(255) NOT NULL DEFAULT 'H',
+            `price` DECIMAL(20,6) NOT NULL DEFAULT 0,
             `intro` text NOT NULL DEFAULT '',
             `fulltext` text NOT NULL DEFAULT '',
             `start_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
             `created` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-            `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            `deleted` timestamp NOT NULL DEFAULT 1,
+            `updated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            `deleted` TIMESTAMP NOT NULL DEFAULT 1,
             `params` json NOT NULL,
             CONSTRAINT `idx_enterprise_alias` UNIQUE (`alias`),
             CONSTRAINT `pk_enterprise` PRIMARY KEY (`id` AUTOINCREMENT)
@@ -116,7 +116,7 @@ class SQLiteTableManagerTest extends AbstractDatabaseTestCase
     public function testGetConstraints(): void
     {
         $constraints = $this->instance->getConstraints();
-        $constraints = array_filter($constraints, fn (Constraint $item) => $item->constraintType !== 'CHECK');
+        $constraints = array_filter($constraints, fn(Constraint $item) => $item->constraintType !== 'CHECK');
 
         self::assertEquals(
             ['sqlite_autoindex_enterprise_1'],
@@ -159,7 +159,7 @@ class SQLiteTableManagerTest extends AbstractDatabaseTestCase
                     CONSTRAINT `pk_enterprise` PRIMARY KEY (`id` AUTOINCREMENT)
                     )
                     SQL
-                )
+                ),
             ],
             $detail
         );
@@ -290,7 +290,7 @@ class SQLiteTableManagerTest extends AbstractDatabaseTestCase
      */
     public function testTruncate(): void
     {
-        $logs = $this->logQueries(fn () => $this->instance->truncate());
+        $logs = $this->logQueries(fn() => $this->instance->truncate());
 
         self::assertEquals('DELETE FROM `enterprise`', $logs[0]);
     }
@@ -316,7 +316,7 @@ class SQLiteTableManagerTest extends AbstractDatabaseTestCase
                 'created',
                 'updated',
                 'deleted',
-                'params'
+                'params',
             ],
             $cols
         );
@@ -358,7 +358,7 @@ class SQLiteTableManagerTest extends AbstractDatabaseTestCase
                 'created',
                 'updated',
                 'deleted',
-                'params'
+                'params',
             ],
             $this->instance->getColumnNames()
         );
@@ -431,7 +431,7 @@ class SQLiteTableManagerTest extends AbstractDatabaseTestCase
                 'idx_enterprise_created',
                 'idx_enterprise_title',
                 'idx_enterprise_catid_type',
-                'sqlite_autoindex_enterprise_1'
+                'sqlite_autoindex_enterprise_1',
             ],
             $indexes
         );
@@ -446,7 +446,7 @@ class SQLiteTableManagerTest extends AbstractDatabaseTestCase
     {
         $this->instance->schemaName = $this->instance->getPlatform()::getDefaultSchema();
 
-        $logs = $this->logQueries(fn () => $this->instance->reset()->getColumns());
+        $logs = $this->logQueries(fn() => $this->instance->reset()->getColumns());
 
         self::assertSqlFormatEquals(
             <<<SQL

@@ -51,11 +51,11 @@ class EdgeTest extends TestCase
         );
 
         // Clear tmp
-        $files = glob(__DIR__ . '/../tmp/~*');
-
-        foreach ($files as $file) {
-            unlink($file);
-        }
+        // $files = glob(__DIR__ . '/../tmp/~*');
+        //
+        // foreach ($files as $file) {
+        //     unlink($file);
+        // }
     }
 
     /**
@@ -163,7 +163,7 @@ HTML,
 
         self::assertStringDataEquals(
             <<<HTML
-            <?php /* File: $path */ ?><?php ?>
+            <?php /* File: $path */ ?>
             <?php echo \$__edge->escape(\$this::class); ?>
             HTML,
             file_get_contents(

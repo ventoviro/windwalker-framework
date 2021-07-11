@@ -11,21 +11,24 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Attributes;
 
+use Attribute;
+use ReflectionProperty;
 use Windwalker\Attributes\AttributeHandler;
 use Windwalker\Attributes\AttributeInterface;
-use Windwalker\Cache\Exception\LogicException;
 use Windwalker\ORM\Metadata\EntityMetadata;
 
 /**
  * The Cast class.
  */
-#[\Attribute(\Attribute::IS_REPEATABLE | \Attribute::TARGET_PROPERTY)]
+#[Attribute(Attribute::IS_REPEATABLE | Attribute::TARGET_PROPERTY)]
 class Cast implements AttributeInterface
 {
     use ORMAttributeTrait;
 
     public const NULLABLE = 1 << 0;
+
     public const USE_CONSTRUCTOR = 1 << 1;
+
     public const USE_HYDRATOR = 1 << 2;
 
     protected mixed $cast;
@@ -46,7 +49,7 @@ class Cast implements AttributeInterface
      */
     public function __construct(mixed $cast, mixed $extract = null, int $options = 0)
     {
-        $this->cast    = $cast;
+        $this->cast = $cast;
         $this->options = $options;
         $this->extract = $extract;
     }
@@ -80,7 +83,7 @@ class Cast implements AttributeInterface
      */
     public function handle(EntityMetadata $metadata, AttributeHandler $handler): callable
     {
-        /** @var \ReflectionProperty $prop */
+        /** @var ReflectionProperty $prop */
         $prop = $handler->getReflector();
 
         $column = $metadata->getColumnByPropertyName($prop->getName());

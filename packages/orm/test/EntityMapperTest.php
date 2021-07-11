@@ -8,12 +8,12 @@
 
 namespace Windwalker\ORM\Test;
 
+use Exception;
 use Windwalker\Data\Collection;
 use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\ORM\EntityMapper;
 use Windwalker\ORM\Test\Entity\StubComment;
 use Windwalker\ORM\Test\Entity\StubFlower;
-use Windwalker\ORM\Test\Entity\StubUser;
 use Windwalker\Utilities\Arr;
 
 /**
@@ -35,7 +35,7 @@ class EntityMapperTest extends AbstractORMTestCase
      * This method is called before a test is executed.
      *
      * @return void
-     * @throws \Exception
+     * @throws Exception
      */
     protected function setUp(): void
     {
@@ -49,7 +49,7 @@ class EntityMapperTest extends AbstractORMTestCase
      *
      * @return void
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function testFind()
     {
@@ -195,7 +195,7 @@ class EntityMapperTest extends AbstractORMTestCase
 
         self::assertEquals(89, $returns[0]->id, 'Inserted id not matched.');
 
-        self::assertInstanceOf(Collection::class, $returns[0]);
+        self::assertInstanceOf(StubFlower::class, $returns[0]);
     }
 
     /**
@@ -238,7 +238,7 @@ class EntityMapperTest extends AbstractORMTestCase
         self::assertEquals(93, $newData->id);
         self::assertEquals(93, static::$db->prepare('SELECT * FROM ww_flower ORDER BY id DESC LIMIT 1')->get()->id);
 
-        self::assertInstanceOf(Collection::class, $newData);
+        self::assertInstanceOf(StubFlower::class, $newData);
     }
 
     /**
@@ -489,7 +489,7 @@ class EntityMapperTest extends AbstractORMTestCase
                 [
                     'type' => 'article',
                     'user_id' => 1,
-                    'target_id' => 1
+                    'target_id' => 1,
                 ],
                 ['id']
             );
@@ -595,7 +595,7 @@ class EntityMapperTest extends AbstractORMTestCase
      *
      * @return void
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function testGetMainKey()
     {

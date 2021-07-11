@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Pool\Stack;
 
+use SplStack;
 use Windwalker\Pool\ConnectionInterface;
 use Windwalker\Pool\Exception\ConnectionPoolException;
 
@@ -19,16 +20,16 @@ use Windwalker\Pool\Exception\ConnectionPoolException;
  */
 class PhpStack implements StackInterface
 {
-    protected ?\SplStack $stack;
+    protected ?SplStack $stack;
 
     /**
      * PhpStack constructor.
      *
-     * @param  \SplStack|null  $stack
+     * @param  SplStack|null  $stack
      */
-    public function __construct(?\SplStack $stack = null)
+    public function __construct(?SplStack $stack = null)
     {
-        $this->stack = $stack ?? new \SplStack();
+        $this->stack = $stack ?? new SplStack();
     }
 
     /**

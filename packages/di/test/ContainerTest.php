@@ -22,12 +22,12 @@ use Windwalker\DI\Attributes\AttributeType;
 use Windwalker\DI\Attributes\Inject;
 use Windwalker\DI\Container;
 use Windwalker\DI\Exception\DefinitionException;
+use Windwalker\DI\Exception\DefinitionResolveException;
 use Windwalker\DI\Exception\DependencyResolutionException;
 use Windwalker\DI\Test\Injection\HelloInner;
 use Windwalker\DI\Test\Injection\HelloWrapper;
 use Windwalker\DI\Test\Injection\StubInject;
 use Windwalker\DI\Test\Injection\StubService;
-use Windwalker\DI\Test\Injection\WiredClass;
 use Windwalker\DI\Test\Mock\Bar;
 use Windwalker\DI\Test\Mock\Bar2;
 use Windwalker\DI\Test\Mock\Foo;
@@ -298,7 +298,7 @@ class ContainerTest extends TestCase
         // Not shared object
         $container->clear();
 
-        $foo  = $container->createObject(Foo::class);
+        $foo = $container->createObject(Foo::class);
         $foo2 = $container->get(Foo::class);
 
         self::assertNotSame($foo, $foo2);
@@ -306,7 +306,7 @@ class ContainerTest extends TestCase
         // Shared object
         $container->clear();
 
-        $foo  = $container->createSharedObject(Foo::class);
+        $foo = $container->createSharedObject(Foo::class);
         $foo2 = $container->get(Foo::class);
 
         self::assertSame($foo, $foo2);
@@ -353,7 +353,7 @@ class ContainerTest extends TestCase
 
         self::assertExpectedException(
             fn() => $container->newInstance(Foo::class, []),
-            DependencyResolutionException::class
+            DefinitionResolveException::class
         );
 
         // force autowire at calling
@@ -391,7 +391,7 @@ class ContainerTest extends TestCase
 
         $container->prepareSharedObject(Foo::class, null, Container::AUTO_WIRE);
 
-        $foo  = $container->get(Foo::class);
+        $foo = $container->get(Foo::class);
         $foo2 = $container->get(Foo::class);
 
         self::assertSame($foo, $foo2);
@@ -551,10 +551,10 @@ class ContainerTest extends TestCase
         $result = $this->instance->call(
             [
                 TypeCast::class,
-                'tryInteger'
+                'tryInteger',
             ],
             [
-                '123'
+                '123',
             ]
         );
 
@@ -699,8 +699,8 @@ class ContainerTest extends TestCase
         $hello = $this->instance->resolve(HelloInner::class);
 
         self::assertEquals(
-            'Hello',
-            (string) $hello->logs[0]
+            'World',
+            (string) $hello->foo
         );
     }
 

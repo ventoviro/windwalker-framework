@@ -53,7 +53,7 @@ trait ArrConverterTrait
      */
     public static function transpose(array $array): array
     {
-        $new  = [];
+        $new = [];
         $keys = array_keys($array);
 
         foreach ($keys as $k => $val) {
@@ -80,7 +80,7 @@ trait ArrConverterTrait
 
         foreach ((array) $origin as $key => $row) {
             if (str_starts_with($key, $prefix)) {
-                $key2   = mb_substr($key, mb_strlen($prefix));
+                $key2 = mb_substr($key, mb_strlen($prefix));
                 $target = Arr::set($target, $key2, $row);
 
                 if ($removeOrigin) {
@@ -130,7 +130,7 @@ trait ArrConverterTrait
      */
     public static function group(array $array, ?string $key = null, int $type = self::GROUP_TYPE_ARRAY): array
     {
-        $results  = [];
+        $results = [];
         $hasArray = [];
 
         foreach ($array as $index => $value) {
@@ -140,11 +140,11 @@ trait ArrConverterTrait
                     continue;
                 }
 
-                $resultKey   = Arr::get($value, $key);
+                $resultKey = Arr::get($value, $key);
                 $resultValue = $array[$index];
             } else {
                 // Scalar value.
-                $resultKey   = $value;
+                $resultKey = $value;
                 $resultValue = $index;
             }
 
@@ -152,7 +152,7 @@ trait ArrConverterTrait
             if (!isset($results[$resultKey])) {
                 // Force first element in array.
                 if ($type === static::GROUP_TYPE_ARRAY) {
-                    $results[$resultKey]  = [$resultValue];
+                    $results[$resultKey] = [$resultValue];
                     $hasArray[$resultKey] = true;
                 } else {
                     // Keep first element single.
@@ -208,7 +208,7 @@ trait ArrConverterTrait
                 if (!isset($results[$resultKey])) {
                     // Force first element in array.
                     if ($type === static::GROUP_TYPE_ARRAY) {
-                        $results[$resultKey]  = [$resultValue];
+                        $results[$resultKey] = [$resultValue];
                         $hasArray[$resultKey] = true;
                     } else {
                         // Keep first element single.
@@ -253,7 +253,7 @@ trait ArrConverterTrait
             foreach ($results as $value) {
                 foreach ($arg as $item) {
                     $value[$i] = $item;
-                    $append[]  = $value;
+                    $append[] = $value;
                 }
             }
 

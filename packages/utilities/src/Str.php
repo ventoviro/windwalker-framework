@@ -192,7 +192,7 @@ class Str
             return $string;
         }
 
-        $left  = Utf8String::substr($string, 0, $position, $encoding);
+        $left = Utf8String::substr($string, 0, $position, $encoding);
         $right = Utf8String::substr($string, $position, $length, $encoding);
 
         return $left . $insert . $right;
@@ -232,7 +232,7 @@ class Str
 
     public static function intersectLeft(string $string1, string $string2, ?string $encoding = null): string
     {
-        $encoding  ??= mb_internal_encoding();
+        $encoding ??= mb_internal_encoding();
         $maxLength = min(Utf8String::strlen($string1, $encoding), Utf8String::strlen($string2, $encoding));
         $intersect = '';
 
@@ -251,7 +251,7 @@ class Str
 
     public static function intersectRight(string $string1, string $string2, ?string $encoding = null): string
     {
-        $encoding  ??= mb_internal_encoding();
+        $encoding ??= mb_internal_encoding();
         $maxLength = min(Utf8String::strlen($string1, $encoding), Utf8String::strlen($string2, $encoding));
         $intersect = '';
 
@@ -282,7 +282,7 @@ class Str
      */
     public static function intersect(string $string1, string $string2, ?string $encoding = null): string
     {
-        $encoding   ??= mb_internal_encoding();
+        $encoding ??= mb_internal_encoding();
         $str1Length = Utf8String::strlen($string1, $encoding);
         $str2Length = Utf8String::strlen($string2, $encoding);
 
@@ -332,9 +332,9 @@ class Str
         string $substring = ' ',
         ?string $encoding = null
     ): string {
-        $encoding  ??= mb_internal_encoding();
+        $encoding ??= mb_internal_encoding();
         $strLength = Utf8String::strlen($string, $encoding);
-        $padding   = $length - $strLength;
+        $padding = $length - $strLength;
 
         return static::doPad($string, (int) floor($padding / 2), (int) ceil($padding / 2), $substring, $encoding);
     }
@@ -399,15 +399,15 @@ class Str
         string $substring,
         ?string $encoding = null
     ): string {
-        $strLength    = Utf8String::strlen($string, $encoding);
-        $padLength    = Utf8String::strlen($substring, $encoding);
+        $strLength = Utf8String::strlen($string, $encoding);
+        $padLength = Utf8String::strlen($substring, $encoding);
         $paddedLength = $strLength + $left + $right;
 
         if (!$padLength || $paddedLength <= $strLength) {
             return $string;
         }
 
-        $leftStr  = Utf8String::substr(str_repeat($substring, (int) ceil($left / $padLength)), 0, $left, $encoding);
+        $leftStr = Utf8String::substr(str_repeat($substring, (int) ceil($left / $padLength)), 0, $left, $encoding);
         $rightStr = Utf8String::substr(str_repeat($substring, (int) ceil($right / $padLength)), 0, $right, $encoding);
 
         return $leftStr . $string . $rightStr;
@@ -537,7 +537,7 @@ class Str
             $length = Utf8String::strlen($string, $encoding);
         } elseif ($end >= 0 && $end <= $start) {
             $length = $start - $end;
-            $start  = $end;
+            $start = $end;
         } elseif ($end < 0) {
             $length = Utf8String::strlen($string, $encoding) + $end - $start;
         } else {
@@ -619,7 +619,7 @@ class Str
 
         if (!$wordBreak && Utf8String::strpos($result, ' ', 0, $encoding) !== $length) {
             $position = Utf8String::strrpos($result, ' ', 0, $encoding);
-            $result   = Utf8String::substr($result, 0, $position, $encoding);
+            $result = Utf8String::substr($result, 0, $position, $encoding);
         }
 
         return $result . $suffix;

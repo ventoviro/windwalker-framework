@@ -22,7 +22,6 @@ use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileFactoryInterface;
 use Psr\Http\Message\UploadedFileInterface;
-use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Message\UriInterface;
 use RuntimeException;
 use Windwalker\Http\Request\Request;
@@ -30,7 +29,6 @@ use Windwalker\Http\Request\ServerRequest;
 use Windwalker\Http\Request\ServerRequestFactory;
 use Windwalker\Http\Response\Response;
 use Windwalker\Stream\Stream;
-use Windwalker\Uri\Uri;
 use Windwalker\Uri\UriFactory;
 use Windwalker\Utilities\Assert\ArgumentsAssert;
 

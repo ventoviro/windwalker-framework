@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Filter\Rule;
 
+use DomainException;
 use Windwalker\Filter\AbstractFilter;
 use Windwalker\Utilities\Compare\CompareHelper;
 
@@ -43,11 +44,11 @@ class CompareWith extends AbstractFilter
     /**
      * CompareValidator constructor.
      *
-     * @param mixed   $compareA
-     * @param string  $operator
-     * @param bool    $strict
+     * @param  mixed   $compareA
+     * @param  string  $operator
+     * @param  bool    $strict
      *
-     * @throws \DomainException
+     * @throws DomainException
      */
     public function __construct($compareA = null, ?string $operator = null, bool $strict = false)
     {
@@ -77,7 +78,7 @@ class CompareWith extends AbstractFilter
     /**
      * Method to set property operator
      *
-     * @param   string $operator
+     * @param  string  $operator
      *
      * @return  static  Return self to support chaining.
      */
@@ -101,7 +102,7 @@ class CompareWith extends AbstractFilter
     /**
      * Method to set property compare
      *
-     * @param   mixed|null $compare
+     * @param  mixed|null  $compare
      *
      * @return  static  Return self to support chaining.
      */
@@ -115,7 +116,7 @@ class CompareWith extends AbstractFilter
     /**
      * Method to set property strict
      *
-     * @param   bool $strict
+     * @param  bool  $strict
      *
      * @return  static  Return self to support chaining.
      */

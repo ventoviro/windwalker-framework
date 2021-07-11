@@ -11,9 +11,10 @@ declare(strict_types=1);
 
 namespace Windwalker\Event\Provider;
 
+use InvalidArgumentException;
+use ReflectionAttribute;
+use ReflectionObject;
 use Windwalker\Attributes\AttributesAccessor;
-use Windwalker\Attributes\AttributesAwareTrait;
-use Windwalker\Attributes\AttributesResolver;
 use Windwalker\Event\Attributes\EventSubscriber;
 use Windwalker\Event\Attributes\ListenTo;
 use Windwalker\Event\EventInterface;
@@ -79,12 +80,12 @@ class SubscribableListenerProvider implements SubscribableListenerProviderInterf
      */
     public function subscribe(object $subscriber, ?int $priority = null): void
     {
-        $ref = new \ReflectionObject($subscriber);
+        $ref = new ReflectionObject($subscriber);
 
         if (AttributesAccessor::getFirstAttribute($ref, EventSubscriber::class)) {
             foreach ($ref->getMethods() as $method) {
                 // Handle ListenTo attributes
-                foreach ($method->getAttributes(ListenTo::class, \ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
+                foreach ($method->getAttributes(ListenTo::class, ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
                     /** @var ListenTo $listenTo */
                     $listenTo = $attribute->newInstance();
                     $listener = [$subscriber, static::normalize($method->getName())];
@@ -101,7 +102,12 @@ class SubscribableListenerProvider implements SubscribableListenerProviderInterf
                 }
 
                 // Handle Event attributes
-                foreach ($method->getAttributes(EventInterface::class, \ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
+                foreach (
+                    $method->getAttributes(
+                        EventInterface::class,
+                        ReflectionAttribute::IS_INSTANCEOF
+                    ) as $attribute
+                ) {
                     $this->on(
                         $attribute->getName(),
                         [$subscriber, static::normalize($method->getName())],
@@ -177,7 +183,7 @@ class SubscribableListenerProvider implements SubscribableListenerProviderInterf
             return [$subscriber, $methodName];
         }
 
-        throw new \InvalidArgumentException(
+        throw new InvalidArgumentException(
             sprintf(
                 'MethodName should be callable, %s got',
                 TypeAssert::describeValue($methodName)

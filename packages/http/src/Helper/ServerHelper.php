@@ -142,7 +142,7 @@ abstract class ServerHelper
 
         // Fetch each part
         $parts = array_slice(explode($boundary, $input), 1);
-        $data  = [];
+        $data = [];
         $files = [];
 
         foreach ($parts as $part) {
@@ -160,7 +160,7 @@ abstract class ServerHelper
 
             // Parse the headers list
             $rawHeaders = explode("\r\n", $rawHeaders);
-            $headers    = [];
+            $headers = [];
 
             foreach ($rawHeaders as $header) {
                 [$name, $value] = explode(':', $header, 2);
@@ -178,7 +178,7 @@ abstract class ServerHelper
                     $matches
                 );
 
-                $field    = $matches[1];
+                $field = $matches[1];
                 $fileName = (isset($matches[2]) ? $matches[2] : null);
 
                 $fieldName = str_replace(['[', '][', ']'], ['.', '.', ''], $field);
@@ -243,9 +243,9 @@ abstract class ServerHelper
         foreach ($nodes as $node) {
             if (is_array($dataTmp)) {
                 if ((string) $node === '') {
-                    $tmp       = [];
+                    $tmp = [];
                     $dataTmp[] = &$tmp;
-                    $dataTmp   = &$tmp;
+                    $dataTmp = &$tmp;
                 } else {
                     if (empty($dataTmp[$node])) {
                         $dataTmp[$node] = [];

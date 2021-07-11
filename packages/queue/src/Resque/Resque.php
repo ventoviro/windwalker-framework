@@ -52,10 +52,10 @@ class Resque extends PhpResque
      */
     protected static function removeItems(string $queue, array $items = []): int
     {
-        $counter       = 0;
+        $counter = 0;
         $originalQueue = 'queue:' . $queue;
-        $tempQueue     = $originalQueue . ':temp:' . time();
-        $requeueQueue  = $tempQueue . ':requeue';
+        $tempQueue = $originalQueue . ':temp:' . time();
+        $requeueQueue = $tempQueue . ':requeue';
 
         // move each item from original queue to temp queue and process it
         $finished = false;
@@ -147,7 +147,7 @@ class Resque extends PhpResque
     protected static function removeList($queue): int
     {
         $counter = self::size($queue);
-        $result  = self::redis()->del('queue:' . $queue);
+        $result = self::redis()->del('queue:' . $queue);
 
         return ($result == 1) ? $counter : 0;
     }

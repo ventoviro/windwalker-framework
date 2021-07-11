@@ -59,7 +59,7 @@ class CacheItem implements CacheItemInterface
     {
         $this->validateKey($key);
 
-        $this->key    = $key;
+        $this->key = $key;
         $this->logger = new NullLogger();
 
         if ($value !== null) {
@@ -113,7 +113,7 @@ class CacheItem implements CacheItemInterface
         }
 
         $this->value = $value;
-        $this->hit   = true;
+        $this->hit = true;
 
         return $this;
     }
@@ -257,7 +257,7 @@ class CacheItem implements CacheItemInterface
     /**
      * logException
      *
-     * @param  string      $message
+     * @param  string     $message
      * @param  Throwable  $e
      *
      * @return  void

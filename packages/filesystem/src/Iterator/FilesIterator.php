@@ -11,6 +11,12 @@ declare(strict_types=1);
 
 namespace Windwalker\Filesystem\Iterator;
 
+use FilesystemIterator;
+use Iterator;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use SplFileInfo;
+use UnexpectedValueException;
 use Windwalker\Filesystem\Exception\FileNotFoundException;
 use Windwalker\Filesystem\FileObject;
 use Windwalker\Filesystem\Filesystem;
@@ -43,7 +49,7 @@ class FilesIterator extends NestedIterator
         $instance->path = $path;
 
         return $instance->filter(
-            static function (\SplFileInfo $file) use ($recursive, $path) {
+            static function (SplFileInfo $file) use ($recursive, $path) {
                 if ($file->getBasename() === '..') {
                     return false;
                 }
@@ -64,22 +70,22 @@ class FilesIterator extends NestedIterator
      * @param  boolean  $recursive  True to recursive.
      * @param  ?int     $options    FilesystemIterator Flags provides which will affect the behavior of some methods.
      *
-     * @return  \Iterator  File & dir iterator.
+     * @return  Iterator  File & dir iterator.
      */
-    public static function createInnerIterator(string $path, bool $recursive = false, ?int $options = null): \Iterator
+    public static function createInnerIterator(string $path, bool $recursive = false, ?int $options = null): Iterator
     {
         $path = Path::clean($path);
 
         if ($recursive) {
-            $options = $options ?: (\FilesystemIterator::KEY_AS_PATHNAME | \FilesystemIterator::CURRENT_AS_FILEINFO);
+            $options = $options ?: (FilesystemIterator::KEY_AS_PATHNAME | FilesystemIterator::CURRENT_AS_FILEINFO);
         } else {
-            $options = $options ?: (\FilesystemIterator::KEY_AS_PATHNAME | \FilesystemIterator::CURRENT_AS_FILEINFO
-                | \FilesystemIterator::SKIP_DOTS);
+            $options = $options ?: (FilesystemIterator::KEY_AS_PATHNAME | FilesystemIterator::CURRENT_AS_FILEINFO
+                | FilesystemIterator::SKIP_DOTS);
         }
 
         try {
-            $iterator = new \RecursiveDirectoryIterator($path, $options);
-        } catch (\UnexpectedValueException $e) {
+            $iterator = new RecursiveDirectoryIterator($path, $options);
+        } catch (UnexpectedValueException $e) {
             throw new FileNotFoundException(
                 sprintf('Failed to open dir: %s', $path),
                 $e->getCode(),
@@ -90,7 +96,7 @@ class FilesIterator extends NestedIterator
         $iterator->setInfoClass(FileObject::class);
 
         // If rescurive set to true, use RecursiveIteratorIterator
-        return $recursive ? new \RecursiveIteratorIterator($iterator) : $iterator;
+        return $recursive ? new RecursiveIteratorIterator($iterator) : $iterator;
     }
 
     /**

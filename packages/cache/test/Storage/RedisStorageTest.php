@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Windwalker\Cache\Test\Storage;
 
-use Redis;
 use Windwalker\Cache\Storage\RedisStorage;
 use Windwalker\Utilities\Env;
 

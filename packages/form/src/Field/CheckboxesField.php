@@ -32,10 +32,10 @@ class CheckboxesField extends ListField
         $input = h('div', $attrs);
 
         foreach ($this->getOptions() as $option) {
-            $option                             = clone $option;
-            $option['type']                     = 'checkbox';
-            $option['name']                     = $this->getInputName('[]');
-            $option['id']                       = $this->getId('-' . FormNormalizer::clearAttribute($option['value']));
+            $option = clone $option;
+            $option['type'] = 'checkbox';
+            $option['name'] = $this->getInputName('[]');
+            $option['id'] = $this->getId('-' . FormNormalizer::clearAttribute($option['value']));
             $option['data-checkbox-item-input'] = true;
 
             if (in_array($option['value'], $this->getValue())) {

@@ -37,7 +37,7 @@ class ArrayMethod implements MethodInterface
     /**
      * Class init.
      *
-     * @param array $users
+     * @param  array  $users
      */
     public function __construct(array $users = [])
     {
@@ -90,7 +90,7 @@ class ArrayMethod implements MethodInterface
     /**
      * Method to set property verifyHandler
      *
-     * @param   callable $verifyHandler
+     * @param  callable  $verifyHandler
      *
      * @return  static  Return self to support chaining.
      */
@@ -114,7 +114,7 @@ class ArrayMethod implements MethodInterface
     /**
      * Method to set property users
      *
-     * @param   array $users
+     * @param  array  $users
      *
      * @return  static  Return self to support chaining.
      */

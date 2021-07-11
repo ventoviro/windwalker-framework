@@ -47,7 +47,7 @@ if (!function_exists(__NAMESPACE__ . '\val')) {
         }
 
         if (is_array($value)) {
-            return array_map(fn ($v) => new ValueClause($v), $value);
+            return array_map(fn($v) => new ValueClause($v), $value);
         }
 
         return new ValueClause($value);
@@ -70,7 +70,7 @@ if (!function_exists(__NAMESPACE__ . '\qn')) {
         }
 
         if (is_array($value)) {
-            return array_map(fn ($v) => qn($v, $query), $value);
+            return array_map(fn($v) => qn($v, $query), $value);
         }
 
         return new QuoteNameClause($value, $query);

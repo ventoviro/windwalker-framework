@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Session\Bridge;
 
+use RuntimeException;
+
 /**
  * Interface SessionBridgeInterface
  *
@@ -19,6 +21,7 @@ namespace Windwalker\Session\Bridge;
 interface BridgeInterface
 {
     public const OPTION_AUTO_COMMIT = 'auto_commit';
+
     public const OPTION_WITH_SUPER_GLOBAL = 'with_super_global';
 
     /**
@@ -26,7 +29,7 @@ interface BridgeInterface
      *
      * @return  bool  True if started.
      *
-     * @throws \RuntimeException If something goes wrong starting the session.
+     * @throws RuntimeException If something goes wrong starting the session.
      */
     public function start(): bool;
 
@@ -92,7 +95,7 @@ interface BridgeInterface
      *
      * @return bool
      *
-     * @throws \RuntimeException If the session is saved without being started, or if the session
+     * @throws RuntimeException If the session is saved without being started, or if the session
      *                           is already closed.
      */
     public function writeClose(bool $unset = true): bool;

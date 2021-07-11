@@ -11,14 +11,20 @@ declare(strict_types=1);
 
 namespace Windwalker\Utilities\Iterator;
 
+use ArrayIterator;
+use Generator;
+use Iterator;
+use OuterIterator;
+use Traversable;
+
 /**
  * The MultiLevelIterator class.
  */
-class NestedIterator implements \OuterIterator
+class NestedIterator implements OuterIterator
 {
-    protected \Traversable $innerIterator;
+    protected Traversable $innerIterator;
 
-    protected ?\Iterator $compiledIterator = null;
+    protected ?Iterator $compiledIterator = null;
 
     /**
      * @var callable[]
@@ -36,9 +42,9 @@ class NestedIterator implements \OuterIterator
             $iterator = new RewindableGenerator($iterator);
         }
 
-        $this->innerIterator = $iterator instanceof \Traversable
+        $this->innerIterator = $iterator instanceof Traversable
             ? $iterator
-            : new \ArrayIterator($iterator);
+            : new ArrayIterator($iterator);
     }
 
     /**
@@ -66,7 +72,7 @@ class NestedIterator implements \OuterIterator
     {
         $new = $this->cloneNew();
 
-        $new->callbacks   = $this->callbacks;
+        $new->callbacks = $this->callbacks;
         $new->callbacks[] = $callback;
 
         return $new;
@@ -75,7 +81,7 @@ class NestedIterator implements \OuterIterator
     /**
      * @inheritDoc
      */
-    public function getInnerIterator(): \Iterator
+    public function getInnerIterator(): Iterator
     {
         return $this->innerIterator;
     }
@@ -85,9 +91,9 @@ class NestedIterator implements \OuterIterator
      *
      * @param  bool  $refresh
      *
-     * @return  \Traversable
+     * @return  Traversable
      */
-    protected function compileIterator(bool $refresh = false): \Traversable
+    protected function compileIterator(bool $refresh = false): Traversable
     {
         if ($this->compiledIterator === null || $refresh) {
             if ($this->checkRewindable($this->innerIterator)) {
@@ -155,7 +161,7 @@ class NestedIterator implements \OuterIterator
                 foreach ($items as $key => $item) {
                     $result = (array) $callback($item, $key);
 
-                    $k     = array_key_first($result);
+                    $k = array_key_first($result);
                     $value = $result[$k];
 
                     yield $k => $value;
@@ -167,7 +173,7 @@ class NestedIterator implements \OuterIterator
     public function chunk(int $size, bool $preserveKeys = false): static
     {
         return $this->with(
-            static function (\Iterator $iter) use ($preserveKeys, $size) {
+            static function (Iterator $iter) use ($preserveKeys, $size) {
                 // @see https://blog.kevingomez.fr/2016/02/26/efficiently-creating-data-chunks-in-php/
                 $closure = static function () use ($preserveKeys, $iter, $size) {
                     $count = $size;
@@ -242,13 +248,13 @@ class NestedIterator implements \OuterIterator
     /**
      * Method to set property innerIterator
      *
-     * @param  \Traversable  $innerIterator
+     * @param  Traversable  $innerIterator
      *
      * @return  static  Return self to support chaining.
      *
      * @since  __DEPLOY_VERSION__
      */
-    public function setInnerIterator(\Traversable $innerIterator): static
+    public function setInnerIterator(Traversable $innerIterator): static
     {
         $this->innerIterator = $innerIterator;
 
@@ -258,17 +264,17 @@ class NestedIterator implements \OuterIterator
     /**
      * checkRewindable
      *
-     * @param  \Traversable  $iter
+     * @param  Traversable  $iter
      *
      * @return  bool
      */
-    protected function checkRewindable(\Traversable $iter): bool
+    protected function checkRewindable(Traversable $iter): bool
     {
-        if ($iter instanceof \Generator) {
+        if ($iter instanceof Generator) {
             return false;
         }
 
-        if ($iter instanceof \OuterIterator) {
+        if ($iter instanceof OuterIterator) {
             if ($iter->getInnerIterator() === null) {
                 return true;
             }
@@ -276,6 +282,6 @@ class NestedIterator implements \OuterIterator
             return $this->checkRewindable($iter->getInnerIterator());
         }
 
-        return $iter instanceof \Iterator;
+        return $iter instanceof Iterator;
     }
 }

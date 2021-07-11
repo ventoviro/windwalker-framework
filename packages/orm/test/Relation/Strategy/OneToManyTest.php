@@ -12,11 +12,9 @@ declare(strict_types=1);
 namespace Windwalker\ORM\Test\Relation\Strategy;
 
 use Windwalker\Data\Collection;
-use Windwalker\Database\Schema\Schema;
 use Windwalker\ORM\Relation\Action;
 use Windwalker\ORM\Test\AbstractORMTestCase;
 use Windwalker\ORM\Test\Entity\StubLocation;
-use Windwalker\ORM\Test\Entity\StubLocationData;
 use Windwalker\ORM\Test\Entity\StubRose;
 use Windwalker\ORM\Test\Entity\StubSakura;
 
@@ -108,7 +106,7 @@ class OneToManyTest extends AbstractORMTestCase
 
     public function testUpdateAttachAndDetach()
     {
-        $mapper   = $this->createTestMapper();
+        $mapper = $this->createTestMapper();
         /** @var StubLocation $location */
         $location = $mapper->findOne(1);
         $location->setState(2);
@@ -145,7 +143,7 @@ class OneToManyTest extends AbstractORMTestCase
 
     public function testUpdateSync(): void
     {
-        $mapper   = $this->createTestMapper();
+        $mapper = $this->createTestMapper();
         /** @var StubLocation $location */
         $location = $mapper->findOne(2);
 
@@ -178,7 +176,7 @@ class OneToManyTest extends AbstractORMTestCase
 
     public function testUpdateCascade()
     {
-        $mapper   = $this->createTestMapper();
+        $mapper = $this->createTestMapper();
         /** @var StubLocation $location */
         $location = $mapper->findOne(3);
         $location->setNo($location->getNo() . '-2');
@@ -221,10 +219,9 @@ class OneToManyTest extends AbstractORMTestCase
         );
     }
 
-
     public function testUpdateSyncCascade()
     {
-        $mapper   = $this->createTestMapper();
+        $mapper = $this->createTestMapper();
         /** @var StubLocation $location */
         $location = $mapper->findOne(3);
         $location->setNo($location->getNo() . '-2');
@@ -268,7 +265,7 @@ class OneToManyTest extends AbstractORMTestCase
 
     public function testUpdateWithoutInitCollection()
     {
-        $mapper   = $this->createTestMapper();
+        $mapper = $this->createTestMapper();
         /** @var StubLocation $location */
         $location = $mapper->findOne(3);
         $location->setNo('L00003-3');
@@ -293,7 +290,7 @@ class OneToManyTest extends AbstractORMTestCase
 
     public function testUpdateNoAction()
     {
-        $mapper   = $this->createTestMapper(Action::NO_ACTION);
+        $mapper = $this->createTestMapper(Action::NO_ACTION);
         /** @var StubLocation $location */
         $location = $mapper->findOne(3);
         $location->setNo('L00003-4');

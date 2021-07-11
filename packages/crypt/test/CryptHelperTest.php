@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Crypt\Test;
 
+use PHPUnit\Framework\TestCase;
 use Windwalker\Crypt\CryptHelper;
 
 /**
@@ -18,7 +19,7 @@ use Windwalker\Crypt\CryptHelper;
  *
  * @since 3.1.3
  */
-class CryptHelperTest extends \PHPUnit\Framework\TestCase
+class CryptHelperTest extends TestCase
 {
     /**
      * limitIntegerProvider

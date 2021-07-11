@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Driver\Mysqli;
 
+use mysqli;
 use Windwalker\Database\Driver\AbstractDriver;
 use Windwalker\Database\Driver\ConnectionInterface;
 use Windwalker\Database\Driver\StatementInterface;
@@ -56,7 +57,7 @@ class MysqliDriver extends AbstractDriver implements TransactionDriverInterface
     {
         return $this->useConnection(
             function (ConnectionInterface $conn) use ($value) {
-                /** @var \mysqli $mysqli */
+                /** @var mysqli $mysqli */
                 $mysqli = $conn->get();
 
                 return $mysqli->real_escape_string($value);
@@ -81,7 +82,7 @@ class MysqliDriver extends AbstractDriver implements TransactionDriverInterface
      */
     public function transactionStart(): bool
     {
-        /** @var \mysqli $mysqli */
+        /** @var mysqli $mysqli */
         $mysqli = $this->getConnection()->get();
 
         return $mysqli->begin_transaction(MYSQLI_TRANS_START_READ_WRITE);
@@ -92,7 +93,7 @@ class MysqliDriver extends AbstractDriver implements TransactionDriverInterface
      */
     public function transactionCommit(): bool
     {
-        /** @var \mysqli $mysqli */
+        /** @var mysqli $mysqli */
         $mysqli = $this->getConnection()->get();
 
         return $mysqli->commit();
@@ -103,7 +104,7 @@ class MysqliDriver extends AbstractDriver implements TransactionDriverInterface
      */
     public function transactionRollback(): bool
     {
-        /** @var \mysqli $mysqli */
+        /** @var mysqli $mysqli */
         $mysqli = $this->getConnection()->get();
 
         return $mysqli->rollback();
@@ -116,6 +117,6 @@ class MysqliDriver extends AbstractDriver implements TransactionDriverInterface
      */
     public function getVersion(): string
     {
-        return $this->useConnection(fn (ConnectionInterface $conn) => $conn->get()->server_version);
+        return $this->useConnection(fn(ConnectionInterface $conn) => $conn->get()->server_version);
     }
 }

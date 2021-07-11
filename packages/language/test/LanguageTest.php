@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace Windwalker\Language\Test;
 
+use PHPUnit\Framework\TestCase;
+use ReflectionException;
+use ReflectionMethod;
 use Windwalker\Language\Language;
 
 /**
@@ -18,14 +21,14 @@ use Windwalker\Language\Language;
  *
  * @since 2.0
  */
-class LanguageTest extends \PHPUnit\Framework\TestCase
+class LanguageTest extends TestCase
 {
     /**
      * Test instance.
      *
      * @var Language
      */
-    protected $instance;
+    protected Language $instance;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -69,10 +72,12 @@ class LanguageTest extends \PHPUnit\Framework\TestCase
      *
      * @return void
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function testTrans()
     {
+        $this->instance->setLocale('zh-TW');
+
         self::assertEquals('花', $this->instance->trans('WINDWALKER_LANGUAGE_TEST_FLOWER'));
         self::assertEquals('Olive', $this->instance->trans('WINDWALKER_LANGUAGE_TEST_Olive'));
         self::assertEquals('Sunflower', $this->instance->trans('Windwalker Language Test Sunflower'));
@@ -90,7 +95,7 @@ class LanguageTest extends \PHPUnit\Framework\TestCase
      *
      * @return void
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @covers \Windwalker\Language\Language::choice
      */
     public function testChoice()
@@ -141,7 +146,7 @@ class LanguageTest extends \PHPUnit\Framework\TestCase
      *
      * @return void
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @covers \Windwalker\Language\Language::addString
      */
     public function testAddString()
@@ -158,7 +163,7 @@ class LanguageTest extends \PHPUnit\Framework\TestCase
      *
      * @return void
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @covers \Windwalker\Language\Language::addStrings
      * @TODO   Implement testAddStrings().
      */
@@ -177,6 +182,7 @@ class LanguageTest extends \PHPUnit\Framework\TestCase
 
     public function testParent()
     {
+        $this->instance->setLocale('zh-TW');
         $child = $this->instance->extract('windwalker.language');
         $r = $child->trans('test.flower');
 
@@ -191,7 +197,7 @@ class LanguageTest extends \PHPUnit\Framework\TestCase
      *
      * @return void
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @covers \Windwalker\Language\Language::setDebug
      */
     public function testSetDebug()
@@ -207,7 +213,7 @@ class LanguageTest extends \PHPUnit\Framework\TestCase
      *
      * @return void
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @covers \Windwalker\Language\Language::getOrphans
      */
     public function testGetOrphans()
@@ -228,7 +234,7 @@ class LanguageTest extends \PHPUnit\Framework\TestCase
 
         $caller = $orphans['a.key.not.exists']['caller'];
 
-        $ref = new \ReflectionMethod($this, __FUNCTION__);
+        $ref = new ReflectionMethod($this, __FUNCTION__);
         self::assertEquals(__METHOD__, $caller['class'] . '::' . $caller['function']);
         self::assertEquals(__FILE__, $caller['file']);
         self::assertEquals($line, $caller['line']);
@@ -242,7 +248,7 @@ class LanguageTest extends \PHPUnit\Framework\TestCase
      *
      * @return void
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @covers \Windwalker\Language\Language::getUsed
      */
     public function testGetUsed()

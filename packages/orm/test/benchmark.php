@@ -10,8 +10,6 @@
 declare(strict_types=1);
 
 use Windwalker\Database\DatabaseFactory;
-use Windwalker\ORM\Attributes\Column;
-use Windwalker\ORM\Event\AfterSaveEvent;
 use Windwalker\ORM\ORM;
 use Windwalker\ORM\Test\Entity\StubArticle;
 

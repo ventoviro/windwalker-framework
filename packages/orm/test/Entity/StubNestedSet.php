@@ -15,8 +15,6 @@ use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Column;
 use Windwalker\ORM\Attributes\NestedSet;
 use Windwalker\ORM\Attributes\PK;
-use Windwalker\ORM\Attributes\Table;
-use Windwalker\ORM\Nested\NestedEntityTrait;
 use Windwalker\ORM\Nested\NestedPathableInterface;
 use Windwalker\ORM\Nested\NestedPathableTrait;
 

@@ -11,6 +11,11 @@ declare(strict_types=1);
 
 namespace Windwalker\Crypt;
 
+use Throwable;
+
+use function sodium_memzero;
+use function str_repeat;
+
 /**
  * The HiddenString class.
  */
@@ -55,16 +60,16 @@ class HiddenString
     {
         if (function_exists('sodium_memzero')) {
             try {
-                \sodium_memzero($this->value);
+                sodium_memzero($this->value);
 
                 return;
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 //
             }
         }
 
         // If sodium not available, attempt to wipe value from memory.
-        $zero = \str_repeat("\0", mb_strlen($this->value));
+        $zero = str_repeat("\0", mb_strlen($this->value));
 
         $this->value ^= ($zero ^ $this->value);
 

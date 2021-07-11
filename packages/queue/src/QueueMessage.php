@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Queue;
 
+use InvalidArgumentException;
+use JsonSerializable;
 use Windwalker\Queue\Job\JobInterface;
 use Windwalker\Utilities\Arr;
 use Windwalker\Utilities\Options\OptionAccessTrait;
@@ -20,7 +22,7 @@ use Windwalker\Utilities\Options\OptionAccessTrait;
  *
  * @since  3.2
  */
-class QueueMessage implements \JsonSerializable
+class QueueMessage implements JsonSerializable
 {
     use OptionAccessTrait;
 
@@ -69,10 +71,10 @@ class QueueMessage implements \JsonSerializable
     /**
      * QueueMessage constructor.
      *
-     * @param JobInterface $job
-     * @param array        $data
-     * @param int          $delay
-     * @param array        $options
+     * @param  JobInterface  $job
+     * @param  array         $data
+     * @param  int           $delay
+     * @param  array         $options
      */
     public function __construct(?JobInterface $job = null, array $data = [], int $delay = 0, array $options = [])
     {
@@ -91,8 +93,8 @@ class QueueMessage implements \JsonSerializable
     /**
      * get
      *
-     * @param string $name
-     * @param mixed  $default
+     * @param  string  $name
+     * @param  mixed   $default
      *
      * @return  mixed
      */
@@ -104,8 +106,8 @@ class QueueMessage implements \JsonSerializable
     /**
      * set
      *
-     * @param string $name
-     * @param mixed  $value
+     * @param  string  $name
+     * @param  mixed   $value
      *
      * @return  static
      */
@@ -129,7 +131,7 @@ class QueueMessage implements \JsonSerializable
     /**
      * Method to set property id
      *
-     * @param   int|string $id
+     * @param  int|string  $id
      *
      * @return  static  Return self to support chaining.
      */
@@ -153,7 +155,7 @@ class QueueMessage implements \JsonSerializable
     /**
      * Method to set property attempts
      *
-     * @param   int $attempts
+     * @param  int  $attempts
      *
      * @return  static  Return self to support chaining.
      */
@@ -177,7 +179,7 @@ class QueueMessage implements \JsonSerializable
     /**
      * Method to set property job
      *
-     * @param   string $job
+     * @param  string  $job
      *
      * @return  static  Return self to support chaining.
      */
@@ -201,7 +203,7 @@ class QueueMessage implements \JsonSerializable
     /**
      * Method to set property data
      *
-     * @param   array $data
+     * @param  array  $data
      *
      * @return  static  Return self to support chaining.
      */
@@ -225,7 +227,7 @@ class QueueMessage implements \JsonSerializable
     /**
      * Method to set property queue
      *
-     * @param   string $queue
+     * @param  string  $queue
      *
      * @return  static  Return self to support chaining.
      */
@@ -249,7 +251,7 @@ class QueueMessage implements \JsonSerializable
     /**
      * Method to set property body
      *
-     * @param   array $body
+     * @param  array  $body
      *
      * @return  static  Return self to support chaining.
      */
@@ -273,7 +275,7 @@ class QueueMessage implements \JsonSerializable
     /**
      * Method to set property rawData
      *
-     * @param   string $rawBody
+     * @param  string  $rawBody
      *
      * @return  static  Return self to support chaining.
      */
@@ -297,7 +299,7 @@ class QueueMessage implements \JsonSerializable
     /**
      * Method to set property name
      *
-     * @param   string $name
+     * @param  string  $name
      *
      * @return  static  Return self to support chaining.
      */
@@ -321,7 +323,7 @@ class QueueMessage implements \JsonSerializable
     /**
      * Method to set property delay
      *
-     * @param   int $delay
+     * @param  int  $delay
      *
      * @return  static  Return self to support chaining.
      */
@@ -337,7 +339,7 @@ class QueueMessage implements \JsonSerializable
      *
      * @return  array
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function jsonSerialize(): array
     {

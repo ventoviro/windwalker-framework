@@ -30,9 +30,9 @@ class StubField extends AbstractField
 
     public function prepareInput(DOMElement $input): DOMElement
     {
-        $input['type']  = 'text';
-        $input['id']    = $this->getId();
-        $input['name']  = $this->getInputName();
+        $input['type'] = 'text';
+        $input['id'] = $this->getId();
+        $input['name'] = $this->getInputName();
         $input['value'] = $this->getValue();
 
         return $input;

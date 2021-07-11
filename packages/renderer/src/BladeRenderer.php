@@ -19,6 +19,7 @@ use Illuminate\View\Engines\CompilerEngine;
 use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\Factory as BladeEnvironment;
 use Illuminate\View\FileViewFinder;
+use InvalidArgumentException;
 
 /**
  * The BladeRenderer class.
@@ -35,7 +36,7 @@ class BladeRenderer extends AbstractEngineRenderer
         /** @var BladeEnvironment $engine */
         $engine = $this->createEngine($options);
 
-        return fn (array $data = []) => $engine->make($layout, $data)->render();
+        return fn(array $data = []) => $engine->make($layout, $data)->render();
     }
 
     /**
@@ -121,7 +122,7 @@ class BladeRenderer extends AbstractEngineRenderer
     public function createCompiler(?Filesystem $fs = null, ?string $cachePath = null): CompilerEngine
     {
         if (!$cachePath) {
-            throw new \InvalidArgumentException('Please set cache_path to options.');
+            throw new InvalidArgumentException('Please set cache_path to options.');
         }
 
         if (!is_dir($cachePath)) {

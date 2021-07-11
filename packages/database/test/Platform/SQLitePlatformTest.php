@@ -11,8 +11,6 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Test\Platform;
 
-use Windwalker\Database\Platform\MySQLPlatform;
-use Windwalker\Database\Platform\SQLitePlatform;
 use Windwalker\Test\Helper\TestStringHelper;
 use Windwalker\Utilities\Arr;
 use Windwalker\Utilities\Str;
@@ -64,7 +62,7 @@ class SQLitePlatformTest extends AbstractPlatformTest
     {
         $tables = $this->instance->listTables(static::getTestSchema());
 
-        $tables = array_map(fn ($table) => Arr::remove($table, 'sql'), $tables);
+        $tables = array_map(fn($table) => Arr::remove($table, 'sql'), $tables);
 
         self::assertEquals(
             [
@@ -74,7 +72,7 @@ class SQLitePlatformTest extends AbstractPlatformTest
                     'TABLE_SCHEMA' => 'main',
                     'VIEW_DEFINITION' => null,
                     'CHECK_OPTION' => null,
-                    'IS_UPDATABLE' => null
+                    'IS_UPDATABLE' => null,
                 ],
                 'ww_categories' => [
                     'TABLE_NAME' => 'ww_categories',
@@ -82,8 +80,8 @@ class SQLitePlatformTest extends AbstractPlatformTest
                     'TABLE_SCHEMA' => 'main',
                     'VIEW_DEFINITION' => null,
                     'CHECK_OPTION' => null,
-                    'IS_UPDATABLE' => null
-                ]
+                    'IS_UPDATABLE' => null,
+                ],
             ],
             $tables
         );
@@ -107,8 +105,8 @@ class SQLitePlatformTest extends AbstractPlatformTest
                     'VIEW_DEFINITION' => null,
                     'CHECK_OPTION' => 'NONE',
                     'IS_UPDATABLE' => null,
-                    'sql' => 'CREATE VIEW `ww_articles_view` AS SELECT * FROM `ww_articles`'
-                ]
+                    'sql' => 'CREATE VIEW `ww_articles_view` AS SELECT * FROM `ww_articles`',
+                ],
             ],
             $views
         );
@@ -135,7 +133,7 @@ class SQLitePlatformTest extends AbstractPlatformTest
                 'numeric_unsigned',
                 'comment',
                 'auto_increment',
-                'erratas'
+                'erratas',
             ],
             array_keys($columns[array_key_first($columns)])
         );
@@ -156,8 +154,8 @@ class SQLitePlatformTest extends AbstractPlatformTest
                     'comment' => null,
                     'auto_increment' => true,
                     'erratas' => [
-                        'pk' => true
-                    ]
+                        'pk' => true,
+                    ],
                 ],
                 'category_id' => [
                     'column_name' => 'category_id',
@@ -173,8 +171,8 @@ class SQLitePlatformTest extends AbstractPlatformTest
                     'comment' => null,
                     'auto_increment' => false,
                     'erratas' => [
-                        'pk' => false
-                    ]
+                        'pk' => false,
+                    ],
                 ],
                 'page_id' => [
                     'column_name' => 'page_id',
@@ -190,8 +188,8 @@ class SQLitePlatformTest extends AbstractPlatformTest
                     'comment' => null,
                     'auto_increment' => false,
                     'erratas' => [
-                        'pk' => false
-                    ]
+                        'pk' => false,
+                    ],
                 ],
                 'type' => [
                     'column_name' => 'type',
@@ -207,8 +205,8 @@ class SQLitePlatformTest extends AbstractPlatformTest
                     'comment' => null,
                     'auto_increment' => false,
                     'erratas' => [
-                        'pk' => false
-                    ]
+                        'pk' => false,
+                    ],
                 ],
                 'price' => [
                     'column_name' => 'price',
@@ -224,8 +222,8 @@ class SQLitePlatformTest extends AbstractPlatformTest
                     'comment' => null,
                     'auto_increment' => false,
                     'erratas' => [
-                        'pk' => false
-                    ]
+                        'pk' => false,
+                    ],
                 ],
                 'title' => [
                     'column_name' => 'title',
@@ -241,8 +239,8 @@ class SQLitePlatformTest extends AbstractPlatformTest
                     'comment' => null,
                     'auto_increment' => false,
                     'erratas' => [
-                        'pk' => false
-                    ]
+                        'pk' => false,
+                    ],
                 ],
                 'alias' => [
                     'column_name' => 'alias',
@@ -258,8 +256,8 @@ class SQLitePlatformTest extends AbstractPlatformTest
                     'comment' => null,
                     'auto_increment' => false,
                     'erratas' => [
-                        'pk' => false
-                    ]
+                        'pk' => false,
+                    ],
                 ],
                 'introtext' => [
                     'column_name' => 'introtext',
@@ -275,8 +273,8 @@ class SQLitePlatformTest extends AbstractPlatformTest
                     'comment' => null,
                     'auto_increment' => false,
                     'erratas' => [
-                        'pk' => false
-                    ]
+                        'pk' => false,
+                    ],
                 ],
                 'state' => [
                     'column_name' => 'state',
@@ -292,8 +290,8 @@ class SQLitePlatformTest extends AbstractPlatformTest
                     'comment' => null,
                     'auto_increment' => false,
                     'erratas' => [
-                        'pk' => false
-                    ]
+                        'pk' => false,
+                    ],
                 ],
                 'ordering' => [
                     'column_name' => 'ordering',
@@ -309,8 +307,8 @@ class SQLitePlatformTest extends AbstractPlatformTest
                     'comment' => null,
                     'auto_increment' => false,
                     'erratas' => [
-                        'pk' => false
-                    ]
+                        'pk' => false,
+                    ],
                 ],
                 'created' => [
                     'column_name' => 'created',
@@ -326,8 +324,8 @@ class SQLitePlatformTest extends AbstractPlatformTest
                     'comment' => null,
                     'auto_increment' => false,
                     'erratas' => [
-                        'pk' => false
-                    ]
+                        'pk' => false,
+                    ],
                 ],
                 'created_by' => [
                     'column_name' => 'created_by',
@@ -343,8 +341,8 @@ class SQLitePlatformTest extends AbstractPlatformTest
                     'comment' => null,
                     'auto_increment' => false,
                     'erratas' => [
-                        'pk' => false
-                    ]
+                        'pk' => false,
+                    ],
                 ],
                 'language' => [
                     'column_name' => 'language',
@@ -360,8 +358,8 @@ class SQLitePlatformTest extends AbstractPlatformTest
                     'comment' => null,
                     'auto_increment' => false,
                     'erratas' => [
-                        'pk' => false
-                    ]
+                        'pk' => false,
+                    ],
                 ],
                 'params' => [
                     'column_name' => 'params',
@@ -377,9 +375,9 @@ class SQLitePlatformTest extends AbstractPlatformTest
                     'comment' => null,
                     'auto_increment' => false,
                     'erratas' => [
-                        'pk' => false
-                    ]
-                ]
+                        'pk' => false,
+                    ],
+                ],
             ],
             $columns
         );
@@ -399,17 +397,17 @@ class SQLitePlatformTest extends AbstractPlatformTest
                     'constraint_type' => 'UNIQUE',
                     'table_name' => 'ww_articles',
                     'columns' => [
-                        'alias'
-                    ]
+                        'alias',
+                    ],
                 ],
                 'sqlite_autoindex_ww_articles_1' => [
                     'constraint_name' => 'sqlite_autoindex_ww_articles_1',
                     'constraint_type' => 'PRIMARY KEY',
                     'table_name' => 'ww_articles',
                     'columns' => [
-                        'id'
-                    ]
-                ]
+                        'id',
+                    ],
+                ],
             ],
             $constraints
         );
@@ -433,9 +431,9 @@ class SQLitePlatformTest extends AbstractPlatformTest
                     'columns' => [
                         'page_id' => [
                             'column_name' => 'page_id',
-                            'subpart' => null
-                        ]
-                    ]
+                            'subpart' => null,
+                        ],
+                    ],
                 ],
                 'idx_articles_language' => [
                     'table_schema' => 'main',
@@ -446,9 +444,9 @@ class SQLitePlatformTest extends AbstractPlatformTest
                     'columns' => [
                         'language' => [
                             'column_name' => 'language',
-                            'subpart' => null
-                        ]
-                    ]
+                            'subpart' => null,
+                        ],
+                    ],
                 ],
                 'idx_articles_created_by' => [
                     'table_schema' => 'main',
@@ -459,9 +457,9 @@ class SQLitePlatformTest extends AbstractPlatformTest
                     'columns' => [
                         'created_by' => [
                             'column_name' => 'created_by',
-                            'subpart' => null
-                        ]
-                    ]
+                            'subpart' => null,
+                        ],
+                    ],
                 ],
                 'idx_articles_category_id' => [
                     'table_schema' => 'main',
@@ -472,9 +470,9 @@ class SQLitePlatformTest extends AbstractPlatformTest
                     'columns' => [
                         'category_id' => [
                             'column_name' => 'category_id',
-                            'subpart' => null
-                        ]
-                    ]
+                            'subpart' => null,
+                        ],
+                    ],
                 ],
                 'idx_articles_alias' => [
                     'table_schema' => 'main',
@@ -485,9 +483,9 @@ class SQLitePlatformTest extends AbstractPlatformTest
                     'columns' => [
                         'alias' => [
                             'column_name' => 'alias',
-                            'subpart' => null
-                        ]
-                    ]
+                            'subpart' => null,
+                        ],
+                    ],
                 ],
                 'sqlite_autoindex_ww_articles_1' => [
                     'table_schema' => 'main',
@@ -498,10 +496,10 @@ class SQLitePlatformTest extends AbstractPlatformTest
                     'columns' => [
                         'id' => [
                             'column_name' => 'id',
-                            'subpart' => null
-                        ]
-                    ]
-                ]
+                            'subpart' => null,
+                        ],
+                    ],
+                ],
             ],
             $indexes
         );

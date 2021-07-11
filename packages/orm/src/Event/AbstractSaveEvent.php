@@ -11,15 +11,15 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Event;
 
-use Windwalker\Event\AbstractEvent;
-
 /**
  * The AbstractSaveEvent class.
  */
 abstract class AbstractSaveEvent extends AbstractEntityEvent
 {
     public const TYPE_CREATE = 'create';
+
     public const TYPE_UPDATE = 'update';
+
     public const TYPE_COPY = 'copy';
 
     protected string $type;

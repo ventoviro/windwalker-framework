@@ -11,12 +11,13 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Attributes;
 
+use Attribute;
 use Windwalker\ORM\Relation\Strategy\RelationConfigureInterface;
 
 /**
  * The MorphBy class.
  */
-#[\Attribute]
+#[Attribute]
 class MorphBy implements RelationConfigureAttributeInterface
 {
     protected array $columns;

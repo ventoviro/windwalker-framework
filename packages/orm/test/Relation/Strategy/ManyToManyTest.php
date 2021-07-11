@@ -15,7 +15,6 @@ use Windwalker\Data\Collection;
 use Windwalker\ORM\Relation\Action;
 use Windwalker\ORM\Relation\RelationCollection;
 use Windwalker\ORM\Test\AbstractORMTestCase;
-use Windwalker\ORM\Test\Entity\StubLocation;
 use Windwalker\ORM\Test\Entity\StubRose;
 use Windwalker\ORM\Test\Entity\StubSakura;
 use Windwalker\ORM\Test\Entity\StubSakuraRoseMap;
@@ -43,7 +42,7 @@ class ManyToManyTest extends AbstractORMTestCase
                 'S00014',
                 'S00008',
                 'S00018',
-                'S00025'
+                'S00025',
             ],
             $roses->all()->column('sakuraNo', null, true)->dump()
         );
@@ -135,7 +134,7 @@ class ManyToManyTest extends AbstractORMTestCase
                 'R00004',
                 'R00009',
                 'R00011',
-                'R10002'
+                'R10002',
             ],
             $newSakura->getRoses()
                 ->all()
@@ -150,7 +149,7 @@ class ManyToManyTest extends AbstractORMTestCase
                 4,
                 9,
                 11,
-                27
+                27,
             ],
             $newSakura->getRoses()
                 ->all()
@@ -195,7 +194,7 @@ class ManyToManyTest extends AbstractORMTestCase
                 'S00010',
                 'S00014',
                 'S00020',
-                'S10002'
+                'S10002',
             ],
             $newSakuras->column('no', null, true)
                 ->dump()
@@ -306,7 +305,7 @@ class ManyToManyTest extends AbstractORMTestCase
                 '20',
                 '23',
                 '26',
-                '28'
+                '28',
             ],
             $newSakuras->column('id')->dump()
         );
@@ -319,7 +318,7 @@ class ManyToManyTest extends AbstractORMTestCase
                 'S00020',
                 'S00023',
                 'S10001',
-                'S10003'
+                'S10003',
             ],
             $newSakuras->column('no', null, true)
                 ->dump()

@@ -28,7 +28,7 @@ class MariaDBTableManagerTest extends AbstractDatabaseTestCase
         $table = self::$db->getTable('enterprise');
 
         $logs = $this->logQueries(
-            fn () => $table->create(
+            fn() => $table->create(
                 static function (Schema $schema) {
                     $schema->primary('id');
                     $schema->char('type')->length(25);
@@ -77,22 +77,22 @@ class MariaDBTableManagerTest extends AbstractDatabaseTestCase
                 SELECT DATABASE()
             );
             CREATE TABLE IF NOT EXISTS `enterprise` (
-            `id` int(11) NOT NULL,
-            `type` char(25) NOT NULL DEFAULT '',
-            `catid` int(11) DEFAULT NULL,
-            `alias` varchar(255) NOT NULL DEFAULT '',
-            `title` varchar(255) NOT NULL DEFAULT 'H',
-            `price` decimal(20,6) NOT NULL DEFAULT 0,
+            `id` INT(11) NOT NULL,
+            `type` CHAR(25) NOT NULL DEFAULT '',
+            `catid` INT(11) DEFAULT NULL,
+            `alias` VARCHAR(255) NOT NULL DEFAULT '',
+            `title` VARCHAR(255) NOT NULL DEFAULT 'H',
+            `price` DECIMAL(20,6) NOT NULL DEFAULT 0,
             `intro` text NOT NULL,
             `fulltext` text NOT NULL,
             `start_date` datetime NOT NULL DEFAULT '1000-01-01 00:00:00',
             `created` datetime NOT NULL DEFAULT '1000-01-01 00:00:00',
-            `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            `deleted` timestamp NOT NULL DEFAULT '1970-01-01 12:00:01',
+            `updated` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            `deleted` TIMESTAMP NOT NULL DEFAULT '1970-01-01 12:00:01',
             `params` json NOT NULL
             ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
             ALTER TABLE `enterprise` ADD CONSTRAINT `pk_enterprise` PRIMARY KEY (`id`);
-            ALTER TABLE `enterprise` MODIFY COLUMN `id` int(11) NOT NULL AUTO_INCREMENT;
+            ALTER TABLE `enterprise` MODIFY COLUMN `id` INT(11) NOT NULL AUTO_INCREMENT;
             ALTER TABLE `enterprise` ADD INDEX `idx_enterprise_catid_type` (`catid`,`type`);
             ALTER TABLE `enterprise` ADD INDEX `idx_enterprise_title` (`title`(150));
             ALTER TABLE `enterprise` ADD CONSTRAINT `idx_enterprise_alias` UNIQUE (`alias`)
@@ -109,7 +109,7 @@ class MariaDBTableManagerTest extends AbstractDatabaseTestCase
     public function testGetConstraints(): void
     {
         $constraints = $this->instance->getConstraints();
-        $constraints = array_filter($constraints, fn (Constraint $item) => $item->constraintType !== 'CHECK');
+        $constraints = array_filter($constraints, fn(Constraint $item) => $item->constraintType !== 'CHECK');
 
         self::assertEquals(
             ['PRIMARY', 'idx_enterprise_alias'],
@@ -131,7 +131,7 @@ class MariaDBTableManagerTest extends AbstractDatabaseTestCase
                 'TABLE_TYPE' => 'BASE TABLE',
                 'VIEW_DEFINITION' => null,
                 'CHECK_OPTION' => null,
-                'IS_UPDATABLE' => null
+                'IS_UPDATABLE' => null,
             ],
             $detail
         );
@@ -143,19 +143,21 @@ class MariaDBTableManagerTest extends AbstractDatabaseTestCase
     public function testUpdate(): void
     {
         $logs = $this->logQueries(
-            fn () => $this->instance->update(function (Schema $schema) {
-                // New column
-                $schema->varchar('captain')->length(512)->after('catid');
-                $schema->varchar('first_officer')->length(512)->after('captain');
+            fn() => $this->instance->update(
+                function (Schema $schema) {
+                    // New column
+                    $schema->varchar('captain')->length(512)->after('catid');
+                    $schema->varchar('first_officer')->length(512)->after('captain');
 
-                // Update column
-                $schema->char('alias')->length(25)
-                    ->nullable(true)
-                    ->defaultValue('');
+                    // Update column
+                    $schema->char('alias')->length(25)
+                        ->nullable(true)
+                        ->defaultValue('');
 
-                // New index
-                $schema->addIndex('captain');
-            })
+                    // New index
+                    $schema->addIndex('captain');
+                }
+            )
         );
 
         self::assertSqlFormatEquals(
@@ -180,7 +182,7 @@ class MariaDBTableManagerTest extends AbstractDatabaseTestCase
             ALTER TABLE `enterprise`
                 ADD COLUMN `first_officer` varchar(512) NOT NULL DEFAULT '';
             ALTER TABLE `enterprise`
-                MODIFY COLUMN `alias` char(25) DEFAULT '';
+                MODIFY COLUMN `alias` CHAR(25) DEFAULT '';
             SELECT `TABLE_SCHEMA`,
                    `TABLE_NAME`,
                    `NON_UNIQUE`,
@@ -303,7 +305,7 @@ class MariaDBTableManagerTest extends AbstractDatabaseTestCase
     public function testAddConstraint(): void
     {
         $logs = $this->logQueries(
-            fn () => $this->instance->addConstraint(
+            fn() => $this->instance->addConstraint(
                 ['captain', 'first_officer'],
                 Constraint::TYPE_UNIQUE
             )
@@ -405,7 +407,7 @@ SQL,
      */
     public function testTruncate(): void
     {
-        $logs = $this->logQueries(fn () => $this->instance->truncate());
+        $logs = $this->logQueries(fn() => $this->instance->truncate());
 
         self::assertEquals('TRUNCATE TABLE `enterprise`', $logs[0]);
     }
@@ -431,7 +433,7 @@ SQL,
                 'created',
                 'updated',
                 'deleted',
-                'params'
+                'params',
             ],
             $cols
         );
@@ -473,7 +475,7 @@ SQL,
                 'created',
                 'updated',
                 'deleted',
-                'params'
+                'params',
             ],
             $this->instance->getColumnNames()
         );
@@ -555,7 +557,7 @@ SQL,
                 'idx_enterprise_catid_type',
                 'idx_enterprise_title',
                 'idx_enterprise_created',
-                'idx_enterprise_start_date_params'
+                'idx_enterprise_start_date_params',
             ],
             $indexes
         );
@@ -570,7 +572,7 @@ SQL,
     {
         $this->instance->schemaName = self::$db->getOption('database');
 
-        $logs = $this->logQueries(fn () => $this->instance->getColumns());
+        $logs = $this->logQueries(fn() => $this->instance->getColumns());
 
         self::assertSqlFormatEquals(
             <<<SQL

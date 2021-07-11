@@ -14,6 +14,7 @@ namespace Windwalker\Filesystem\Test;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamDirectory;
 use org\bovigo\vfs\visitor\vfsStreamStructureVisitor;
+use org\bovigo\vfs\visitor\vfsStreamVisitor;
 use PHPUnit\Framework\TestCase;
 use Windwalker\Filesystem\FileObject;
 use Windwalker\Filesystem\Path;
@@ -30,7 +31,7 @@ abstract class AbstractVfsTestCase extends TestCase
     /**
      * @var array
      */
-    protected static $structure = [
+    protected static array $structure = [
         'files' => [
             'folder1' => [
                 'level2' => [
@@ -50,12 +51,12 @@ abstract class AbstractVfsTestCase extends TestCase
      *
      * @var string
      */
-    protected static $baseDir = 'vfs://root/files';
+    protected static string $baseDir = 'vfs://root/files';
 
     /**
-     * @var vfsStreamDirectory
+     * @var ?vfsStreamDirectory
      */
-    protected $root;
+    protected ?vfsStreamDirectory $root = null;
 
     /**
      * setUpBeforeClass
@@ -102,7 +103,7 @@ abstract class AbstractVfsTestCase extends TestCase
         parent::tearDown();
     }
 
-    protected function inspectVfs(): \org\bovigo\vfs\visitor\vfsStreamVisitor
+    protected function inspectVfs(): vfsStreamVisitor
     {
         return vfsStream::inspect(new vfsStreamStructureVisitor());
     }

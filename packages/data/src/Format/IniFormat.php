@@ -35,7 +35,7 @@ class IniFormat implements FormatInterface
      */
     public function dump(mixed $data, array $options = []): string
     {
-        $local  = [];
+        $local = [];
         $global = [];
 
         // Iterate over the object to set the properties.

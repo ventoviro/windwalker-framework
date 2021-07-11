@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Queue\Driver;
 
+use DomainException;
 use Pheanstalk\Job;
 use Pheanstalk\Pheanstalk;
 use Pheanstalk\PheanstalkInterface;
@@ -125,7 +126,7 @@ class BeanstalkdQueueDriver implements QueueDriverInterface
     /**
      * release
      *
-     * @param QueueMessage|string $message
+     * @param  QueueMessage|string  $message
      *
      * @return static
      */
@@ -143,15 +144,15 @@ class BeanstalkdQueueDriver implements QueueDriverInterface
     /**
      * getPheanstalk
      *
-     * @param string $host
+     * @param  string  $host
      *
      * @return  Pheanstalk
-     * @throws \DomainException
+     * @throws DomainException
      */
     public function getPheanstalk($host = null): Pheanstalk
     {
         if (!class_exists(Pheanstalk::class)) {
-            throw new \DomainException('Please install pda/pheanstalk first.');
+            throw new DomainException('Please install pda/pheanstalk first.');
         }
 
         return new Pheanstalk($host);

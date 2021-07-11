@@ -11,6 +11,10 @@ declare(strict_types=1);
 
 namespace Windwalker\Filesystem;
 
+use AppendIterator;
+use Closure;
+use InvalidArgumentException;
+use SplFileInfo;
 use Windwalker\Filesystem\Iterator\FilesIterator;
 use Windwalker\Utilities\Iterator\UniqueIterator;
 
@@ -65,15 +69,15 @@ class PathCollection
     /**
      * Add one path to bag.
      *
-     * @param  string|\SplFileInfo  $path  The path your want to store in bag,
+     * @param  string|SplFileInfo  $path   The path your want to store in bag,
      *                                     have to be a string or FileObject.
      *
      * @return  static  Return new object to support chaining.
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      * @since  2.0
      */
-    public function add(\SplFileInfo|string $path): static|PathCollection
+    public function add(SplFileInfo|string $path): static|PathCollection
     {
         $new = clone $this;
 
@@ -129,15 +133,15 @@ class PathCollection
     /**
      * Append all paths' iterator into an OuterIterator.
      *
-     * @param  \Closure  $getter  Contains the logic that how to get iterator from file object.
+     * @param  Closure  $getter  Contains the logic that how to get iterator from file object.
      *
      * @return  FilesIterator  Appended iterators.
      *
      * @since  2.0
      */
-    private function createIterator(\Closure $getter = null): FilesIterator
+    private function createIterator(Closure $getter = null): FilesIterator
     {
-        $iter = new \AppendIterator();
+        $iter = new AppendIterator();
 
         foreach ($this->paths as $path) {
             if ($this->isChild($path)) {
@@ -271,13 +275,13 @@ class PathCollection
      *
      * When running recursive scan dir, we have to avoid to re scan same dir.
      *
-     * @param  string|\SplFileInfo  $path  The path to detect is subdir or not.
+     * @param  string|SplFileInfo  $path  The path to detect is subdir or not.
      *
      * @return  boolean  Is subdir or not.
      *
      * @since  2.0
      */
-    public function isChild(\SplFileInfo|string $path): bool
+    public function isChild(SplFileInfo|string $path): bool
     {
         $path = FileObject::wrap($path);
 

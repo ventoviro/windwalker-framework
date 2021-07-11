@@ -11,6 +11,11 @@ declare(strict_types=1);
 
 namespace Windwalker\Queue\Failer;
 
+use DateTime;
+use InvalidArgumentException;
+use PDO;
+use RuntimeException;
+
 /**
  * The DatabaseQueueFailer class.
  *
@@ -21,9 +26,9 @@ class PdoQueueFailer implements QueueFailerInterface
     /**
      * Property db.
      *
-     * @var  \PDO
+     * @var  PDO
      */
-    protected \PDO $pdo;
+    protected PDO $pdo;
 
     /**
      * Property table.
@@ -35,10 +40,10 @@ class PdoQueueFailer implements QueueFailerInterface
     /**
      * DatabaseQueueFailer constructor.
      *
-     * @param \PDO   $pdo
-     * @param string $table
+     * @param  PDO    $pdo
+     * @param  string  $table
      */
-    public function __construct(\PDO $pdo, string $table = 'queue_failed_jobs')
+    public function __construct(PDO $pdo, string $table = 'queue_failed_jobs')
     {
         $this->pdo = $pdo;
         $this->table = $table;
@@ -57,7 +62,7 @@ class PdoQueueFailer implements QueueFailerInterface
         $stat->bindValue(':table', $this->table);
         $stat->execute();
 
-        return (bool) $stat->fetch(\PDO::FETCH_ASSOC);
+        return (bool) $stat->fetch(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -73,7 +78,7 @@ class PdoQueueFailer implements QueueFailerInterface
     public function add(string $connection, string $channel, string $body, string $exception): int|string
     {
         // For B/C
-        $created = (new \DateTime('now'))->format('Y-m-d H:i:s');
+        $created = (new DateTime('now'))->format('Y-m-d H:i:s');
 
         $sql = 'INSERT INTO ' . $this->table .
             ' (connection, channel, body, exception, created)' .
@@ -95,8 +100,8 @@ class PdoQueueFailer implements QueueFailerInterface
      * all
      *
      * @return  array
-     * @throws \RuntimeException
-     * @throws \InvalidArgumentException
+     * @throws RuntimeException
+     * @throws InvalidArgumentException
      */
     public function all(): array
     {
@@ -104,7 +109,7 @@ class PdoQueueFailer implements QueueFailerInterface
 
         $stat = $this->pdo->query($sql);
 
-        return $stat->fetchAll(\PDO::FETCH_ASSOC);
+        return $stat->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -123,7 +128,7 @@ class PdoQueueFailer implements QueueFailerInterface
         $stat->bindValue(':id', $conditions);
         $stat->execute();
 
-        return $stat->fetch(\PDO::FETCH_ASSOC);
+        return $stat->fetch(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -169,7 +174,7 @@ class PdoQueueFailer implements QueueFailerInterface
     /**
      * Method to set property table
      *
-     * @param   string $table
+     * @param  string  $table
      *
      * @return  static  Return self to support chaining.
      */

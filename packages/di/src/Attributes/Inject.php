@@ -13,8 +13,10 @@ namespace Windwalker\DI\Attributes;
 
 use Attribute;
 use JetBrains\PhpStorm\Pure;
+use ReflectionParameter;
 use ReflectionProperty;
 use ReflectionUnionType;
+use RuntimeException;
 use Windwalker\DI\Container;
 use Windwalker\DI\Exception\DependencyResolutionException;
 
@@ -38,7 +40,7 @@ class Inject implements ContainerAttributeInterface
      */
     public function __construct(?string $id = null, bool $forceNew = false)
     {
-        $this->id       = $id;
+        $this->id = $id;
         $this->forceNew = $forceNew;
     }
 
@@ -50,17 +52,18 @@ class Inject implements ContainerAttributeInterface
      * @return mixed
      */
     #[Pure]
-    public function __invoke(AttributeHandler $handler): callable
-    {
+    public function __invoke(
+        AttributeHandler $handler
+    ): callable {
         $reflector = $handler->getReflector();
 
         return function (...$args) use ($handler, $reflector) {
-            if ($reflector instanceof \ReflectionParameter) {
+            if ($reflector instanceof ReflectionParameter) {
                 return $this->handleParameter($handler);
             }
 
             if ($handler->getObject() === null) {
-                throw new \RuntimeException('No object to inject.');
+                throw new RuntimeException('No object to inject.');
             }
 
             $varClass = $this->getTypeName($reflector);
@@ -80,7 +83,7 @@ class Inject implements ContainerAttributeInterface
         return $this->resolveInjectable($handler->getContainer(), $varClass);
     }
 
-    protected function getTypeName(ReflectionProperty|\ReflectionParameter $reflector): mixed
+    protected function getTypeName(ReflectionProperty|ReflectionParameter $reflector): mixed
     {
         $type = $reflector->getType();
 

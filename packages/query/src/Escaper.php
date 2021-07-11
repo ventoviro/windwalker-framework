@@ -11,12 +11,13 @@ declare(strict_types=1);
 
 namespace Windwalker\Query;
 
+use PDO;
+use UnexpectedValueException;
+use WeakReference;
 use Windwalker\Database\DatabaseAdapter;
 use Windwalker\Database\Driver\AbstractDriver;
 use Windwalker\ORM\ORM;
 use Windwalker\Utilities\Str;
-
-use function Windwalker\value;
 
 /**
  * The Escaper class.
@@ -24,9 +25,9 @@ use function Windwalker\value;
 class Escaper
 {
     /**
-     * @var \WeakReference<\PDO|callable|mixed>|null
+     * @var WeakReference<PDO|callable|mixed>|null
      */
-    protected ?\WeakReference $connection = null;
+    protected ?WeakReference $connection = null;
 
     /**
      * @var Query|null
@@ -36,13 +37,13 @@ class Escaper
     /**
      * Escaper constructor.
      *
-     * @param  \PDO|callable|object  $connection
-     * @param  Query|null           $query
+     * @param  PDO|callable|object  $connection
+     * @param  Query|null            $query
      */
     public function __construct(mixed $connection, ?Query $query = null)
     {
-        $this->connection = $connection ? \WeakReference::create($connection) : null;
-        $this->query      = $query;
+        $this->connection = $connection ? WeakReference::create($connection) : null;
+        $this->query = $query;
     }
 
     public function escape(string $value): string
@@ -58,7 +59,7 @@ class Escaper
     /**
      * escape
      *
-     * @param  \PDO|callable|mixed  $escaper
+     * @param  PDO|callable|mixed  $escaper
      * @param  int|string           $value
      *
      * @return  string
@@ -69,7 +70,7 @@ class Escaper
             return $escaper($value, [static::class, 'stripQuote']);
         }
 
-        if ($escaper instanceof \PDO) {
+        if ($escaper instanceof PDO) {
             return static::stripQuote((string) $escaper->quote((string) $value));
         }
 
@@ -91,7 +92,7 @@ class Escaper
     /**
      * quote
      *
-     * @param  \PDO|callable|mixed  $escaper
+     * @param  PDO|callable|mixed  $escaper
      * @param  int|string           $value
      *
      * @return  string
@@ -99,7 +100,7 @@ class Escaper
     public static function tryQuote(mixed $escaper, string|int $value): string
     {
         // PDO has quote method, directly use it.
-        if ($escaper instanceof \PDO) {
+        if ($escaper instanceof PDO) {
             return (string) $escaper->quote((string) $value);
         }
 
@@ -164,11 +165,11 @@ class Escaper
      */
     public function getConnection(): mixed
     {
-        if ($this->connection instanceof \WeakReference) {
+        if ($this->connection instanceof WeakReference) {
             $conn = $this->connection->get();
 
             if ($conn === null) {
-                throw new \UnexpectedValueException(
+                throw new UnexpectedValueException(
                     'Escaper connection is NULL, the reference object has been destroyed.'
                 );
             }

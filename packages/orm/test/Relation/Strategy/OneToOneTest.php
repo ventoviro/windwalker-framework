@@ -77,7 +77,7 @@ class OneToOneTest extends AbstractORMTestCase
 
     public function testUpdate()
     {
-        $mapper   = $this->createTestMapper();
+        $mapper = $this->createTestMapper();
         /** @var StubLocation $location */
         $location = $mapper->findOne(1);
 
@@ -113,7 +113,7 @@ class OneToOneTest extends AbstractORMTestCase
 
     public function testUpdateNoAction()
     {
-        $mapper   = $this->createTestMapper(Action::NO_ACTION);
+        $mapper = $this->createTestMapper(Action::NO_ACTION);
 
         /** @var StubLocation $location */
         $location = $mapper->findOne(1);

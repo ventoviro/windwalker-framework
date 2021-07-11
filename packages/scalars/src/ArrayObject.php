@@ -84,7 +84,7 @@ class ArrayObject implements AccessibleInterface
      */
     public static function explode(string $delimiter, string $string, ?int $limit = null): static
     {
-        return new static(explode(...array_filter(func_get_args(), fn ($v) => $v !== null)));
+        return new static(explode(...array_filter(func_get_args(), fn($v) => $v !== null)));
     }
 
     /**

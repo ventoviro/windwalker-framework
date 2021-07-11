@@ -11,11 +11,10 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Test\Relation\Strategy;
 
+use DateTimeImmutable;
 use Windwalker\ORM\Relation\Action;
 use Windwalker\ORM\Test\AbstractORMTestCase;
 use Windwalker\ORM\Test\Entity\StubLicense;
-use Windwalker\ORM\Test\Entity\StubLocation;
-use Windwalker\ORM\Test\Entity\StubLocationData;
 use Windwalker\ORM\Test\Entity\StubMember;
 
 /**
@@ -52,7 +51,7 @@ class OneMorphOneTest extends AbstractORMTestCase
 
         $lic = new StubLicense();
         $lic->setNo('LS00008');
-        $lic->setCreated(new \DateTimeImmutable('now'));
+        $lic->setCreated(new DateTimeImmutable('now'));
 
         $member->setStudentLicense($lic);
 
@@ -69,7 +68,7 @@ class OneMorphOneTest extends AbstractORMTestCase
 
     public function testUpdate()
     {
-        $mapper   = $this->createTestMapper();
+        $mapper = $this->createTestMapper();
         /** @var StubMember $member */
         $member = $mapper->findOne(1);
 

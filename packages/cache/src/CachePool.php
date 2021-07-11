@@ -67,7 +67,7 @@ class CachePool implements CacheItemPoolInterface, CacheInterface, LoggerAwareIn
         ?SerializerInterface $serializer = null,
         ?LoggerInterface $logger = null
     ) {
-        $this->storage    = $storage ?? new ArrayStorage();
+        $this->storage = $storage ?? new ArrayStorage();
         $this->serializer = $serializer ?? new RawSerializer();
 
         $this->logger = $logger ?? new NullLogger();
@@ -361,7 +361,7 @@ class CachePool implements CacheItemPoolInterface, CacheInterface, LoggerAwareIn
      * logException
      *
      * @param  string                   $message
-     * @param  Throwable               $e
+     * @param  Throwable                $e
      * @param  CacheItemInterface|null  $item
      *
      * @return  void

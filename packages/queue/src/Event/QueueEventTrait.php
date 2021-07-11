@@ -20,6 +20,7 @@ use Windwalker\Queue\Worker;
 trait QueueEventTrait
 {
     protected Worker $worker;
+
     protected Queue $queue;
 
     /**

@@ -23,7 +23,7 @@ class Negative extends AbstractCallbackFilter
      */
     public function getHandler(): callable
     {
-        return fn ($value) => -$value;
+        return fn($value) => -$value;
     }
 
     /**

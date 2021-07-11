@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Test\Entity;
 
+use DateTimeImmutable;
 use Windwalker\ORM\Attributes\Cast;
 use Windwalker\ORM\Attributes\Column;
 use Windwalker\ORM\Attributes\Table;
@@ -37,7 +38,7 @@ class StubMemberActionMap implements EntityInterface
 
     #[Column('created')]
     #[Cast(DateTimeCast::class)]
-    protected ?\DateTimeImmutable $created = null;
+    protected ?DateTimeImmutable $created = null;
 
     /**
      * @return int|null
@@ -120,19 +121,19 @@ class StubMemberActionMap implements EntityInterface
     }
 
     /**
-     * @return \DateTimeImmutable|null
+     * @return DateTimeImmutable|null
      */
-    public function getCreated(): ?\DateTimeImmutable
+    public function getCreated(): ?DateTimeImmutable
     {
         return $this->created;
     }
 
     /**
-     * @param  \DateTimeImmutable|null  $created
+     * @param  DateTimeImmutable|null  $created
      *
      * @return  static  Return self to support chaining.
      */
-    public function setCreated(?\DateTimeImmutable $created): static
+    public function setCreated(?DateTimeImmutable $created): static
     {
         $this->created = $created;
 

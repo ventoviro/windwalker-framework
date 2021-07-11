@@ -21,7 +21,9 @@ use Windwalker\Session\Bridge\NativeBridge;
 class NativeBridgeTest extends TestCase
 {
     protected ?NativeBridge $instance;
+
     protected static string $sess1 = '93cd6b3ec9f36b23d68e9385942dc41c';
+
     protected static string $sess2 = 'fa0a731220e28af75afba7135723015e';
 
     protected static function resetSessions(): void
@@ -50,7 +52,7 @@ class NativeBridgeTest extends TestCase
      * @runInSeparateProcess
      * @preserveGlobalState disabled
      *
-     * @see  NativeBridge::start
+     * @see                 NativeBridge::start
      */
     public function testStart(): void
     {
@@ -63,7 +65,7 @@ class NativeBridgeTest extends TestCase
         self::assertEquals(
             [
                 'flower' => 'Sakura',
-                'animal' => 'Cat'
+                'animal' => 'Cat',
             ],
             $_SESSION
         );
@@ -82,7 +84,7 @@ class NativeBridgeTest extends TestCase
         self::assertEquals(
             [
                 'flower' => 'Rose',
-                'tree' => 'Oak'
+                'tree' => 'Oak',
             ],
             $_SESSION
         );
@@ -98,7 +100,7 @@ class NativeBridgeTest extends TestCase
     }
 
     /**
-     * @see  NativeBridge::destroy
+     * @see                 NativeBridge::destroy
      *
      * @runInSeparateProcess
      * @preserveGlobalState disabled
@@ -119,7 +121,7 @@ class NativeBridgeTest extends TestCase
     }
 
     /**
-     * @see  NativeBridge::setSessionName
+     * @see                 NativeBridge::setSessionName
      *
      * @runInSeparateProcess
      * @preserveGlobalState disabled
@@ -143,7 +145,7 @@ class NativeBridgeTest extends TestCase
     }
 
     /**
-     * @see  NativeBridge::setSessionName
+     * @see                 NativeBridge::setSessionName
      * @runInSeparateProcess
      * @preserveGlobalState disabled
      */
@@ -174,7 +176,7 @@ class NativeBridgeTest extends TestCase
     }
 
     /**
-     * @see  NativeBridge::isStarted
+     * @see                 NativeBridge::isStarted
      * @runInSeparateProcess
      * @preserveGlobalState disabled
      */
@@ -203,7 +205,7 @@ class NativeBridgeTest extends TestCase
     }
 
     /**
-     * @see  NativeBridge::restart
+     * @see                 NativeBridge::restart
      * @runInSeparateProcess
      * @preserveGlobalState disabled
      */
@@ -232,7 +234,7 @@ class NativeBridgeTest extends TestCase
     }
 
     /**
-     * @see  NativeBridge::getId
+     * @see                 NativeBridge::getId
      * @runInSeparateProcess
      * @preserveGlobalState disabled
      */
@@ -247,7 +249,7 @@ class NativeBridgeTest extends TestCase
     }
 
     /**
-     * @see  NativeBridge::regenerate
+     * @see                 NativeBridge::regenerate
      * @runInSeparateProcess
      * @preserveGlobalState disabled
      */
@@ -272,7 +274,7 @@ class NativeBridgeTest extends TestCase
     }
 
     /**
-     * @see  NativeBridge::regenerate
+     * @see                 NativeBridge::regenerate
      * @runInSeparateProcess
      * @preserveGlobalState disabled
      */

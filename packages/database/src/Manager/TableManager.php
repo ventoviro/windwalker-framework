@@ -11,11 +11,15 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Manager;
 
+use InvalidArgumentException;
+use RuntimeException;
 use Windwalker\Database\Schema\Ddl\Column;
 use Windwalker\Database\Schema\Ddl\Constraint;
 use Windwalker\Database\Schema\Ddl\Index;
 use Windwalker\Database\Schema\Schema;
 use Windwalker\Utilities\Cache\InstanceCacheTrait;
+
+use function count;
 
 /**
  * The TableManager class.
@@ -163,7 +167,7 @@ class TableManager extends AbstractMetaManager
      *
      * @return  static
      *
-     * @throws  \RuntimeException
+     * @throws  RuntimeException
      * @since   2.0
      */
     public function truncate(): static
@@ -374,7 +378,7 @@ class TableManager extends AbstractMetaManager
     {
         return $this->once(
             'indexes',
-            fn () => Index::wrapList(
+            fn() => Index::wrapList(
                 $this->getPlatform()->listIndexes($this->getName(), $this->schemaName),
                 'index_name'
             )
@@ -443,7 +447,7 @@ class TableManager extends AbstractMetaManager
     {
         return $this->once(
             'constraints',
-            fn () => Constraint::wrapList(
+            fn() => Constraint::wrapList(
                 $this->getPlatform()->listConstraints($this->getName(), $this->schemaName),
                 'constraint_name'
             )
@@ -478,7 +482,7 @@ class TableManager extends AbstractMetaManager
         if ($name !== null) {
             $names = explode('.', $name);
 
-            if (\count($names) >= 2) {
+            if (count($names) >= 2) {
                 [$schema, $name] = $names;
 
                 $this->schemaName = $schema;
@@ -516,7 +520,7 @@ class TableManager extends AbstractMetaManager
         }
 
         if (!$schema instanceof Schema) {
-            throw new \InvalidArgumentException('Argument 1 should be Schema object.');
+            throw new InvalidArgumentException('Argument 1 should be Schema object.');
         }
 
         return $schema;

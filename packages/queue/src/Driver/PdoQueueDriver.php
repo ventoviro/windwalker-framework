@@ -11,8 +11,12 @@ declare(strict_types=1);
 
 namespace Windwalker\Queue\Driver;
 
+use DateTimeImmutable;
+use Exception;
+use InvalidArgumentException;
+use PDO;
+use Throwable;
 use Windwalker\DateTime\Chronos;
-use Windwalker\Query\Bounded\BoundedHelper;
 use Windwalker\Queue\QueueMessage;
 
 /**
@@ -25,9 +29,9 @@ class PdoQueueDriver implements QueueDriverInterface
     /**
      * Property db.
      *
-     * @var  \PDO
+     * @var  PDO
      */
-    protected \PDO $pdo;
+    protected PDO $pdo;
 
     /**
      * Property table.
@@ -53,12 +57,12 @@ class PdoQueueDriver implements QueueDriverInterface
     /**
      * DatabaseQueueDriver constructor.
      *
-     * @param \PDO   $db
-     * @param string $channel
-     * @param string $table
-     * @param int    $timeout
+     * @param  PDO    $db
+     * @param  string  $channel
+     * @param  string  $table
+     * @param  int     $timeout
      */
-    public function __construct(\PDO $db, string $channel = 'default', string $table = 'queue_jobs', int $timeout = 60)
+    public function __construct(PDO $db, string $channel = 'default', string $table = 'queue_jobs', int $timeout = 60)
     {
         $this->pdo = $db;
         $this->table = $table;
@@ -72,11 +76,11 @@ class PdoQueueDriver implements QueueDriverInterface
      * @param  QueueMessage  $message
      *
      * @return string
-     * @throws \Exception
+     * @throws Exception
      */
     public function push(QueueMessage $message): string
     {
-        $time = new \DateTimeImmutable('now');
+        $time = new DateTimeImmutable('now');
 
         $data = [
             ':channel' => $message->getChannel() ?: $this->channel,
@@ -102,15 +106,15 @@ class PdoQueueDriver implements QueueDriverInterface
      * @param  string|null  $channel
      *
      * @return QueueMessage|null
-     * @throws \Exception
-     * @throws \InvalidArgumentException
-     * @throws \Throwable
+     * @throws Exception
+     * @throws InvalidArgumentException
+     * @throws Throwable
      */
     public function pop(?string $channel = null): ?QueueMessage
     {
         $channel = $channel ?: $this->channel;
 
-        $now = new \DateTimeImmutable('now');
+        $now = new DateTimeImmutable('now');
 
         $sql = 'SELECT * FROM ' . $this->table .
             ' WHERE channel = :channel AND visibility <= :visibility' .
@@ -120,18 +124,18 @@ class PdoQueueDriver implements QueueDriverInterface
         $this->pdo->beginTransaction();
 
         $stat = $this->pdo->prepare($sql);
-        $stat->bindValue(':channel', $channel, \PDO::PARAM_STR);
-        $stat->bindValue(':visibility', $now->format('Y-m-d H:i:s'), \PDO::PARAM_STR);
+        $stat->bindValue(':channel', $channel, PDO::PARAM_STR);
+        $stat->bindValue(':visibility', $now->format('Y-m-d H:i:s'), PDO::PARAM_STR);
         $stat->bindValue(
             ':reserved',
             $now->modify('-' . $this->timeout . 'seconds')->format('Y-m-d H:i:s'),
-            \PDO::PARAM_STR
+            PDO::PARAM_STR
         );
 
         try {
             $stat->execute();
 
-            $data = $stat->fetch(\PDO::FETCH_ASSOC);
+            $data = $stat->fetch(PDO::FETCH_ASSOC);
 
             if (!$data) {
                 $this->pdo->commit();
@@ -151,7 +155,7 @@ class PdoQueueDriver implements QueueDriverInterface
             $stat->execute();
 
             $this->pdo->commit();
-        } catch (\Throwable $t) {
+        } catch (Throwable $t) {
             $this->pdo->rollBack();
             throw $t;
         }
@@ -193,16 +197,16 @@ class PdoQueueDriver implements QueueDriverInterface
     /**
      * release
      *
-     * @param QueueMessage|string $message
+     * @param  QueueMessage|string  $message
      *
      * @return static
-     * @throws \Exception
+     * @throws Exception
      */
     public function release(QueueMessage $message): static
     {
         $channel = $message->getChannel() ?: $this->channel;
 
-        $time = new \DateTimeImmutable('now');
+        $time = new DateTimeImmutable('now');
         $time = $time->modify('+' . $message->getDelay() . 'seconds');
 
         $values = [
@@ -236,7 +240,7 @@ class PdoQueueDriver implements QueueDriverInterface
     /**
      * Method to set property table
      *
-     * @param   string $table
+     * @param  string  $table
      *
      * @return  static  Return self to support chaining.
      */
@@ -250,9 +254,9 @@ class PdoQueueDriver implements QueueDriverInterface
     /**
      * Method to get property Db
      *
-     * @return  \PDO
+     * @return  PDO
      */
-    public function getPdo(): \PDO
+    public function getPdo(): PDO
     {
         return $this->pdo;
     }
@@ -260,11 +264,11 @@ class PdoQueueDriver implements QueueDriverInterface
     /**
      * Method to set property db
      *
-     * @param   \PDO $pdo
+     * @param  PDO  $pdo
      *
      * @return  static  Return self to support chaining.
      */
-    public function setPdo(\PDO $pdo): static
+    public function setPdo(PDO $pdo): static
     {
         $this->pdo = $pdo;
 

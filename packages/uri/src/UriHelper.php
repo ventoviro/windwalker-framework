@@ -66,7 +66,7 @@ class UriHelper
         $result = false;
 
         // Build arrays of values we need to decode before parsing
-        $entities     = [
+        $entities = [
             '%21',
             '%2A',
             '%27',

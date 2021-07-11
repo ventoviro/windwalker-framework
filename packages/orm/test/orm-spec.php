@@ -10,9 +10,10 @@
 declare(strict_types=1);
 
 use Windwalker\Data\Collection;
+use Windwalker\Database\DatabaseFactory;
 use Windwalker\ORM\Test\Entity\StubUser;
 
-$db = (new \Windwalker\Database\DatabaseFactory())->create('pdo_mysql', []);
+$db = (new DatabaseFactory())->create('pdo_mysql', []);
 
 $db->from()
     ->leftJoin()
@@ -50,8 +51,6 @@ foreach ($users as $user) {
     $user = $user->as(StubUser::class);
 
     $user->id = null;
-
-
 }
 
 // TODO:

@@ -109,7 +109,7 @@ class DatabaseFactory implements DatabaseFactoryInterface
     /**
      * extractDriverName
      *
-     * @param string $name
+     * @param  string  $name
      *
      * @return  string[]
      */

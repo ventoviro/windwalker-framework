@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace Windwalker\Http\Response;
 
 use InvalidArgumentException;
+use JsonException;
 use Psr\Http\Message\StreamInterface;
-use UnexpectedValueException;
 
 /**
  * The HtmlResponse class.
@@ -53,7 +53,7 @@ class JsonResponse extends TextResponse
      * @param  int    $options  The json_encode() options flag.
      *
      * @return  mixed  Encoded json.
-     * @throws \JsonException
+     * @throws JsonException
      */
     protected function encode(mixed $data, int $options = 0): mixed
     {

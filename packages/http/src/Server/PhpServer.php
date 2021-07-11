@@ -35,7 +35,7 @@ class PhpServer extends AbstractServer
      */
     public function __construct(?OutputInterface $output = null, ?HttpFactory $httpFactory = null)
     {
-        $this->output      = $output ?? $this->getOutput();
+        $this->output = $output ?? $this->getOutput();
         $this->httpFactory = $httpFactory ?? new HttpFactory();
     }
 

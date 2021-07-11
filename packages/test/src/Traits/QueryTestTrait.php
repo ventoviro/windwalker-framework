@@ -35,7 +35,7 @@ trait QueryTestTrait
 
     protected static function qn(string $text): string
     {
-        return Str::wrap($text, static::$nameQuote);
+        return Str::surrounds($text, static::$nameQuote);
     }
 
     protected static function replaceQn(string $sql): string
@@ -44,7 +44,7 @@ trait QueryTestTrait
             return $sql;
         }
 
-        return preg_replace('/(\"([\w]+)\")/', Str::wrap('$2', static::$nameQuote), $sql);
+        return preg_replace('/(\"([\w]+)\")/', Str::surrounds('$2', static::$nameQuote), $sql);
     }
 
     protected static function renderQuery($query): string

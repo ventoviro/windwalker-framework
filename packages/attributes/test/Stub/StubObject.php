@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Attributes\Test\Stub;
 
-use Windwalker\Utilities\Options\OptionAccessTrait;
 use Windwalker\Attributes\Test\Stub\Attrs\StubWrapper;
+use Windwalker\Utilities\Options\OptionAccessTrait;
 
 /**
  * The StubObject class.

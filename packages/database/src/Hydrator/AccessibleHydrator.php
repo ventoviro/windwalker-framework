@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Hydrator;
 
-use Windwalker\Data\Collection;
+use InvalidArgumentException;
 use Windwalker\Scalars\ArrayObject;
 use Windwalker\Utilities\Contract\AccessorAccessibleInterface;
 use Windwalker\Utilities\Contract\DumpableInterface;
@@ -27,7 +27,7 @@ class AccessibleHydrator implements HydratorInterface
     public function extract(object $object): array
     {
         if (!$object instanceof DumpableInterface) {
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 sprintf(
                     '%s::extract() expects a %s object',
                     static::class,
@@ -56,7 +56,7 @@ class AccessibleHydrator implements HydratorInterface
             return $object;
         }
 
-        throw new \InvalidArgumentException(
+        throw new InvalidArgumentException(
             sprintf(
                 '%s::hydrate() expects an %s or %s',
                 static::class,

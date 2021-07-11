@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Queue\Driver;
 
+use DomainException;
 use IronMQ\IronMQ;
 use Windwalker\Queue\QueueMessage;
 
@@ -116,7 +117,7 @@ class IronmqQueueDriver implements QueueDriverInterface
     /**
      * release
      *
-     * @param QueueMessage|string $message
+     * @param  QueueMessage|string  $message
      *
      * @return static
      */
@@ -137,16 +138,16 @@ class IronmqQueueDriver implements QueueDriverInterface
     /**
      * getIronMQ
      *
-     * @param       $projectId
-     * @param       $token
-     * @param array $options
+     * @param         $projectId
+     * @param         $token
+     * @param  array  $options
      *
      * @return  IronMQ
      */
     public function getIronMQ($projectId, $token, array $options): IronMQ
     {
         if (!class_exists(IronMQ::class)) {
-            throw new \DomainException('Please install iron-io/iron_mq first.');
+            throw new DomainException('Please install iron-io/iron_mq first.');
         }
 
         $defaultOptions = [

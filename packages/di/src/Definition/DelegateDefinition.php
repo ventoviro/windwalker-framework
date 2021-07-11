@@ -32,7 +32,7 @@ class DelegateDefinition implements DefinitionInterface
     public function __construct(DefinitionInterface $definition, ?Closure $factory = null)
     {
         $this->definition = $definition;
-        $this->factory    = $factory;
+        $this->factory = $factory;
     }
 
     /**

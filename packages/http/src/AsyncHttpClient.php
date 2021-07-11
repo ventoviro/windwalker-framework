@@ -106,7 +106,7 @@ class AsyncHttpClient extends HttpClient
 
         curl_multi_close($this->mh);
 
-        $this->mh    = null;
+        $this->mh = null;
         $this->tasks = [];
 
         return $this;
@@ -146,7 +146,7 @@ class AsyncHttpClient extends HttpClient
     public function resolve(callable $callback = null): array
     {
         $active = null;
-        $mh     = $this->getMainHandle();
+        $mh = $this->getMainHandle();
 
         do {
             $mrc = curl_multi_exec($mh, $active);
@@ -168,12 +168,12 @@ class AsyncHttpClient extends HttpClient
 
         /** @var CurlTransport $transport */
         $responses = [];
-        $errors    = [];
+        $errors = [];
         $transport = $this->getTransport();
 
         foreach ($this->tasks as $task) {
             /** @var Promise $promise */
-            $handle  = $task['handle'];
+            $handle = $task['handle'];
             $promise = $task['promise'];
 
             $error = curl_error($handle);

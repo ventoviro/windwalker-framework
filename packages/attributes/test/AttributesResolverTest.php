@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Attributes\Test;
 
+use Attribute;
 use PHPUnit\Framework\TestCase;
 use Windwalker\Attributes\AttributesResolver;
 use Windwalker\Attributes\AttributeType;
@@ -21,9 +22,7 @@ use Windwalker\Attributes\Test\Stub\Attrs\StubWrapper;
 use Windwalker\Attributes\Test\Stub\Attrs\ValueImplode;
 use Windwalker\Attributes\Test\Stub\StubAccessible;
 use Windwalker\Attributes\Test\Stub\StubObject;
-
 use Windwalker\Scalars\StringObject;
-
 use Windwalker\Test\Traits\BaseAssertionTrait;
 
 use function Windwalker\str;
@@ -40,32 +39,32 @@ class AttributesResolverTest extends TestCase
     public function testRegisterAttribute(): void
     {
         // Test property type
-        $this->instance->registerAttribute(StubWrapper::class, \Attribute::TARGET_PROPERTY);
+        $this->instance->registerAttribute(StubWrapper::class, Attribute::TARGET_PROPERTY);
 
         self::assertTrue(
             $this->instance->hasAttribute(StubWrapper::class)
         );
 
         self::assertFalse(
-            $this->instance->hasAttribute(StubWrapper::class, \Attribute::TARGET_CLASS)
+            $this->instance->hasAttribute(StubWrapper::class, Attribute::TARGET_CLASS)
         );
 
         // Test add class type
-        $this->instance->registerAttribute(StubWrapper::class, \Attribute::TARGET_CLASS);
+        $this->instance->registerAttribute(StubWrapper::class, Attribute::TARGET_CLASS);
 
         self::assertTrue(
-            $this->instance->hasAttribute(StubWrapper::class, \Attribute::TARGET_CLASS)
+            $this->instance->hasAttribute(StubWrapper::class, Attribute::TARGET_CLASS)
         );
 
         // Test remove property type
-        $this->instance->removeAttribute(StubWrapper::class, \Attribute::TARGET_PROPERTY);
+        $this->instance->removeAttribute(StubWrapper::class, Attribute::TARGET_PROPERTY);
 
         self::assertFalse(
-            $this->instance->hasAttribute(StubWrapper::class, \Attribute::TARGET_PROPERTY)
+            $this->instance->hasAttribute(StubWrapper::class, Attribute::TARGET_PROPERTY)
         );
 
         self::assertTrue(
-            $this->instance->hasAttribute(StubWrapper::class, \Attribute::TARGET_CLASS)
+            $this->instance->hasAttribute(StubWrapper::class, Attribute::TARGET_CLASS)
         );
 
         // Test remove all
@@ -99,7 +98,7 @@ class AttributesResolverTest extends TestCase
 
     public function testClassCreate()
     {
-        $this->instance->registerAttribute(StubWrapper::class, \Attribute::TARGET_CLASS);
+        $this->instance->registerAttribute(StubWrapper::class, Attribute::TARGET_CLASS);
 
         $obj = $this->instance->createObject(StubObject::class);
 
@@ -109,7 +108,7 @@ class AttributesResolverTest extends TestCase
 
     public function testClassCreateWithNamedArgs()
     {
-        $this->instance->registerAttribute(StubWrapper::class, \Attribute::TARGET_CLASS);
+        $this->instance->registerAttribute(StubWrapper::class, Attribute::TARGET_CLASS);
 
         $obj = $this->instance->createObject(
             StubObject::class,
@@ -125,18 +124,22 @@ class AttributesResolverTest extends TestCase
 
     public function testObjectDecorate()
     {
-        $this->instance->registerAttribute(StubWrapper::class, \Attribute::TARGET_CLASS);
+        $this->instance->registerAttribute(StubWrapper::class, Attribute::TARGET_CLASS);
 
         $obj = $this->instance->decorateObject(new StubObject());
 
         self::assertInstanceOf(StubWrapper::class, $obj);
         self::assertInstanceOf(StubObject::class, $obj->instance);
 
+        // phpcs:disable
         $obj = $this->instance->decorateObject(
-            new #[StubWrapper] class {
+            new
+            #[StubWrapper]
+            class {
                 public $foo = 'bar';
             }
         );
+        // phpcs:enable
 
         self::assertInstanceOf(StubWrapper::class, $obj);
         self::assertEquals('bar', $obj->instance->foo);
@@ -172,12 +175,11 @@ ReflectionProperty = foo
 EOT,
             implode("\n", $foo->output)
         );
-
     }
 
     public function testMethocCall()
     {
-        $this->instance->registerAttribute(StrUpper::class, \Attribute::TARGET_PARAMETER);
+        $this->instance->registerAttribute(StrUpper::class, Attribute::TARGET_PARAMETER);
         $this->instance->registerAttribute(ValueImplode::class, AttributeType::CALLABLE);
 
         $closure = #[ValueImplode(' ')]
@@ -190,36 +192,45 @@ EOT,
             return [$str, (string) $str2];
         };
 
-        $r = $this->instance->call($closure, [
-            'str2' => str('world')
-        ]);
+        $r = $this->instance->call(
+            $closure,
+            [
+                'str2' => str('world'),
+            ]
+        );
 
         self::assertEquals('HELLO WORLD', $r);
     }
 
     public function testMethocCallWithReference()
     {
-        $this->instance->registerAttribute(StrUpper::class, \Attribute::TARGET_PARAMETER);
-        $this->instance->registerAttribute(ValueImplode::class, \Attribute::TARGET_METHOD | \Attribute::TARGET_FUNCTION);
+        $this->instance->registerAttribute(StrUpper::class, Attribute::TARGET_PARAMETER);
+        $this->instance->registerAttribute(
+            ValueImplode::class,
+            Attribute::TARGET_METHOD | Attribute::TARGET_FUNCTION
+        );
 
         $opt = [
-            'test' => 1
+            'test' => 1,
         ];
 
         $closure = function (array &$options = []) {
             $options['foo'] = 'bar';
         };
 
-        $r = $this->instance->call($closure, [
-            'options' => &$opt
-        ]);
+        $r = $this->instance->call(
+            $closure,
+            [
+                'options' => &$opt,
+            ]
+        );
 
         self::assertEquals('bar', $opt['foo']);
     }
 
     public function testProperties()
     {
-        $this->instance->registerAttribute(PropWrap::class, \Attribute::TARGET_PROPERTY);
+        $this->instance->registerAttribute(PropWrap::class, Attribute::TARGET_PROPERTY);
 
         $obj = new class {
             #[PropWrap(StringObject::class)]

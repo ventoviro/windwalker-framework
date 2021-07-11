@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Event\Test;
 
+use Closure;
 use PHPUnit\Framework\TestCase;
 use Windwalker\Event\Attributes\EventSubscriber;
 use Windwalker\Event\Attributes\ListenTo;
@@ -52,7 +53,7 @@ class EventEmitterTest extends TestCase
     public function testOnce(): void
     {
         $count = 0;
-        $fn    = function () use (&$count) {
+        $fn = function () use (&$count) {
             $count++;
         };
 
@@ -71,7 +72,7 @@ class EventEmitterTest extends TestCase
     public function testOnceWithListenerCallable(): void
     {
         $count = 0;
-        $fn    = disposable(
+        $fn = disposable(
             static function () use (&$count) {
                 $count++;
             }
@@ -92,7 +93,7 @@ class EventEmitterTest extends TestCase
     public function testOnceWithDisposableCallable(): void
     {
         $count = 0;
-        $fn    = disposable(
+        $fn = disposable(
             static function () use (&$count) {
                 $count++;
             }
@@ -116,7 +117,7 @@ class EventEmitterTest extends TestCase
     public function testEmit(): void
     {
         $count = 0;
-        $fn    = function (EventInterface $event) use (&$count) {
+        $fn = function (EventInterface $event) use (&$count) {
             $event['result'] = $count += $event['num'];
         };
 
@@ -184,7 +185,7 @@ class EventEmitterTest extends TestCase
     public function testOff(): void
     {
         $count = 0;
-        $fn    = function (EventInterface $event) use (&$count) {
+        $fn = function (EventInterface $event) use (&$count) {
             $event['result'] = $count += $event['num'];
         };
 
@@ -207,10 +208,10 @@ class EventEmitterTest extends TestCase
     public function testOffClosure(): void
     {
         $count = 0;
-        $fn1   = function (EventInterface $event) use (&$count) {
+        $fn1 = function (EventInterface $event) use (&$count) {
             $event['result'] = $count += $event['num'];
         };
-        $fn2   = function (EventInterface $event) use (&$count) {
+        $fn2 = function (EventInterface $event) use (&$count) {
             $event['result'] = $count += $event['num'];
         };
 
@@ -268,8 +269,8 @@ class EventEmitterTest extends TestCase
     {
         $subscriber = $this->getCounterSubscriber();
 
-        $this->instance->on('count', \Closure::fromCallable([$subscriber, 'count1']));
-        $this->instance->on('count', \Closure::fromCallable([$subscriber, 'count2']));
+        $this->instance->on('count', Closure::fromCallable([$subscriber, 'count1']));
+        $this->instance->on('count', Closure::fromCallable([$subscriber, 'count2']));
 
         $this->instance->off('count', $subscriber);
 
@@ -383,8 +384,10 @@ class EventEmitterTest extends TestCase
 
     protected function getCounterSubscriber(): object
     {
+        // phpcs:disable
         return new
         #[EventSubscriber]
+        // phpcs:enable
         class {
             public $count = 0;
 
@@ -414,8 +417,10 @@ class EventEmitterTest extends TestCase
 
     protected function getOnceSubscriber(): object
     {
+        // phpcs:disable
         return new
         #[EventSubscriber]
+        // phpcs:enable
         class {
             public $count = 0;
 
@@ -559,7 +564,7 @@ class EventEmitterTest extends TestCase
     {
     }
 
-    protected function nope($value = null): \Closure
+    protected function nope($value = null): Closure
     {
         return function () use ($value) {
             return $value;

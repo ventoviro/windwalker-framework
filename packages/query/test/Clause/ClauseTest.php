@@ -13,6 +13,7 @@ namespace Windwalker\Query\Test\Clause;
 
 use PHPUnit\Framework\TestCase;
 use Windwalker\Query\Clause\Clause;
+
 use function Windwalker\Query\clause;
 
 /**
@@ -50,25 +51,25 @@ class ClauseTest extends TestCase
                 'WHERE',
                 ['foo > 0'],
                 ' AND ',
-                'WHERE foo > 0'
+                'WHERE foo > 0',
             ],
             [
                 'WHERE',
                 ['foo > 0', "bar = '123'"],
                 ' AND ',
-                'WHERE foo > 0 AND bar = \'123\''
+                'WHERE foo > 0 AND bar = \'123\'',
             ],
             [
                 'IN()',
                 [1, 2, 3],
                 ', ',
-                'IN(1, 2, 3)'
+                'IN(1, 2, 3)',
             ],
             [
                 '()',
                 ['a = b', 'c = d'],
                 ' OR ',
-                '(a = b OR c = d)'
+                '(a = b OR c = d)',
             ],
         ];
     }
@@ -79,10 +80,14 @@ class ClauseTest extends TestCase
 
         $clause->append(new Clause('', ['foo', '=', "'bar'"]));
         $clause->append(new Clause('OR', ['foo', '<', 5]));
-        $clause->append(new Clause('AND ()', [
-            new Clause('', ['flower', '=', "'sakura'"]),
-            new Clause('OR', ['flower', 'IS', 'NULL']),
-        ]));
+        $clause->append(
+            new Clause(
+                'AND ()', [
+                new Clause('', ['flower', '=', "'sakura'"]),
+                new Clause('OR', ['flower', 'IS', 'NULL']),
+            ]
+            )
+        );
 
         self::assertEquals(
             'WHERE foo = \'bar\' OR foo < 5 AND (flower = \'sakura\' OR flower IS NULL)',
@@ -141,7 +146,7 @@ class ClauseTest extends TestCase
      */
     public function testClone(): void
     {
-        $clause  = new Clause('IN()', [new Clause()], '');
+        $clause = new Clause('IN()', [new Clause()], '');
         $clause2 = clone $clause;
 
         self::assertNotSame(

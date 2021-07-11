@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Driver\Mysqli;
 
+use mysqli;
 use Windwalker\Database\Driver\AbstractConnection;
-use Windwalker\Database\Exception\DatabaseConnectException;
 
 /**
  * The MysqliConnection class.
@@ -22,7 +22,7 @@ class MysqliConnection extends AbstractConnection
     protected static string $name = 'mysqli';
 
     /**
-     * @var \mysqli
+     * @var mysqli
      */
     protected $connection;
 
@@ -39,7 +39,7 @@ class MysqliConnection extends AbstractConnection
         return $options;
     }
 
-    protected function doConnect(array $options): bool|\mysqli
+    protected function doConnect(array $options): bool|mysqli
     {
         mysqli_report(MYSQLI_REPORT_ALL | MYSQLI_REPORT_STRICT);
 
@@ -70,9 +70,9 @@ class MysqliConnection extends AbstractConnection
     }
 
     /**
-     * @return \mysqli
+     * @return mysqli
      */
-    public function get(): ?\mysqli
+    public function get(): ?mysqli
     {
         return parent::get();
     }

@@ -11,14 +11,13 @@ declare(strict_types=1);
 
 namespace Windwalker\Filter;
 
-use function RingCentral\Psr7\str;
-
 /**
  * The AbstractRegex class.
  */
 abstract class AbstractRegexFilter extends AbstractFilter
 {
     public const TYPE_MATCH = 'match';
+
     public const TYPE_REPLACE = 'replace';
 
     protected string $type = self::TYPE_REPLACE;

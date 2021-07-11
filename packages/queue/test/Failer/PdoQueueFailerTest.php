@@ -11,9 +11,6 @@ declare(strict_types=1);
 
 namespace Windwalker\Queue\Test\Failer;
 
-use PHPUnit\Framework\TestCase;
-use Windwalker\Database\Test\AbstractDatabaseTestCase;
-use Windwalker\Queue\Failer\DatabaseQueueFailer;
 use Windwalker\Queue\Failer\PdoQueueFailer;
 
 /**

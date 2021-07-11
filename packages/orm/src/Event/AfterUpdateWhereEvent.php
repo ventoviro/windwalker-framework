@@ -11,12 +11,13 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Event;
 
+use Attribute;
 use Windwalker\Database\Driver\StatementInterface;
 
 /**
  * The AfterUpdateBatchEvent class.
  */
-#[\Attribute]
+#[Attribute]
 class AfterUpdateWhereEvent extends AbstractUpdateWhereEvent
 {
     protected StatementInterface $statement;

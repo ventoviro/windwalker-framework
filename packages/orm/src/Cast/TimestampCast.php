@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Cast;
 
+use DateTimeImmutable;
 use Windwalker\Utilities\TypeCast;
 
 /**
@@ -28,7 +29,7 @@ class TimestampCast implements CastInterface
         }
 
         if (!is_numeric($value)) {
-            $value = (new \DateTimeImmutable($value))->getTimestamp();
+            $value = (new DateTimeImmutable($value))->getTimestamp();
         }
 
         return TypeCast::tryNumeric($value);
@@ -43,7 +44,7 @@ class TimestampCast implements CastInterface
             return null;
         }
 
-        $date = \DateTimeImmutable::createFromFormat('U', $value);
+        $date = DateTimeImmutable::createFromFormat('U', $value);
 
         return $date->format('Y-m-d H:i:s');
     }

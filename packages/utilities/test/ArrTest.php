@@ -1210,7 +1210,7 @@ SHOW;
         $this->assertEquals([$data[0]], Arr::query($data, ['id' => 1, 'title' => 'Julius Caesar']));
 
         // Test object equals
-        $object      = new stdClass();
+        $object = new stdClass();
         $object->foo = 'bar';
         $this->assertEquals([$data[0], $data[3]], Arr::query($data, ['data' => $object]));
 

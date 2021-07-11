@@ -11,13 +11,15 @@ declare(strict_types=1);
 
 namespace Windwalker\Attributes\Test\Stub\Attrs;
 
+use Attribute;
+use ReflectionProperty;
 use Windwalker\Attributes\AttributeHandler;
 use Windwalker\Attributes\AttributeInterface;
 
 /**
  * The PropWrap class.
  */
-#[\Attribute]
+#[Attribute]
 class PropWrap implements AttributeInterface
 {
     public $value;
@@ -40,10 +42,12 @@ class PropWrap implements AttributeInterface
             $this->value = $handler();
 
             $object = $handler->getObject();
-            /** @var \ReflectionProperty $ref */
+            /** @var ReflectionProperty $ref */
             $ref = $handler->getReflector();
 
-            $ref->setValue($object, $v = new ($this->wrap)($this->value));
+            $class = $this->wrap;
+
+            $ref->setValue($object, $v = new $class($this->value));
 
             return $v;
         };

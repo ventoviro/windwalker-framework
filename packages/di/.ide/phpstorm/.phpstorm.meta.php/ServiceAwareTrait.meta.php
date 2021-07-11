@@ -11,8 +11,6 @@ declare(strict_types=1);
 
 namespace PHPSTORM_META {
 
-    use Windwalker\DI\ServiceAwareTrait;
-
     override(
         \Windwalker\DI\ServiceAwareTrait::make(0),
         map(

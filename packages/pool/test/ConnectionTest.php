@@ -11,11 +11,11 @@ declare(strict_types=1);
 
 namespace Windwalker\Pool\Test;
 
+use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\TestCase;
 use Windwalker\Pool\AbstractConnection;
 use Windwalker\Pool\AbstractPool;
-use Windwalker\Pool\PoolInterface;
 use Windwalker\Pool\Stack\PhpStack;
 use Windwalker\Pool\Test\Stub\StubConnection;
 use Windwalker\Pool\Test\Stub\StubConnectionPool;
@@ -72,7 +72,7 @@ class ConnectionTest extends TestCase
      */
     public function testRelease(): void
     {
-        $pool = \Mockery::mock(AbstractPool::class);
+        $pool = Mockery::mock(AbstractPool::class);
         $pool->shouldReceive('release');
 
         $pool->shouldReceive('getSerial')

@@ -37,10 +37,10 @@ interface TransportInterface
     /**
      * Use stream to download file.
      *
-     * @param  RequestInterface  $request  The request object to store request params.
-     * @param  string|StreamInterface  $dest  The dest path to store file.
+     * @param  RequestInterface        $request  The request object to store request params.
+     * @param  string|StreamInterface  $dest     The dest path to store file.
      *
-     * @param  array  $options
+     * @param  array                   $options
      *
      * @return  ResponseInterface
      * @since   2.1

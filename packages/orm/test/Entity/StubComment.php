@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Test\Entity;
 
+use DateTimeImmutable;
 use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Cast;
 use Windwalker\ORM\Attributes\Column;
@@ -43,9 +44,9 @@ class StubComment
     protected string $content = '';
 
     #[Column('created')]
-    #[Cast(\DateTimeImmutable::class)]
+    #[Cast(DateTimeImmutable::class)]
     #[CurrentTime]
-    protected ?\DateTimeImmutable $created = null;
+    protected ?DateTimeImmutable $created = null;
 
     #[Column('created_by')]
     protected int $createdBy = 0;
@@ -151,19 +152,19 @@ class StubComment
     }
 
     /**
-     * @return \DateTimeImmutable
+     * @return DateTimeImmutable
      */
-    public function getCreated(): ?\DateTimeImmutable
+    public function getCreated(): ?DateTimeImmutable
     {
         return $this->created;
     }
 
     /**
-     * @param  \DateTimeImmutable  $created
+     * @param  DateTimeImmutable  $created
      *
      * @return  static  Return self to support chaining.
      */
-    public function setCreated(\DateTimeImmutable $created): static
+    public function setCreated(DateTimeImmutable $created): static
     {
         $this->created = $created;
 

@@ -117,7 +117,7 @@ class CompositeRendererTest extends TestCase
                 __DIR__ . '/Tmpl/mixed2',
             ],
             [
-                'cache_path' => __DIR__ . '/../tmp'
+                'cache_path' => __DIR__ . '/../tmp',
             ]
         );
     }

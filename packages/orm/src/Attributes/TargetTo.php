@@ -11,13 +11,13 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Attributes;
 
-use Windwalker\ORM\Relation\Strategy\ManyToMany;
+use Attribute;
 use Windwalker\ORM\Relation\Strategy\RelationConfigureInterface;
 
 /**
  * The TargetTo class.
  */
-#[\Attribute]
+#[Attribute]
 class TargetTo implements RelationConfigureAttributeInterface
 {
     protected array $columns;

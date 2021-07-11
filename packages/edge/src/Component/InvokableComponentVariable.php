@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Edge\Component;
 
+use Closure;
+
 /**
  * The InvokableComponentVariable class.
  */
@@ -19,9 +21,9 @@ class InvokableComponentVariable
     /**
      * InvokableComponentVariable constructor.
      *
-     * @param  \Closure  $callable
+     * @param  Closure  $callable
      */
-    public function __construct(protected \Closure $callable)
+    public function __construct(protected Closure $callable)
     {
     }
 
@@ -29,6 +31,7 @@ class InvokableComponentVariable
      * Dynamically proxy attribute access to the variable.
      *
      * @param  string  $key
+     *
      * @return mixed
      */
     public function __get(string $key)

@@ -35,7 +35,7 @@ class YamlFormat implements FormatInterface
     {
         $inline = $options['inline'] ?? 2;
         $indent = $options['indent'] ?? 0;
-        $flags  = $options['flags'] ?? 0;
+        $flags = $options['flags'] ?? 0;
 
         return Yaml::dump($data, $inline, $indent, $flags);
     }

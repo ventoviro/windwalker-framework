@@ -11,17 +11,19 @@ declare(strict_types=1);
 
 namespace Windwalker\Attributes\Test\Stub\Attrs;
 
+use Attribute;
+use Closure;
 use Windwalker\Attributes\AttributeHandler;
 
 /**
  * The StubWrapper class.
  */
-#[\Attribute]
+#[Attribute]
 class StubWrapper
 {
     public object $instance;
 
-    public function __invoke(AttributeHandler $handler): \Closure
+    public function __invoke(AttributeHandler $handler): Closure
     {
         return function (...$args) use ($handler) {
             $this->instance = $handler(...$args);

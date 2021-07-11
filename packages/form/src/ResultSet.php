@@ -11,12 +11,14 @@ declare(strict_types=1);
 
 namespace Windwalker\Form;
 
+use Countable;
 use Generator;
+use IteratorAggregate;
 
 /**
  * The ResultSet class.
  */
-class ResultSet implements \IteratorAggregate, \Countable
+class ResultSet implements IteratorAggregate, Countable
 {
     /**
      * @var ValidateResult[]

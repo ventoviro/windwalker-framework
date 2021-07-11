@@ -90,7 +90,7 @@ class ArrayLoopTraitTest extends TestCase
         $callback = function (&$v, $k) {
             return $v = strtoupper($v);
         };
-        $b        = $a->walkRecursive($callback);
+        $b = $a->walkRecursive($callback);
         array_walk_recursive($src, $callback);
 
         self::assertEquals($src, $b->dump());

@@ -35,7 +35,7 @@ return new class {
     public function index(): ResponseInterface
     {
         $headers = $this->req->getHeaders();
-        $head    = '';
+        $head = '';
         foreach ($headers as $name => $headerItems) {
             $head .= sprintf("%s: %s\n", $name, $this->req->getHeaderLine($name));
         }
@@ -55,7 +55,7 @@ return new class {
 
     public function json(): ResponseInterface
     {
-        $uri   = $this->req->getUri();
+        $uri = $this->req->getUri();
         $query = $uri->getQueryValues();
 
         return $this->response(json_encode($query));

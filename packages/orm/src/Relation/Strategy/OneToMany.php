@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Relation\Strategy;
 
+use ReflectionException;
+use Windwalker\ORM\EntityMapper;
 use Windwalker\ORM\Relation\Action;
 use Windwalker\ORM\Relation\RelationCollection;
 use Windwalker\ORM\Relation\RelationProxies;
@@ -38,7 +40,7 @@ class OneToMany extends AbstractRelation
 
     /**
      * @inheritDoc
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function save(array $data, object $entity, ?array $oldData = null): void
     {
@@ -79,6 +81,7 @@ class OneToMany extends AbstractRelation
 
         if ($this->onDelete === Action::CASCADE) {
             $this->deleteAllRelatives($data);
+
             return;
         }
 
@@ -98,7 +101,7 @@ class OneToMany extends AbstractRelation
                 $this->getForeignMetadata()->getClassName(),
                 $delItem,
                 null,
-                true
+                EntityMapper::UPDATE_NULLS
             );
         }
     }
@@ -120,7 +123,7 @@ class OneToMany extends AbstractRelation
 
     protected function getDetachDiff(iterable $items, array $oldItems, array $compareKeys, array $ownerData): array
     {
-        $keep    = [];
+        $keep = [];
         $detaches = [];
 
         foreach ($oldItems as $old) {
@@ -143,7 +146,7 @@ class OneToMany extends AbstractRelation
 
     protected function getAttachDiff(iterable $items, array $oldItems, array $compareKeys, array $ownerData): array
     {
-        $keep    = [];
+        $keep = [];
         $creates = [];
 
         foreach ($items as $item) {
@@ -189,7 +192,7 @@ class OneToMany extends AbstractRelation
             $foreignData = $this->clearRelativeFields($foreignData);
             $this->getORM()
                 ->mapper($this->getTargetTable())
-                ->updateOne($foreignData, null, true);
+                ->updateOne($foreignData, null, EntityMapper::UPDATE_NULLS);
         }
     }
 
@@ -209,7 +212,7 @@ class OneToMany extends AbstractRelation
                 $this->getForeignMetadata()->getClassName(),
                 $keepData,
                 null,
-                true
+                EntityMapper::UPDATE_NULLS
             );
         }
     }

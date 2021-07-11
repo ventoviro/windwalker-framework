@@ -47,7 +47,7 @@ class MemcachedStorage implements StorageInterface
         $this->connect();
 
         $value = $this->driver->get($key);
-        $code  = $this->driver->getResultCode();
+        $code = $this->driver->getResultCode();
 
         if ($code === Memcached::RES_SUCCESS) {
             return $value;

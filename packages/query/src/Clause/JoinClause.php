@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace Windwalker\Query\Clause;
 
+use BadMethodCallException;
+use Closure;
+use InvalidArgumentException;
 use Windwalker\Query\Query;
 use Windwalker\Utilities\Assert\ArgumentsAssert;
 use Windwalker\Utilities\Wrapper\RawWrapper;
@@ -68,15 +71,15 @@ class JoinClause implements ClauseInterface
     /**
      * on
      *
-     * @param  string|array|\Closure|ClauseInterface  $column  Column name, array where list or callback
+     * @param  string|array|Closure|ClauseInterface  $column   Column name, array where list or callback
      *                                                         function as sub query.
-     * @param  mixed                                  ...$args
+     * @param  mixed                                 ...$args
      *
      * @return  static
      */
     public function on(mixed $column, ...$args): static
     {
-        if ($column instanceof \Closure) {
+        if ($column instanceof Closure) {
             $this->handleNestedOn($column, (string) ($args[0] ?? 'AND'));
 
             return $this;
@@ -157,11 +160,11 @@ class JoinClause implements ClauseInterface
         }
 
         if ($operator === null) {
-            throw new \InvalidArgumentException('Where operator should not be NULL');
+            throw new InvalidArgumentException('Where operator should not be NULL');
         }
 
         // Closure means to create a sub query as value.
-        if ($value instanceof \Closure) {
+        if ($value instanceof Closure) {
             $value($value = $this->query->createSubQuery());
         }
 
@@ -209,10 +212,10 @@ class JoinClause implements ClauseInterface
         return [strtoupper($operator), $value, $origin];
     }
 
-    private function handleNestedOn(\Closure $callback, string $glue): void
+    private function handleNestedOn(Closure $callback, string $glue): void
     {
         if (!in_array(strtolower(trim($glue)), ['and', 'or'], true)) {
-            throw new \InvalidArgumentException('WHERE glue should only be `OR`, `AND`.');
+            throw new InvalidArgumentException('WHERE glue should only be `OR`, `AND`.');
         }
 
         $callback($clause = new static($this->query, $this->prefix, $this->table));
@@ -234,11 +237,11 @@ class JoinClause implements ClauseInterface
     /**
      * orWhere
      *
-     * @param  array|\Closure  $wheres
+     * @param  array|Closure  $wheres
      *
      * @return  static
      */
-    public function orOn(array|\Closure $wheres): static
+    public function orOn(array|Closure $wheres): static
     {
         if (is_array($wheres)) {
             return $this->orOn(
@@ -251,7 +254,7 @@ class JoinClause implements ClauseInterface
         }
 
         ArgumentsAssert::assert(
-            $wheres instanceof \Closure,
+            $wheres instanceof Closure,
             '{caller} argument should be array or Closure, %s given.',
             $wheres
         );
@@ -324,7 +327,7 @@ class JoinClause implements ClauseInterface
             'nullDate',
             'escape',
             'quote',
-            'quoteName'
+            'quoteName',
         ];
 
         $method = $methods[strtolower($name)] ?? null;
@@ -333,6 +336,6 @@ class JoinClause implements ClauseInterface
             return $this->query->$method(...$args);
         }
 
-        throw new \BadMethodCallException('Call to undefined method: ' . $name . '()');
+        throw new BadMethodCallException('Call to undefined method: ' . $name . '()');
     }
 }

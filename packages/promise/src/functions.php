@@ -12,9 +12,13 @@ declare(strict_types=1);
 namespace Windwalker\Promise;
 
 use Closure;
+use Generator;
 use JetBrains\PhpStorm\Pure;
 use Throwable;
 use Windwalker\Promise\Helper\ReturnPromiseInterface;
+
+use function is_object;
+use function method_exists;
 
 if (!function_exists('\Windwalker\Promise\resolve')) {
     /**
@@ -55,9 +59,10 @@ if (!function_exists('\Windwalker\Promise\is_thenable')) {
      * @return  bool
      */
     #[Pure]
-    function is_thenable(mixed $value): bool
-    {
-        return \is_object($value) && \method_exists($value, 'then');
+    function is_thenable(
+        mixed $value
+    ): bool {
+        return is_object($value) && method_exists($value, 'then');
     }
 }
 
@@ -148,7 +153,7 @@ if (!function_exists('\Windwalker\Promise\coroutine')) {
             static function ($resolve) use ($callback) {
                 \Windwalker\go(
                     static function () use ($resolve, $callback) {
-                        /** @var \Generator $generator */
+                        /** @var Generator $generator */
                         $generator = $callback();
 
                         $value = $generator->current();

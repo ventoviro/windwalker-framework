@@ -11,10 +11,12 @@ declare(strict_types=1);
 
 namespace Windwalker\Utilities\Wrapper;
 
+use Stringable;
+
 /**
  * The RawWrapper class.
  */
-class RawWrapper implements WrapperInterface, \Stringable
+class RawWrapper implements WrapperInterface, Stringable
 {
     /**
      * Property value.

@@ -48,9 +48,9 @@ class DOMTokenList
      */
     public function __construct(DOMElement $element, string $name, ?array $supports = null)
     {
-        $this->element  = $element;
+        $this->element = $element;
         $this->supports = $supports;
-        $this->name     = $name;
+        $this->name = $name;
     }
 
     /**

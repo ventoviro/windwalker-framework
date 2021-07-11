@@ -74,9 +74,11 @@ class TextareaFieldTest extends TestCase
      */
     public function testRender()
     {
+        // phpcs:disable
         $html = <<<HTML
 <textarea id="test-field" name="flower" class="stub-flower" cols="10" data-field-input disabled onchange="void(0);" readonly rows="15">sakura</textarea>
 HTML;
+        // phpcs:enable
 
         self::assertDomStringEqualsDomString($html, $this->instance->renderInput());
     }

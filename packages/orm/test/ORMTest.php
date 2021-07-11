@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Test;
 
-use PHPUnit\Framework\TestCase;
 use Windwalker\Database\Test\AbstractDatabaseTestCase;
 use Windwalker\ORM\ORM;
 use Windwalker\ORM\Test\Entity\StubArticle;

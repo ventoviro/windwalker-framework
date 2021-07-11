@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Test\Reseter;
 
+use PDO;
+
 /**
  * The SQLIteReseter class.
  */
@@ -18,14 +20,14 @@ class SQLiteReseter extends AbstractReseter
 {
     protected static string $platform = 'SQLite';
 
-    public function createDatabase(\PDO $pdo, string $dbname): void
+    public function createDatabase(PDO $pdo, string $dbname): void
     {
         if ($dbname !== ':memory:' && is_file($dbname)) {
             @unlink($dbname);
         }
     }
 
-    public function clearAllTables(\PDO $pdo, string $dbname): void
+    public function clearAllTables(PDO $pdo, string $dbname): void
     {
         // Drop Tables
         $tables = $pdo->query(
@@ -35,7 +37,7 @@ class SQLiteReseter extends AbstractReseter
                 ->where('type', 'table')
                 ->where('name', 'not like', 'sqlite_%')
                 ->render(true)
-        )->fetchAll(\PDO::FETCH_COLUMN) ?: [];
+        )->fetchAll(PDO::FETCH_COLUMN) ?: [];
 
         if ($tables) {
             foreach ($tables as $table) {
@@ -56,7 +58,7 @@ class SQLiteReseter extends AbstractReseter
                 ->where('type', 'view')
                 ->where('name', 'not like', 'sqlite_%')
                 ->render(true)
-        )->fetchAll(\PDO::FETCH_COLUMN) ?: [];
+        )->fetchAll(PDO::FETCH_COLUMN) ?: [];
 
         if ($tables) {
             foreach ($tables as $table) {

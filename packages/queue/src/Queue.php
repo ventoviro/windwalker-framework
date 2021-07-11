@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Queue;
 
+use InvalidArgumentException;
+use JsonException;
 use Windwalker\Queue\Driver\QueueDriverInterface;
 use Windwalker\Queue\Job\CallableJob;
 use Windwalker\Queue\Job\JobInterface;
@@ -42,10 +44,10 @@ class Queue
     /**
      * push
      *
-     * @param  mixed  $job
-     * @param  int  $delay
+     * @param  mixed        $job
+     * @param  int          $delay
      * @param  string|null  $channel
-     * @param  array  $options
+     * @param  array        $options
      *
      * @return int|string
      */
@@ -68,7 +70,7 @@ class Queue
      * @param  array         $options
      *
      * @return  int|string
-     * @throws \JsonException
+     * @throws JsonException
      */
     public function pushRaw(
         string|array $body,
@@ -149,7 +151,7 @@ class Queue
      * @param  array  $data
      *
      * @return QueueMessage
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function getMessageByJob(mixed $job, array $data = []): QueueMessage
     {
@@ -172,7 +174,7 @@ class Queue
      * @param  mixed  $job
      *
      * @return  JobInterface
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     protected function createJobInstance(JobInterface|callable $job): JobInterface
     {
@@ -188,7 +190,7 @@ class Queue
         // Create by class name.
         if (is_string($job)) {
             if (!class_exists($job) || is_subclass_of($job, JobInterface::class)) {
-                throw new \InvalidArgumentException(
+                throw new InvalidArgumentException(
                     sprintf(
                         'Job should be a class which implements %s, %s given',
                         JobInterface::class,

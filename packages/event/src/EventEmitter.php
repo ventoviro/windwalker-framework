@@ -11,12 +11,14 @@ declare(strict_types=1);
 
 namespace Windwalker\Event;
 
+use DomainException;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\EventDispatcher\ListenerProviderInterface;
+use ReflectionException;
 use Rx\Observable;
 use Rx\ObserverInterface;
+use WeakMap;
 use Windwalker\Event\Provider\CompositeListenerProvider;
-
 use Windwalker\Utilities\Classes\ObjectBuilderAwareTrait;
 
 use function Windwalker\disposable;
@@ -40,7 +42,7 @@ class EventEmitter extends EventDispatcher implements
     /**
      * @var EventDispatcherInterface[]
      */
-    protected \WeakMap $dealers;
+    protected WeakMap $dealers;
 
     /**
      * EventEmitter constructor.
@@ -51,7 +53,7 @@ class EventEmitter extends EventDispatcher implements
     {
         parent::__construct(CompositeListenerProvider::create($provider));
 
-        $this->dealers = new \WeakMap();
+        $this->dealers = new WeakMap();
     }
 
     /**
@@ -124,7 +126,7 @@ class EventEmitter extends EventDispatcher implements
     public function observe(string $event, ?int $priority = null): Observable
     {
         if (!class_exists(Observable::class)) {
-            throw new \DomainException('Please install reactivex/rxphp to support Observable.');
+            throw new DomainException('Please install reactivex/rxphp to support Observable.');
         }
 
         return Observable::create(
@@ -147,7 +149,7 @@ class EventEmitter extends EventDispatcher implements
      *
      * @return  static
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function remove(callable|object $listenerOrSubscriber): static
     {
@@ -163,7 +165,7 @@ class EventEmitter extends EventDispatcher implements
      * @param  callable|object        $listenerOrSubscriber
      *
      * @return  static
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function off(string|EventInterface $event, $listenerOrSubscriber = null): static
     {
@@ -219,7 +221,7 @@ class EventEmitter extends EventDispatcher implements
      */
     public function resetDealers(): static
     {
-        $this->dealers = new \WeakMap();
+        $this->dealers = new WeakMap();
 
         return $this;
     }

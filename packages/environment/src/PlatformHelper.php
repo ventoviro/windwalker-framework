@@ -72,7 +72,7 @@ class PlatformHelper
     /**
      * Method to set property server
      *
-     * @param   Platform $platform
+     * @param  Platform  $platform
      *
      * @return  void
      */

@@ -11,10 +11,13 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Driver;
 
+use Generator;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use RuntimeException;
+use Throwable;
 use Windwalker\Data\Collection;
-use Windwalker\Database\Event\ItemFetchedEvent;
 use Windwalker\Database\Event\HydrateEvent;
+use Windwalker\Database\Event\ItemFetchedEvent;
 use Windwalker\Database\Event\QueryEndEvent;
 use Windwalker\Database\Event\QueryFailedEvent;
 use Windwalker\Database\Event\QueryStartEvent;
@@ -61,9 +64,9 @@ abstract class AbstractStatement implements StatementInterface
      * AbstractStatement constructor.
      *
      * @param  AbstractDriver  $driver
-     * @param  string           $query
-     * @param  array            $bounded
-     * @param  array            $options
+     * @param  string          $query
+     * @param  array           $bounded
+     * @param  array           $options
      */
     public function __construct(AbstractDriver $driver, string $query, array $bounded = [], array $options = [])
     {
@@ -75,9 +78,9 @@ abstract class AbstractStatement implements StatementInterface
 
     /**
      * @inheritDoc
-     * @throws \Throwable
+     * @throws Throwable
      */
-    public function getIterator(string|object $class = Collection::class, array $args = []): \Generator
+    public function getIterator(string|object $class = Collection::class, array $args = []): Generator
     {
         $this->execute();
 
@@ -119,7 +122,7 @@ abstract class AbstractStatement implements StatementInterface
      * @param  array|null  $params
      *
      * @return  static
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function execute(?array $params = null): static
     {
@@ -137,7 +140,7 @@ abstract class AbstractStatement implements StatementInterface
             if (!$result) {
                 throw new StatementException('Execute query statement failed.');
             }
-        } catch (\RuntimeException $exception) {
+        } catch (RuntimeException $exception) {
             $statement->close();
             $event = $this->emit(QueryFailedEvent::class, compact('exception'));
 

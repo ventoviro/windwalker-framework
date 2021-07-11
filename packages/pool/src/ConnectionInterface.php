@@ -82,7 +82,7 @@ interface ConnectionInterface
     /**
      * Set whether to release
      *
-     * @param bool $active
+     * @param  bool  $active
      */
     public function setActive(bool $active): void;
 

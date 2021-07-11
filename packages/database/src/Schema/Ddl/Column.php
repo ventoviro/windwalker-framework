@@ -63,9 +63,9 @@ class Column
         mixed $columnDefault = null,
         array $options = []
     ) {
-        $this->columnName    = $name;
+        $this->columnName = $name;
         $this->columnDefault = $columnDefault;
-        $this->isNullable    = $isNullable;
+        $this->isNullable = $isNullable;
         $this->dataType((string) $dataType);
 
         $this->fill($options);

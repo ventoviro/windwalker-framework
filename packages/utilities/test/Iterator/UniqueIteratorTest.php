@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Utilities\Test\Iterator;
 
+use ArrayIterator;
 use PHPUnit\Framework\TestCase;
 use Windwalker\Test\Traits\TestAccessorTrait;
 use Windwalker\Utilities\Iterator\UniqueIterator;
@@ -32,7 +33,7 @@ class UniqueIteratorTest extends TestCase
      */
     public function testAccept(): void
     {
-        $iter = new UniqueIterator(new \ArrayIterator(['a', 'b', 'a', 'c', 'd', 'd', 'b']));
+        $iter = new UniqueIterator(new ArrayIterator(['a', 'b', 'a', 'c', 'd', 'd', 'b']));
 
         self::assertEquals(['a', 'b', 'c', 'd'], array_values(iterator_to_array($iter)));
     }
@@ -42,7 +43,7 @@ class UniqueIteratorTest extends TestCase
      */
     public function testRewind(): void
     {
-        $iter = new UniqueIterator(new \ArrayIterator(['a', 'b', 'a', 'c', 'd', 'd', 'b']));
+        $iter = new UniqueIterator(new ArrayIterator(['a', 'b', 'a', 'c', 'd', 'd', 'b']));
 
         foreach ($iter as $item) {
             //

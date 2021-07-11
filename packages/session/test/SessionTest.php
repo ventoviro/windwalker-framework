@@ -30,12 +30,12 @@ class SessionTest extends TestCase
     protected ?Session $instance;
 
     /**
-     * @see  Session::start
+     * @see                 Session::start
      *
-     * @session native
-     * @handler native
-     * @cookie  native
-     * @autoCommit true
+     * @session             native
+     * @handler             native
+     * @cookie              native
+     * @autoCommit          true
      *
      * @runInSeparateProcess
      * @preserveGlobalState disabled
@@ -61,12 +61,12 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @see  Session::start
+     * @see                 Session::start
      *
-     * @session native
-     * @handler native
-     * @cookie  native
-     * @autoCommit true
+     * @session             native
+     * @handler             native
+     * @cookie              native
+     * @autoCommit          true
      *
      * @runInSeparateProcess
      * @preserveGlobalState disabled
@@ -94,12 +94,12 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @see  Session::start
+     * @see                 Session::start
      *
-     * @session native
-     * @handler native
-     * @cookie  native
-     * @autoCommit true
+     * @session             native
+     * @handler             native
+     * @cookie              native
+     * @autoCommit          true
      *
      * @runInSeparateProcess
      * @preserveGlobalState disabled
@@ -110,13 +110,13 @@ class SessionTest extends TestCase
             [
                 'ini' => [
                     'save_path' => self::getSessionPath(),
-                    'use_cookies' => '0'
-                ]
+                    'use_cookies' => '0',
+                ],
             ],
             new NativeBridge([], new ArrayHandler()),
             ArrayCookies::create(
                 [
-                    'WW_SESS_ID' => static::$sess1
+                    'WW_SESS_ID' => static::$sess1,
                 ]
             )
         );
@@ -136,53 +136,12 @@ class SessionTest extends TestCase
     }
 
     /**
-     * @see  Session::start
+     * @see                 Session::start
      *
-     * @session php
-     * @handler php
-     * @cookie  native
-     * @autoCommit true
-     *
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
-    public function testPhpBridgeNativeCookieWithoutId(): void
-    {
-        $sess = $this->createInstance(
-            [],
-            new PhpBridge(
-                [
-                    BridgeInterface::OPTION_WITH_SUPER_GLOBAL => true
-                ],
-                $handler = new ArrayHandler(
-                    [
-                        static::$sess1 => ArrayHandler::createData('a:1:{s:6:"flower";s:6:"Sakura";}')
-                    ]
-                )
-            )
-        );
-
-        $sess->setName('FOO_SESS');
-
-        $sess->start();
-
-        self::assertEquals(
-            [],
-            $_SESSION
-        );
-        self::assertNotEquals(
-            static::$sess1,
-            $sess->getId()
-        );
-    }
-
-    /**
-     * @see  Session::start
-     *
-     * @session php
-     * @handler php
-     * @cookie  array
-     * @autoCommit true
+     * @session             php
+     * @handler             php
+     * @cookie              array
+     * @autoCommit          true
      *
      * @runInSeparateProcess
      * @preserveGlobalState disabled
@@ -195,7 +154,7 @@ class SessionTest extends TestCase
                 [],
                 $handler = new ArrayHandler(
                     [
-                        static::$sess1 => ArrayHandler::createData('a:1:{s:6:"flower";s:6:"Sakura";}')
+                        static::$sess1 => ArrayHandler::createData('a:1:{s:6:"flower";s:6:"Sakura";}'),
                     ]
                 )
             )
@@ -222,18 +181,59 @@ class SessionTest extends TestCase
         $sess->stop(true);
 
         self::assertEquals(
-            'a:2:{s:6:"flower";s:6:"Sakura";s:4:"tree";s:3:"Oak";}',
+            'a:3:{s:6:"flower";s:6:"Sakura";s:4:"tree";s:3:"Oak";s:6:"_flash";a:0:{}}',
             $handler->getSessions()[static::$sess1]['data']
         );
     }
 
     /**
-     * @see  Session::start
+     * @see                 Session::start
      *
-     * @session php
-     * @handler php
-     * @cookie  array
-     * @autoCommit true
+     * @session             php
+     * @handler             php
+     * @cookie              native
+     * @autoCommit          true
+     *
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
+    public function testPhpBridgeNativeCookieWithoutId(): void
+    {
+        $sess = $this->createInstance(
+            [],
+            new PhpBridge(
+                [
+                    BridgeInterface::OPTION_WITH_SUPER_GLOBAL => true,
+                ],
+                $handler = new ArrayHandler(
+                    [
+                        static::$sess1 => ArrayHandler::createData('a:1:{s:6:"flower";s:6:"Sakura";}'),
+                    ]
+                )
+            )
+        );
+
+        $sess->setName('FOO_SESS');
+
+        $sess->start();
+
+        self::assertEquals(
+            [],
+            $_SESSION
+        );
+        self::assertNotEquals(
+            static::$sess1,
+            $sess->getId()
+        );
+    }
+
+    /**
+     * @see                 Session::start
+     *
+     * @session             php
+     * @handler             php
+     * @cookie              array
+     * @autoCommit          true
      *
      * @runInSeparateProcess
      * @preserveGlobalState disabled
@@ -244,17 +244,17 @@ class SessionTest extends TestCase
             [],
             new PhpBridge(
                 [
-                    BridgeInterface::OPTION_WITH_SUPER_GLOBAL => true
+                    BridgeInterface::OPTION_WITH_SUPER_GLOBAL => true,
                 ],
                 new ArrayHandler(
                     [
-                        static::$sess1 => ArrayHandler::createData('a:1:{s:6:"flower";s:6:"Sakura";}')
+                        static::$sess1 => ArrayHandler::createData('a:1:{s:6:"flower";s:6:"Sakura";}'),
                     ]
                 )
             ),
             ArrayCookies::create(
                 [
-                    'FOO_SESS' => static::$sess1
+                    'FOO_SESS' => static::$sess1,
                 ]
             )
         );
@@ -283,13 +283,13 @@ class SessionTest extends TestCase
                 [],
                 new ArrayHandler(
                     [
-                        static::$sess1 => ArrayHandler::createData('a:1:{s:6:"flower";s:6:"Sakura";}')
+                        static::$sess1 => ArrayHandler::createData('a:1:{s:6:"flower";s:6:"Sakura";}'),
                     ]
                 )
             ),
             ArrayCookies::create(
                 [
-                    'PHPSESSID' => static::$sess1
+                    'PHPSESSID' => static::$sess1,
                 ]
             )
         );
@@ -298,7 +298,7 @@ class SessionTest extends TestCase
         $sess->addFlash(
             [
                 'Hello',
-                'World'
+                'World',
             ],
             'info'
         );
@@ -307,8 +307,8 @@ class SessionTest extends TestCase
             [
                 'info' => [
                     'Hello',
-                    'World'
-                ]
+                    'World',
+                ],
             ],
             $sess->getFlashBag()->peek()
         );
@@ -319,11 +319,11 @@ class SessionTest extends TestCase
             [
                 'info' => [
                     'Hello',
-                    'World'
+                    'World',
                 ],
                 'danger' => [
-                    'Run'
-                ]
+                    'Run',
+                ],
             ],
             $sess->getFlashes()
         );
@@ -345,13 +345,13 @@ class SessionTest extends TestCase
                 [],
                 new ArrayHandler(
                     [
-                        static::$sess1 => ArrayHandler::createData('a:1:{s:6:"flower";s:6:"Sakura";}')
+                        static::$sess1 => ArrayHandler::createData('a:1:{s:6:"flower";s:6:"Sakura";}'),
                     ]
                 )
             ),
             ArrayCookies::create(
                 [
-                    'PHPSESSID' => static::$sess1
+                    'PHPSESSID' => static::$sess1,
                 ]
             )
         );
@@ -537,8 +537,11 @@ class SessionTest extends TestCase
         $this->prepareVfs();
     }
 
-    protected function createInstance(array $options = [], ?BridgeInterface $bridge = null, ?CookiesInterface $cookies = null): Session
-    {
+    protected function createInstance(
+        array $options = [],
+        ?BridgeInterface $bridge = null,
+        ?CookiesInterface $cookies = null
+    ): Session {
         return $this->instance = new Session(
             $options,
             $bridge,

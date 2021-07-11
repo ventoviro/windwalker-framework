@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace Windwalker\Utilities\Iterator;
 
+use Generator;
+use Iterator;
+use OuterIterator;
 use Windwalker\Utilities\Test\Iterator\NestedIteratorTest;
 
 /**
@@ -29,14 +32,14 @@ use Windwalker\Utilities\Test\Iterator\NestedIteratorTest;
  *
  * @test {@see NestedIteratorTest}
  */
-class RewindableGenerator implements \OuterIterator
+class RewindableGenerator implements OuterIterator
 {
     /**
      * @var callable
      */
     protected $callable;
 
-    protected ?\Generator $generator = null;
+    protected ?Generator $generator = null;
 
     /**
      * RewindableGenerator constructor.
@@ -53,9 +56,9 @@ class RewindableGenerator implements \OuterIterator
      *
      * @param  bool  $refresh
      *
-     * @return  \Generator
+     * @return  Generator
      */
-    protected function getGenerator(bool $refresh = false): \Generator
+    protected function getGenerator(bool $refresh = false): Generator
     {
         if (!$this->generator || $refresh) {
             $this->generator = ($this->callable)();
@@ -107,7 +110,7 @@ class RewindableGenerator implements \OuterIterator
     /**
      * @inheritDoc
      */
-    public function getInnerIterator(): \Iterator|\Generator
+    public function getInnerIterator(): Iterator|Generator
     {
         return $this->getGenerator();
     }

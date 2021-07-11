@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Promise\Test;
 
+use Exception;
 use Windwalker\Promise\Promise;
 use Windwalker\Utilities\Reflection\ReflectAccessor;
 
@@ -90,7 +91,7 @@ class PromiseTest extends AbstractPromiseTestCase
     {
         self::markTestSkipped('Enable this after async promise prepared');
 
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('Hello');
 
         Promise::rejected('Hello');

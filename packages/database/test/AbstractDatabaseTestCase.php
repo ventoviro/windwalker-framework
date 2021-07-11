@@ -15,8 +15,6 @@ use Windwalker\Database\DatabaseAdapter;
 use Windwalker\Database\DatabaseFactory;
 use Windwalker\Database\Event\QueryEndEvent;
 
-use function Windwalker\disposable;
-
 /**
  * The AbstractDatabaseTestCase class.
  */
@@ -44,7 +42,7 @@ abstract class AbstractDatabaseTestCase extends AbstractDatabaseDriverTestCase
 
     protected static function createAdapter(?array $params = null): DatabaseAdapter
     {
-        $params           = $params ?? self::getTestParams();
+        $params = $params ?? self::getTestParams();
         $params['driver'] = static::$driver;
         static::$lastQueries = [];
 
@@ -61,15 +59,18 @@ abstract class AbstractDatabaseTestCase extends AbstractDatabaseDriverTestCase
             self::$logInited = true;
         }
 
-        $db->on(QueryEndEvent::class, function (QueryEndEvent $event) use ($logFile) {
-            static::$lastQueries[] = $event->getSql();
+        $db->on(
+            QueryEndEvent::class,
+            function (QueryEndEvent $event) use ($logFile) {
+                static::$lastQueries[] = $event->getSql();
 
-            $fp = fopen($logFile, 'ab+');
+                $fp = fopen($logFile, 'ab+');
 
-            fwrite($fp, $event->getSql() . ";\n\n");
+                fwrite($fp, $event->getSql() . ";\n\n");
 
-            fclose($fp);
-        });
+                fclose($fp);
+            }
+        );
 
         return $db;
     }

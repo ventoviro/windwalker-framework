@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Filesystem\Test;
 
-use Windwalker\Environment\PlatformHelper;
+use SplFileInfo;
 use Windwalker\Filesystem\Exception\FileNotFoundException;
 use Windwalker\Filesystem\Exception\FilesystemException;
 use Windwalker\Filesystem\FileObject;
@@ -32,7 +32,7 @@ class FilesystemTest extends AbstractVfsTestCase
 
     public function testItemsFirst(): void
     {
-        $fs    = new Filesystem();
+        $fs = new Filesystem();
         $files = $fs::files('vfs://root/files', true);
 
         self::assertPathEquals('vfs://root/files/folder1/level2/file3', $files->first()->getPathname());
@@ -43,7 +43,7 @@ class FilesystemTest extends AbstractVfsTestCase
      */
     public function testGet(): void
     {
-        $fs   = new Filesystem();
+        $fs = new Filesystem();
         $file = $fs::get('vfs://root/files/folder2/file2.html');
 
         self::assertEquals('file2.html', (string) $file->read());
@@ -56,7 +56,7 @@ class FilesystemTest extends AbstractVfsTestCase
      */
     public function testRead(): void
     {
-        $fs  = new Filesystem();
+        $fs = new Filesystem();
         $str = $fs::read('vfs://root/files/folder2/file2.html');
 
         self::assertEquals('file2.html', (string) $str);
@@ -105,7 +105,7 @@ class FilesystemTest extends AbstractVfsTestCase
      */
     public function testMkdir(): void
     {
-        $fs   = new Filesystem();
+        $fs = new Filesystem();
         $dest = 'vfs://root/dest';
 
         $fs::mkdir($dest);
@@ -191,7 +191,7 @@ class FilesystemTest extends AbstractVfsTestCase
 
         $items->rewind();
 
-        $this->assertInstanceOf(\SplFileInfo::class, $items->current());
+        $this->assertInstanceOf(SplFileInfo::class, $items->current());
 
         // list non-exists folder
         restore_error_handler();
@@ -206,7 +206,7 @@ class FilesystemTest extends AbstractVfsTestCase
      */
     public function testGlob(): void
     {
-        $fs    = new Filesystem();
+        $fs = new Filesystem();
         $files = $fs::glob('vfs://root/**/*');
 
         static::assertEquals(

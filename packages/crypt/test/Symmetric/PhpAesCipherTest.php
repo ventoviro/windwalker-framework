@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Crypt\Test\Symmetric;
 
+use Exception;
+use PHPUnit\Framework\TestCase;
 use Windwalker\Crypt\HiddenString;
 use Windwalker\Crypt\Key;
 use Windwalker\Crypt\Symmetric\PhpAesCipher;
@@ -20,7 +22,7 @@ use Windwalker\Crypt\Symmetric\PhpAesCipher;
  *
  * @since 3.0
  */
-class PhpAesCipherTest extends \PHPUnit\Framework\TestCase
+class PhpAesCipherTest extends TestCase
 {
     /**
      * Test instance.
@@ -54,7 +56,7 @@ class PhpAesCipherTest extends \PHPUnit\Framework\TestCase
      * Method to test decrypt().
      *
      * @return void
-     * @throws \Exception
+     * @throws Exception
      */
     public function testDecrypt()
     {

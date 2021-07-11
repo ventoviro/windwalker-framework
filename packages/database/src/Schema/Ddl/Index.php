@@ -23,9 +23,13 @@ class Index
     use OptionAccessTrait;
 
     public ?string $tableName = null;
+
     public ?string $indexName = null;
+
     public ?string $indexComment = null;
+
     public bool $isUnique;
+
     public bool $isPrimary;
 
     /**
@@ -90,7 +94,7 @@ class Index
                 if ($subParts) {
                     $column->erratas(
                         [
-                            'sub_parts' => $subParts
+                            'sub_parts' => $subParts,
                         ]
                     );
                 }

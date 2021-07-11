@@ -11,18 +11,17 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Platform;
 
+use LogicException;
 use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\Database\Platform\Type\DataType;
 use Windwalker\Database\Schema\Ddl\Column;
 use Windwalker\Database\Schema\Ddl\Constraint;
-use Windwalker\Database\Schema\Ddl\Index;
 use Windwalker\Database\Schema\Schema;
 use Windwalker\Query\Clause\Clause;
 use Windwalker\Query\Escaper;
 use Windwalker\Query\Query;
 use Windwalker\Utilities\TypeCast;
 
-use function Windwalker\Query\clause;
 use function Windwalker\raw;
 
 /**
@@ -57,7 +56,7 @@ class SQLitePlatform extends AbstractPlatform
                     raw('NULL AS VIEW_DEFINITION'),
                     raw('NULL AS CHECK_OPTION'),
                     raw('NULL AS IS_UPDATABLE'),
-                    'sql'
+                    'sql',
                 ]
             )
             ->from($schema . '.sqlite_master')
@@ -77,7 +76,7 @@ class SQLitePlatform extends AbstractPlatform
                     raw('NULL AS VIEW_DEFINITION'),
                     raw('\'NONE\' AS CHECK_OPTION'),
                     raw('NULL AS IS_UPDATABLE'),
-                    'sql'
+                    'sql',
                 ]
             )
             ->from(trim($schema . '.sqlite_master', '.'))
@@ -155,26 +154,26 @@ class SQLitePlatform extends AbstractPlatform
                     'varchar',
                     'text',
                     'mediumtext',
-                    'longtext'
+                    'longtext',
                 ]
             );
 
             $columns[$row['name']] = [
-                'column_name'               => $row['name'],
+                'column_name' => $row['name'],
                 // cid appears to be zero-based, ordinal position needs to be one-based
-                'ordinal_position'          => $row['cid'] + 1,
-                'column_default'            => Escaper::stripQuoteIfExists($row['dflt_value']),
-                'is_nullable'               => !$row['notnull'],
-                'data_type'                 => $type,
-                'character_maximum_length'  => $isString ? TypeCast::tryInteger($precision, true) : null,
-                'character_octet_length'    => null,
-                'numeric_precision'         => $isString ? null : TypeCast::tryInteger($precision, true),
-                'numeric_scale'             => $isString ? null : TypeCast::tryInteger($scale, true),
-                'numeric_unsigned'          => false,
-                'comment'                   => null,
-                'auto_increment'            => (bool) $row['pk'],
-                'erratas'                   => [
-                    'pk' => (bool) $row['pk']
+                'ordinal_position' => $row['cid'] + 1,
+                'column_default' => Escaper::stripQuoteIfExists($row['dflt_value']),
+                'is_nullable' => !$row['notnull'],
+                'data_type' => $type,
+                'character_maximum_length' => $isString ? TypeCast::tryInteger($precision, true) : null,
+                'character_octet_length' => null,
+                'numeric_precision' => $isString ? null : TypeCast::tryInteger($precision, true),
+                'numeric_scale' => $isString ? null : TypeCast::tryInteger($scale, true),
+                'numeric_unsigned' => false,
+                'comment' => null,
+                'auto_increment' => (bool) $row['pk'],
+                'erratas' => [
+                    'pk' => (bool) $row['pk'],
                 ],
             ];
         }
@@ -207,8 +206,8 @@ class SQLitePlatform extends AbstractPlatform
             $constraint = [
                 'constraint_name' => $row['name'],
                 'constraint_type' => 'UNIQUE',
-                'table_name'      => $this->db->replacePrefix($table),
-                'columns'         => [],
+                'table_name' => $this->db->replacePrefix($table),
+                'columns' => [],
             ];
 
             $info = $this->db->prepare(
@@ -248,10 +247,10 @@ class SQLitePlatform extends AbstractPlatform
         }
 
         foreach ($this->loadConstraintsStatement($table, $schema) as $row) {
-            $index['table_schema']  = $schema;
-            $index['table_name']    = $this->db->replacePrefix($table);
-            $index['is_unique']     = (bool) $row['unique'];
-            $index['index_name']    = $row['name'];
+            $index['table_schema'] = $schema;
+            $index['table_name'] = $this->db->replacePrefix($table);
+            $index['is_unique'] = (bool) $row['unique'];
+            $index['index_name'] = $row['name'];
             $index['index_comment'] = '';
 
             $index['columns'] = [];
@@ -263,7 +262,7 @@ class SQLitePlatform extends AbstractPlatform
             foreach ($info as $column) {
                 $index['columns'][$column['name']] = [
                     'column_name' => $column['name'],
-                    'subpart' => null
+                    'subpart' => null,
                 ];
             }
 
@@ -441,7 +440,7 @@ class SQLitePlatform extends AbstractPlatform
 
         $options = array_merge($defaultOptions, $options);
         $columns = [];
-        $table   = $schema->getTable();
+        $table = $schema->getTable();
         $tableName = $this->db->quoteName($table->schemaName . '.' . $table->getName());
         $primaries = [];
 
@@ -518,7 +517,7 @@ class SQLitePlatform extends AbstractPlatform
      */
     public function modifyColumn(string $table, Column $column, ?string $schema = null): StatementInterface
     {
-        throw new \LogicException('Current SQLitePlatform not support: ' . __FUNCTION__ . '()');
+        throw new LogicException('Current SQLitePlatform not support: ' . __FUNCTION__ . '()');
     }
 
     /**
@@ -533,7 +532,7 @@ class SQLitePlatform extends AbstractPlatform
      */
     public function renameColumn(string $table, string $from, string $to, ?string $schema = null): StatementInterface
     {
-        throw new \LogicException('Current SQLitePlatform not support: ' . __FUNCTION__ . '()');
+        throw new LogicException('Current SQLitePlatform not support: ' . __FUNCTION__ . '()');
     }
 
     /**
@@ -547,7 +546,7 @@ class SQLitePlatform extends AbstractPlatform
      */
     public function addConstraint(string $table, Constraint $constraint, ?string $schema = null): StatementInterface
     {
-        throw new \LogicException('Current SQLitePlatform not support: ' . __FUNCTION__ . '()');
+        throw new LogicException('Current SQLitePlatform not support: ' . __FUNCTION__ . '()');
     }
 
     /**
@@ -561,7 +560,7 @@ class SQLitePlatform extends AbstractPlatform
      */
     public function dropColumn(string $table, string $name, ?string $schema = null): StatementInterface
     {
-        throw new \LogicException('Current SQLitePlatform not support: ' . __FUNCTION__ . '()');
+        throw new LogicException('Current SQLitePlatform not support: ' . __FUNCTION__ . '()');
     }
 
     /**

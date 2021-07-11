@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Event\Test;
 
+use Closure;
 use PHPUnit\Framework\TestCase;
 use Windwalker\Event\Attributes\EventSubscriber;
 use Windwalker\Event\Attributes\ListenTo;
@@ -99,8 +100,8 @@ class AttributeSubscriberTest extends TestCase
     {
         $subscriber = $this->getCounterSubscriber();
 
-        $this->instance->on('count', \Closure::fromCallable([$subscriber, 'count1']));
-        $this->instance->on('count', \Closure::fromCallable([$subscriber, 'count2']));
+        $this->instance->on('count', Closure::fromCallable([$subscriber, 'count1']));
+        $this->instance->on('count', Closure::fromCallable([$subscriber, 'count2']));
 
         $this->instance->off('count', $subscriber);
 
@@ -154,8 +155,10 @@ class AttributeSubscriberTest extends TestCase
 
     protected function getCounterSubscriber(): object
     {
+        // phpcs:disable
         return new
         #[EventSubscriber]
+        // phpcs:enable
         class {
             public int $count = 0;
 
@@ -193,8 +196,10 @@ class AttributeSubscriberTest extends TestCase
 
     protected function getOnceSubscriber(): object
     {
+        // phpcs:disable
         return new
         #[EventSubscriber]
+        // phpcs:enable
         class {
             public $count = 0;
 
@@ -230,7 +235,7 @@ class AttributeSubscriberTest extends TestCase
     {
     }
 
-    protected function nope($value = null): \Closure
+    protected function nope($value = null): Closure
     {
         return function () use ($value) {
             return $value;

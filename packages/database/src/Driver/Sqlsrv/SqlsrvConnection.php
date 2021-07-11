@@ -33,12 +33,12 @@ class SqlsrvConnection extends AbstractConnection
     {
         $params = [];
 
-        $params['Database']     = $options['dbname'] ?? null;
-        $params['UID']          = $options['user'] ?? null;
-        $params['PWD']          = $options['password'] ?? null;
+        $params['Database'] = $options['dbname'] ?? null;
+        $params['UID'] = $options['user'] ?? null;
+        $params['PWD'] = $options['password'] ?? null;
         $params['CharacterSet'] = $options['charset'] ?? null;
 
-        $params            = array_filter($params);
+        $params = array_filter($params);
         $options['params'] = $params;
 
         return $options;

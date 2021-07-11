@@ -11,13 +11,15 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Attributes;
 
+use Attribute;
+use LogicException;
 use Windwalker\ORM\Relation\Strategy\ManyToMany;
 use Windwalker\ORM\Relation\Strategy\RelationConfigureInterface;
 
 /**
  * The MapBy class.
  */
-#[\Attribute]
+#[Attribute]
 class MapBy implements RelationConfigureAttributeInterface
 {
     protected array $columns;
@@ -41,7 +43,7 @@ class MapBy implements RelationConfigureAttributeInterface
     public function __invoke(RelationConfigureInterface $relation): void
     {
         if (!$relation instanceof ManyToMany) {
-            throw new \LogicException(
+            throw new LogicException(
                 sprintf(
                     '%s should use for %s',
                     static::class,

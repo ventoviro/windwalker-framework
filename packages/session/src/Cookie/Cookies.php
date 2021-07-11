@@ -24,7 +24,7 @@ class Cookies extends AbstractCookies
     public function set(string $name, string $value): bool
     {
         if (headers_sent()) {
-            throw new \RuntimeException('Header sent');
+            return false;
         }
 
         return setcookie($name, $value, $this->getOptions());

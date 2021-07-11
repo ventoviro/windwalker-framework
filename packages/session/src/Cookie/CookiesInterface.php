@@ -17,7 +17,9 @@ namespace Windwalker\Session\Cookie;
 interface CookiesInterface
 {
     public const SAMESITE_NONE = 'None';
+
     public const SAMESITE_LAX = 'Lax';
+
     public const SAMESITE_STRICT = 'Strict';
 
     public function set(string $name, string $value): bool;

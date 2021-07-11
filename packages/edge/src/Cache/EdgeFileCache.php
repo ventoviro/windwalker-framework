@@ -133,11 +133,10 @@ class EdgeFileCache implements EdgeCacheInterface
 
     private static function replaceFirst(string $from, string $to, string $content): string
     {
-        $from = '/'.preg_quote($from, '/').'/';
+        $from = '/' . preg_quote($from, '/') . '/';
 
         return preg_replace($from, $to, $content, 1);
     }
-
 
     /**
      * Remove an item from the cache by its unique key

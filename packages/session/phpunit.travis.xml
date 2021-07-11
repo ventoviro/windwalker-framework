@@ -8,7 +8,7 @@
     <php>
         <ini name="error_reporting" value="-1" />
 
-        <const name="WINDWALKER_TEST_DB_DSN_MYSQL"  value="host=localhost;database=windwalker_test;username=root;password=;prefix=ww_" />
+        <const name="WINDWALKER_TEST_DB_DSN_MYSQL"  value="host=localhost;dbname=windwalker_test;user=root;password=;prefix=ww_" />
     </php>
 
     <testsuites>

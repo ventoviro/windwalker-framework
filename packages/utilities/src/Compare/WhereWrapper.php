@@ -51,10 +51,10 @@ class WhereWrapper implements WrapperInterface
      */
     public function __construct(mixed $var1, string $operator, mixed $var2, bool $strict = false)
     {
-        $this->var1     = $var1;
+        $this->var1 = $var1;
         $this->operator = $operator;
-        $this->var2     = $var2;
-        $this->strict   = $strict;
+        $this->var2 = $var2;
+        $this->strict = $strict;
     }
 
     /**

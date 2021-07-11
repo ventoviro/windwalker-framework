@@ -41,10 +41,10 @@ class AsClause implements ClauseInterface
     /**
      * AsClause constructor.
      *
-     * @param  Query  $query
+     * @param  Query              $query
      * @param  string|Query|null  $value
-     * @param  string|bool|null  $alias
-     * @param  bool  $isColumn
+     * @param  string|bool|null   $alias
+     * @param  bool               $isColumn
      */
     public function __construct(
         Query $query,
@@ -62,20 +62,22 @@ class AsClause implements ClauseInterface
     {
         $quoteMethod = $this->isColumn ? 'quoteName' : 'quote';
         $column = $this->value;
-        $alias  = $this->alias;
+        $alias = $this->alias;
 
         if ($column instanceof RawWrapper) {
             $column = $column();
         } elseif ($column instanceof Query) {
             $column = '(' . $column . ')';
         } elseif ($column instanceof Clause) {
-            $column = $column->mapElements(function ($ele) {
-               if ($ele instanceof QuoteNameClause) {
-                   $ele->setQuery($this->query);
-               }
+            $column = $column->mapElements(
+                function ($ele) {
+                    if ($ele instanceof QuoteNameClause) {
+                        $ele->setQuery($this->query);
+                    }
 
-               return $ele;
-            });
+                    return $ele;
+                }
+            );
         } else {
             $column = $this->query->$quoteMethod(
                 Query::convertClassToTable((string) $column, $entityAlias)

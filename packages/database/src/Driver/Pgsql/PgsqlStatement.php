@@ -11,17 +11,11 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Driver\Pgsql;
 
-use Windwalker\Data\Collection;
 use Windwalker\Database\Driver\AbstractStatement;
 use Windwalker\Database\Driver\ConnectionInterface;
 use Windwalker\Database\Exception\StatementException;
-use Windwalker\Database\Platform\PostgreSQLPlatform;
 use Windwalker\Query\Bounded\BoundedHelper;
 use Windwalker\Query\Bounded\ParamType;
-
-use Windwalker\Query\Query;
-
-use function Windwalker\collect;
 
 /**
  * The PgsqlStatement class.
@@ -55,19 +49,21 @@ class PgsqlStatement extends AbstractStatement
 
         [$query, $params] = BoundedHelper::replaceParams($this->query, '$%d', $params);
 
-        $this->driver->useConnection(function (ConnectionInterface $conn) use ($params, $query) {
-            $this->conn = $resource = $conn->get();
+        $this->driver->useConnection(
+            function (ConnectionInterface $conn) use ($params, $query) {
+                $this->conn = $resource = $conn->get();
 
-            pg_prepare($resource, $stname = uniqid('pg-'), $query);
+                pg_prepare($resource, $stname = uniqid('pg-'), $query);
 
-            $args = [];
+                $args = [];
 
-            foreach ($params as $param) {
-                $args[] = &$param['value'];
+                foreach ($params as $param) {
+                    $args[] = &$param['value'];
+                }
+
+                $this->cursor = pg_execute($resource, $stname, $args);
             }
-
-            $this->cursor = pg_execute($resource, $stname, $args);
-        });
+        );
 
         return true;
     }

@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace Windwalker\Queue\Driver;
 
+use DateTime;
+use DomainException;
+use ResqueScheduler;
 use Windwalker\Queue\QueueMessage;
 use Windwalker\Queue\Resque\Resque;
 
@@ -33,9 +36,9 @@ class ResqueQueueDriver implements QueueDriverInterface
     /**
      * ResqueQueueDriver constructor.
      *
-     * @param string $host
-     * @param int    $port
-     * @param string $channel
+     * @param  string  $host
+     * @param  int     $port
+     * @param  string  $channel
      */
     public function __construct(string $host = 'localhost', int $port = 6379, string $channel = 'default')
     {
@@ -50,7 +53,7 @@ class ResqueQueueDriver implements QueueDriverInterface
      * @param  QueueMessage  $message
      *
      * @return string
-     * @throws \DomainException
+     * @throws DomainException
      */
     public function push(QueueMessage $message): string
     {
@@ -71,7 +74,7 @@ class ResqueQueueDriver implements QueueDriverInterface
         if ($delay > 0) {
             static::supportDelayed(true);
 
-            \ResqueScheduler::delayedPush(time() + $delay, $data);
+            ResqueScheduler::delayedPush(time() + $delay, $data);
         } else {
             Resque::push($channel, $data);
         }
@@ -134,7 +137,7 @@ class ResqueQueueDriver implements QueueDriverInterface
     /**
      * release
      *
-     * @param QueueMessage $message
+     * @param  QueueMessage  $message
      *
      * @return static
      */
@@ -153,7 +156,7 @@ class ResqueQueueDriver implements QueueDriverInterface
      */
     public function rechannelDelayedItems(): void
     {
-        while (($oldestJobTimestamp = \ResqueScheduler::nextDelayedTimestamp()) !== false) {
+        while (($oldestJobTimestamp = ResqueScheduler::nextDelayedTimestamp()) !== false) {
             $this->enchannelDelayedItemsForTimestamp($oldestJobTimestamp);
         }
     }
@@ -164,13 +167,13 @@ class ResqueQueueDriver implements QueueDriverInterface
      * Searches for all items for a given timestamp, pulls them off the list of
      * delayed jobs and pushes them across to Resque.
      *
-     * @param  \DateTime|int  $timestamp  Search for any items up to this timestamp to schedule.
+     * @param  DateTime|int  $timestamp  Search for any items up to this timestamp to schedule.
      */
-    public function enchannelDelayedItemsForTimestamp(\DateTime|int $timestamp)
+    public function enchannelDelayedItemsForTimestamp(DateTime|int $timestamp)
     {
         $item = null;
 
-        while ($item = \ResqueScheduler::nextItemForTimestamp($timestamp)) {
+        while ($item = ResqueScheduler::nextItemForTimestamp($timestamp)) {
             Resque::push($item['channel'], $item);
         }
     }
@@ -178,16 +181,16 @@ class ResqueQueueDriver implements QueueDriverInterface
     /**
      * supportDelayed
      *
-     * @param bool $throwError
+     * @param  bool  $throwError
      *
      * @return bool
-     * @throws \DomainException
+     * @throws DomainException
      */
     public static function supportDelayed($throwError = false): bool
     {
-        if (!class_exists(\ResqueScheduler::class)) {
+        if (!class_exists(ResqueScheduler::class)) {
             if ($throwError) {
-                throw new \DomainException(
+                throw new DomainException(
                     'Please install chrisboulton/php-resque-scheduler to support delayed messages for Resque.'
                 );
             }
@@ -201,16 +204,16 @@ class ResqueQueueDriver implements QueueDriverInterface
     /**
      * connect
      *
-     * @param string $host
-     * @param int    $port
+     * @param  string  $host
+     * @param  int     $port
      *
      * @return  void
-     * @throws \DomainException
+     * @throws DomainException
      */
     public function connect(string $host, int $port): void
     {
         if (!class_exists(Resque::class)) {
-            throw new \DomainException('Please install chrisboulton/php-resque 1.2 to support Resque driver.');
+            throw new DomainException('Please install chrisboulton/php-resque 1.2 to support Resque driver.');
         }
 
         Resque::setBackend("$host:$port");

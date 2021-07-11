@@ -29,13 +29,13 @@ trait WrappableTrait
     public function fill(array $data): static
     {
         foreach ($data as $key => $datum) {
-            $prop = StrNormalize::toCamelCase($key);
+            $prop = StrNormalize::toCamelCase(strtolower($key));
 
             if (method_exists($this, $prop)) {
                 $this->$prop($datum);
             } elseif (property_exists($this, $prop)) {
                 $this->$prop = $datum;
-            } else {
+            } elseif (method_exists($this, 'setOption')) {
                 $this->setOption($prop, $datum);
             }
         }

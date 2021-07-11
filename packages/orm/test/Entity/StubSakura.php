@@ -59,8 +59,9 @@ class StubSakura implements EntityInterface
     protected ?StubSakuraRoseMap $map = null;
 
     #[EntitySetup]
-    public static function setup(EntityMetadata $metadata)
-    {
+    public static function setup(
+        EntityMetadata $metadata
+    ) {
         $rm = $metadata->getRelationManager();
 
         $rm->manyToOne('location')
@@ -68,8 +69,9 @@ class StubSakura implements EntityInterface
     }
 
     #[AfterSaveEvent]
-    public static function afterSave(AfterSaveEvent $event)
-    {
+    public static function afterSave(
+        AfterSaveEvent $event
+    ) {
         $data = $event->getData();
 
         if (!empty($data['id']) && empty($data['no'])) {

@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Stream;
 
 use Psr\Http\Message\StreamInterface;
+use RuntimeException;
 
 /**
  * The ArrayStream class.
@@ -75,7 +76,7 @@ class NullStream implements StreamInterface
      * Returns the current position of the file read/write pointer
      *
      * @return int Position of the file pointer
-     * @throws \RuntimeException on error.
+     * @throws RuntimeException on error.
      */
     public function tell(): int
     {
@@ -115,7 +116,7 @@ class NullStream implements StreamInterface
      *                       SEEK_END: Set position to end-of-stream plus offset.
      *
      * @return bool
-     * @throws \RuntimeException on failure.
+     * @throws RuntimeException on failure.
      */
     public function seek($offset, $whence = SEEK_SET): bool
     {
@@ -128,7 +129,7 @@ class NullStream implements StreamInterface
      * If the stream is not seekable, this method will raise an exception;
      * otherwise, it will perform a seek(0).
      *
-     * @throws \RuntimeException on failure.
+     * @throws RuntimeException on failure.
      * @link http://www.php.net/manual/en/function.fseek.php
      * @see  seek()
      */
@@ -153,7 +154,7 @@ class NullStream implements StreamInterface
      * @param  string  $string  The string that is to be written.
      *
      * @return int Returns the number of bytes written to the stream.
-     * @throws \RuntimeException on failure.
+     * @throws RuntimeException on failure.
      */
     public function write($string): int
     {
@@ -179,7 +180,7 @@ class NullStream implements StreamInterface
      *
      * @return string Returns the data read from the stream, or an empty string
      *     if no bytes are available.
-     * @throws \RuntimeException if an error occurs.
+     * @throws RuntimeException if an error occurs.
      */
     public function read($length): string
     {
@@ -190,7 +191,7 @@ class NullStream implements StreamInterface
      * Returns the remaining contents in a string
      *
      * @return string
-     * @throws \RuntimeException if unable to read or an error occurs while
+     * @throws RuntimeException if unable to read or an error occurs while
      *     reading.
      */
     public function getContents(): string

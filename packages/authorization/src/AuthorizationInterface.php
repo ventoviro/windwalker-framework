@@ -42,7 +42,7 @@ interface AuthorizationInterface
     /**
      * registerPolicy
      *
-     * @param PolicyProviderInterface $policy
+     * @param  PolicyProviderInterface  $policy
      *
      * @return  static
      */

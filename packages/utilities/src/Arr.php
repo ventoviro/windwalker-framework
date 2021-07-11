@@ -14,6 +14,7 @@ namespace Windwalker\Utilities;
 use ArrayAccess;
 use ArrayIterator;
 use ArrayObject;
+use Closure;
 use InvalidArgumentException;
 use ReflectionObject;
 use Windwalker\Utilities\Classes\PreventInitialTrait;
@@ -64,7 +65,7 @@ abstract class Arr
             return false;
         }
 
-        $key   = array_shift($nodes);
+        $key = array_shift($nodes);
         $value = null;
 
         if ($source instanceof ArrayAccess && isset($source[$key])) {
@@ -159,7 +160,7 @@ abstract class Arr
     public static function &get(mixed &$data, int|string $key, string $delimiter = '.'): mixed
     {
         $nodes = static::getPathNodes((string) $key, $delimiter);
-        $null  = null;
+        $null = null;
 
         if (empty($nodes)) {
             return $null;
@@ -276,9 +277,9 @@ abstract class Arr
             return $data;
         }
 
-        $node     = null;
+        $node = null;
         $previous = null;
-        $dataTmp  = &$data;
+        $dataTmp = &$data;
 
         foreach ($nodes as $node) {
             if (is_object($dataTmp)) {
@@ -287,14 +288,14 @@ abstract class Arr
                 }
 
                 $previous = &$dataTmp;
-                $dataTmp  = &$dataTmp->$node;
+                $dataTmp = &$dataTmp->$node;
             } elseif (is_array($dataTmp)) {
                 if (empty($dataTmp[$node])) {
                     return $data;
                 }
 
                 $previous = &$dataTmp;
-                $dataTmp  = &$dataTmp[$node];
+                $dataTmp = &$dataTmp[$node];
             } else {
                 return $data;
             }
@@ -451,8 +452,8 @@ abstract class Arr
         ?int $limit = null
     ): array {
         $results = [];
-        $i       = 0;
-        $c       = 0;
+        $i = 0;
+        $c = 0;
 
         $callback ??= fn(mixed $v) => $v !== null;
 
@@ -735,10 +736,18 @@ abstract class Arr
                     continue;
                 }
 
-                $value = static::get($item, $column, '');
+                if (method_exists($item, '__get')) {
+                    $value = $item->__get($column);
 
-                if ($keyName !== null) {
-                    $keyName = static::get($item, $keyName, '');
+                    if ($keyName !== null) {
+                        $keyName = $item->__get($keyName);
+                    }
+                } else {
+                    $value = static::get($item, $column, '');
+
+                    if ($keyName !== null) {
+                        $keyName = static::get($item, $keyName, '');
+                    }
                 }
             }
 
@@ -876,11 +885,11 @@ abstract class Arr
 
         $self = __FUNCTION__;
 
-        $type       = gettype($data);
-        $tabs       = str_repeat('    ', $tabLevel);
+        $type = gettype($data);
+        $tabs = str_repeat('    ', $tabLevel);
         $quoteTabes = str_repeat('    ', $tabLevel - 1);
-        $output     = '';
-        $elements   = [];
+        $output = '';
+        $elements = [];
 
         $recursiveType = ['object', 'array'];
 
@@ -889,9 +898,9 @@ abstract class Arr
             // If type is object, try to get properties by Reflection.
             if ($type === 'object') {
                 // Remove special characters from anonymous class name.
-                $ref        = new ReflectionObject($data);
-                $class      = $ref->isAnonymous() ? 'class@anonymous' : $ref->getName();
-                $output     = $class . ' ' . ucfirst($type);
+                $ref = new ReflectionObject($data);
+                $class = $ref->isAnonymous() ? 'class@anonymous' : $ref->getName();
+                $output = $class . ' ' . ucfirst($type);
                 $properties = $ref->getProperties();
 
                 // Fix for ArrayObject & ArrayIterator
@@ -926,7 +935,7 @@ abstract class Arr
                 }
             } elseif ($type === 'array') {
                 // If type is array, just return it's value.
-                $output   = ucfirst($type);
+                $output = ucfirst($type);
                 $elements = $data;
             }
 
@@ -1019,7 +1028,7 @@ abstract class Arr
         bool $strict = false,
         bool $keepKey = false
     ): object|array {
-        $array   = TypeCast::toArray($array, false);
+        $array = TypeCast::toArray($array, false);
         $results = [];
 
         // If queries is callback, we run this logic to compare values.
@@ -1085,7 +1094,7 @@ abstract class Arr
         foreach ($queries as $key => $val) {
             if ($val instanceof WhereWrapper) {
                 $results[] = $val($array);
-            } elseif ($val instanceof \Closure) {
+            } elseif ($val instanceof Closure) {
                 $results[] = $val($array[$key], $key);
             } elseif (substr($key, -2) === '>=') {
                 $results[] = (static::get($array, trim(substr($key, 0, -2))) >= $val);

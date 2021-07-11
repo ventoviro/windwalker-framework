@@ -18,8 +18,11 @@ use ReflectionException;
 use ReflectionFunctionAbstract;
 use ReflectionMethod;
 use ReflectionParameter;
+use ReflectionType;
 use ReflectionUnionType;
+use Throwable;
 use TypeError;
+use UnexpectedValueException;
 use Windwalker\DI\Definition\DefinitionInterface;
 use Windwalker\DI\Definition\ObjectBuilderDefinition;
 use Windwalker\DI\Exception\DefinitionResolveException;
@@ -68,7 +71,7 @@ class DependencyResolver
 
             try {
                 $instance = $builder($args, $options);
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 throw new DefinitionResolveException(
                     sprintf(
                         'Error when creating object %s: %s',
@@ -83,7 +86,7 @@ class DependencyResolver
             $instance = $this->container->call($class, $args, null, $options);
 
             if (!is_object($instance)) {
-                throw new \UnexpectedValueException(
+                throw new UnexpectedValueException(
                     sprintf(
                         'Thr callback for creating instance must return an object, got %s.',
                         get_debug_type($instance)
@@ -186,7 +189,7 @@ class DependencyResolver
                     unset($v);
                 }
 
-                $trailing   = array_slice($trailing, $i);
+                $trailing = array_slice($trailing, $i);
                 $methodArgs = array_merge($methodArgs, $trailing);
                 continue;
             }
@@ -245,12 +248,12 @@ class DependencyResolver
 
     public function &resolveParameterDependency(ReflectionParameter $param, array $args = [], int $options = 0)
     {
-        $nope    = null;
+        $nope = null;
         $options |= $this->container->getOptions();
 
         $autowire = $options & Container::AUTO_WIRE;
 
-        $type              = $param->getType();
+        $type = $param->getType();
         $dependencyVarName = $param->getName();
 
         if (!$type) {
@@ -264,7 +267,7 @@ class DependencyResolver
         }
 
         foreach ($dependencies as $type) {
-            $depObject           = null;
+            $depObject = null;
             $dependencyClassName = $type->getName();
 
             if (!class_exists($dependencyClassName) && !interface_exists($dependencyClassName)) {
@@ -306,7 +309,7 @@ class DependencyResolver
 
         if (isset($depObject)) {
             $types = collect($dependencies)
-                ->map(fn (\ReflectionType $dep) => $dep->getName())
+                ->map(fn(ReflectionType $dep) => $dep->getName())
                 ->implode('|');
 
             throw new DefinitionResolveException(

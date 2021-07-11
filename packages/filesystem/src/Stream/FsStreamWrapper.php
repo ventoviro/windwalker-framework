@@ -13,7 +13,9 @@ declare(strict_types=1);
 
 namespace Windwalker\Filesystem\Stream;
 
+use Exception;
 use Psr\Http\Message\StreamInterface;
+use RuntimeException;
 
 /**
  * This class is for test use, do not use in production code.
@@ -103,8 +105,8 @@ class FsStreamWrapper
 
         try {
             static::$protocol = $protocol ?? 'wwfs' . random_int(1000, 9999);
-        } catch (\Exception $e) {
-            throw new \RuntimeException('random_int caused error: ' . $e->getMessage(), $e->getCode(), $e);
+        } catch (Exception $e) {
+            throw new RuntimeException('random_int caused error: ' . $e->getMessage(), $e->getCode(), $e);
         }
 
         $result = stream_wrapper_register(static::$protocol, static::class, 0);

@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace Windwalker\Session\Handler;
 
+use Exception;
+use PDO;
+use Throwable;
 use Windwalker\Database\Platform\AbstractPlatform;
 use Windwalker\Query\Grammar\AbstractGrammar;
 use Windwalker\Query\Query;
@@ -23,7 +26,7 @@ class PdoHandler extends AbstractHandler
 {
     use OptionAccessTrait;
 
-    protected \PDO $db;
+    protected PDO $db;
 
     /**
      * isSupported
@@ -32,16 +35,16 @@ class PdoHandler extends AbstractHandler
      */
     public static function isSupported(): bool
     {
-        return class_exists(\PDO::class);
+        return class_exists(PDO::class);
     }
 
     /**
      * Class init.
      *
-     * @param  \PDO   $db
+     * @param  PDO   $db
      * @param  array  $options
      */
-    public function __construct(\PDO $db, array $options = [])
+    public function __construct(PDO $db, array $options = [])
     {
         $this->db = $db;
 
@@ -65,7 +68,7 @@ class PdoHandler extends AbstractHandler
      *
      * @return  string  The session data.
      *
-     * @throws \Exception
+     * @throws Exception
      * @since   2.0
      */
     protected function doRead(string $id): ?string
@@ -78,7 +81,7 @@ class PdoHandler extends AbstractHandler
         $stmt = $this->db->prepare($sql = $query->forPDO($params));
 
         $stmt->execute($params);
-        $item = $stmt->fetchAll(\PDO::FETCH_NUM);
+        $item = $stmt->fetchAll(PDO::FETCH_NUM);
 
         if ($item) {
             return $item[0][0];
@@ -104,9 +107,9 @@ class PdoHandler extends AbstractHandler
 
         if ($mergeSql !== null) {
             $stmt = $this->db->prepare($mergeSql);
-            $stmt->bindValue('id', $id, \PDO::PARAM_STR);
-            $stmt->bindValue('data', $data, \PDO::PARAM_STR);
-            $stmt->bindValue('time', time(), \PDO::PARAM_INT);
+            $stmt->bindValue('id', $id, PDO::PARAM_STR);
+            $stmt->bindValue('data', $data, PDO::PARAM_STR);
+            $stmt->bindValue('time', time(), PDO::PARAM_INT);
 
             $stmt->execute();
 
@@ -157,7 +160,7 @@ class PdoHandler extends AbstractHandler
             $this->db->commit();
 
             return true;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->db->rollBack();
 
             throw $e;
@@ -196,7 +199,7 @@ class PdoHandler extends AbstractHandler
      *
      * @return  boolean  True on success, false otherwise.
      *
-     * @throws \Exception
+     * @throws Exception
      * @since   2.0
      */
     public function destroy($id): bool
@@ -220,7 +223,7 @@ class PdoHandler extends AbstractHandler
      *
      * @return  boolean  True on success, false otherwise.
      *
-     * @throws  \Exception
+     * @throws  Exception
      * @since   2.0
      */
     public function gc($lifetime): bool
@@ -248,7 +251,7 @@ class PdoHandler extends AbstractHandler
         $platformName = $this->getPlatformName();
 
         $columns = $this->getOption('columns');
-        $table   = $this->getOption('table');
+        $table = $this->getOption('table');
 
         $query = $this->createQuery();
 
@@ -288,7 +291,7 @@ ON DUPLICATE KEY UPDATE %n = VALUES(%n), %n = VALUES(%n)",
                     '10',
                     '>='
                 ):
-                // @codingStandardsIgnoreStart
+                // phpcs:disable
                 // MERGE is only available since SQL Server 2008 and must be terminated by semicolon
                 // It also requires HOLDLOCK according to http://weblogs.sqlteam.com/dang/archive/2009/01/31/UPSERT-Race-Condition-With-MERGE.aspx
                 return $query->format(
@@ -331,7 +334,7 @@ ON DUPLICATE KEY UPDATE %n = VALUES(%n), %n = VALUES(%n)",
      */
     protected function getPlatformName(): string
     {
-        $platform = (string) $this->db->getAttribute(\PDO::ATTR_DRIVER_NAME);
+        $platform = (string) $this->db->getAttribute(PDO::ATTR_DRIVER_NAME);
 
         switch (strtolower($platform)) {
             case 'pgsql':

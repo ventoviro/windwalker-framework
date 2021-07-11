@@ -12,6 +12,8 @@ declare(strict_types=1);
 namespace Windwalker\Renderer\Test;
 
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
+use Throwable;
 use Windwalker\Renderer\MustacheRenderer;
 use Windwalker\Test\Traits\DOMTestTrait;
 
@@ -49,7 +51,7 @@ class MustacheRendererTest extends TestCase
         static::$path = realpath(__DIR__ . '/Tmpl/mustache');
 
         if (!static::$path) {
-            throw new \RuntimeException('Path not exists');
+            throw new RuntimeException('Path not exists');
         }
 
         $this->instance = new MustacheRenderer(['paths' => [static::$path]]);
@@ -71,7 +73,7 @@ class MustacheRendererTest extends TestCase
      * @return void
      *
      * @covers \Windwalker\Renderer\MustacheRenderer::render
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function testRender()
     {
@@ -83,7 +85,7 @@ You have just won $10000!
 Well, $6000, after taxes.
 HTML;
 
-        self::assertDomStringEqualsDomString($expect, $html);
+        self::assertStringSafeEquals($expect, $html);
     }
 
     /**
@@ -150,6 +152,9 @@ HTML;
         );
     }
 }
+
+// phpcs:disable
+
 /**
  * The Chris class.
  *
@@ -174,7 +179,7 @@ class Chris
     /**
      * taxed_value
      *
-     * @return  int
+     * @return float|int
      */
     public function taxed_value(): float|int
     {
@@ -188,3 +193,4 @@ class Chris
      */
     public $in_ca = true;
 }
+// phpcs:enable

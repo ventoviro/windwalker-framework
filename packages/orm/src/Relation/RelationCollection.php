@@ -11,6 +11,11 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Relation;
 
+use ArrayAccess;
+use Exception;
+use Generator;
+use IteratorAggregate;
+use JsonSerializable;
 use Windwalker\Data\Collection;
 use Windwalker\ORM\SelectorQuery;
 use Windwalker\Utilities\TypeCast;
@@ -18,7 +23,7 @@ use Windwalker\Utilities\TypeCast;
 /**
  * The RelationCollections class.
  */
-class RelationCollection implements \IteratorAggregate, \JsonSerializable, \ArrayAccess
+class RelationCollection implements IteratorAggregate, JsonSerializable, ArrayAccess
 {
     /**
      * @var object[]
@@ -125,7 +130,7 @@ class RelationCollection implements \IteratorAggregate, \JsonSerializable, \Arra
      * @param  string|null  $class
      *
      * @return Collection
-     * @throws \Exception
+     * @throws Exception
      */
     public function all(?string $class = null): Collection
     {
@@ -151,7 +156,7 @@ class RelationCollection implements \IteratorAggregate, \JsonSerializable, \Arra
     /**
      * @inheritDoc
      */
-    public function getIterator(?string $class = null): \Generator
+    public function getIterator(?string $class = null): Generator
     {
         if ($this->query === null) {
             return;
@@ -235,7 +240,7 @@ class RelationCollection implements \IteratorAggregate, \JsonSerializable, \Arra
     }
 
     /**
-     * @param  array $items
+     * @param  array  $items
      *
      * @return  static  Return self to support chaining.
      */

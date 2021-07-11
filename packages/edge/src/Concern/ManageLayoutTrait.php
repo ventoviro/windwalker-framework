@@ -217,11 +217,11 @@ trait ManageLayoutTrait
     {
         $this->renderCount = 0;
 
-        $this->sections     = [];
+        $this->sections = [];
         $this->sectionStack = [];
-        $this->hasParents   = [];
+        $this->hasParents = [];
 
-        $this->pushes    = [];
+        $this->pushes = [];
         $this->pushStack = [];
     }
 

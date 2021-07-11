@@ -34,10 +34,10 @@ class TimezoneField extends ListField
 
             if (count($pos) === 2) {
                 $state = $pos[0];
-                $city  = $pos[1];
+                $city = $pos[1];
             } else {
                 $state = $pos[0];
-                $city  = $pos[0];
+                $city = $pos[0];
             }
 
             if (!isset($zones[$state])) {

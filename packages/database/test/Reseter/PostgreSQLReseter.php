@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Test\Reseter;
 
+use PDO;
+
 use function Windwalker\raw;
 
 /**
@@ -20,7 +22,7 @@ class PostgreSQLReseter extends AbstractReseter
 {
     protected static string $platform = 'PostgreSQL';
 
-    public function createDatabase(\PDO $pdo, string $dbname): void
+    public function createDatabase(PDO $pdo, string $dbname): void
     {
         $dbs = $pdo->query(
             $this->createQuery()
@@ -29,14 +31,14 @@ class PostgreSQLReseter extends AbstractReseter
                 ->where('datistemplate', raw('false'))
                 ->render(true)
         )
-            ->fetchAll(\PDO::FETCH_COLUMN) ?: [];
+            ->fetchAll(PDO::FETCH_COLUMN) ?: [];
 
         if (!in_array($dbname, $dbs, true)) {
             $pdo->exec('CREATE DATABASE ' . static::qn($dbname));
         }
     }
 
-    public function clearAllTables(\PDO $pdo, string $dbname): void
+    public function clearAllTables(PDO $pdo, string $dbname): void
     {
         // Drop Tables
         $tables = $pdo->query(
@@ -47,7 +49,7 @@ class PostgreSQLReseter extends AbstractReseter
                 ->order('table_name', 'ASC')
                 ->whereNotIn('table_schema', ['pg_catalog', 'information_schema'])
                 ->render(true)
-        )->fetchAll(\PDO::FETCH_COLUMN) ?: [];
+        )->fetchAll(PDO::FETCH_COLUMN) ?: [];
 
         if ($tables) {
             foreach ($tables as $table) {
@@ -69,7 +71,7 @@ class PostgreSQLReseter extends AbstractReseter
                 ->order('table_name', 'ASC')
                 ->whereNotIn('table_schema', ['pg_catalog', 'information_schema'])
                 ->render(true)
-        )->fetchAll(\PDO::FETCH_COLUMN) ?: [];
+        )->fetchAll(PDO::FETCH_COLUMN) ?: [];
 
         if ($tables) {
             foreach ($tables as $table) {

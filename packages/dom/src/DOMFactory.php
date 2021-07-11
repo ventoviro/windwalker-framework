@@ -162,7 +162,7 @@ class DOMFactory
 
     public static function reset(): void
     {
-        static::$dom   = null;
+        static::$dom = null;
         static::$html5 = null;
     }
 }

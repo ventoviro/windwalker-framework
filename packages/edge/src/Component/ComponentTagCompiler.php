@@ -11,13 +11,15 @@ declare(strict_types=1);
 
 namespace Windwalker\Edge\Component;
 
+use InvalidArgumentException;
+use ReflectionClass;
+use ReflectionProperty;
 use Windwalker\Attributes\AttributesAccessor;
 use Windwalker\Data\Collection;
 use Windwalker\Edge\Edge;
 use Windwalker\Utilities\Attributes\Prop;
 use Windwalker\Utilities\Str;
 use Windwalker\Utilities\StrNormalize;
-
 use Windwalker\Utilities\Wrapper\RawWrapper;
 
 use function Windwalker\collect;
@@ -69,7 +71,7 @@ class ComponentTagCompiler
      *
      * @return string
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function compileTags(string $value): string
     {
@@ -87,7 +89,7 @@ class ComponentTagCompiler
      *
      * @return string
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     protected function compileOpeningTags(string $value): string
     {
@@ -144,7 +146,7 @@ class ComponentTagCompiler
      *
      * @return string
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     protected function compileSelfClosingTags(string $value): string
     {
@@ -202,7 +204,7 @@ class ComponentTagCompiler
      *
      * @return string
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     protected function componentString(string $component, array $attributes): string
     {
@@ -241,7 +243,8 @@ class ComponentTagCompiler
             unset($attributes['']);
         }
 
-        return "@component('{$class}', '{$component}', [" . $this->attributesToString(
+        return "@component('{$class}', '{$component}', [" .
+            $this->attributesToString(
                 $parameters,
                 false
             ) . '])
@@ -258,7 +261,7 @@ class ComponentTagCompiler
      *
      * @return string
      *
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function componentClass(string $component): string
     {
@@ -280,7 +283,7 @@ class ComponentTagCompiler
                 return $component;
             }
 
-            throw new \InvalidArgumentException(
+            throw new InvalidArgumentException(
                 "Unable to locate class or view [{$class}] for component [{$component}]."
             );
         }
@@ -289,7 +292,7 @@ class ComponentTagCompiler
             return $component;
         }
 
-        throw new \InvalidArgumentException(
+        throw new InvalidArgumentException(
             "Unable to locate a class or view for component [{$component}]."
         );
     }
@@ -311,14 +314,14 @@ class ComponentTagCompiler
             return [collect($attributes), collect($attributes)];
         }
 
-        $properties = (new \ReflectionClass($class))->getProperties();
-        $props      = [];
+        $properties = (new ReflectionClass($class))->getProperties();
+        $props = [];
 
         foreach ($properties as $property) {
             AttributesAccessor::runAttributeIfExists(
                 $property,
                 Prop::class,
-                function ($prop, \ReflectionProperty $property) use (&$attributes, &$props) {
+                function ($prop, ReflectionProperty $property) use (&$attributes, &$props) {
                     $propName = StrNormalize::toKebabCase($property->getName());
 
                     if ($attributes[$propName] ?? null) {
@@ -407,7 +410,7 @@ class ComponentTagCompiler
         return collect($matches)->mapWithKeys(
             function ($match) {
                 $attribute = $match['attribute'];
-                $value     = $match['value'] ?? null;
+                $value = $match['value'] ?? null;
 
                 if (is_null($value)) {
                     $value = 'true';
@@ -533,15 +536,18 @@ class ComponentTagCompiler
                 function (string &$value, string $attribute) use ($escapeBound) {
                     if ($value instanceof RawWrapper) {
                         $value = $value();
+
                         return;
                     }
 
                     $value = $escapeBound
-                        && isset($this->boundAttributes[$attribute])
-                        && $value !== 'true'
-                        && !is_numeric($value)
+                    && isset($this->boundAttributes[$attribute])
+                    && $value !== 'true'
+                    // phpcs:disable
+                    && !is_numeric($value)
                         ? "'{$attribute}' => \Windwalker\Edge\Compiler\EdgeCompiler::sanitizeComponentAttribute({$value})"
                         : "'{$attribute}' => {$value}";
+                    // phpcs:enable
                 }
             )
             ->implode(',');

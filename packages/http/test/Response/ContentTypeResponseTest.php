@@ -100,8 +100,8 @@ class ContentTypeResponseTest extends TestCase
      */
     public function testXmlOutput()
     {
-        $xml             = new SimpleXMLElement('<root />');
-        $child           = $xml->addChild('foo', 'bar');
+        $xml = new SimpleXMLElement('<root />');
+        $child = $xml->addChild('foo', 'bar');
         $child['flower'] = 'sakura';
 
         $response = new XmlResponse($xml);

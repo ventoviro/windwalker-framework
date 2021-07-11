@@ -190,9 +190,9 @@ class ReactServer extends AbstractServer
 
     public function reset(): void
     {
-        $this->loop      = null;
-        $this->socket    = null;
-        $this->server    = null;
+        $this->loop = null;
+        $this->socket = null;
+        $this->server = null;
         $this->listening = false;
     }
 

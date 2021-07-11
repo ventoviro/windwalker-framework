@@ -14,6 +14,7 @@ namespace Windwalker\Pool;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Throwable;
 use Windwalker\Pool\Exception\ConnectionPoolException;
 use Windwalker\Pool\Stack\SingleStack;
 use Windwalker\Pool\Stack\StackInterface;
@@ -251,6 +252,7 @@ abstract class AbstractPool implements PoolInterface
         if ($this->stack->count() < $this->getOption(self::MAX_SIZE)) {
             $connection->setActive(false);
             $this->stack->push($connection);
+
             return;
         }
 
@@ -283,7 +285,7 @@ abstract class AbstractPool implements PoolInterface
 
             try {
                 $this->dropConnection($connection);
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 $this->logger->warning(
                     sprintf(
                         'Error while closing connection: %s',

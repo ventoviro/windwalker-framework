@@ -11,12 +11,9 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Test\Relation\Strategy;
 
-use Windwalker\Data\Collection;
 use Windwalker\ORM\Relation\Action;
 use Windwalker\ORM\Test\AbstractORMTestCase;
 use Windwalker\ORM\Test\Entity\StubAttachment;
-use Windwalker\ORM\Test\Entity\StubLocation;
-use Windwalker\ORM\Test\Entity\StubMember;
 use Windwalker\ORM\Test\Entity\StubPage;
 
 /**
@@ -73,7 +70,7 @@ class OneMorphManyTest extends AbstractORMTestCase
 
     public function testUpdate()
     {
-        $mapper   = $this->createTestMapper();
+        $mapper = $this->createTestMapper();
         /** @var StubPage $page */
         $page = $mapper->findOne(1);
 

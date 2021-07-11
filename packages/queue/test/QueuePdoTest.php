@@ -11,13 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Queue\Test;
 
-use PHPUnit\Framework\TestCase;
-use Windwalker\Database\Test\AbstractDatabaseTestCase;
-use Windwalker\Queue\Driver\DatabaseQueueDriver;
 use Windwalker\Queue\Driver\PdoQueueDriver;
-use Windwalker\Queue\Job\JobInterface;
 use Windwalker\Queue\Queue;
-use Windwalker\Queue\Test\Stub\TestJob;
 
 /**
  * The QueueAdapterTest class.

@@ -13,10 +13,7 @@ namespace Windwalker\Filter\Test;
 
 use PHPUnit\Framework\TestCase;
 use Windwalker\Filter\FilterFactory;
-
-use Windwalker\Filter\Rule\CastTo;
 use Windwalker\Test\Traits\BaseAssertionTrait;
-use Windwalker\Utilities\Reflection\ReflectAccessor;
 
 /**
  * The FilterFactoryTest class.
@@ -55,8 +52,8 @@ class FilterFactoryTest extends TestCase
                 'alias' => 'alnum|length(max=10)|default(hello)',
                 'item' => [
                     'content' => 'func(strtoupper)',
-                    'params' => fn ($v) => json_decode($v, true, 512, JSON_THROW_ON_ERROR)
-                ]
+                    'params' => fn($v) => json_decode($v, true, 512, JSON_THROW_ON_ERROR),
+                ],
             ]
         );
 
@@ -67,8 +64,8 @@ class FilterFactoryTest extends TestCase
                 'item' => [
                     'intro' => 'Intro',
                     'content' => 'Flower',
-                    'params' => '{"foo": "bar"}'
-                ]
+                    'params' => '{"foo": "bar"}',
+                ],
             ]
         );
 
@@ -80,9 +77,9 @@ class FilterFactoryTest extends TestCase
                     'intro' => 'Intro',
                     'content' => 'FLOWER',
                     'params' => [
-                        'foo' => 'bar'
-                    ]
-                ]
+                        'foo' => 'bar',
+                    ],
+                ],
             ],
             $result
         );
@@ -90,7 +87,9 @@ class FilterFactoryTest extends TestCase
 
     public function testValidateMap()
     {
-        $this->expectExceptionMessage('Field "id" not match - Validator: Windwalker\Filter\Rule\Range min: 1, max: 100 returns false, value is: string(3) "600"');
+        $this->expectExceptionMessage(
+            'Field "id" not match - Validator: Windwalker\Filter\Rule\Range min: 1, max: 100 returns false, value is: string(3) "600"'
+        );
 
         $map = $this->instance->createNested(
             [
@@ -98,8 +97,8 @@ class FilterFactoryTest extends TestCase
                 'alias' => 'alnum|length(max=10)|default(hello)',
                 'item' => [
                     'content' => 'func(strtoupper)',
-                    'params' => fn ($v) => json_decode($v, true, 512, JSON_THROW_ON_ERROR)
-                ]
+                    'params' => fn($v) => json_decode($v, true, 512, JSON_THROW_ON_ERROR),
+                ],
             ]
         );
 
@@ -110,8 +109,8 @@ class FilterFactoryTest extends TestCase
                 'item' => [
                     'intro' => 'Intro',
                     'content' => 'Flower',
-                    'params' => '{"foo": "bar"}'
-                ]
+                    'params' => '{"foo": "bar"}',
+                ],
             ]
         );
     }

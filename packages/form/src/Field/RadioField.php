@@ -31,10 +31,10 @@ class RadioField extends ListField
         $input = h('div', $attrs);
 
         foreach ($this->getOptions() as $option) {
-            $option                          = clone $option;
-            $option['type']                  = 'radio';
-            $option['name']                  = $this->getInputName();
-            $option['id']                    = $this->getId('-' . FormNormalizer::clearAttribute($option['value']));
+            $option = clone $option;
+            $option['type'] = 'radio';
+            $option['name'] = $this->getInputName();
+            $option['id'] = $this->getId('-' . FormNormalizer::clearAttribute($option['value']));
             $option['data-radio-item-input'] = true;
 
             if ((string) $option['value'] === (string) $this->getValue()) {

@@ -14,6 +14,7 @@ namespace Windwalker\Stream\Test;
 use PHPUnit\Framework\TestCase;
 use ReflectionException;
 use RuntimeException;
+use Stringable;
 use Windwalker\Stream\Stream;
 use Windwalker\Stream\StringStream;
 use Windwalker\Utilities\Reflection\ReflectAccessor;
@@ -71,7 +72,7 @@ class StringStreamTest extends TestCase
      */
     public function testConstruct()
     {
-        $stringObject = new class implements \Stringable {
+        $stringObject = new class implements Stringable {
             public function __toString(): string
             {
                 return 'FOO';

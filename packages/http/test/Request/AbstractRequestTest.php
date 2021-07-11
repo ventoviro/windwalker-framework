@@ -68,9 +68,9 @@ class AbstractRequestTest extends TestCase
         self::assertEquals([], $request->getHeaders());
 
         // Test with params
-        $uri     = 'http://example.com/?foo=bar#baz';
-        $method  = 'post';
-        $body    = fopen($tmpfile = tempnam(sys_get_temp_dir(), 'windwalker'), 'wb+');
+        $uri = 'http://example.com/?foo=bar#baz';
+        $method = 'post';
+        $body = fopen($tmpfile = tempnam(sys_get_temp_dir(), 'windwalker'), 'wb+');
         $headers = [
             'X-Foo' => ['Flower', 'Sakura'],
             'Content-Type' => 'application/json',
@@ -89,8 +89,8 @@ class AbstractRequestTest extends TestCase
         fclose($body);
 
         // Test with object params
-        $uri     = new Uri('http://example.com/flower/sakura?foo=bar#baz');
-        $body    = new Stream();
+        $uri = new Uri('http://example.com/flower/sakura?foo=bar#baz');
+        $body = new Stream();
         $request = new StubRequest($uri, null, $body);
 
         self::assertSame($uri, $request->getUri());

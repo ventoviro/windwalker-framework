@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Manager;
 
+use ReflectionAttribute;
 use Windwalker\Attributes\AttributesAccessor;
 use Windwalker\Database\Schema\Ddl\Table;
 use Windwalker\ORM\Attributes\Table as TableAttr;
@@ -53,7 +54,7 @@ class SchemaManager extends AbstractMetaManager
             $tableAttr = AttributesAccessor::getFirstAttributeInstance(
                 $name,
                 TableAttr::class,
-                \ReflectionAttribute::IS_INSTANCEOF
+                ReflectionAttribute::IS_INSTANCEOF
             );
 
             if ($tableAttr) {
@@ -113,7 +114,7 @@ class SchemaManager extends AbstractMetaManager
     public function reset(): static
     {
         $this->tables = null;
-        $this->views  = null;
+        $this->views = null;
 
         return $this;
     }

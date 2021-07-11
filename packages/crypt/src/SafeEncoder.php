@@ -68,7 +68,7 @@ class SafeEncoder
      */
     public static function chooseEncoder(string $encoder): string
     {
-        return match($encoder) {
+        return match ($encoder) {
             static::HEX => Hex::class,
             static::BASE32 => Base32::class,
             static::BASE32HEX => Base32Hex::class,

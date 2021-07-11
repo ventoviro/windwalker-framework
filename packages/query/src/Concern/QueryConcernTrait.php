@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Query\Concern;
 
+use DateTimeInterface;
 use Windwalker\Query\Query;
-use Windwalker\Utilities\Str;
 use Windwalker\Utilities\TypeCast;
 
 /**
@@ -69,7 +69,7 @@ trait QueryConcernTrait
         return $query;
     }
 
-    public function formatDateTime(\DateTimeInterface $dateTime): string
+    public function formatDateTime(DateTimeInterface $dateTime): string
     {
         return $dateTime->format($this->getDateFormat());
     }

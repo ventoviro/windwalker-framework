@@ -108,9 +108,9 @@ class Edge
         EdgeCacheInterface $cache = null,
         EdgeCompilerInterface $compiler = null
     ) {
-        $this->loader   = $loader ?: new EdgeStringLoader();
+        $this->loader = $loader ?: new EdgeStringLoader();
         $this->compiler = $compiler ?: new EdgeCompiler();
-        $this->cache    = $cache ?: new EdgeArrayCache();
+        $this->cache = $cache ?: new EdgeArrayCache();
     }
 
     /**
@@ -216,6 +216,7 @@ class Edge
 
             if ($__path instanceof Closure) {
                 eval(' ?>' . $__edge->compile($__path($this, $__data)) . '<?php ');
+
                 return;
             }
 
@@ -445,7 +446,7 @@ class Edge
      * addGlobal
      *
      * @param  string  $name
-     * @param  mixed  $value
+     * @param  mixed   $value
      *
      * @return  static
      */

@@ -11,9 +11,9 @@ declare(strict_types=1);
 
 namespace Windwalker\Attributes;
 
-use JetBrains\PhpStorm\ArrayShape;
+use ReflectionAttribute;
+use ReflectionClass;
 use Windwalker\Filesystem\Filesystem;
-use Windwalker\Utilities\Classes\TraitHelper;
 use Windwalker\Utilities\Reflection\ReflectAccessor;
 use Windwalker\Utilities\StrNormalize;
 
@@ -35,11 +35,11 @@ class AttributesAccessor
             $valueOrAttrs = (array) static::getAttributesFromAny($valueOrAttrs, $attributeClass);
         }
 
-        /** @var \ReflectionAttribute $attribute */
+        /** @var ReflectionAttribute $attribute */
         foreach ($valueOrAttrs as $attribute) {
             $match = strtolower($attribute->getName()) === strtolower($attributeClass);
 
-            if (!$match && $options & \ReflectionAttribute::IS_INSTANCEOF) {
+            if (!$match && $options & ReflectionAttribute::IS_INSTANCEOF) {
                 $match = is_subclass_of($attribute->getName(), $attributeClass);
             }
 
@@ -100,7 +100,7 @@ class AttributesAccessor
         mixed $value,
         string $attributeClass,
         int $flags = 0
-    ): ?\ReflectionAttribute {
+    ): ?ReflectionAttribute {
         $attrs = static::getAttributesFromAny($value, $attributeClass, $flags);
 
         return $attrs ? $attrs[0] : null;
@@ -123,7 +123,7 @@ class AttributesAccessor
      * @param  string|null  $name
      * @param  int          $flags
      *
-     * @return  ?array<int, \ReflectionAttribute>
+     * @return  ?array<int, ReflectionAttribute>
      */
     public static function getAttributesFromAny(
         mixed $value,
@@ -138,7 +138,7 @@ class AttributesAccessor
 
         $attrs[] = $ref->getAttributes($name, $flags);
 
-        if ($ref instanceof \ReflectionClass) {
+        if ($ref instanceof ReflectionClass) {
             while ($ref = $ref->getParentClass()) {
                 $attrs[] = $ref->getAttributes($name, $flags);
             }

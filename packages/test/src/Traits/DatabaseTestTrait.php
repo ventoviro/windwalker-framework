@@ -16,7 +16,6 @@ use PDOException;
 use RuntimeException;
 use Windwalker\Database\DatabaseAdapter;
 use Windwalker\Database\DatabaseFactory;
-use Windwalker\Database\Driver\DriverFactory;
 use Windwalker\Database\Driver\Pdo\DsnHelper;
 use Windwalker\Database\Event\QueryEndEvent;
 
@@ -38,7 +37,7 @@ trait DatabaseTestTrait
 
         $params = $params ?? self::getTestParams($platform);
 
-        $params['driver']    = $driver;
+        $params['driver'] = $driver;
         static::$lastQueries = [];
 
         $params = $params ?? self::getTestParams($platform);

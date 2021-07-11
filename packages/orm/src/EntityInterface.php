@@ -11,13 +11,14 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM;
 
+use JsonSerializable;
 use Windwalker\Data\Collection;
 use Windwalker\Utilities\Contract\DumpableInterface;
 
 /**
  * Interface EntityInterface
  */
-interface EntityInterface extends \JsonSerializable, DumpableInterface
+interface EntityInterface extends JsonSerializable, DumpableInterface
 {
     public static function table(): ?string;
 

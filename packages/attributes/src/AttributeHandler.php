@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Attributes;
 
+use Reflector;
+
 /**
  * The AttributeHandler class.
  */
@@ -25,13 +27,13 @@ class AttributeHandler
      * AttributeHandler constructor.
      *
      * @param  callable            $handler
-     * @param  \Reflector          $reflector
+     * @param  Reflector          $reflector
      * @param  object|null         $object
      * @param  AttributesResolver  $resolver
      */
     public function __construct(
         callable $handler,
-        protected \Reflector $reflector,
+        protected Reflector $reflector,
         protected ?object $object,
         protected AttributesResolver $resolver
     ) {
@@ -41,7 +43,7 @@ class AttributeHandler
     public function __invoke(&...$args): mixed
     {
         // try {
-            return ($this->handler)(...$args);
+        return ($this->handler)(...$args);
         // } catch (\Throwable $e) {
         //     show($this->handler, $this);
         //     throw $e;
@@ -61,9 +63,9 @@ class AttributeHandler
     }
 
     /**
-     * @return \Reflector
+     * @return Reflector
      */
-    public function getReflector(): \Reflector
+    public function getReflector(): Reflector
     {
         return $this->reflector;
     }

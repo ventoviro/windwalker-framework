@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Attributes;
 
+use Attribute;
+use ReflectionProperty;
 use Windwalker\Attributes\AttributeHandler;
 use Windwalker\Attributes\AttributeInterface;
 use Windwalker\ORM\Metadata\EntityMetadata;
@@ -18,14 +20,14 @@ use Windwalker\ORM\Metadata\EntityMetadata;
 /**
  * The Column class.
  */
-#[\Attribute]
-class Column  implements AttributeInterface
+#[Attribute]
+class Column implements AttributeInterface
 {
     use ORMAttributeTrait;
 
     protected string $name;
 
-    protected \ReflectionProperty $property;
+    protected ReflectionProperty $property;
 
     /**
      * Column constructor.
@@ -46,9 +48,9 @@ class Column  implements AttributeInterface
     }
 
     /**
-     * @return \ReflectionProperty
+     * @return ReflectionProperty
      */
-    public function getProperty(): \ReflectionProperty
+    public function getProperty(): ReflectionProperty
     {
         return $this->property;
     }
@@ -58,7 +60,7 @@ class Column  implements AttributeInterface
      */
     public function handle(EntityMetadata $metadata, AttributeHandler $handler): callable
     {
-        /** @var \ReflectionProperty $prop */
+        /** @var ReflectionProperty $prop */
         $prop = $handler->getReflector();
 
         $metadata->addAttributeMap(static::class, $prop);

@@ -184,8 +184,8 @@ class PlatformTest extends TestCase
     /**
      * Method to test isWin().
      *
-     * @param string  $os
-     * @param boolean $value
+     * @param  string   $os
+     * @param  boolean  $value
      *
      * @return void
      *
@@ -204,8 +204,8 @@ class PlatformTest extends TestCase
     /**
      * Method to test isUnix().
      *
-     * @param string  $os
-     * @param boolean $value
+     * @param  string   $os
+     * @param  boolean  $value
      *
      * @return void
      *
@@ -224,8 +224,8 @@ class PlatformTest extends TestCase
     /**
      * Method to test isLinux().
      *
-     * @param string  $os
-     * @param boolean $value
+     * @param  string   $os
+     * @param  boolean  $value
      *
      * @return void
      *

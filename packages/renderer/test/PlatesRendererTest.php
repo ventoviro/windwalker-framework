@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Renderer\Test;
 
-use League\Plates\Engine;
 use PHPUnit\Framework\TestCase;
+use RuntimeException;
 use Windwalker\Dom\Test\AbstractDomTestCase;
 use Windwalker\Renderer\PlatesRenderer;
 use Windwalker\Test\Traits\DOMTestTrait;
@@ -51,7 +51,7 @@ class PlatesRendererTest extends TestCase
         static::$path = realpath(__DIR__ . '/Tmpl/plates');
 
         if (!static::$path) {
-            throw new \RuntimeException('Path not exists');
+            throw new RuntimeException('Path not exists');
         }
 
         $this->instance = new PlatesRenderer(['paths' => [static::$path]]);

@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Authorization;
 
+use InvalidArgumentException;
+
 /**
  * The CallbackPolicy class.
  *
@@ -28,7 +30,7 @@ class CallbackPolicy implements PolicyInterface
     /**
      * CallbackPolicy constructor.
      *
-     * @param callable $handler
+     * @param  callable  $handler
      */
     public function __construct(callable $handler)
     {
@@ -61,14 +63,14 @@ class CallbackPolicy implements PolicyInterface
     /**
      * Method to set property handler
      *
-     * @param   callable $handler
+     * @param  callable  $handler
      *
      * @return  static  Return self to support chaining.
      */
     public function setHandler(callable $handler): static
     {
         if (!is_callable($handler)) {
-            throw new \InvalidArgumentException('Handler should be a valid callback');
+            throw new InvalidArgumentException('Handler should be a valid callback');
         }
 
         $this->handler = $handler;

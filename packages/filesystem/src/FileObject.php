@@ -11,7 +11,12 @@ declare(strict_types=1);
 
 namespace Windwalker\Filesystem;
 
+use BadMethodCallException;
+use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
+use SplFileInfo;
+use Throwable;
+use UnexpectedValueException;
 use Windwalker\Filesystem\Exception\FileNotFoundException;
 use Windwalker\Filesystem\Exception\FilesystemException;
 use Windwalker\Filesystem\Iterator\FilesIterator;
@@ -26,8 +31,8 @@ use Windwalker\Utilities\Str;
  * The FileObject class.
  *
  * @method Promise mkdirAsync(int $mode = 0755)
- * @method Promise copyAsync(string|\SplFileInfo $dest, bool $force = false)
- * @method Promise moveAsync(string|\SplFileInfo $dest, bool $force = false)
+ * @method Promise copyAsync(string|SplFileInfo $dest, bool $force = false)
+ * @method Promise moveAsync(string|SplFileInfo $dest, bool $force = false)
  * @method Promise readAsync(bool $useIncludePath = false, $context = null, int $offset = 0, ?int $maxlen = null)
  * @method Promise readStreamAsync(string $mode = Stream::MODE_READ_ONLY_FROM_BEGIN)
  * @method Promise writeAsync(string $buffer)
@@ -39,20 +44,20 @@ use Windwalker\Utilities\Str;
  * @method Promise getStreamAsync(string $mode = Stream::MODE_READ_WRITE_FROM_BEGIN)
  *
  */
-class FileObject extends \SplFileInfo
+class FileObject extends SplFileInfo
 {
     protected ?string $root;
 
     /**
      * unwrap
      *
-     * @param  string|\SplFileInfo  $file
+     * @param  string|SplFileInfo  $file
      *
      * @return  string
      */
-    public static function unwrap(\SplFileInfo|string $file): string
+    public static function unwrap(SplFileInfo|string $file): string
     {
-        if ($file instanceof \SplFileInfo) {
+        if ($file instanceof SplFileInfo) {
             if ($file->isDir()) {
                 return Path::stripTrailingDot($file->getPathname());
             }
@@ -66,12 +71,12 @@ class FileObject extends \SplFileInfo
     /**
      * wrap
      *
-     * @param  string|\SplFileInfo  $file
-     * @param  string|null          $root
+     * @param  string|SplFileInfo  $file
+     * @param  string|null         $root
      *
      * @return  static
      */
-    public static function wrap(\SplFileInfo|string $file, ?string $root = null): static
+    public static function wrap(SplFileInfo|string $file, ?string $root = null): static
     {
         if ($file instanceof self) {
             if ($root !== null) {
@@ -81,7 +86,7 @@ class FileObject extends \SplFileInfo
             return $file;
         }
 
-        if ($file instanceof \SplFileInfo) {
+        if ($file instanceof SplFileInfo) {
             $file = new static($file->getPathname());
         }
 
@@ -91,12 +96,12 @@ class FileObject extends \SplFileInfo
     /**
      * wrapIfNotNull
      *
-     * @param  \SplFileInfo|string|null  $file
+     * @param  SplFileInfo|string|null  $file
      * @param  string|null               $root
      *
      * @return  static|null
      */
-    public static function wrapIfNotNull(\SplFileInfo|string|null $file, ?string $root = null): static|null
+    public static function wrapIfNotNull(SplFileInfo|string|null $file, ?string $root = null): static|null
     {
         if ($file === null) {
             return null;
@@ -120,14 +125,18 @@ class FileObject extends \SplFileInfo
     /**
      * getRelativePathFrom
      *
-     * @param  string|\SplFileInfo|null  $root
+     * @param  string|SplFileInfo|null  $root
      *
      * @return  string
      */
-    public function getRelativePathname(string|\SplFileInfo|null $root = null): string
+    public function getRelativePathname(string|SplFileInfo|null $root = null): string
     {
         $path = $this->getRelativePath($root);
         $basename = $this->getBasename();
+
+        if ($path === '') {
+            return $basename;
+        }
 
         return $path . DIRECTORY_SEPARATOR . $basename;
     }
@@ -135,21 +144,21 @@ class FileObject extends \SplFileInfo
     /**
      * getRelativePath
      *
-     * @param  string|\SplFileInfo|null  $root
+     * @param  string|SplFileInfo|null  $root
      *
      * @return  string
      */
-    public function getRelativePath(string|\SplFileInfo|null $root = null): string
+    public function getRelativePath(string|SplFileInfo|null $root = null): string
     {
         if ($root === null) {
             $root = $this->root;
         }
 
         if ($root === null) {
-            throw new \InvalidArgumentException('No root path provided');
+            throw new InvalidArgumentException('No root path provided');
         }
 
-        $path = Path::normalize($this->getPathname());
+        $path = Path::normalize($this->getPath());
         $root = Path::normalize(static::unwrap($root));
 
         if ((string) $root === '') {
@@ -208,7 +217,7 @@ class FileObject extends \SplFileInfo
             // Create the parent directory
             try {
                 $parent->mkdir($mode);
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 $nested--;
 
                 throw new FilesystemException($e->getMessage(), $e->getCode(), $e);
@@ -240,12 +249,12 @@ class FileObject extends \SplFileInfo
     /**
      * copy
      *
-     * @param  string|\SplFileInfo  $dest
-     * @param  bool                 $force
+     * @param  string|SplFileInfo  $dest
+     * @param  bool                $force
      *
      * @return  static
      */
-    public function copyTo(\SplFileInfo|string $dest, bool $force = false): static
+    public function copyTo(SplFileInfo|string $dest, bool $force = false): static
     {
         $dest = static::wrap($dest);
 
@@ -297,7 +306,7 @@ class FileObject extends \SplFileInfo
         foreach ($this->items(true) as $file) {
             $rFile = $file->getRelativePathname();
 
-            $srcFile  = static::wrap($src . '/' . $rFile);
+            $srcFile = static::wrap($src . '/' . $rFile);
             $destFile = static::wrap($dest . '/' . $rFile);
 
             if ($srcFile->isDir()) {
@@ -319,14 +328,14 @@ class FileObject extends \SplFileInfo
      * @return  boolean  True on success
      *
      * @throws Exception\FilesystemException
-     * @throws \UnexpectedValueException
+     * @throws UnexpectedValueException
      * @since   2.0
      */
     private function copyFileTo(FileObject $dest, bool $force = false): bool
     {
         // Check src path
         if (!$this->isReadable()) {
-            throw new \UnexpectedValueException(__METHOD__ . ': Cannot find or read file: ' . $this->getPathname());
+            throw new UnexpectedValueException(__METHOD__ . ': Cannot find or read file: ' . $this->getPathname());
         }
 
         // Check folder exists
@@ -426,7 +435,7 @@ class FileObject extends \SplFileInfo
                     $error['type']
                 );
             }
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             throw new FilesystemException(
                 $e->getMessage(),
                 $e->getCode(),
@@ -671,11 +680,11 @@ class FileObject extends \SplFileInfo
     /**
      * Is this path a subdir or child of given path?
      *
-     * @param  string|\SplFileInfo  $parent  Given path to detect.
+     * @param  string|SplFileInfo  $parent  Given path to detect.
      *
      * @return  boolean  Is subdir or not.
      */
-    public function isChildOf(\SplFileInfo|string $parent): bool
+    public function isChildOf(SplFileInfo|string $parent): bool
     {
         $self = Path::normalize($this->getPathname());
 
@@ -763,6 +772,6 @@ class FileObject extends \SplFileInfo
             return static::doAsync($method, $args);
         }
 
-        throw new \BadMethodCallException(sprintf('Method %s::%s not exists.', static::class, $name));
+        throw new BadMethodCallException(sprintf('Method %s::%s not exists.', static::class, $name));
     }
 }

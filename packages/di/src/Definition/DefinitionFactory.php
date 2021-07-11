@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\DI\Definition;
 
 use Closure;
+use InvalidArgumentException;
 
 /**
  * The DefinitionFactory class.
@@ -58,7 +59,7 @@ class DefinitionFactory
             return $obj->getClass();
         }
 
-        if ($obj instanceof \Closure) {
+        if ($obj instanceof Closure) {
             return spl_object_hash($obj);
         }
 
@@ -70,6 +71,6 @@ class DefinitionFactory
             return $obj;
         }
 
-        throw new \InvalidArgumentException('Invalid object type, should be object or class name.');
+        throw new InvalidArgumentException('Invalid object type, should be object or class name.');
     }
 }

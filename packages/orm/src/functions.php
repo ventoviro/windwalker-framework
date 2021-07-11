@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker;
 
+use ReflectionAttribute;
+use UnexpectedValueException;
 use Windwalker\ORM\Attributes\Table;
 
 if (!function_exists('entity_table')) {
@@ -34,11 +36,11 @@ if (!function_exists('entity_table')) {
         $tableAttr = Attributes\AttributesAccessor::getFirstAttributeInstance(
             $entity,
             Table::class,
-            \ReflectionAttribute::IS_INSTANCEOF
+            ReflectionAttribute::IS_INSTANCEOF
         );
 
         if (!$tableAttr) {
-            throw new \UnexpectedValueException(
+            throw new UnexpectedValueException(
                 sprintf(
                     '%s has no table info.',
                     $entity

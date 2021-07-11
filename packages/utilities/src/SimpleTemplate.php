@@ -36,7 +36,7 @@ class SimpleTemplate
     public function __construct(string $template, string $delimiter = '.', ?array $wrapper = null)
     {
         $this->delimiter = $delimiter;
-        $this->template  = $template;
+        $this->template = $template;
 
         if ($wrapper !== null) {
             $this->wrapper = $wrapper;
@@ -79,8 +79,8 @@ class SimpleTemplate
      *
      * Example: The {{ foo.bar.yoo }} will be replace to value of `$data['foo']['bar']['yoo']`
      *
-     * @param  string      $string    The template to replace.
-     * @param  array       $data      The data to find.
+     * @param  string      $string  The template to replace.
+     * @param  array       $data    The data to find.
      * @param  string      $delimiter
      * @param  array|null  $wrapper
      *

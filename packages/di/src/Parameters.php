@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\DI;
 
+use Generator;
 use Windwalker\Data\Collection;
 use Windwalker\Utilities\Arr;
 use Windwalker\Utilities\TypeCast;
@@ -127,7 +128,7 @@ class Parameters extends Collection
     /**
      * @inheritDoc
      */
-    public function &getIterator(bool $includeParent = true): \Generator
+    public function &getIterator(bool $includeParent = true): Generator
     {
         foreach ($this->storage as $key => &$value) {
             yield $key => $value;
@@ -155,13 +156,16 @@ class Parameters extends Collection
     {
         $data = $this->storage;
 
-        $data = Arr::mapRecursive($data, function ($v) use ($data) {
-            if ($v instanceof ValueReference) {
-                return Arr::get($data, $v->getPath(), $v->getDelimiter());
-            }
+        $data = Arr::mapRecursive(
+            $data,
+            function ($v) use ($data) {
+                if ($v instanceof ValueReference) {
+                    return Arr::get($data, $v->getPath(), $v->getDelimiter());
+                }
 
-            return $v;
-        });
+                return $v;
+            }
+        );
 
         if ($recursive) {
             $data = TypeCast::toArray($data, true, $onlyDumpable);

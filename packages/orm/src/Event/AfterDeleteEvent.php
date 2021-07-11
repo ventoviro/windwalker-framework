@@ -11,13 +11,13 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Event;
 
+use Attribute;
 use Windwalker\Database\Driver\StatementInterface;
-use Windwalker\Event\AbstractEvent;
 
 /**
  * The BeforeDeleteEvent class.
  */
-#[\Attribute]
+#[Attribute]
 class AfterDeleteEvent extends AbstractDeleteEvent
 {
     protected StatementInterface $statement;

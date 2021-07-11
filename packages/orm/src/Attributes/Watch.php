@@ -11,21 +11,19 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Attributes;
 
+use Attribute;
+use ReflectionProperty;
 use Windwalker\Attributes\AttributeHandler;
 use Windwalker\Attributes\AttributeInterface;
 use Windwalker\ORM\Event\AbstractSaveEvent;
 use Windwalker\ORM\Event\AbstractUpdateWhereEvent;
-use Windwalker\ORM\Event\AfterSaveEvent;
-use Windwalker\ORM\Event\AfterUpdateWhereEvent;
-use Windwalker\ORM\Event\BeforeSaveEvent;
-use Windwalker\ORM\Event\BeforeUpdateWhereEvent;
 use Windwalker\ORM\Event\WatchEvent;
 use Windwalker\ORM\Metadata\EntityMetadata;
 
 /**
  * The Watch class.
  */
-#[\Attribute(\Attribute::TARGET_METHOD | \Attribute::TARGET_PROPERTY)]
+#[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_PROPERTY)]
 class Watch implements AttributeInterface
 {
     use ORMAttributeTrait;
@@ -59,7 +57,7 @@ class Watch implements AttributeInterface
             $ref = $handler->getReflector();
             $target = $handler();
 
-            if ($ref instanceof \ReflectionProperty) {
+            if ($ref instanceof ReflectionProperty) {
                 $method = $this->columnOrHandler;
                 $column = $metadata->getColumnByPropertyName($ref->getName())->getName();
             } else {

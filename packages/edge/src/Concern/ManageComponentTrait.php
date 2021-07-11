@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Edge\Concern;
 
+use Closure;
 use Windwalker\Edge\Wrapper\SlotWrapper;
 use Windwalker\Utilities\Symbol;
 
@@ -60,9 +61,9 @@ trait ManageComponentTrait
     public function startComponent(string|callable $name, array $data = [])
     {
         if (ob_start()) {
-            $this->componentStack[]                         = $name;
+            $this->componentStack[] = $name;
             $this->componentData[$this->currentComponent()] = $data;
-            $this->slots[$this->currentComponent()]         = [];
+            $this->slots[$this->currentComponent()] = [];
         }
     }
 
@@ -74,7 +75,7 @@ trait ManageComponentTrait
     public function renderComponent(): string
     {
         $staticSlot = ob_get_clean();
-        $slot       = $this->slots[$this->currentComponent()][Symbol::main()->getValue()] ?? null;
+        $slot = $this->slots[$this->currentComponent()][Symbol::main()->getValue()] ?? null;
 
         $slot ??= new SlotWrapper(
             function (...$args) use ($staticSlot) {
@@ -117,9 +118,9 @@ trait ManageComponentTrait
      * @param  string|null  $name
      * @param  string|null  $content
      *
-     * @return \Closure
+     * @return Closure
      */
-    public function slot(?string $name = null, ?string $content = null): \Closure
+    public function slot(?string $name = null, ?string $content = null): Closure
     {
         $name ??= Symbol::main()->getValue();
 
@@ -133,7 +134,7 @@ trait ManageComponentTrait
 
         return function ($renderer) use ($name) {
             $this->slots[$this->currentComponent()][$name] = new SlotWrapper($renderer);
-            $this->slotStack[$this->currentComponent()][]  = $name;
+            $this->slotStack[$this->currentComponent()][] = $name;
         };
     }
 

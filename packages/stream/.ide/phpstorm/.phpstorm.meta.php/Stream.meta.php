@@ -9,7 +9,6 @@
 namespace PHPSTORM_META {
 
     // Container
-    use Windwalker\Stream\Stream;
 
     registerArgumentsSet(
         'stream_modes',

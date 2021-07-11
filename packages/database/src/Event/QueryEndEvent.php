@@ -21,8 +21,11 @@ use Windwalker\Query\Query;
 class QueryEndEvent extends AbstractEvent
 {
     protected bool $result;
+
     protected string $sql;
+
     protected array $bounded;
+
     protected StatementInterface $statement;
 
     /**

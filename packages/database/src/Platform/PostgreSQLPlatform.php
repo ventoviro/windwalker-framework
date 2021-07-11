@@ -11,15 +11,15 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Platform;
 
+use PDO;
+use PDOException;
 use Windwalker\Data\Collection;
 use Windwalker\Database\Driver\Pdo\PdoDriver;
 use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\Database\Platform\Type\PostgreSQLDataType;
 use Windwalker\Database\Schema\Ddl\Column;
 use Windwalker\Database\Schema\Ddl\Constraint;
-use Windwalker\Database\Schema\Ddl\Index;
 use Windwalker\Database\Schema\Schema;
-use Windwalker\Query\Clause\AlterClause;
 use Windwalker\Query\Clause\JoinClause;
 use Windwalker\Query\Escaper;
 use Windwalker\Query\Query;
@@ -304,7 +304,7 @@ class PostgreSQLPlatform extends AbstractPlatform
             ->all()
             ->group('constraint_name');
 
-        $name        = null;
+        $name = null;
         $constraints = [];
 
         foreach ($constraintGroup as $name => $rows) {
@@ -324,11 +324,11 @@ class PostgreSQLPlatform extends AbstractPlatform
 
             if ($isFK) {
                 $constraints[$name]['referenced_table_schema'] = $rows[0]['referenced_table_schema'];
-                $constraints[$name]['referenced_table_name']   = $rows[0]['referenced_table_name'];
-                $constraints[$name]['referenced_columns']      = [];
-                $constraints[$name]['match_option']            = $rows[0]['match_option'];
-                $constraints[$name]['update_rule']             = $rows[0]['update_rule'];
-                $constraints[$name]['delete_rule']             = $rows[0]['delete_rule'];
+                $constraints[$name]['referenced_table_name'] = $rows[0]['referenced_table_name'];
+                $constraints[$name]['referenced_columns'] = [];
+                $constraints[$name]['match_option'] = $rows[0]['match_option'];
+                $constraints[$name]['update_rule'] = $rows[0]['update_rule'];
+                $constraints[$name]['delete_rule'] = $rows[0]['delete_rule'];
             }
 
             foreach ($rows as $row) {
@@ -362,11 +362,11 @@ class PostgreSQLPlatform extends AbstractPlatform
                 $matches
             );
 
-            $index['table_schema']  = $row['schemaname'];
-            $index['table_name']    = $row['tablename'];
-            $index['is_unique']     = trim($matches[1]) === 'UNIQUE';
-            $index['is_primary']    = (bool) $row['is_primary'];
-            $index['index_name']    = $row['indexname'];
+            $index['table_schema'] = $row['schemaname'];
+            $index['table_name'] = $row['tablename'];
+            $index['is_unique'] = trim($matches[1]) === 'UNIQUE';
+            $index['is_primary'] = (bool) $row['is_primary'];
+            $index['index_name'] = $row['indexname'];
             $index['index_comment'] = '';
 
             $index['columns'] = [];
@@ -396,7 +396,7 @@ class PostgreSQLPlatform extends AbstractPlatform
     public function lastInsertId($insertQuery, ?string $sequence = null): ?string
     {
         if ($sequence && $this->db->getDriver() instanceof PdoDriver) {
-            /** @var \PDO $pdo */
+            /** @var PDO $pdo */
             $pdo = $this->db->getDriver()->getConnectionFromPool()->get();
 
             return $pdo->lastInsertId($sequence);
@@ -432,7 +432,7 @@ class PostgreSQLPlatform extends AbstractPlatform
 
         try {
             return $this->db->prepare($insertidQuery)->result();
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             // 55000 means we trying to insert value to serial column
             // Just return because insertedId get the last generated value.
             if ($e->getCode() !== 55000) {
@@ -549,12 +549,12 @@ class PostgreSQLPlatform extends AbstractPlatform
             'tablespace' => null,
         ];
 
-        $options   = array_merge($defaultOptions, $options);
-        $columns   = [];
-        $table     = $schema->getTable();
+        $options = array_merge($defaultOptions, $options);
+        $columns = [];
+        $table = $schema->getTable();
         $tableName = $this->db->quoteName($table->schemaName . '.' . $table->getName());
         $primaries = [];
-        $comments  = [];
+        $comments = [];
 
         foreach ($schema->getColumns() as $column) {
             $column = $this->prepareColumn(clone $column);
@@ -638,7 +638,7 @@ class PostgreSQLPlatform extends AbstractPlatform
                 [
                     $this->db->quoteName($column->getColumnName()),
                     'TYPE',
-                    $column->getTypeExpression()
+                    $column->getTypeExpression(),
                 ]
             );
 
@@ -647,7 +647,7 @@ class PostgreSQLPlatform extends AbstractPlatform
                 [
                     $this->db->quoteName($column->getColumnName()),
                     $column->getIsNullable() ? 'SET' : 'DROP',
-                    'NOT NULL'
+                    'NOT NULL',
                 ]
             );
 
@@ -657,7 +657,7 @@ class PostgreSQLPlatform extends AbstractPlatform
                     [
                         $this->db->quoteName($column->getColumnName()),
                         'SET DEFAULT',
-                        $this->db->quote($column->getColumnDefault())
+                        $this->db->quote($column->getColumnDefault()),
                     ]
                 );
         }
@@ -698,7 +698,7 @@ class PostgreSQLPlatform extends AbstractPlatform
                 [
                     $this->db->quoteName($from),
                     'TO',
-                    $this->db->quoteName($to)
+                    $this->db->quoteName($to),
                 ]
             );
 
@@ -745,10 +745,14 @@ class PostgreSQLPlatform extends AbstractPlatform
                 )
                 ->leftJoin('pg_class', 't', 't.oid', 'd.refobjid')
                 ->leftJoin('pg_namespace', 'n', 'n.oid', 't.relnamespace')
-                ->leftJoin('pg_attribute', 'a', function (JoinClause $join) {
-                    $join->on('a.attrelid', 't.oid');
-                    $join->on('a.attnum', 'd.refobjsubid');
-                })
+                ->leftJoin(
+                    'pg_attribute',
+                    'a',
+                    function (JoinClause $join) {
+                        $join->on('a.attrelid', 't.oid');
+                        $join->on('a.attnum', 'd.refobjsubid');
+                    }
+                )
                 ->leftJoin('information_schema.sequences', 'info', 'info.sequence_name', 's.relname')
                 ->where('s.relkind', 'S')
                 ->where('d.deptype', 'a')

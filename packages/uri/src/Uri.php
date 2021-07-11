@@ -140,13 +140,13 @@ class Uri implements UriInterface
             $parts['query'] = str_replace('&amp;', '&', $parts['query']);
         }
 
-        $this->scheme   = $parts['scheme'] ?? null;
-        $this->user     = $parts['user'] ?? null;
-        $this->pass     = $parts['pass'] ?? null;
-        $this->host     = $parts['host'] ?? null;
-        $this->port     = $parts['port'] ?? null;
-        $this->path     = $parts['path'] ?? null;
-        $this->query    = $parts['query'] ?? null;
+        $this->scheme = $parts['scheme'] ?? null;
+        $this->user = $parts['user'] ?? null;
+        $this->pass = $parts['pass'] ?? null;
+        $this->host = $parts['host'] ?? null;
+        $this->port = $parts['port'] ?? null;
+        $this->path = $parts['path'] ?? null;
+        $this->query = $parts['query'] ?? null;
         $this->fragment = $parts['fragment'] ?? null;
 
         if ($this->path !== null) {
@@ -276,7 +276,7 @@ class Uri implements UriInterface
 
         $scheme = UriHelper::filterScheme($scheme);
 
-        $new         = clone $this;
+        $new = clone $this;
         $new->scheme = $scheme;
 
         return $new;
@@ -309,7 +309,7 @@ class Uri implements UriInterface
             'URI Password should be a string or NULL, %s given.'
         );
 
-        $new       = clone $this;
+        $new = clone $this;
         $new->user = $user;
         $new->pass = $password;
 
@@ -325,7 +325,7 @@ class Uri implements UriInterface
      */
     public function withUser(?string $user): Uri|static
     {
-        $new       = clone $this;
+        $new = clone $this;
         $new->user = $user;
 
         return $new;
@@ -340,7 +340,7 @@ class Uri implements UriInterface
      */
     public function withPassword(?string $password): Uri|static
     {
-        $new       = clone $this;
+        $new = clone $this;
         $new->pass = $password;
 
         return $new;
@@ -366,7 +366,7 @@ class Uri implements UriInterface
             throw new InvalidArgumentException('URI Host should be a string.');
         }
 
-        $new       = clone $this;
+        $new = clone $this;
         $new->host = $host;
 
         return $new;
@@ -404,7 +404,7 @@ class Uri implements UriInterface
             }
         }
 
-        $new       = clone $this;
+        $new = clone $this;
         $new->port = $port;
 
         return $new;
@@ -448,7 +448,7 @@ class Uri implements UriInterface
         $path = UriNormalizer::normalizePath($path);
         $path = UriHelper::filterPath($path);
 
-        $new       = clone $this;
+        $new = clone $this;
         $new->path = $path;
 
         return $new;
@@ -496,8 +496,8 @@ class Uri implements UriInterface
 
         $query = UriHelper::filterQuery($query);
 
-        $new        = clone $this;
-        $new->vars  = UriHelper::parseQuery($query);
+        $new = clone $this;
+        $new->vars = UriHelper::parseQuery($query);
         $new->query = $query;
 
         return $new;
@@ -517,12 +517,12 @@ class Uri implements UriInterface
     {
         $new = clone $this;
 
-        $query        = $new->vars;
+        $query = $new->vars;
         $query[$name] = $value;
 
         $query = UriHelper::filterQuery(UriHelper::buildQuery($query));
 
-        $new->vars  = UriHelper::parseQuery($query);
+        $new->vars = UriHelper::parseQuery($query);
         $new->query = $query;
 
         return $new;
@@ -571,7 +571,7 @@ class Uri implements UriInterface
 
         $fragment = UriHelper::filterFragment($fragment);
 
-        $new           = clone $this;
+        $new = clone $this;
         $new->fragment = $fragment;
 
         return $new;

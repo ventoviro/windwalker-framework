@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Query\Grammar;
 
+use LogicException;
 use Windwalker\Query\Clause\Clause;
 use Windwalker\Query\Query;
 
@@ -43,13 +44,13 @@ class BaseGrammar extends AbstractGrammar
         return $this->createQuery();
     }
 
-    public function compileJsonSelector(Query $query,
+    public function compileJsonSelector(
+        Query $query,
         string $column,
         array $paths,
         bool $unQuoteLast = true,
         bool $instant = false
-    ): Clause
-    {
-        throw new \LogicException('This DB does not support JSON.');
+    ): Clause {
+        throw new LogicException('This DB does not support JSON.');
     }
 }

@@ -146,7 +146,7 @@ class StrNormalize
     public static function toSnakeCase(string $input): string
     {
         // Convert spaces and dashes to underscores.
-        return strtolower(static::separate($input, '_'));
+        return strtolower(static::toUnderscoreSeparated($input));
     }
 
     /**
@@ -158,7 +158,8 @@ class StrNormalize
      */
     public static function toUnderscoreSeparated(string $input): string
     {
-        return static::toSnakeCase($input);
+        // Convert spaces and dashes to underscores.
+        return static::separate($input, '_');
     }
 
     /**

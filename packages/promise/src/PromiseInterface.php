@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Promise;
 
+use LogicException;
+
 /**
  * Interface PromiseInterface
  *
@@ -70,7 +72,7 @@ interface PromiseInterface
      * If the promise cannot be waited on, then the promise will be rejected.
      *
      * @return mixed
-     * @throws \LogicException if the promise has no wait function or if the
+     * @throws LogicException if the promise has no wait function or if the
      *                         promise does not settle after waiting.
      */
     public function wait(): mixed;

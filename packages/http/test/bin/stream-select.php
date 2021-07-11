@@ -20,13 +20,13 @@ if (!is_file($autoload)) {
 
 include $autoload;
 
-$t1  = new StreamTransport();
+$t1 = new StreamTransport();
 $fp1 = $t1->createConnection(
     (new Request())
         ->withRequestTarget('https://google.com')
 );
 
-$t2  = new StreamTransport();
+$t2 = new StreamTransport();
 $fp2 = $t1->createConnection(
     (new Request())
         ->withRequestTarget('https://github.com')
@@ -36,11 +36,11 @@ $master = [];
 
 $master[] = fopen($fp1);
 $master[] = fopen();
-$read     = $master;
+$read = $master;
 show("Stat: ", fstat($socket));
 while (1) {
-    $read   = $master;
-    $_w     = $_e = null;
+    $read = $master;
+    $_w = $_e = null;
     $mod_fd = stream_select($read, $_w, $_e, 5);
     show("Stat: ", fstat($socket));
     foreach ($read as $stream) {

@@ -55,8 +55,8 @@ class SodiumCipher implements CipherInterface
         $length = CryptHelper::strlen($message);
 
         // Split string
-        $salt      = CryptHelper::substr($message, 0, static::HKDF_SALT_LEN);
-        $nonce     = CryptHelper::substr($message, static::HKDF_SALT_LEN, static::NONCE_SIZE);
+        $salt = CryptHelper::substr($message, 0, static::HKDF_SALT_LEN);
+        $nonce = CryptHelper::substr($message, static::HKDF_SALT_LEN, static::NONCE_SIZE);
         $encrypted = CryptHelper::substr(
             $message,
             static::HKDF_SALT_LEN + static::NONCE_SIZE,
@@ -102,7 +102,7 @@ class SodiumCipher implements CipherInterface
     public function encrypt(HiddenString $str, Key $key, string $encoder = SafeEncoder::BASE64URLSAFE): string
     {
         $nonce = random_bytes(SODIUM_CRYPTO_SECRETBOX_NONCEBYTES);
-        $salt  = random_bytes(static::HKDF_SALT_LEN);
+        $salt = random_bytes(static::HKDF_SALT_LEN);
 
         /*
         Split our key into two keys: One for encryption, the other for

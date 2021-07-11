@@ -11,6 +11,17 @@ declare(strict_types=1);
 
 namespace Windwalker\Query;
 
+use BadMethodCallException;
+use Closure;
+use DateTimeInterface;
+use Generator;
+use InvalidArgumentException;
+use IteratorAggregate;
+use PDO;
+use ReflectionClass;
+use SqlFormatter;
+use Stringable;
+use WeakReference;
 use Windwalker\Data\Collection;
 use Windwalker\Database\DatabaseAdapter;
 use Windwalker\Database\Driver\AbstractDriver;
@@ -97,7 +108,7 @@ use function Windwalker\value;
  * @method int count()
  * @method StatementInterface execute(?array $params = null)
  */
-class Query implements QueryInterface, BindableInterface, \IteratorAggregate
+class Query implements QueryInterface, BindableInterface, IteratorAggregate
 {
     use MarcoableTrait;
     use FlowControlTrait;
@@ -170,8 +181,8 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
     /**
      * Query constructor.
      *
-     * @param  mixed|\PDO|Escaper|AbstractDriver  $escaper
-     * @param  AbstractGrammar|string|null        $grammar
+     * @param  mixed|PDO|Escaper|AbstractDriver  $escaper
+     * @param  AbstractGrammar|string|null       $grammar
      */
     public function __construct(mixed $escaper = null, mixed $grammar = null)
     {
@@ -242,7 +253,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
         }
 
         if (!$this->select) {
-            $this->type   = static::TYPE_SELECT;
+            $this->type = static::TYPE_SELECT;
             $this->select = $this->clause('SELECT', [], ', ');
         }
 
@@ -307,12 +318,12 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
             $this->join = $this->clause('', [], ' ');
         }
 
-        $tbl      = $this->as($table, $alias);
+        $tbl = $this->as($table, $alias);
         $joinType = strtoupper($type) . ' JOIN';
 
         $join = new JoinClause($this, $joinType, $tbl);
 
-        if (count($on) === 1 && $on[0] instanceof \Closure) {
+        if (count($on) === 1 && $on[0] instanceof Closure) {
             // ArgumentsAssert::assert(
             //     $on[0] instanceof \Closure,
             //     '%s if only has 1 on condition, it must be Closure, %s given.',
@@ -357,7 +368,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
         if ($value instanceof RawWrapper) {
             $clause->value($value);
         } else {
-            if ($value instanceof \Closure) {
+            if ($value instanceof Closure) {
                 $value($value = $this->createSubQuery());
             }
 
@@ -476,15 +487,15 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
     /**
      * where
      *
-     * @param  string|array|\Closure|ClauseInterface  $column  Column name, array where list or callback
+     * @param  string|array|Closure|ClauseInterface  $column   Column name, array where list or callback
      *                                                         function as sub query.
-     * @param  mixed                                  ...$args
+     * @param  mixed                                 ...$args
      *
      * @return  static
      */
     public function where(mixed $column, mixed ...$args): static
     {
-        if ($column instanceof \Closure) {
+        if ($column instanceof Closure) {
             $this->handleNestedWheres($column, (string) ($args[0] ?? 'AND'));
 
             return $this;
@@ -545,11 +556,11 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
         }
 
         if ($operator === null) {
-            throw new \InvalidArgumentException('Where operator should not be NULL');
+            throw new InvalidArgumentException('Where operator should not be NULL');
         }
 
         // Closure means to create a sub query as value.
-        if ($value instanceof \Closure) {
+        if ($value instanceof Closure) {
             $value($value = $this->createSubQuery());
         }
 
@@ -614,10 +625,10 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
         return [strtoupper($operator), $value, $origin];
     }
 
-    private function handleNestedWheres(\Closure $callback, string $glue, string $type = 'where'): void
+    private function handleNestedWheres(Closure $callback, string $glue, string $type = 'where'): void
     {
         if (!in_array(strtolower(trim($glue)), ['and', 'or'], true)) {
-            throw new \InvalidArgumentException('WHERE glue should only be `OR`, `AND`.');
+            throw new InvalidArgumentException('WHERE glue should only be `OR`, `AND`.');
         }
 
         $callback($query = $this->createSubQuery());
@@ -670,11 +681,11 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
     /**
      * orWhere
      *
-     * @param  array|\Closure  $wheres
+     * @param  array|Closure  $wheres
      *
      * @return  static
      */
-    public function orWhere(array|\Closure $wheres): static
+    public function orWhere(array|Closure $wheres): static
     {
         if (is_array($wheres)) {
             return $this->orWhere(
@@ -687,7 +698,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
         }
 
         ArgumentsAssert::assert(
-            $wheres instanceof \Closure,
+            $wheres instanceof Closure,
             '{caller} argument should be array or Closure, %s given.',
             $wheres
         );
@@ -697,7 +708,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
 
     public function having(mixed $column, mixed ...$args): static
     {
-        if ($column instanceof \Closure) {
+        if ($column instanceof Closure) {
             $this->handleNestedWheres($column, (string) ($args[0] ?? 'AND'), 'having');
 
             return $this;
@@ -755,11 +766,11 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
     /**
      * orWhere
      *
-     * @param  array|\Closure  $wheres
+     * @param  array|Closure  $wheres
      *
      * @return  static
      */
-    public function orHaving(array|\Closure $wheres): static
+    public function orHaving(array|Closure $wheres): static
     {
         if (is_array($wheres)) {
             return $this->orHaving(
@@ -772,7 +783,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
         }
 
         ArgumentsAssert::assert(
-            $wheres instanceof \Closure,
+            $wheres instanceof Closure,
             '{caller} argument should be array or Closure, %s given.',
             $wheres
         );
@@ -915,8 +926,8 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
      */
     public function insert(string $table, bool $incrementField = false): static
     {
-        $this->type           = static::TYPE_INSERT;
-        $this->insert         = $this->clause('INSERT INTO', $this->as($table, false));
+        $this->type = static::TYPE_INSERT;
+        $this->insert = $this->clause('INSERT INTO', $this->as($table, false));
         $this->incrementField = $incrementField;
 
         return $this;
@@ -932,7 +943,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
      */
     public function update(string $table, ?string $alias = null): static
     {
-        $this->type   = static::TYPE_UPDATE;
+        $this->type = static::TYPE_UPDATE;
         $this->update = $this->clause('UPDATE', $this->as($table, $alias));
 
         return $this;
@@ -1230,12 +1241,12 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
     /**
      * quoteName
      *
-     * @param  string|\Stringable  $name
-     * @param  int                 $flags
+     * @param  string|Stringable  $name
+     * @param  int                $flags
      *
      * @return mixed
      */
-    public function quoteName(string|\Stringable $name, int $flags = 0): string|Clause
+    public function quoteName(string|Stringable $name, int $flags = 0): string|Clause
     {
         if ($name instanceof RawWrapper) {
             return $name();
@@ -1267,7 +1278,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
         return $quoted;
     }
 
-    public function qnStr(string|\Stringable $name, bool $ignoreDot = false): string
+    public function qnStr(string|Stringable $name, bool $ignoreDot = false): string
     {
         if ($name instanceof RawWrapper) {
             return $name();
@@ -1414,7 +1425,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
      */
     public function castValue(mixed $value): mixed
     {
-        if ($value instanceof \DateTimeInterface) {
+        if ($value instanceof DateTimeInterface) {
             return $this->formatDateTime($value);
         }
 
@@ -1487,7 +1498,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
 
         $expression = $this->getExpression();
 
-        $i    = 1;
+        $i = 1;
         $func = function ($match) use ($query, $args, &$i, $expression) {
             if (isset($match[6]) && $match[6] === '%') {
                 return '%';
@@ -1605,8 +1616,8 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
     {
         $sql = $this->render(true);
 
-        if ($format && class_exists(\SqlFormatter::class)) {
-            $sql = \SqlFormatter::format($sql, false);
+        if ($format && class_exists(SqlFormatter::class)) {
+            $sql = SqlFormatter::format($sql, false);
         }
 
         if ($pre) {
@@ -1661,7 +1672,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
     {
         $this->sequence = $sequence = $sequence ?: new BoundedSequence('wqp__');
 
-        $all     = [];
+        $all = [];
         $bounded = [];
 
         $params = $this->getBounded();
@@ -1669,7 +1680,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
         foreach ($params as $key => $param) {
             if ($param['value'] instanceof ValueClause) {
                 $param['value']->setPlaceholder($sequence->get());
-                $key            = $param['value']->getPlaceholder();
+                $key = $param['value']->getPlaceholder();
                 $param['value'] = $this->castValue($param['value']->getValue());
 
                 $bounded[$key] = $param;
@@ -1714,7 +1725,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
     /**
      * Method to set property connection
      *
-     * @param  Escaper|\PDO|\WeakReference|mixed  $escaper
+     * @param  Escaper|PDO|WeakReference|mixed  $escaper
      *
      * @return  static  Return self to support chaining.
      *
@@ -1831,7 +1842,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
             'bounded' => [],
         ];
 
-        if ($clauses === null) {
+        if ($clauses === []) {
             $clauses = array_keys($handlers);
         }
 
@@ -1843,7 +1854,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
             return $this;
         }
 
-        $props          = (new \ReflectionClass($this))->getDefaultProperties();
+        $props = (new ReflectionClass($this))->getDefaultProperties();
         $this->$clauses = $props[$clauses] ?? null;
 
         foreach ($handlers[$clauses] ?? [] as $field) {
@@ -1915,7 +1926,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
             return $this->getDbConnection()->countWith($this);
         }
 
-        throw new \BadMethodCallException(
+        throw new BadMethodCallException(
             sprintf('Call to undefined method of: %s::%s()', static::class, $name)
         );
     }
@@ -1926,9 +1937,9 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
      * @param  string|null  $class
      * @param  array        $args
      *
-     * @return  \Generator
+     * @return  Generator
      */
-    public function getIterator(?string $class = Collection::class, array $args = []): \Generator
+    public function getIterator(?string $class = Collection::class, array $args = []): Generator
     {
         return $this->prepareStatement()->getIterator($class, $args);
     }
@@ -1943,7 +1954,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
         $db = $this->getEscaper()->getConnection();
 
         if (!($db instanceof AbstractDriver || $db instanceof DatabaseAdapter || $db instanceof ORM)) {
-            throw new \BadMethodCallException(
+            throw new BadMethodCallException(
                 sprintf(
                     'Directly fetch from DB must use %s or %s as Escaper::$connection.',
                     AbstractDriver::class,

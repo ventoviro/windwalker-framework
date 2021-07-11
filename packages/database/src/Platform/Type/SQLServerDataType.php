@@ -49,7 +49,7 @@ class SQLServerDataType extends DataType
         self::REAL => [53, 0, 'float'],
         self::NCHAR => [255, 0, 'string'],
         self::NVARCHAR => [255, 0, 'string'],
-        self::DATETIME2 => [null, '1900-01-01 00:00:00', 'string']
+        self::DATETIME2 => [null, '1900-01-01 00:00:00', 'string'],
     ];
 
     /**

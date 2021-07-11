@@ -30,9 +30,9 @@ class CheckboxField extends AbstractInputField
      */
     public function prepareInput(DOMElement $input): DOMElement
     {
-        $input['type']    = $this->getInputType();
+        $input['type'] = $this->getInputType();
         $input['checked'] = $this->getValue() ? 'checked' : null;
-        $input['value']   = $this->getCheckedValue() ?? 'on';
+        $input['value'] = $this->getCheckedValue() ?? 'on';
 
         return $input;
     }
@@ -49,7 +49,7 @@ class CheckboxField extends AbstractInputField
         return array_merge(
             parent::getAccessors(),
             [
-                'checkedValue'
+                'checkedValue',
             ]
         );
     }

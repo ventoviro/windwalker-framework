@@ -11,8 +11,6 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Test;
 
-use PHPUnit\Framework\TestCase;
-use Windwalker\ORM\Attributes\NestedSet;
 use Windwalker\ORM\Exception\NestedHandleException;
 use Windwalker\ORM\Nested\NestedEntityInterface;
 use Windwalker\ORM\Nested\Position;
@@ -36,13 +34,15 @@ class NestedSetMapperTest extends AbstractORMTestCase
         );
     }
 
-    public function testCheckParentIdEmpty()
+    public function testCheckInvalidParentId()
     {
         $this->expectException(NestedHandleException::class);
-        $this->expectExceptionMessage('Invalid parent_id: 0');
+        $this->expectExceptionMessage('ReferenceId is negative.');
 
         $child = new StubNestedSet();
         $child->setLft(2);
+
+        $this->instance->setPosition($child, -1, Position::LAST_CHILD);
 
         $this->instance->saveOne($child);
     }
@@ -87,7 +87,7 @@ class NestedSetMapperTest extends AbstractORMTestCase
             [2, 3],
             [
                 $ent->getLft(),
-                $ent->getRgt()
+                $ent->getRgt(),
             ]
         );
 
@@ -105,7 +105,7 @@ class NestedSetMapperTest extends AbstractORMTestCase
             [6, 7],
             [
                 $ent->getLft(),
-                $ent->getRgt()
+                $ent->getRgt(),
             ]
         );
 
@@ -120,7 +120,7 @@ class NestedSetMapperTest extends AbstractORMTestCase
             [1, 2],
             [
                 $ent->getLft(),
-                $ent->getRgt()
+                $ent->getRgt(),
             ]
         );
 
@@ -135,7 +135,7 @@ class NestedSetMapperTest extends AbstractORMTestCase
             [11, 12],
             [
                 $ent->getLft(),
-                $ent->getRgt()
+                $ent->getRgt(),
             ]
         );
     }
@@ -296,7 +296,7 @@ class NestedSetMapperTest extends AbstractORMTestCase
                 'flower/olive',
                 'sunflower',
                 'rose',
-                'orchid'
+                'orchid',
             ],
             $paths
         );
@@ -366,7 +366,7 @@ class NestedSetMapperTest extends AbstractORMTestCase
         $mapper->createRoot(
             [
                 'title' => 'root',
-                'access' => 1
+                'access' => 1,
             ]
         );
     }

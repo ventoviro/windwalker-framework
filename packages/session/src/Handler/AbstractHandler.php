@@ -11,12 +11,15 @@ declare(strict_types=1);
 
 namespace Windwalker\Session\Handler;
 
+use SessionIdInterface;
+use SessionUpdateTimestampHandlerInterface;
+
 /**
  * Class AbstractHandler
  *
  * @since 2.0
  */
-abstract class AbstractHandler implements HandlerInterface, \SessionUpdateTimestampHandlerInterface, \SessionIdInterface
+abstract class AbstractHandler implements HandlerInterface, SessionUpdateTimestampHandlerInterface, SessionIdInterface
 {
     protected ?string $loadedData = null;
 
@@ -76,6 +79,7 @@ abstract class AbstractHandler implements HandlerInterface, \SessionUpdateTimest
 
         if ($data !== null) {
             $this->loadedData = null;
+
             return $data;
         }
 

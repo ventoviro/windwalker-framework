@@ -109,7 +109,7 @@ class Output implements OutputInterface
     public function sendHeaders(ResponseInterface $response): static
     {
         foreach ($response->getHeaders() as $header => $values) {
-            $first  = true;
+            $first = true;
             $header = HeaderHelper::normalizeHeaderName($header);
 
             foreach ($values as $value) {

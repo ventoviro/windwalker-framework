@@ -35,7 +35,7 @@ class CachedCallable extends DisposableCallable
         return tap(
             parent::__invoke(...$args),
             function ($value) {
-                $this->value  = $value;
+                $this->value = $value;
                 $this->called = true;
             }
         );

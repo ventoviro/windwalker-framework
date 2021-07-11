@@ -96,7 +96,7 @@ class HTMLElementTest extends DOMElementTest
      */
     public function testOffsetAccess(): void
     {
-        $ele             = HTMLElement::create('hello');
+        $ele = HTMLElement::create('hello');
         $ele['data-foo'] = 'bar';
 
         self::assertTrue(isset($ele['data-foo']));
@@ -114,7 +114,7 @@ class HTMLElementTest extends DOMElementTest
      */
     public function testToString(): void
     {
-        $ele             = HTMLElement::create('hello');
+        $ele = HTMLElement::create('hello');
         $ele['data-foo'] = 'bar';
 
         self::assertEquals('<hello data-foo="bar"></hello>', (string) $ele);
@@ -254,7 +254,7 @@ XML
 
     public function testWith(): void
     {
-        $dom  = new DOMDocument();
+        $dom = new DOMDocument();
         $root = $dom->createElement('root');
 
         $ele = HTMLElement::create('hello');
@@ -265,7 +265,7 @@ XML
 
     public function testCreateChild(): void
     {
-        $ele   = HTMLElement::create('root');
+        $ele = HTMLElement::create('root');
         $hello = $ele->createChild('hello');
         $hello->setAttribute('foo', 'bar');
 

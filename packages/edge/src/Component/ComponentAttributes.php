@@ -11,8 +11,12 @@ declare(strict_types=1);
 
 namespace Windwalker\Edge\Component;
 
+use ArrayAccess;
+use ArrayIterator;
+use IteratorAggregate;
 use Windwalker\Utilities\Arr;
 use Windwalker\Utilities\StrNormalize;
+use Windwalker\Utilities\TypeCast;
 
 use function Windwalker\collect;
 use function Windwalker\value;
@@ -20,7 +24,7 @@ use function Windwalker\value;
 /**
  * The ComponentAttributes class.
  */
-class ComponentAttributes implements \ArrayAccess, \IteratorAggregate
+class ComponentAttributes implements ArrayAccess, IteratorAggregate
 {
     /**
      * The raw array of attributes.
@@ -259,7 +263,8 @@ class ComponentAttributes implements \ArrayAccess, \IteratorAggregate
 
         $attributes = $appendableAttributes->mapWithKeys(
             function ($value, $key) use ($attributeDefaults, $escape) {
-                $defaultsValue = isset($attributeDefaults[$key]) && $attributeDefaults[$key] instanceof AppendableAttributeValue
+                $defaultsValue = isset($attributeDefaults[$key])
+                && $attributeDefaults[$key] instanceof AppendableAttributeValue
                     ? $this->resolveAppendableAttributeDefault($attributeDefaults, $key, $escape)
                     : ($attributeDefaults[$key] ?? '');
 
@@ -341,8 +346,7 @@ class ComponentAttributes implements \ArrayAccess, \IteratorAggregate
         if (
             isset($attributes['attributes']) &&
             (
-                $attributes['attributes'] instanceof self
-                || is_array($attributes['attributes'])
+                $attributes['attributes'] instanceof self || is_array($attributes['attributes'])
             )
         ) {
             $parentBag = static::wrap($attributes['attributes']);
@@ -429,11 +433,11 @@ class ComponentAttributes implements \ArrayAccess, \IteratorAggregate
     /**
      * Get an iterator for the items.
      *
-     * @return \ArrayIterator
+     * @return ArrayIterator
      */
     public function getIterator()
     {
-        return new \ArrayIterator($this->attributes);
+        return new ArrayIterator($this->attributes);
     }
 
     /**
@@ -453,7 +457,8 @@ class ComponentAttributes implements \ArrayAccess, \IteratorAggregate
             $string .= ' ' . $key;
 
             if ($value !== true) {
-                $string .= '="' . str_replace('"', '\\"', trim((string) $value)) . '"';
+                $value = TypeCast::toString($value, false);
+                $string .= '="' . e(trim($value)) . '"';
             }
         }
 

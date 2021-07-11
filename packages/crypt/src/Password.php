@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Crypt;
 
+use Exception;
+
 /**
  * The SimplePassword class.
  *
@@ -27,14 +29,14 @@ class Password
      *
      * @return  string  Random Password
      *
-     * @throws \Exception
+     * @throws Exception
      * @since   2.0.9
      * @see     https://github.com/joomla/joomla-cms/blob/staging/libraries/joomla/user/helper.php#L642
      */
     public static function genRandomPassword(int $length = 15): string
     {
-        $salt     = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-        $base     = strlen($salt);
+        $salt = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        $base = strlen($salt);
         $password = '';
 
         /*
@@ -45,7 +47,7 @@ class Password
          * predictable.
          */
         $random = random_bytes($length + 1);
-        $shift  = ord($random[0]);
+        $shift = ord($random[0]);
 
         for ($i = 1; $i <= $length; ++$i) {
             $password .= $salt[($shift + ord($random[$i])) % $base];

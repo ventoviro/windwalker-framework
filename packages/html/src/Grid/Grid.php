@@ -209,7 +209,7 @@ class Grid
     public function addRow(array $attrs = [], int|bool $special = self::ROW_NORMAL): static
     {
         $this->rows[]['_row'] = $attrs;
-        $this->activeRow      = count($this->rows) - 1;
+        $this->activeRow = count($this->rows) - 1;
 
         if ($special) {
             if ($special === static::ROW_HEAD) {
@@ -294,9 +294,9 @@ class Grid
     public function setRowCell(string $name, string $content, array $attrs = [], bool $replace = true): static
     {
         if ($replace || !isset($this->rows[$this->activeRow][$name])) {
-            $cell                                = new stdClass();
-            $cell->attribs                       = $attrs;
-            $cell->content                       = $content;
+            $cell = new stdClass();
+            $cell->attribs = $attrs;
+            $cell->content = $content;
             $this->rows[$this->activeRow][$name] = $cell;
         } else {
             $this->rows[$this->activeRow][$name]->content .= $content;
@@ -384,7 +384,7 @@ class Grid
      */
     public function toString(): string
     {
-        $output   = [];
+        $output = [];
         $output[] = '<table' . $this->renderAttributes($this->getTableAttributes()) . '>';
 
         if (count($this->specialRows['header'])) {
@@ -422,7 +422,7 @@ class Grid
      */
     protected function renderArea(array $ids, string $area = 'tbody', string $cell = 'td'): string
     {
-        $output   = [];
+        $output = [];
         $output[] = '<' . $area . ">\n";
 
         foreach ($ids as $id) {
@@ -430,7 +430,7 @@ class Grid
 
             foreach ($this->getColumns() as $name) {
                 if (isset($this->rows[$id][$name])) {
-                    $column   = $this->rows[$id][$name];
+                    $column = $this->rows[$id][$name];
                     $output[] = "\t\t<" . $cell . $this->renderAttributes($column->attribs)
                         . '>' . $column->content . '</' . $cell . ">\n";
                 }

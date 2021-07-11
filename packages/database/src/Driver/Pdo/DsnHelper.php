@@ -19,7 +19,7 @@ class DsnHelper
     /**
      * extractDsn
      *
-     * @param   string $dsn
+     * @param  string  $dsn
      *
      * @return  array
      */

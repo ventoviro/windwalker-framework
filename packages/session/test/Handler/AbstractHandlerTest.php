@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Session\Test\Handler;
 
+use Mockery;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\TestCase;
 use Windwalker\Session\Bridge\PhpBridge;
@@ -63,8 +64,8 @@ abstract class AbstractHandlerTest extends TestCase
         $session = $this->createSession(
             [
                 'ini' => [
-                    'use_strict_mode' => false
-                ]
+                    'use_strict_mode' => false,
+                ],
             ]
         );
 
@@ -88,7 +89,7 @@ abstract class AbstractHandlerTest extends TestCase
     {
         $session = $this->createSession(
             [
-                'use_strict_mode' => true
+                'use_strict_mode' => true,
             ]
         );
 
@@ -111,7 +112,7 @@ abstract class AbstractHandlerTest extends TestCase
     {
         $session = $this->createSession(
             [
-                'use_strict_mode' => true
+                'use_strict_mode' => true,
             ]
         );
 
@@ -143,7 +144,7 @@ abstract class AbstractHandlerTest extends TestCase
         /** @var PhpBridge $bridge */
         $bridge = $session->getBridge();
 
-        $mock = \Mockery::instanceMock($bridge->getHandler());
+        $mock = Mockery::instanceMock($bridge->getHandler());
         $mock->shouldReceive('updateTimestamp')->andReturnTrue();
         $mock->shouldIgnoreMissing();
         $bridge->setHandler($mock);
@@ -163,7 +164,7 @@ abstract class AbstractHandlerTest extends TestCase
         /** @var PhpBridge $bridge */
         $bridge = $session->getBridge();
 
-        $mock = \Mockery::instanceMock($bridge->getHandler());
+        $mock = Mockery::instanceMock($bridge->getHandler());
         $mock->shouldReceive('write')->andReturnTrue();
         $mock->shouldIgnoreMissing();
         $bridge->setHandler($mock);
@@ -249,11 +250,11 @@ abstract class AbstractHandlerTest extends TestCase
         return [
             static::$sess1 => [
                 'data' => file_get_contents(self::getSessionPath('sess_' . static::$sess1)),
-                'time' => time() - 100
+                'time' => time() - 100,
             ],
             static::$sess2 => [
                 'data' => file_get_contents(self::getSessionPath('sess_' . static::$sess2)),
-                'time' => time() - 10000
+                'time' => time() - 10000,
             ],
         ];
     }

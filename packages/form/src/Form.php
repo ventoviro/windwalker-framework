@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Form;
 
 use Attribute;
+use Countable;
 use Generator;
 use InvalidArgumentException;
 use IteratorAggregate;
@@ -33,7 +34,7 @@ use Windwalker\Utilities\Symbol;
 /**
  * The Form class.
  */
-class Form implements IteratorAggregate, \Countable
+class Form implements IteratorAggregate, Countable
 {
     use ObjectBuilderAwareTrait;
     use OptionAccessTrait;
@@ -183,7 +184,6 @@ class Form implements IteratorAggregate, \Countable
             $value = Arr::get($data, $name, '/');
 
             if ($value !== null) {
-
                 $field->setValue($value);
             }
         }
@@ -276,7 +276,7 @@ class Form implements IteratorAggregate, \Countable
         if (is_stringable($field)) {
             unset($this->fields[$field]);
         } else {
-            $this->fields = array_filter($this->fields, fn ($f) => $f !== $field);
+            $this->fields = array_filter($this->fields, fn($f) => $f !== $field);
         }
 
         return $this;
@@ -295,7 +295,7 @@ class Form implements IteratorAggregate, \Countable
     {
         if ($fieldset) {
             $this->fieldsets[$fieldset] ??= new Fieldset($fieldset, null);
-            $this->fieldset             = $this->fieldsets[$fieldset];
+            $this->fieldset = $this->fieldsets[$fieldset];
         }
 
         if ($namespace) {
@@ -463,8 +463,11 @@ class Form implements IteratorAggregate, \Countable
      *
      * @return string
      */
-    public function renderFields(Symbol|string|null $fieldset = null, ?string $namespace = '', array $options = []): string
-    {
+    public function renderFields(
+        Symbol|string|null $fieldset = null,
+        ?string $namespace = '',
+        array $options = []
+    ): string {
         $output = '';
 
         foreach ($this->getFields($fieldset, (string) $namespace) as $field) {

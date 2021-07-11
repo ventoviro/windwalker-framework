@@ -38,7 +38,7 @@ class ListenerCallable extends TimesLimitedCallable
     public function __construct(callable $callable, ?int $priority, bool $once)
     {
         $this->priority = $priority ?? ListenerPriority::NORMAL;
-        $this->once     = $once;
+        $this->once = $once;
 
         parent::__construct($callable, $once ? 1 : null);
     }

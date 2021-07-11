@@ -55,7 +55,7 @@ class RedirectResponse extends Response
     public function getBody(): StreamInterface
     {
         if (headers_sent()) {
-            $url  = $this->getHeaderLine('location');
+            $url = $this->getHeaderLine('location');
             $html = "<script>document.location.href='$url';</script>\n";
 
             return Stream::fromString($html);

@@ -15,6 +15,7 @@ use ArrayAccess;
 use DOMAttr;
 use DOMDocument;
 use DOMElement as NativeDOMElement;
+use DOMException;
 use DOMNode;
 use DOMNodeList;
 use InvalidArgumentException;
@@ -174,7 +175,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
         } elseif (class_exists(HTML5::class)) {
             $result = DOMFactory::html5()->saveHTML($this);
         } else {
-            $dom    = HTMLFactory::document();
+            $dom = HTMLFactory::document();
             $result = $dom->saveHTML($this);
         }
 
@@ -242,7 +243,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
     public function setAttribute($name, $value): bool|DOMAttr
     {
         if ($value === true) {
-            return $this->setAttribute($name, 'true');
+            return $this->setAttribute($name, '');
         }
 
         if ($value === null || $value === false) {
@@ -251,9 +252,9 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
 
         try {
             return parent::setAttribute($name, (string) static::valueToString($value));
-        } catch (\DOMException $e) {
+        } catch (DOMException $e) {
             if ($e->getCode() === 5) {
-                throw new \DOMException(
+                throw new DOMException(
                     $e->getMessage() . ' for attribute: "' . $name . '"',
                     $e->getCode(),
                     $e
@@ -409,7 +410,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
     {
         if ($attributes instanceof NativeDOMElement) {
             $attributes = array_map(
-                fn (\DOMAttr $attr) => $attr->value,
+                fn(DOMAttr $attr) => $attr->value,
                 iterator_to_array($attributes->attributes)
             );
         }
@@ -603,7 +604,7 @@ class DOMElement extends NativeDOMElement implements ArrayAccess
             $name = 'div';
         }
 
-        $id    = null;
+        $id = null;
         $class = [];
 
         foreach ($tokens as $token) {

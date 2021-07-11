@@ -11,19 +11,16 @@ declare(strict_types=1);
 
 namespace Windwalker\Event\Attributes;
 
-use Windwalker\Attributes\AttributeHandler;
-use Windwalker\Attributes\AttributeInterface;
+use Attribute;
 use Windwalker\Event\EventListenableInterface;
 use Windwalker\Event\Listener\ListenerPriority;
-use Windwalker\Event\Provider\SubscribableListenerProviderInterface;
-use Windwalker\Utilities\Assert\Assert;
 
 use function Windwalker\disposable;
 
 /**
  * The ListenTo class.
  */
-#[\Attribute(\Attribute::TARGET_METHOD | \Attribute::TARGET_FUNCTION | \Attribute::IS_REPEATABLE)]
+#[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_FUNCTION | Attribute::IS_REPEATABLE)]
 class ListenTo
 {
     /**

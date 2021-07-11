@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Promise\Test;
 
+use Exception;
+use ReflectionException;
 use Windwalker\Promise\Promise;
 use Windwalker\Test\Traits\TestAccessorTrait;
 use Windwalker\Utilities\Reflection\ReflectAccessor;
@@ -27,7 +29,7 @@ class PromiseThenTest extends AbstractPromiseTestCase
     use TestAccessorTrait;
 
     /**
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @see  Promise::then
      */
     public function testThenWithPending(): void
@@ -57,7 +59,7 @@ class PromiseThenTest extends AbstractPromiseTestCase
     }
 
     /**
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @see  Promise::then
      */
     public function testThenAlreadyFulfilled(): void
@@ -153,14 +155,14 @@ class PromiseThenTest extends AbstractPromiseTestCase
     }
 
     /**
-     * @throws \ReflectionException
+     * @throws ReflectionException
      * @see  Promise::then
      */
     public function testThenAlreadyRejected(): void
     {
         $p = new Promise(
             function ($resolve, $reject) {
-                $reject($this->values['e1'] = new \Exception('Sakura'));
+                $reject($this->values['e1'] = new Exception('Sakura'));
             }
         );
 
@@ -169,7 +171,7 @@ class PromiseThenTest extends AbstractPromiseTestCase
         $p2 = $p
             ->then(
                 null,
-                function (\Exception $e) {
+                function (Exception $e) {
                     $this->values['e2'] = $e;
 
                     return 'New state';
@@ -231,7 +233,7 @@ class PromiseThenTest extends AbstractPromiseTestCase
 
                 return $v;
             },
-            function (\Exception $r) {
+            function (Exception $r) {
                 $this->values['r1'] = $r;
 
                 return $r->getMessage() . ' World';
@@ -251,7 +253,7 @@ class PromiseThenTest extends AbstractPromiseTestCase
             }
         );
 
-        $p->reject($e = new \Exception('Hello'));
+        $p->reject($e = new Exception('Hello'));
 
         self::assertSame($e, $this->values['r1']);
         self::assertEquals('Hello World', $this->values['v2']);
@@ -271,7 +273,7 @@ class PromiseThenTest extends AbstractPromiseTestCase
                 function ($v) {
                     $this->values['v1'] = $v;
 
-                    throw new \Exception('Sakura');
+                    throw new Exception('Sakura');
                 }
             )
             ->then()

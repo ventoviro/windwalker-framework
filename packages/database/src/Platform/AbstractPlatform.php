@@ -11,9 +11,9 @@ declare(strict_types=1);
 
 namespace Windwalker\Database\Platform;
 
+use Throwable;
 use Windwalker\Database\DatabaseAdapter;
 use Windwalker\Database\DatabaseFactory;
-use Windwalker\Database\Driver\AbstractDriver;
 use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\Database\Driver\TransactionDriverInterface;
 use Windwalker\Database\Platform\Type\DataType;
@@ -557,7 +557,7 @@ abstract class AbstractPlatform
      *
      * @return  mixed
      *
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function transaction(callable $callback, bool $autoCommit = true, bool $enabled = true): mixed
     {
@@ -575,7 +575,7 @@ abstract class AbstractPlatform
             }
 
             return $result;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             $this->transactionRollback();
 
             throw $e;

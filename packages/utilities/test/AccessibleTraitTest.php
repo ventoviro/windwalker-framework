@@ -9,6 +9,7 @@
 
 namespace Windwalker\Utilities\Test;
 
+use ArrayObject;
 use PHPUnit\Framework\TestCase;
 use Windwalker\Utilities\Accessible\AccessibleTrait;
 use Windwalker\Utilities\Test\Stub\StubAccessible;
@@ -140,7 +141,7 @@ class AccessibleTraitTest extends TestCase
                 1,
                 2,
                 (object) ['foo' => 'bar'],
-                new \ArrayObject(['flower' => 'sakura']),
+                new ArrayObject(['flower' => 'sakura']),
                 new StubAccessible(['car' => 'jeep']),
             ]
         );
@@ -163,7 +164,7 @@ class AccessibleTraitTest extends TestCase
                 1,
                 2,
                 (object) ['foo' => 'bar'],
-                new \ArrayObject(['flower' => 'sakura']),
+                new ArrayObject(['flower' => 'sakura']),
                 ['car' => 'jeep'],
             ],
             $this->instance->dump(true, true)

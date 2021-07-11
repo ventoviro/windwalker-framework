@@ -60,7 +60,7 @@ trait CompileConditional
     {
         $empty = '$__empty_' . $this->forelseCounter--;
 
-        return "<?php endforeach; if ({$empty}): ?>";
+        return "<?php endforeach if ({$empty}): ?>";
     }
 
     /**
@@ -84,7 +84,7 @@ trait CompileConditional
      */
     protected function compileEndunless(string $expression): string
     {
-        return '<?php endif; ?>';
+        return '<?php endif ?>';
     }
 
     /**
@@ -108,7 +108,7 @@ trait CompileConditional
      */
     protected function compileEndif(string $expression): string
     {
-        return '<?php endif; ?>';
+        return '<?php endif ?>';
     }
 
     /**
@@ -160,6 +160,6 @@ trait CompileConditional
      */
     protected function compileEndSwitch(): string
     {
-        return '<?php endswitch; ?>';
+        return '<?php endswitch ?>';
     }
 }

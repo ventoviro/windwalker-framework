@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\Edge\Component;
 
+use Closure;
 use Windwalker\Utilities\Attributes\Prop;
 
 /**
@@ -27,7 +28,7 @@ class AnonymousComponent extends AbstractComponent
     /**
      * @inheritDoc
      */
-    public function render(): \Closure|string
+    public function render(): Closure|string
     {
         return $this->view;
     }

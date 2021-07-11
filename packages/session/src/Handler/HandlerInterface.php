@@ -11,10 +11,12 @@ declare(strict_types=1);
 
 namespace Windwalker\Session\Handler;
 
+use SessionHandlerInterface;
+
 /**
  * Interface HandlerInterface
  */
-interface HandlerInterface extends \SessionHandlerInterface
+interface HandlerInterface extends SessionHandlerInterface
 {
     /**
      * isSupported

@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Relation\Strategy;
 
+use LogicException;
 use Windwalker\Database\Driver\StatementInterface;
 use Windwalker\ORM\EntityMapper;
 use Windwalker\ORM\Metadata\EntityMetadata;
@@ -182,7 +183,7 @@ class ManyToMany extends AbstractRelation
         $alias = $foreignMetadata->getTableAlias();
 
         $mapMetadata = $this->getMapMetadata();
-        $mapAlias    = $mapMetadata->getTableAlias();
+        $mapAlias = $mapMetadata->getTableAlias();
 
         return $this->getORM()
             ->from($foreignMetadata->getClassName(), $alias)
@@ -327,7 +328,7 @@ class ManyToMany extends AbstractRelation
 
     protected function getDetachDiff(iterable $items, array $oldItems, array $compareKeys, array $ownerData): array
     {
-        $keep    = [];
+        $keep = [];
         $detaches = [];
 
         foreach ($oldItems as $old) {
@@ -350,7 +351,7 @@ class ManyToMany extends AbstractRelation
 
     protected function getAttachDiff(iterable $items, array $oldItems, array $compareKeys, array $ownerData): array
     {
-        $keep    = [];
+        $keep = [];
         $creates = [];
 
         foreach ($items as $item) {
@@ -379,7 +380,7 @@ class ManyToMany extends AbstractRelation
         $prop = $foreignMetadata->getColumn($mapAlias)?->getProperty()?->getName();
 
         if ($prop === null) {
-            throw new \LogicException(
+            throw new LogicException(
                 sprintf(
                     "Please add '%s' column with type %s to entity %s",
                     $mapAlias,

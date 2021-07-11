@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace Windwalker\Edge\Compiler\Concern;
 
-use Windwalker\Edge\Component\ComponentAttributes;
 use Windwalker\Utilities\Arr;
 use Windwalker\Utilities\Str;
 
@@ -106,7 +105,7 @@ trait CompileComponentTrait
                 '<?php if (isset($__componentOriginal' . $hash . ')): ?>',
                 '<?php $component = $__componentOriginal' . $hash . '; ?>',
                 '<?php unset($__componentOriginal' . $hash . '); ?>',
-                '<?php endif; ?>',
+                '<?php endif ?>',
                 '<?php echo $__edge->renderComponent(); ?>',
             ]
         );
@@ -119,10 +118,11 @@ trait CompileComponentTrait
      */
     public function compileEndComponentClass(): string
     {
-        return $this->compileEndComponent() . "\n" . implode(
+        return $this->compileEndComponent() . "\n" .
+            implode(
                 "\n",
                 [
-                    '<?php endif; ?>',
+                    '<?php endif ?>',
                 ]
             );
     }
@@ -131,6 +131,7 @@ trait CompileComponentTrait
      * Compile the prop statement into valid PHP.
      *
      * @param  string  $expression
+     *
      * @return string
      */
     protected function compileProps(string $expression): string
@@ -156,7 +157,7 @@ trait CompileComponentTrait
     protected function compileSlot(string $expression): string
     {
         $expression = $this->stripParentheses($expression);
-        $expr       = Arr::explodeAndClear(',', $expression);
+        $expr = Arr::explodeAndClear(',', $expression);
 
         $slots = ';';
 
@@ -220,7 +221,7 @@ trait CompileComponentTrait
     {
         // todo: Must escape stringable
         return is_string($value)
-        // || (is_object($value) && !$value instanceof ComponentAttributes && method_exists($value, '__toString'))
+            // || (is_object($value) && !$value instanceof ComponentAttributes && method_exists($value, '__toString'))
             ? e($value)
             : $value;
     }

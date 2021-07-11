@@ -12,16 +12,24 @@ declare(strict_types=1);
 namespace Windwalker\Utilities\Reflection;
 
 use Closure;
+use LogicException;
+use ReflectionFunction;
+use ReflectionFunctionAbstract;
+use ReflectionMethod;
+use Reflector;
 use Windwalker\Utilities\Assert\Assert;
 
 /**
  * The ReflectionClosure class.
  */
-class ReflectionCallable implements \Reflector
+class ReflectionCallable implements Reflector
 {
     public const TYPE_FUNCTION = 1;
+
     public const TYPE_OBJECT_METHOD = 2;
+
     public const TYPE_STATIC_METHOD = 3;
+
     public const TYPE_CLOSURE = 4;
 
     protected int $type = 0;
@@ -61,6 +69,7 @@ class ReflectionCallable implements \Reflector
             // If method is not exists, could be a magic method, wrap it with closure.
             if (!method_exists($target, $this->function)) {
                 $callable = [$target, $this->function];
+
                 return function (...$args) use ($callable) {
                     return $callable(...$args);
                 };
@@ -75,10 +84,10 @@ class ReflectionCallable implements \Reflector
         return $this->type;
     }
 
-    public function getReflector(): \ReflectionFunctionAbstract
+    public function getReflector(): ReflectionFunctionAbstract
     {
         if ($this->type === static::TYPE_CLOSURE || $this->type === static::TYPE_FUNCTION) {
-            return new \ReflectionFunction($this->callable);
+            return new ReflectionFunction($this->callable);
         }
 
         $target = $this->instance ?? $this->class;
@@ -86,10 +95,11 @@ class ReflectionCallable implements \Reflector
         // If method is not exists, could be a magic method, wrap it with closure.
         if (!method_exists($target, $this->function)) {
             $callable = [$target, $this->function];
-            return new \ReflectionFunction(fn(...$args) => $callable(...$args));
+
+            return new ReflectionFunction(fn(...$args) => $callable(...$args));
         }
 
-        return new \ReflectionMethod($target, $this->function);
+        return new ReflectionMethod($target, $this->function);
     }
 
     protected function extractCallable(): void
@@ -127,6 +137,7 @@ class ReflectionCallable implements \Reflector
         if ($callable instanceof Closure) {
             $this->instance = $callable;
             $this->type = static::TYPE_CLOSURE;
+
             return;
         }
 
@@ -134,10 +145,11 @@ class ReflectionCallable implements \Reflector
             $this->instance = $callable;
             $this->function = '__invoke';
             $this->type = static::TYPE_OBJECT_METHOD;
+
             return;
         }
 
-        throw new \LogicException('Unknown callable: ' . Assert::describeValue($callable));
+        throw new LogicException('Unknown callable: ' . Assert::describeValue($callable));
     }
 
     /**

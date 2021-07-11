@@ -11,8 +11,6 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Event;
 
-use Windwalker\Event\AbstractEvent;
-
 /**
  * The WatchEvent class.
  */

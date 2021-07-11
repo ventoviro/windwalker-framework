@@ -71,7 +71,7 @@ class SyncQueueDriver implements QueueDriverInterface
     /**
      * release
      *
-     * @param QueueMessage $message
+     * @param  QueueMessage  $message
      *
      * @return static
      */

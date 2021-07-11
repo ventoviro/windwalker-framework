@@ -82,7 +82,7 @@ class HttpClientTest extends TestCase
      */
     public function testDownload()
     {
-        $url  = 'http://example.com';
+        $url = 'http://example.com';
         $dest = '/path/to/file';
 
         $this->instance->download($url, $dest);
@@ -149,7 +149,7 @@ class HttpClientTest extends TestCase
      */
     public function testOptions()
     {
-        $url     = 'http://example.com/?foo=bar';
+        $url = 'http://example.com/?foo=bar';
         $headers = ['X-Foo' => 'Bar'];
 
         $this->instance->options($url, compact('headers'));
@@ -166,7 +166,7 @@ class HttpClientTest extends TestCase
      */
     public function testHead()
     {
-        $url     = 'http://example.com/?foo=bar';
+        $url = 'http://example.com/?foo=bar';
         $headers = ['X-Foo' => 'Bar'];
 
         $this->instance->head($url, compact('headers'));
@@ -210,8 +210,8 @@ class HttpClientTest extends TestCase
      */
     public function testPost()
     {
-        $url     = 'http://example.com/?foo=bar';
-        $data    = ['flower' => 'sakura'];
+        $url = 'http://example.com/?foo=bar';
+        $data = ['flower' => 'sakura'];
         $headers = ['X-Foo' => 'Bar'];
 
         $this->instance->post($url, $data, compact('headers'));
@@ -231,8 +231,8 @@ class HttpClientTest extends TestCase
      */
     public function testPut()
     {
-        $url     = 'http://example.com/?foo=bar';
-        $data    = ['flower' => 'sakura'];
+        $url = 'http://example.com/?foo=bar';
+        $data = ['flower' => 'sakura'];
         $headers = ['X-Foo' => 'Bar'];
 
         $this->instance->put($url, $data, compact('headers'));
@@ -252,8 +252,8 @@ class HttpClientTest extends TestCase
      */
     public function testDelete()
     {
-        $url     = 'http://example.com/?foo=bar';
-        $data    = ['flower' => 'sakura'];
+        $url = 'http://example.com/?foo=bar';
+        $data = ['flower' => 'sakura'];
         $headers = ['X-Foo' => 'Bar'];
 
         $this->instance->delete($url, $data, compact('headers'));
@@ -273,7 +273,7 @@ class HttpClientTest extends TestCase
      */
     public function testTrace()
     {
-        $url     = 'http://example.com/?foo=bar';
+        $url = 'http://example.com/?foo=bar';
         $headers = ['X-Foo' => 'Bar'];
 
         $this->instance->trace($url, compact('headers'));
@@ -292,8 +292,8 @@ class HttpClientTest extends TestCase
      */
     public function testPatch()
     {
-        $url     = 'http://example.com/?foo=bar';
-        $data    = ['flower' => 'sakura'];
+        $url = 'http://example.com/?foo=bar';
+        $data = ['flower' => 'sakura'];
         $headers = ['X-Foo' => 'Bar'];
 
         $this->instance->patch($url, $data, compact('headers'));

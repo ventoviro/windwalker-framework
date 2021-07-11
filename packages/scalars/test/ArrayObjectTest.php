@@ -417,7 +417,6 @@ class ArrayObjectTest extends TestCase
         self::assertNotSame($a, $this->instance);
     }
 
-
     public function testTransform(): void
     {
         $a = $this->instance->transform(

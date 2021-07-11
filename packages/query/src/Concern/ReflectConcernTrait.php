@@ -11,7 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\Query\Concern;
 
-use Windwalker\Attributes\AttributesResolver;
+use ReflectionAttribute;
+use ReflectionClass;
 use Windwalker\Database\Exception\DatabaseQueryException;
 use Windwalker\ORM\Attributes\Table;
 use Windwalker\Query\Clause\AsClause;
@@ -55,8 +56,8 @@ trait ReflectConcernTrait
             return $name;
         }
 
-        $ref = new \ReflectionClass($name);
-        $tableAttr = $ref->getAttributes( Table::class, \ReflectionAttribute::IS_INSTANCEOF)[0] ?? null;
+        $ref = new ReflectionClass($name);
+        $tableAttr = $ref->getAttributes(Table::class, ReflectionAttribute::IS_INSTANCEOF)[0] ?? null;
 
         if (!$tableAttr) {
             throw new DatabaseQueryException(

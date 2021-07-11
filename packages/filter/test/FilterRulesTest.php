@@ -38,7 +38,7 @@ class FilterRulesTest extends TestCase
      * @param  callable|string  $filter
      * @param  mixed            $value
      * @param  mixed            $expected
-     * @param  string             $message
+     * @param  string           $message
      *
      * @return  void
      *
@@ -47,7 +47,7 @@ class FilterRulesTest extends TestCase
     public function testFilter(string|callable $filter, $value, $expected, string $message = '')
     {
         if (is_string($filter)) {
-            $filter = fn () => new $filter();
+            $filter = fn() => new $filter();
         }
 
         /** @var FilterInterface $filter */
@@ -66,85 +66,85 @@ class FilterRulesTest extends TestCase
             [
                 Absolute::class,
                 -234,
-                234
+                234,
             ],
             [
                 Alnum::class,
                 'This is alpha with 123 中文測試',
-                'Thisisalphawith123'
+                'Thisisalphawith123',
             ],
             [
-                fn () => new CastTo('int'),
+                fn() => new CastTo('int'),
                 'This is alpha with 123 中文測試',
                 0,
-                'Cast to int failure'
+                'Cast to int failure',
             ],
             [
-                fn () => new CastTo('int'),
+                fn() => new CastTo('int'),
                 '123.56',
                 123,
-                'Cast to int success'
+                'Cast to int success',
             ],
             [
                 Cmd::class,
                 'php qwe\'dsf.php "foo" -t hello/welcome.pwd',
                 'phpqwedsf.phpfoo-thellowelcome.pwd',
-                'Command string'
+                'Command string',
             ],
             [
-                fn () => new CompareWith(500, '<'),
+                fn() => new CompareWith(500, '<'),
                 700,
                 true,
-                'Compare with operator'
+                'Compare with operator',
             ],
             [
-                fn () => new CompareWith(500),
+                fn() => new CompareWith(500),
                 700,
                 -1,
-                'Compare without operator'
+                'Compare without operator',
             ],
             [
                 EmailAddress::class,
                 'qwe.qwe @gmail .com',
                 'qwe.qwe@gmail.com',
-                'Test email'
+                'Test email',
             ],
             [
                 IPV4::class,
                 'd140. 12/3. b567. 890',
                 '140.123.567.890',
-                'Test IP'
+                'Test IP',
             ],
             [
-                fn () => new Length(10),
+                fn() => new Length(10),
                 'Some string longer than 10',
                 'Some strin',
-                'Test length'
+                'Test length',
             ],
             [
                 Negative::class,
                 123,
                 -123,
-                'Test negative'
+                'Test negative',
             ],
             [
-                fn () => new Range(200, 300),
+                fn() => new Range(200, 300),
                 123,
                 200,
-                'Test range'
+                'Test range',
             ],
             [
                 Words::class,
                 'This is a <span>HTML</span>',
                 'ThisisaspanHTMLspan',
-                'Test word'
+                'Test word',
             ],
             [
                 UrlAddress::class,
                 'This is "http://www.domain.com:8000/hello/foo/bar.html" URL.',
                 'Thisis"http://www.domain.com:8000/hello/foo/bar.html"URL.',
-                'Test URL with string'
-            ]
+                'Test URL with string',
+            ],
         ];
     }
 
@@ -153,8 +153,8 @@ class FilterRulesTest extends TestCase
      *
      * @param  callable|string  $filter
      * @param  mixed            $value
-     * @param  bool            $expected
-     * @param  string             $message
+     * @param  bool             $expected
+     * @param  string           $message
      *
      * @return  void
      *
@@ -163,7 +163,7 @@ class FilterRulesTest extends TestCase
     public function testValidate(string|callable $filter, $value, $expected, string $message = '')
     {
         if (is_string($filter)) {
-            $filter = fn () => new $filter();
+            $filter = fn() => new $filter();
         }
 
         /** @var ValidatorInterface $filter */
@@ -182,115 +182,115 @@ class FilterRulesTest extends TestCase
             'Absolute F' => [
                 Absolute::class,
                 -234,
-                false
+                false,
             ],
             'Absolute T' => [
                 Absolute::class,
                 234,
-                true
+                true,
             ],
             'Alnum F' => [
                 Alnum::class,
                 'This is alpha with 123 中文測試',
-                false
+                false,
             ],
             'Alnum T' => [
                 Alnum::class,
                 'This123',
-                true
+                true,
             ],
             'Cast F' => [
-                fn () => new CastTo('int'),
+                fn() => new CastTo('int'),
                 'This is alpha with 123 中文測試',
-                false
+                false,
             ],
             'Cast T' => [
-                fn () => new CastTo('int'),
+                fn() => new CastTo('int'),
                 123,
-                true
+                true,
             ],
             'Cmd F' => [
                 Cmd::class,
                 'ls -al',
-                false
+                false,
             ],
             'Cmd T' => [
                 Cmd::class,
                 'ls',
-                true
+                true,
             ],
             'Compare F' => [
-                fn () => new CompareWith(500, '<'),
+                fn() => new CompareWith(500, '<'),
                 300,
                 false,
-                'Compare with operator'
+                'Compare with operator',
             ],
             'Compare T' => [
-                fn () => new CompareWith(500, '<'),
+                fn() => new CompareWith(500, '<'),
                 700,
                 true,
-                'Compare with operator'
+                'Compare with operator',
             ],
             'Compare without operator F' => [
-                fn () => new CompareWith(500),
+                fn() => new CompareWith(500),
                 700,
                 false,
-                'Compare without operator'
+                'Compare without operator',
             ],
             'Email F' => [
                 EmailAddress::class,
                 'qwe.qwe @gmail .com',
                 false,
-                'Test email'
+                'Test email',
             ],
             'Email T' => [
                 EmailAddress::class,
                 'qwe.qwe@gmail.com',
                 true,
-                'Test email'
+                'Test email',
             ],
             'IPV4' => [
                 IPV4::class,
                 'd140. 12/3. b567. 890',
                 false,
-                'Test IP'
+                'Test IP',
             ],
             'Length' => [
-                fn () => new Length(10),
+                fn() => new Length(10),
                 'Some string longer than 10',
                 false,
-                'Test length'
+                'Test length',
             ],
             'Negative' => [
                 Negative::class,
                 -123,
                 true,
-                'Test negative'
+                'Test negative',
             ],
             'Range' => [
-                fn () => new Range(200, 300),
+                fn() => new Range(200, 300),
                 123,
                 false,
-                'Test range'
+                'Test range',
             ],
             'Word' => [
                 Words::class,
                 'This is a <span>HTML</span>',
                 false,
-                'Test word'
+                'Test word',
             ],
             [
                 UrlAddress::class,
                 'http://www.domain.com:8000/hello/foo/bar.html',
                 true,
-                'Test URL'
+                'Test URL',
             ],
             [
                 UrlAddress::class,
                 'This is "http://www.domain.com:8000/hello/foo/bar.html" URL.',
                 false,
-                'Test URL with string'
-            ]
+                'Test URL with string',
+            ],
         ];
     }
 }

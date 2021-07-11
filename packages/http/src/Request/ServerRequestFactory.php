@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Http\Request;
 
 use InvalidArgumentException;
+use JsonException;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\UriInterface;
@@ -50,7 +51,7 @@ class ServerRequestFactory
      *
      * @return ServerRequestInterface
      *
-     * @throws \JsonException
+     * @throws JsonException
      */
     public static function createFromGlobals(
         array $server = [],
@@ -59,14 +60,14 @@ class ServerRequestFactory
         array $cookies = [],
         array $files = []
     ): ServerRequestInterface {
-        $server  = static::prepareServers($server ?: $_SERVER);
+        $server = static::prepareServers($server ?: $_SERVER);
         $headers = static::prepareHeaders($server);
 
         $body = new PhpInputStream();
 
         $method = $server['REQUEST_METHOD'] ?? 'GET';
 
-        $decodedBody  = $_POST;
+        $decodedBody = $_POST;
         $decodedFiles = $_FILES;
         $method = strtoupper($method);
         $type = (string) HeaderHelper::getValue($headers, 'Content-Type');
@@ -259,7 +260,7 @@ class ServerRequestFactory
 
         // URI scheme
         $scheme = 'http';
-        $https  = ServerHelper::getValue($server, 'HTTPS');
+        $https = ServerHelper::getValue($server, 'HTTPS');
 
         // Is https or not
         if (($https && $https !== 'off') || HeaderHelper::getValue($headers, 'x-forwarded-proto', false) === 'https') {
@@ -365,7 +366,7 @@ class ServerRequestFactory
         // IIS7 with URL Rewrite: make sure we get the unencoded url
         // (double slash problem).
         $iisUrlRewritten = ServerHelper::getValue($server, 'IIS_WasUrlRewritten');
-        $unencodedUrl    = ServerHelper::getValue($server, 'UNENCODED_URL', '');
+        $unencodedUrl = ServerHelper::getValue($server, 'UNENCODED_URL', '');
 
         if ('1' === (string) $iisUrlRewritten && !empty($unencodedUrl)) {
             return $unencodedUrl;

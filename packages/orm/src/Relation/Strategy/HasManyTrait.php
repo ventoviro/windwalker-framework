@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Relation\Strategy;
 
+use ReflectionException;
 use Windwalker\Data\Collection;
 use Windwalker\Utilities\Reflection\ReflectAccessor;
 
@@ -28,7 +29,7 @@ trait HasManyTrait
      *
      * @return array
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function diffRelated(array $data, object $entity, ?array $oldData): array
     {
@@ -39,7 +40,7 @@ trait HasManyTrait
 
         $attachEntities = null;
         $detachEntities = null;
-        $keepEntities   = null;
+        $keepEntities = null;
 
         if ($collection->isSync()) {
             $entities = $collection->all(Collection::class)->dump(true);

@@ -21,7 +21,6 @@ use Windwalker\Database\Exception\DatabaseQueryException;
 use Windwalker\Database\Hydrator\HydratorAwareInterface;
 use Windwalker\Database\Hydrator\HydratorInterface;
 use Windwalker\Database\Hydrator\SimpleHydrator;
-use Windwalker\Database\Platform\AbstractPlatform;
 use Windwalker\Database\Schema\AbstractSchemaManager;
 use Windwalker\Event\EventAwareInterface;
 use Windwalker\Pool\ConnectionPool;
@@ -264,7 +263,7 @@ abstract class AbstractDriver implements HydratorAwareInterface
             for ($i = 0; $i < $number; $i++) {
                 if (!empty($matches[0][$i])) {
                     $array[$i] = trim($matches[0][$i]);
-                    $sql       = str_replace($matches[0][$i], '<#encode:' . $i . ':code#>', $sql);
+                    $sql = str_replace($matches[0][$i], '<#encode:' . $i . ':code#>', $sql);
                 }
             }
         }

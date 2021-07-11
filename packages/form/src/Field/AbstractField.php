@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Form\Field;
 
 use BadMethodCallException;
+use Closure;
 use InvalidArgumentException;
 use Windwalker\DOM\DOMElement;
 use Windwalker\Form\Field\Concern\{ManageFilterTrait,
@@ -20,8 +21,8 @@ use Windwalker\Form\Field\Concern\{ManageFilterTrait,
     ManageRenderTrait,
     ManageWrapperTrait};
 use Windwalker\Form\Form;
-use Windwalker\Form\FormRegistry;
 use Windwalker\Form\FormNormalizer;
+use Windwalker\Form\FormRegistry;
 use Windwalker\Utilities\Classes\FlowControlTrait;
 use Windwalker\Utilities\Options\StateAccessTrait;
 use Windwalker\Utilities\Str;
@@ -130,10 +131,10 @@ abstract class AbstractField
     {
         $this->setName($name);
 
-        $this->input   = $this->createInputElement($attributes);
-        $this->label   = h('label', [], $label);
+        $this->input = $this->createInputElement($attributes);
+        $this->label = h('label', [], $label);
         $this->wrapper = h('div', [], '');
-        $this->form    = FormRegistry::form();
+        $this->form = FormRegistry::form();
 
         $this->resetValidators();
         $this->resetFilters();
@@ -235,7 +236,7 @@ abstract class AbstractField
     public function getNamespaceName(bool $withParent = false): string
     {
         $name = $this->name;
-        $ns   = $this->getNamespace($withParent);
+        $ns = $this->getNamespace($withParent);
 
         if ($ns) {
             $name = $ns . '/' . $name;
@@ -391,7 +392,7 @@ abstract class AbstractField
     /**
      * bindValue
      *
-     * @param mixed $value
+     * @param  mixed  $value
      *
      * @return  $this
      */
@@ -580,15 +581,18 @@ abstract class AbstractField
             if (isset($accessors[$option])) {
                 $option = $accessors[$option];
                 $v = $this->get($option);
+
                 return $is ? $v !== null && $v !== false : $v;
             }
 
             if (in_array($option, $accessors, true)) {
                 $v = $this->get($option);
+
                 return $is ? $v !== null && $v !== false : $v;
             }
 
             $v = $this->getAttribute($option);
+
             return $is ? $v !== null && $v !== false : $v;
         }
 
@@ -608,7 +612,7 @@ abstract class AbstractField
         return $this->render();
     }
 
-    public function surround(string|\Closure|\DOMElement $surround, array $attributes = []): static
+    public function surround(string|Closure|\DOMElement $surround, array $attributes = []): static
     {
         if (is_string($surround)) {
             $surround = DOMElement::create($surround, $attributes);
@@ -618,6 +622,7 @@ abstract class AbstractField
             $surround = function ($input) use ($surround) {
                 if ($input instanceof \DOMElement) {
                     $surround->appendChild($input);
+
                     return $surround;
                 }
 

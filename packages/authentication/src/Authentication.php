@@ -30,7 +30,7 @@ class Authentication implements AuthenticationInterface
     /**
      * Authentication constructor.
      *
-     * @param Method\MethodInterface[] $methods
+     * @param  Method\MethodInterface[]  $methods
      */
     public function __construct(array $methods = [])
     {
@@ -79,7 +79,7 @@ class Authentication implements AuthenticationInterface
     /**
      * getMethod
      *
-     * @param string $name
+     * @param  string  $name
      *
      * @return  MethodInterface
      */
@@ -91,7 +91,7 @@ class Authentication implements AuthenticationInterface
     /**
      * removeMethod
      *
-     * @param string $name
+     * @param  string  $name
      *
      * @return  $this
      */

@@ -12,6 +12,8 @@ declare(strict_types=1);
 namespace Windwalker\Utilities\Test;
 
 use PHPUnit\Framework\TestCase;
+use stdClass;
+use WeakReference;
 
 /**
  * The WeakReferenceTest class.
@@ -24,11 +26,11 @@ class WeakReferenceTest extends TestCase
             self::markTestSkipped('WeakReference only works after PHP7.4');
         }
 
-        $a = new \stdClass();
+        $a = new stdClass();
 
-        $ref = \WeakReference::create($a);
+        $ref = WeakReference::create($a);
 
-        self::assertInstanceOf(\stdClass::class, $ref->get());
+        self::assertInstanceOf(stdClass::class, $ref->get());
 
         $a = null;
 
