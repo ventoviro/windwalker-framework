@@ -82,7 +82,7 @@ class MustacheRendererTest extends TestCase
         $expect = <<<HTML
 Hello Chris
 You have just won $10000!
-    Well, $6000, after taxes.
+Well, $6000, after taxes.
 HTML;
 
         self::assertStringSafeEquals($expect, $html);

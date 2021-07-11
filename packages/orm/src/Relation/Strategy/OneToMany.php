@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Relation\Strategy;
 
+use Windwalker\ORM\EntityMapper;
 use Windwalker\ORM\Relation\Action;
 use Windwalker\ORM\Relation\RelationCollection;
 use Windwalker\ORM\Relation\RelationProxies;
@@ -98,7 +99,7 @@ class OneToMany extends AbstractRelation
                 $this->getForeignMetadata()->getClassName(),
                 $delItem,
                 null,
-                true
+                EntityMapper::UPDATE_NULLS
             );
         }
     }
@@ -189,7 +190,7 @@ class OneToMany extends AbstractRelation
             $foreignData = $this->clearRelativeFields($foreignData);
             $this->getORM()
                 ->mapper($this->getTargetTable())
-                ->updateOne($foreignData, null, true);
+                ->updateOne($foreignData, null, EntityMapper::UPDATE_NULLS);
         }
     }
 
@@ -209,7 +210,7 @@ class OneToMany extends AbstractRelation
                 $this->getForeignMetadata()->getClassName(),
                 $keepData,
                 null,
-                true
+                EntityMapper::UPDATE_NULLS
             );
         }
     }

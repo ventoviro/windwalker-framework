@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Relation\Strategy;
 
+use Windwalker\ORM\EntityMapper;
 use Windwalker\ORM\Relation\Action;
 use Windwalker\ORM\Relation\RelationProxies;
 use Windwalker\Utilities\Reflection\ReflectAccessor;
@@ -73,7 +74,7 @@ class OneToOne extends AbstractRelation
             ->saveOne(
                 $foreignData,
                 null,
-                true
+                EntityMapper::UPDATE_NULLS
             );
     }
 
@@ -107,7 +108,7 @@ class OneToOne extends AbstractRelation
             ->updateOne(
                 $foreignData,
                 null,
-                true
+                EntityMapper::UPDATE_NULLS
             );
     }
 }

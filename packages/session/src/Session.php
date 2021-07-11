@@ -37,7 +37,10 @@ class Session implements SessionInterface, ArrayAccessibleInterface
 
     protected ?FlashBag $flashBag = null;
 
-    protected ?\Closure $destructor = null;
+    /**
+     * @var callable
+     */
+    protected $destructor = null;
 
     /**
      * Session constructor.
@@ -131,7 +134,7 @@ class Session implements SessionInterface, ArrayAccessibleInterface
 
             // Must set cookie and update expires after session end.
             if ($this->getOption(static::OPTION_AUTO_COMMIT)) {
-                $this->destructor = fn () => $this->stop(true);
+                $this->destructor = [$this, 'stop'];
 
                 register_shutdown_function(fn () => $this->destruct());
             }

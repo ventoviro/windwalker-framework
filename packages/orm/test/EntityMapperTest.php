@@ -195,7 +195,7 @@ class EntityMapperTest extends AbstractORMTestCase
 
         self::assertEquals(89, $returns[0]->id, 'Inserted id not matched.');
 
-        self::assertInstanceOf(Collection::class, $returns[0]);
+        self::assertInstanceOf(StubFlower::class, $returns[0]);
     }
 
     /**
@@ -238,7 +238,7 @@ class EntityMapperTest extends AbstractORMTestCase
         self::assertEquals(93, $newData->id);
         self::assertEquals(93, static::$db->prepare('SELECT * FROM ww_flower ORDER BY id DESC LIMIT 1')->get()->id);
 
-        self::assertInstanceOf(Collection::class, $newData);
+        self::assertInstanceOf(StubFlower::class, $newData);
     }
 
     /**

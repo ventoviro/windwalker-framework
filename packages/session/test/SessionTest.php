@@ -140,47 +140,6 @@ class SessionTest extends TestCase
      *
      * @session php
      * @handler php
-     * @cookie  native
-     * @autoCommit true
-     *
-     * @runInSeparateProcess
-     * @preserveGlobalState disabled
-     */
-    public function testPhpBridgeNativeCookieWithoutId(): void
-    {
-        $sess = $this->createInstance(
-            [],
-            new PhpBridge(
-                [
-                    BridgeInterface::OPTION_WITH_SUPER_GLOBAL => true
-                ],
-                $handler = new ArrayHandler(
-                    [
-                        static::$sess1 => ArrayHandler::createData('a:1:{s:6:"flower";s:6:"Sakura";}')
-                    ]
-                )
-            )
-        );
-
-        $sess->setName('FOO_SESS');
-
-        $sess->start();
-
-        self::assertEquals(
-            [],
-            $_SESSION
-        );
-        self::assertNotEquals(
-            static::$sess1,
-            $sess->getId()
-        );
-    }
-
-    /**
-     * @see  Session::start
-     *
-     * @session php
-     * @handler php
      * @cookie  array
      * @autoCommit true
      *
@@ -222,8 +181,49 @@ class SessionTest extends TestCase
         $sess->stop(true);
 
         self::assertEquals(
-            'a:2:{s:6:"flower";s:6:"Sakura";s:4:"tree";s:3:"Oak";}',
+            'a:3:{s:6:"flower";s:6:"Sakura";s:4:"tree";s:3:"Oak";s:6:"_flash";a:0:{}}',
             $handler->getSessions()[static::$sess1]['data']
+        );
+    }
+
+    /**
+     * @see  Session::start
+     *
+     * @session php
+     * @handler php
+     * @cookie  native
+     * @autoCommit true
+     *
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
+    public function testPhpBridgeNativeCookieWithoutId(): void
+    {
+        $sess = $this->createInstance(
+            [],
+            new PhpBridge(
+                [
+                    BridgeInterface::OPTION_WITH_SUPER_GLOBAL => true
+                ],
+                $handler = new ArrayHandler(
+                    [
+                        static::$sess1 => ArrayHandler::createData('a:1:{s:6:"flower";s:6:"Sakura";}')
+                    ]
+                )
+            )
+        );
+
+        $sess->setName('FOO_SESS');
+
+        $sess->start();
+
+        self::assertEquals(
+            [],
+            $_SESSION
+        );
+        self::assertNotEquals(
+            static::$sess1,
+            $sess->getId()
         );
     }
 
