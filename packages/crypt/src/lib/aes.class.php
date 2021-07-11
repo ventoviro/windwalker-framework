@@ -9,7 +9,7 @@
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-// @codingStandardsIgnoreStart
+// phpcs:disable
 
 class Aes
 {
@@ -650,4 +650,4 @@ class AesCtr extends Aes
 }
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -  */
 
-// @codingStandardsIgnoreEnd
+// phpcs:enable

@@ -12,9 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Crypt\Test\Symmetric;
 
 use PHPUnit\Framework\TestCase;
-use Windwalker\Crypt\HiddenString;
 use Windwalker\Crypt\Key;
-use Windwalker\Crypt\SafeEncoder;
 use Windwalker\Crypt\Symmetric\LegacyOpensslCipher;
 use Windwalker\Crypt\Symmetric\OpensslCipher;
 
@@ -76,6 +74,7 @@ class LegacyOpensslCipherTest extends TestCase
 
     public function methodsLegacyProvider(): array
     {
+        // phpcs:disable
         return [
             'AES-256-CBC' => [
                 'AES-256-CBC',
@@ -90,5 +89,6 @@ class LegacyOpensslCipherTest extends TestCase
                 '5ZTJ03ITnhshMxghJh/+b9d2+kSAPsGdHrcXXBp7Zso=:MS1jDSc5uxuf30ImrARNdXqn8oFexce+olpGj6PBbpA=:5WjBQfVXLuk=:S54cmXm3Lp3k42q7VRawVQ==',
             ],
         ];
+        // phpcs:enable
     }
 }

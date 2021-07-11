@@ -32,7 +32,7 @@ class PostgreSQLTableManagerTest extends AbstractDatabaseTestCase
         $table = self::$db->getTable('enterprise');
 
         $logs = $this->logQueries(
-            fn () => $table->create(
+            fn() => $table->create(
                 static function (Schema $schema) {
                     $schema->primary('id');
                     $schema->char('type')->length(25);
@@ -82,17 +82,17 @@ class PostgreSQLTableManagerTest extends AbstractDatabaseTestCase
             ORDER BY "table_name" ASC;
             CREATE TABLE IF NOT EXISTS "enterprise" (
             "id" serial NOT NULL,
-            "type" char(25) NOT NULL DEFAULT '',
-            "catid" integer DEFAULT NULL,
-            "alias" varchar(255) NOT NULL DEFAULT '',
-            "title" varchar(255) NOT NULL DEFAULT 'H',
-            "price" decimal(20,6) NOT NULL DEFAULT 0,
+            "type" CHAR(25) NOT NULL DEFAULT '',
+            "catid" INTEGER DEFAULT NULL,
+            "alias" VARCHAR(255) NOT NULL DEFAULT '',
+            "title" VARCHAR(255) NOT NULL DEFAULT 'H',
+            "price" DECIMAL(20,6) NOT NULL DEFAULT 0,
             "intro" text NOT NULL DEFAULT '',
             "fulltext" text NOT NULL DEFAULT '',
-            "start_date" timestamp NOT NULL DEFAULT '1970-01-01 00:00:00',
-            "created" timestamp NOT NULL DEFAULT '1970-01-01 00:00:00',
-            "updated" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            "deleted" timestamp NOT NULL DEFAULT '1970-01-01 00:00:00',
+            "start_date" TIMESTAMP NOT NULL DEFAULT '1970-01-01 00:00:00',
+            "created" TIMESTAMP NOT NULL DEFAULT '1970-01-01 00:00:00',
+            "updated" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            "deleted" TIMESTAMP NOT NULL DEFAULT '1970-01-01 00:00:00',
             "params" json NOT NULL
             );
             ALTER TABLE "enterprise"
@@ -114,7 +114,7 @@ class PostgreSQLTableManagerTest extends AbstractDatabaseTestCase
     public function testGetConstraints(): void
     {
         $constraints = $this->instance->getConstraints();
-        $constraints = array_filter($constraints, fn (Constraint $item) => $item->constraintType !== 'CHECK');
+        $constraints = array_filter($constraints, fn(Constraint $item) => $item->constraintType !== 'CHECK');
 
         self::assertEquals(
             ['pk_enterprise', 'idx_enterprise_alias'],
@@ -137,7 +137,7 @@ class PostgreSQLTableManagerTest extends AbstractDatabaseTestCase
                 'TABLE_CATALOG' => 'windwalker_test',
                 'VIEW_DEFINITION' => null,
                 'CHECK_OPTION' => null,
-                'IS_UPDATABLE' => null
+                'IS_UPDATABLE' => null,
             ],
             $detail
         );
@@ -149,21 +149,24 @@ class PostgreSQLTableManagerTest extends AbstractDatabaseTestCase
     public function testUpdate(): void
     {
         $logs = $this->logQueries(
-            fn () => $this->instance->update(function (Schema $schema) {
-                // New column
-                $schema->varchar('captain')->length(512)->after('catid');
-                $schema->varchar('first_officer')->length(512)->after('captain');
+            fn() => $this->instance->update(
+                function (Schema $schema) {
+                    // New column
+                    $schema->varchar('captain')->length(512)->after('catid');
+                    $schema->varchar('first_officer')->length(512)->after('captain');
 
-                // Update column
-                $schema->char('alias')->length(25)
-                    ->nullable(true)
-                    ->defaultValue('');
+                    // Update column
+                    $schema->char('alias')->length(25)
+                        ->nullable(true)
+                        ->defaultValue('');
 
-                // New index
-                $schema->addIndex('captain');
-            })
+                    // New index
+                    $schema->addIndex('captain');
+                }
+            )
         );
 
+        // phpcs:disable
         self::assertSqlFormatEquals(
             <<<SQL
             SELECT "ordinal_position",
@@ -183,7 +186,7 @@ class PostgreSQLTableManagerTest extends AbstractDatabaseTestCase
             ALTER TABLE "enterprise"
                 ADD COLUMN "first_officer" varchar(512) NOT NULL DEFAULT '';
             ALTER TABLE "enterprise"
-                ALTER COLUMN "alias" TYPE char(25),
+                ALTER COLUMN "alias" TYPE CHAR(25),
                 ALTER COLUMN "alias" SET NOT NULL,
                 ALTER COLUMN "alias" SET DEFAULT '';
             SELECT "ix".*, tc.constraint_type = 'PRIMARY KEY' AS "is_primary"
@@ -198,6 +201,7 @@ class PostgreSQLTableManagerTest extends AbstractDatabaseTestCase
             SQL,
             implode("\n;", $logs)
         );
+        // phpcs:enable
     }
 
     /**
@@ -212,6 +216,7 @@ class PostgreSQLTableManagerTest extends AbstractDatabaseTestCase
             }
         );
 
+        // phpcs:disable
         self::assertSqlFormatEquals(
             <<<SQL
             SELECT "ordinal_position",
@@ -239,6 +244,7 @@ class PostgreSQLTableManagerTest extends AbstractDatabaseTestCase
             SQL,
             implode(";\n", $logs)
         );
+        // phpcs:enable
 
         $this->instance->reset();
 
@@ -294,12 +300,13 @@ class PostgreSQLTableManagerTest extends AbstractDatabaseTestCase
     public function testAddConstraint(): void
     {
         $logs = $this->logQueries(
-            fn () => $this->instance->addConstraint(
+            fn() => $this->instance->addConstraint(
                 ['captain', 'first_officer'],
                 Constraint::TYPE_UNIQUE
             )
         );
 
+        // phpcs:disable
         self::assertSqlFormatEquals(
             <<<SQL
             SELECT "ordinal_position",
@@ -355,6 +362,7 @@ class PostgreSQLTableManagerTest extends AbstractDatabaseTestCase
             SQL,
             implode(";\n", $logs)
         );
+        // phpcs:enable
     }
 
     /**
@@ -412,7 +420,7 @@ class PostgreSQLTableManagerTest extends AbstractDatabaseTestCase
      */
     public function testTruncate(): void
     {
-        $logs = $this->logQueries(fn () => $this->instance->truncate());
+        $logs = $this->logQueries(fn() => $this->instance->truncate());
 
         self::assertEquals('TRUNCATE TABLE "enterprise"', $logs[0]);
     }
@@ -438,7 +446,7 @@ class PostgreSQLTableManagerTest extends AbstractDatabaseTestCase
                 'created',
                 'updated',
                 'deleted',
-                'params'
+                'params',
             ],
             $cols
         );
@@ -480,7 +488,7 @@ class PostgreSQLTableManagerTest extends AbstractDatabaseTestCase
                 'created',
                 'updated',
                 'deleted',
-                'params'
+                'params',
             ],
             $this->instance->getColumnNames()
         );
@@ -575,7 +583,7 @@ class PostgreSQLTableManagerTest extends AbstractDatabaseTestCase
     {
         $this->instance->schemaName = $this->instance->getPlatform()::getDefaultSchema();
 
-        $logs = $this->logQueries(fn () => $this->instance->getColumns());
+        $logs = $this->logQueries(fn() => $this->instance->getColumns());
 
         self::assertSqlFormatEquals(
             <<<SQL
@@ -611,7 +619,7 @@ class PostgreSQLTableManagerTest extends AbstractDatabaseTestCase
             array_keys(
                 array_filter(
                     $this->instance->reset()->getConstraints(),
-                    fn (Constraint $constraint) => $constraint->constraintType !== 'CHECK'
+                    fn(Constraint $constraint) => $constraint->constraintType !== 'CHECK'
                 )
             )
         );

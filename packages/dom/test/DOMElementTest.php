@@ -51,6 +51,8 @@ class DOMElementTest extends TestCase
             ]
         );
 
+        // phpcs:disable
+
         self::assertDomStringEqualsDomString(
             '<field name="foo" label="FOO" class="col-12 form-control" ' .
             'data-options="{&quot;handle&quot;:&quot;.handle&quot;,&quot;enabled&quot;:true}"  data-empty="" data-true=""/>',
@@ -144,7 +146,7 @@ class DOMElementTest extends TestCase
      */
     public function testOffsetAccess(): void
     {
-        $ele             = DOMElement::create('hello');
+        $ele = DOMElement::create('hello');
         $ele['data-foo'] = 'bar';
 
         self::assertTrue(isset($ele['data-foo']));
@@ -162,7 +164,7 @@ class DOMElementTest extends TestCase
      */
     public function testToString(): void
     {
-        $ele             = DOMElement::create('hello');
+        $ele = DOMElement::create('hello');
         $ele['data-foo'] = 'bar';
 
         self::assertEquals('<hello data-foo="bar"/>', (string) $ele);
@@ -302,7 +304,7 @@ XML
 
     public function testWith(): void
     {
-        $dom  = new DOMDocument();
+        $dom = new DOMDocument();
         $root = $dom->createElement('root');
 
         $ele = DOMElement::create('hello');
@@ -313,7 +315,7 @@ XML
 
     public function testCreateChild(): void
     {
-        $ele   = DOMElement::create('root');
+        $ele = DOMElement::create('root');
         $hello = $ele->createChild('hello');
         $hello->setAttribute('foo', 'bar');
 

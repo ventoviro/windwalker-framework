@@ -12,8 +12,6 @@ declare(strict_types=1);
 namespace Windwalker\Event\Provider;
 
 use Windwalker\Attributes\AttributesAccessor;
-use Windwalker\Attributes\AttributesAwareTrait;
-use Windwalker\Attributes\AttributesResolver;
 use Windwalker\Event\Attributes\EventSubscriber;
 use Windwalker\Event\Attributes\ListenTo;
 use Windwalker\Event\EventInterface;
@@ -101,7 +99,12 @@ class SubscribableListenerProvider implements SubscribableListenerProviderInterf
                 }
 
                 // Handle Event attributes
-                foreach ($method->getAttributes(EventInterface::class, \ReflectionAttribute::IS_INSTANCEOF) as $attribute) {
+                foreach (
+                    $method->getAttributes(
+                        EventInterface::class,
+                        \ReflectionAttribute::IS_INSTANCEOF
+                    ) as $attribute
+                ) {
                     $this->on(
                         $attribute->getName(),
                         [$subscriber, static::normalize($method->getName())],
@@ -149,7 +152,7 @@ class SubscribableListenerProvider implements SubscribableListenerProviderInterf
     /**
      * isCallable
      *
-     * @param  object           $subscriber
+     * @param  object  $subscriber
      * @param  string|callable  $methodName
      *
      * @return  bool

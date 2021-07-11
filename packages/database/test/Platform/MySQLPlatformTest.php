@@ -90,19 +90,21 @@ class MySQLPlatformTest extends AbstractPlatformTest
     {
         $views = $this->instance->listViews(static::$schema);
 
+        // phpcs:disable
         self::assertEquals(
             [
                 'ww_articles_view' => [
                     'TABLE_NAME' => 'ww_articles_view',
                     'TABLE_SCHEMA' => 'windwalker_test',
                     'TABLE_TYPE' => 'VIEW',
-                    'VIEW_DEFINITION' => 'select `windwalker_test`.`ww_articles`.`id` AS `id`,`windwalker_test`.`ww_articles`.`category_id` AS `category_id`,`windwalker_test`.`ww_articles`.`page_id` AS `page_id`,`windwalker_test`.`ww_articles`.`type` AS `type`,`windwalker_test`.`ww_articles`.`price` AS `price`,`windwalker_test`.`ww_articles`.`title` AS `title`,`windwalker_test`.`ww_articles`.`alias` AS `alias`,`windwalker_test`.`ww_articles`.`introtext` AS `introtext`,`windwalker_test`.`ww_articles`.`state` AS `state`,`windwalker_test`.`ww_articles`.`ordering` AS `ordering`,`windwalker_test`.`ww_articles`.`created` AS `created`,`windwalker_test`.`ww_articles`.`created_by` AS `created_by`,`windwalker_test`.`ww_articles`.`language` AS `language`,`windwalker_test`.`ww_articles`.`params` AS `params` from `windwalker_test`.`ww_articles`',
+                    'VIEW_DEFINITION' => 'SELECT `windwalker_test`.`ww_articles`.`id` AS `id`,`windwalker_test`.`ww_articles`.`category_id` AS `category_id`,`windwalker_test`.`ww_articles`.`page_id` AS `page_id`,`windwalker_test`.`ww_articles`.`type` AS `type`,`windwalker_test`.`ww_articles`.`price` AS `price`,`windwalker_test`.`ww_articles`.`title` AS `title`,`windwalker_test`.`ww_articles`.`alias` AS `alias`,`windwalker_test`.`ww_articles`.`introtext` AS `introtext`,`windwalker_test`.`ww_articles`.`state` AS `state`,`windwalker_test`.`ww_articles`.`ordering` AS `ordering`,`windwalker_test`.`ww_articles`.`created` AS `created`,`windwalker_test`.`ww_articles`.`created_by` AS `created_by`,`windwalker_test`.`ww_articles`.`language` AS `language`,`windwalker_test`.`ww_articles`.`params` AS `params` FROM `windwalker_test`.`ww_articles`',
                     'CHECK_OPTION' => 'NONE',
                     'IS_UPDATABLE' => 'YES',
                 ],
             ],
             $views
         );
+        // phpcs:enable
     }
 
     /**
@@ -148,7 +150,7 @@ class MySQLPlatformTest extends AbstractPlatformTest
                     'auto_increment' => true,
                     'erratas' => [
 
-                    ]
+                    ],
                 ],
                 'category_id' => [
                     'column_name' => 'category_id',
@@ -165,7 +167,7 @@ class MySQLPlatformTest extends AbstractPlatformTest
                     'auto_increment' => false,
                     'erratas' => [
 
-                    ]
+                    ],
                 ],
                 'page_id' => [
                     'column_name' => 'page_id',
@@ -182,7 +184,7 @@ class MySQLPlatformTest extends AbstractPlatformTest
                     'auto_increment' => false,
                     'erratas' => [
 
-                    ]
+                    ],
                 ],
                 'type' => [
                     'column_name' => 'type',
@@ -201,9 +203,9 @@ class MySQLPlatformTest extends AbstractPlatformTest
                         'permitted_values' => [
                             'foo',
                             'bar',
-                            'yoo'
-                        ]
-                    ]
+                            'yoo',
+                        ],
+                    ],
                 ],
                 'price' => [
                     'column_name' => 'price',
@@ -220,7 +222,7 @@ class MySQLPlatformTest extends AbstractPlatformTest
                     'auto_increment' => false,
                     'erratas' => [
 
-                    ]
+                    ],
                 ],
                 'title' => [
                     'column_name' => 'title',
@@ -237,7 +239,7 @@ class MySQLPlatformTest extends AbstractPlatformTest
                     'auto_increment' => false,
                     'erratas' => [
 
-                    ]
+                    ],
                 ],
                 'alias' => [
                     'column_name' => 'alias',
@@ -254,7 +256,7 @@ class MySQLPlatformTest extends AbstractPlatformTest
                     'auto_increment' => false,
                     'erratas' => [
 
-                    ]
+                    ],
                 ],
                 'introtext' => [
                     'column_name' => 'introtext',
@@ -271,7 +273,7 @@ class MySQLPlatformTest extends AbstractPlatformTest
                     'auto_increment' => false,
                     'erratas' => [
 
-                    ]
+                    ],
                 ],
                 'state' => [
                     'column_name' => 'state',
@@ -288,7 +290,7 @@ class MySQLPlatformTest extends AbstractPlatformTest
                     'auto_increment' => false,
                     'erratas' => [
 
-                    ]
+                    ],
                 ],
                 'ordering' => [
                     'column_name' => 'ordering',
@@ -305,7 +307,7 @@ class MySQLPlatformTest extends AbstractPlatformTest
                     'auto_increment' => false,
                     'erratas' => [
 
-                    ]
+                    ],
                 ],
                 'created' => [
                     'column_name' => 'created',
@@ -322,7 +324,7 @@ class MySQLPlatformTest extends AbstractPlatformTest
                     'auto_increment' => false,
                     'erratas' => [
 
-                    ]
+                    ],
                 ],
                 'created_by' => [
                     'column_name' => 'created_by',
@@ -339,7 +341,7 @@ class MySQLPlatformTest extends AbstractPlatformTest
                     'auto_increment' => false,
                     'erratas' => [
 
-                    ]
+                    ],
                 ],
                 'language' => [
                     'column_name' => 'language',
@@ -356,7 +358,7 @@ class MySQLPlatformTest extends AbstractPlatformTest
                     'auto_increment' => false,
                     'erratas' => [
 
-                    ]
+                    ],
                 ],
                 'params' => [
                     'column_name' => 'params',
@@ -373,8 +375,8 @@ class MySQLPlatformTest extends AbstractPlatformTest
                     'auto_increment' => false,
                     'erratas' => [
 
-                    ]
-                ]
+                    ],
+                ],
             ],
             $columns
         );

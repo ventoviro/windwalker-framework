@@ -82,6 +82,7 @@ class RadioFieldTest extends TestCase
      */
     public function testRender()
     {
+        // phpcs:disable
         $html = <<<HTML
 <div id="input-flower" class="stub-flower" data-field-input disabled onchange="return false;" size="10">
     <div id="input-flower-Asia-Tokyo-item" class="radio" data-radio-item-wrapper>
@@ -127,7 +128,7 @@ HTML;
     </div>
 </div>
 HTML;
-
+        // phpcs:enable
         self::assertHtmlFormatEquals($html, $this->instance->renderInput());
     }
 }

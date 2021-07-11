@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Windwalker\Query\Test;
 
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
 use Windwalker\Query\Bounded\BoundedHelper;
 use Windwalker\Query\Clause\JoinClause;
 use Windwalker\Query\Grammar\AbstractGrammar;
@@ -21,7 +22,6 @@ use Windwalker\Query\Test\Mock\MockEscaper;
 use Windwalker\Test\Traits\QueryTestTrait;
 use Windwalker\Utilities\Reflection\ReflectAccessor;
 
-use function Windwalker\Query\clause;
 use function Windwalker\Query\expr;
 use function Windwalker\Query\qn;
 use function Windwalker\Query\val;
@@ -203,7 +203,7 @@ class QueryTest extends TestCase
                 [
                     ['foo', 'f'],
                     ['bar', 'b'],
-                    ['yoo', 'y']
+                    ['yoo', 'y'],
                 ],
                 'nouse',
                 'SELECT * FROM "foo" AS "f", "bar" AS "b", "yoo" AS "y"',
@@ -246,8 +246,8 @@ class QueryTest extends TestCase
                             ->select('*')
                             ->from('flower')
                             ->alias('fl_nouse'),
-                        'f'
-                    ]
+                        'f',
+                    ],
                 ],
                 'nouse',
                 'SELECT * FROM "ace" AS "a", (SELECT * FROM "flower") AS "f"',
@@ -261,8 +261,8 @@ class QueryTest extends TestCase
                                 ->from('flower')
                                 ->alias('fl_nouse');
                         },
-                        'f'
-                    ]
+                        'f',
+                    ],
                 ],
                 'nouse',
                 'SELECT * FROM "ace" AS "a", (SELECT * FROM "flower") AS "f"',
@@ -298,6 +298,7 @@ class QueryTest extends TestCase
 
     public function joinProvider(): array
     {
+        // phpcs:disable
         return [
             'Simple left join' => [
                 'LEFT JOIN "bars" AS "bar" ON "bar"."id" = "foo"."bar_id"',
@@ -411,10 +412,12 @@ class QueryTest extends TestCase
                     'bar',
                     static function (JoinClause $join) {
                         $join->on('bar.id', 'foo.bar_id');
-                        $join->orOn(static function (JoinClause $join) {
-                            $join->on('a', 'b');
-                            $join->on('c', 'd');
-                        });
+                        $join->orOn(
+                            static function (JoinClause $join) {
+                                $join->on('a', 'b');
+                                $join->on('c', 'd');
+                            }
+                        );
                     },
                 ],
             ],
@@ -425,14 +428,14 @@ class QueryTest extends TestCase
                     'bars',
                     'bar',
                     'foo.bar_id',
-                    'bar.id'
+                    'bar.id',
                 ],
                 [
                     'RIGHT',
                     'flowers',
                     'fl',
                     'fl.bar_id',
-                    'bar.id'
+                    'bar.id',
                 ],
             ],
             'Join sub query' => [
@@ -446,8 +449,8 @@ class QueryTest extends TestCase
                         ->group('bar.id'),
                     'bar',
                     'foo.bar_id',
-                    'bar.id'
-                ]
+                    'bar.id',
+                ],
             ],
             'Join sub query callback' => [
                 'LEFT JOIN (SELECT COUNT(*) AS "count", "id" FROM "bar" GROUP BY "bar"."id") AS "bar" ON "foo"."bar_id" = "bar"."id"',
@@ -461,10 +464,11 @@ class QueryTest extends TestCase
                     },
                     'bar',
                     'foo.bar_id',
-                    'bar.id'
-                ]
+                    'bar.id',
+                ],
             ],
         ];
+        // phpcs:enable
     }
 
     public function testUnion(): void
@@ -542,12 +546,14 @@ SQL
         $q = self::createQuery()
             ->insert('foo')
             ->set('id', 1)
-            ->set([
-                'title' => 'A',
-                'foo' => 'a',
-                'bar' => null,
-                'yoo' => raw('CURRENT_TIMESTAMP()')
-            ]);
+            ->set(
+                [
+                    'title' => 'A',
+                    'foo' => 'a',
+                    'bar' => null,
+                    'yoo' => raw('CURRENT_TIMESTAMP()'),
+                ]
+            );
 
         self::assertSqlEquals(
             <<<SQL
@@ -585,10 +591,12 @@ SQL
             ->update('foo')
             ->set('a', 'b')
             ->set('c', 5)
-            ->set([
-                'foo' => 'bar',
-                'yoo' => 'goo'
-            ])
+            ->set(
+                [
+                    'foo' => 'bar',
+                    'yoo' => 'goo',
+                ]
+            )
             ->where('id', 123);
 
         self::assertSqlEquals(
@@ -606,9 +614,11 @@ SQL
                     ->from('yoo')
                     ->where('id', 1)
             )
-            ->set([
-                'f.col' => $q->raw('%n + 1', 'b.col')
-            ])
+            ->set(
+                [
+                    'f.col' => $q->raw('%n + 1', 'b.col'),
+                ]
+            )
             ->where('id', 123);
 
         self::assertSqlEquals(
@@ -783,6 +793,7 @@ SQL
 
     public function whereProvider(): array
     {
+        // phpcs:disable
         return [
             'Simple where =' => [
                 'SELECT * FROM "a" WHERE "foo" = \'bar\'',
@@ -868,8 +879,8 @@ SQL
                         'flower' => [
                             'a',
                             'b',
-                            'c'
-                        ]
+                            'c',
+                        ],
                     ],
                 ],
             ],
@@ -934,10 +945,11 @@ SQL
 
             // Where with raw wrapper
             'Where with raw wrapper' => [
-                'SELECT * FROM "a" WHERE foo = YEAR(date)',
+                'SELECT * FROM "a" WHERE foo = YEAR(DATE)',
                 [raw('foo'), raw('YEAR(date)')],
             ],
         ];
+        // phpcs:enable
     }
 
     public function testOrWhere()
@@ -1022,10 +1034,9 @@ SQL
 
         self::assertSqlEquals(
             'SELECT * FROM "foo" WHERE "id" IN (1, 2, 3) AND "time" BETWEEN \'2012-03-30\' AND \'2020-02-24\' '
-                . 'AND "created" NOT IN (55, 66) AND "content" NOT LIKE \'%qwe%\'',
+            . 'AND "created" NOT IN (55, 66) AND "content" NOT LIKE \'%qwe%\'',
             $q->render(true)
         );
-
 
         $q = self::createQuery()
             ->select('*')
@@ -1037,7 +1048,7 @@ SQL
 
         self::assertSqlEquals(
             'SELECT * FROM "foo" HAVING "id" IN (1, 2, 3) AND "time" BETWEEN \'2012-03-30\' AND \'2020-02-24\' '
-                . 'AND "created" NOT IN (55, 66) AND "content" NOT LIKE \'%qwe%\'',
+            . 'AND "created" NOT IN (55, 66) AND "content" NOT LIKE \'%qwe%\'',
             $q->render(true)
         );
     }
@@ -1222,7 +1233,7 @@ SQL
 
             // Having with raw wrapper
             'Having with raw wrapper' => [
-                'SELECT * FROM "a" HAVING foo = YEAR(date)',
+                'SELECT * FROM "a" HAVING foo = YEAR(DATE)',
                 [raw('foo'), raw('YEAR(date)')],
             ],
         ];
@@ -1580,7 +1591,7 @@ SQL
      *
      * @return void
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function testClearClause()
     {
@@ -1632,7 +1643,7 @@ SQL
      *
      * @return void
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function testClearType()
     {

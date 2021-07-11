@@ -11,9 +11,9 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Metadata;
 
-use Windwalker\ORM\Attributes\{Column, PK, Table, Watch};
 use Windwalker\Event\EventAwareInterface;
 use Windwalker\Event\EventAwareTrait;
+use Windwalker\ORM\Attributes\{Column, PK, Table, Watch};
 use Windwalker\ORM\Cast\CastManager;
 use Windwalker\ORM\EntityMapper;
 use Windwalker\ORM\Event\AfterSaveEvent;
@@ -93,9 +93,9 @@ class EntityMetadata implements EventAwareInterface
             $entity = $entity::class;
         }
 
-        $this->orm             = $orm;
-        $this->className       = $entity;
-        $this->castManager     = new CastManager();
+        $this->orm = $orm;
+        $this->className = $entity;
+        $this->castManager = new CastManager();
         $this->relationManager = new RelationManager($this);
 
         $this->setup();
@@ -423,12 +423,16 @@ class EntityMetadata implements EventAwareInterface
         if ($options & Watch::BEFORE_SAVE) {
             $this->on(
                 BeforeSaveEvent::class,
-                $unwatches[BeforeSaveEvent::class] = function (BeforeSaveEvent $event) use ($column, $options, $method) {
+                $unwatches[BeforeSaveEvent::class] = function (BeforeSaveEvent $event) use (
+                    $column,
+                    $options,
+                    $method
+                ) {
                     if (!($options & Watch::ON_CREATE) && $event->getType() === BeforeSaveEvent::TYPE_CREATE) {
                         return;
                     }
 
-                    $val    = $event->getData()[$column] ?? null;
+                    $val = $event->getData()[$column] ?? null;
                     $oldVal = $event->getOldData()[$column] ?? null;
 
                     if ($val !== $oldVal) {
@@ -447,7 +451,10 @@ class EntityMetadata implements EventAwareInterface
             );
             $this->on(
                 BeforeUpdateWhereEvent::class,
-                $unwatches[BeforeUpdateWhereEvent::class] = function (BeforeUpdateWhereEvent $event) use ($column, $method) {
+                $unwatches[BeforeUpdateWhereEvent::class] = function (BeforeUpdateWhereEvent $event) use (
+                    $column,
+                    $method
+                ) {
                     $val = $event->getData()[$column] ?? null;
 
                     $watchEvent = Watch::createWatchEvent($event, $val);
@@ -470,7 +477,7 @@ class EntityMetadata implements EventAwareInterface
                         return;
                     }
 
-                    $val    = $event->getData()[$column] ?? null;
+                    $val = $event->getData()[$column] ?? null;
                     $oldVal = $event->getOldData()[$column] ?? null;
 
                     if ($val !== $oldVal) {
@@ -489,7 +496,10 @@ class EntityMetadata implements EventAwareInterface
             );
             $this->on(
                 AfterUpdateWhereEvent::class,
-                $unwatches[AfterUpdateWhereEvent::class] = function (AfterUpdateWhereEvent $event) use ($column, $method) {
+                $unwatches[AfterUpdateWhereEvent::class] = function (AfterUpdateWhereEvent $event) use (
+                    $column,
+                    $method
+                ) {
                     $val = $event->getData()[$column] ?? null;
 
                     $watchEvent = Watch::createWatchEvent($event, $val);

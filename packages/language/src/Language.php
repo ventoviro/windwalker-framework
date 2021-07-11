@@ -115,7 +115,7 @@ class Language implements LanguageInterface
      *
      * @return  $this
      */
-    public function load(string $file, ?string $format = 'ini', ?string $locale = null,  array $options = []): static
+    public function load(string $file, ?string $format = 'ini', ?string $locale = null, array $options = []): static
     {
         $strings = $this->getFormatRegistry()->load($file, $format, $options);
 
@@ -164,9 +164,12 @@ class Language implements LanguageInterface
      * @throws \ReflectionException
      */
     #[ArrayShape(['string', 'string'])]
-    public function get(string $id, ?string $locale = null, bool $fallback = true): array
-    {
-        $fullId    = $this->resolveNamespace($id);
+    public function get(
+        string $id,
+        ?string $locale = null,
+        bool $fallback = true
+    ): array {
+        $fullId = $this->resolveNamespace($id);
         $locale ??= $this->getLocale();
 
         $fallback = $fallback || $this->isDebug();
@@ -226,7 +229,7 @@ class Language implements LanguageInterface
             return $string;
         }
 
-        $values       = [];
+        $values = [];
         $replacements = [];
 
         foreach ($args as $k => $v) {
@@ -249,12 +252,12 @@ class Language implements LanguageInterface
                     [
                         ':' . $key,
                         ':' . Utf8String::strtoupper((string) $key),
-                        ':' . Utf8String::ucfirst((string) $key)
+                        ':' . Utf8String::ucfirst((string) $key),
                     ],
                     [
                         $value,
                         Utf8String::strtoupper((string) $value),
-                        Utf8String::ucfirst((string) $value)
+                        Utf8String::ucfirst((string) $value),
                     ],
                     $string
                 );

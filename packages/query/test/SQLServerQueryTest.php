@@ -69,27 +69,27 @@ class SQLServerQueryTest extends QueryTest
             [
                 'foo ->> bar',
                 true,
-                'JSON_VALUE([foo], \'$.bar\')'
+                'JSON_VALUE([foo], \'$.bar\')',
             ],
             [
                 'foo->bar[1]->>yoo',
                 true,
-                'JSON_VALUE([foo], \'$.bar[1].yoo\')'
+                'JSON_VALUE([foo], \'$.bar[1].yoo\')',
             ],
             [
                 'foo->bar[1]->>\'yoo\'',
                 true,
-                'JSON_VALUE([foo], \'$.bar[1].yoo\')'
+                'JSON_VALUE([foo], \'$.bar[1].yoo\')',
             ],
             [
                 'foo->bar[1]->>"yoo"',
                 true,
-                'JSON_VALUE([foo], \'$.bar[1]."yoo"\')'
+                'JSON_VALUE([foo], \'$.bar[1]."yoo"\')',
             ],
             [
                 'foo->bar[1]->\'yoo\'',
                 false,
-                'JSON_QUERY([foo], \'$.bar[1].yoo\')'
+                'JSON_QUERY([foo], \'$.bar[1].yoo\')',
             ],
         ];
     }
@@ -101,8 +101,7 @@ class SQLServerQueryTest extends QueryTest
             ->from('test')
             ->where('foo -> bar ->> yoo', 'www')
             ->having('foo -> bar', '=', qn('hoo -> joo ->> moo'))
-            ->order('foo -> bar ->> yoo', 'DESC')
-        ;
+            ->order('foo -> bar ->> yoo', 'DESC');
 
         self::assertSqlEquals(
             <<<SQL
@@ -143,12 +142,14 @@ SQL
         $q = self::createQuery()
             ->insert('foo')
             ->set('id', 1)
-            ->set([
-                      'title' => 'A',
-                      'foo' => 'a',
-                      'bar' => null,
-                      'yoo' => raw('CURRENT_TIMESTAMP()')
-                  ]);
+            ->set(
+                [
+                    'title' => 'A',
+                    'foo' => 'a',
+                    'bar' => null,
+                    'yoo' => raw('CURRENT_TIMESTAMP()'),
+                ]
+            );
 
         self::assertSqlEquals(
             <<<SQL
@@ -203,7 +204,9 @@ SQL
 
         // Only offset will not work
         self::assertSqlEquals(
+            // phpcs:disable
             'SELECT * FROM (SELECT *, ROW_NUMBER() OVER (ORDER BY (SELECT 0)) AS RowNumber FROM ( SELECT * FROM [foo] ORDER BY [id] ) AS A) AS A WHERE RowNumber > 10',
+            // phpcs:enable
             $q->render()
         );
 
@@ -216,7 +219,9 @@ SQL
             ->offset(15);
 
         self::assertSqlEquals(
+            // phpcs:disable
             'SELECT * FROM (SELECT *, ROW_NUMBER() OVER (ORDER BY (SELECT 0)) AS RowNumber FROM ( SELECT TOP 20 * FROM [foo] ORDER BY [id] ) AS A) AS A WHERE RowNumber > 15',
+            // phpcs:enable
             $q->render()
         );
     }

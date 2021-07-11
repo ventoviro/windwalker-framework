@@ -238,7 +238,6 @@ class ReflectAccessor
         }
 
         if (is_string($value) && class_exists($value)) {
-
             return new ReflectionClass($value);
         }
 

@@ -36,9 +36,9 @@ trait CompileLayoutTrait
     {
         $expression = $this->stripParentheses($expression);
 
-        // @codingStandardsIgnoreStart
+        // phpcs:disable
         $data = "<?php echo \$__edge->render($expression, \$__edge->except(get_defined_vars(), ['__data', '__path'])); ?>";
-        // @codingStandardsIgnoreEnd
+        // phpcs:enable
 
         $this->footer[] = $data;
 

@@ -32,7 +32,7 @@ class SQLServerTableManagerTest extends AbstractDatabaseTestCase
         $table = self::$db->getTable('enterprise');
 
         $logs = $this->logQueries(
-            fn () => $table->create(
+            fn() => $table->create(
                 static function (Schema $schema) {
                     $schema->primary('id');
                     $schema->char('type')->length(25);
@@ -80,23 +80,23 @@ class SQLServerTableManagerTest extends AbstractDatabaseTestCase
             ORDER BY [TABLE_NAME];
             CREATE TABLE [enterprise]
             (
-                [id] int NOT NULL IDENTITY,
-                [type] nchar(25) NOT NULL DEFAULT 0,
-                [catid] int DEFAULT NULL,
+                [id] INT NOT NULL IDENTITY,
+                [TYPE] NCHAR(25) NOT NULL DEFAULT 0,
+                [catid] INT DEFAULT NULL,
                 [alias] nvarchar(255) NOT NULL DEFAULT 0,
                 [title] nvarchar(255) NOT NULL DEFAULT 'H',
-                [price] decimal(20,6) NOT NULL DEFAULT 0,
-                [intro] nvarchar(max) NOT NULL DEFAULT 0,
-                [fulltext] nvarchar(max) NOT NULL DEFAULT 0,
+                [price] DECIMAL(20,6) NOT NULL DEFAULT 0,
+                [intro] nvarchar(MAX) NOT NULL DEFAULT 0,
+                [fulltext] nvarchar(MAX) NOT NULL DEFAULT 0,
                 [start_date] datetime2 NOT NULL DEFAULT '1900-01-01 00:00:00',
                 [created] datetime2 NOT NULL DEFAULT '1900-01-01 00:00:00',
                 [updated] datetime2 NOT NULL DEFAULT CURRENT_TIMESTAMP,
                 [deleted] datetime2 NOT NULL DEFAULT '1900-01-01 00:00:00',
-                [params] nvarchar(max) NOT NULL DEFAULT 0
+                [params] nvarchar(MAX) NOT NULL DEFAULT 0
             );
             ALTER TABLE [enterprise]
                 ADD CONSTRAINT [pk_enterprise] PRIMARY KEY ([id]);
-            CREATE INDEX [idx_enterprise_catid_type] ON [enterprise] ([catid], [type]);
+            CREATE INDEX [idx_enterprise_catid_type] ON [enterprise] ([catid], [TYPE]);
             CREATE INDEX [idx_enterprise_title] ON [enterprise] ([title]);
             ALTER TABLE [enterprise]
                 ADD CONSTRAINT [idx_enterprise_alias] UNIQUE ([alias])
@@ -113,7 +113,7 @@ class SQLServerTableManagerTest extends AbstractDatabaseTestCase
     public function testGetConstraints(): void
     {
         $constraints = $this->instance->getConstraints();
-        $constraints = array_filter($constraints, fn (Constraint $item) => $item->constraintType !== 'CHECK');
+        $constraints = array_filter($constraints, fn(Constraint $item) => $item->constraintType !== 'CHECK');
 
         self::assertEquals(
             ['pk_enterprise', 'idx_enterprise_alias'],
@@ -135,7 +135,7 @@ class SQLServerTableManagerTest extends AbstractDatabaseTestCase
                 'TABLE_TYPE' => 'BASE TABLE',
                 'VIEW_DEFINITION' => null,
                 'CHECK_OPTION' => null,
-                'IS_UPDATABLE' => null
+                'IS_UPDATABLE' => null,
             ],
             $detail
         );
@@ -147,36 +147,39 @@ class SQLServerTableManagerTest extends AbstractDatabaseTestCase
     public function testUpdate(): void
     {
         $logs = $this->logQueries(
-            fn () => $this->instance->update(function (Schema $schema) {
-                // New column
-                $schema->varchar('captain')->length(512)->after('catid');
-                $schema->varchar('first_officer')->length(512)->after('captain');
+            fn() => $this->instance->update(
+                function (Schema $schema) {
+                    // New column
+                    $schema->varchar('captain')->length(512)->after('catid');
+                    $schema->varchar('first_officer')->length(512)->after('captain');
 
-                // Update column
-                $schema->char('alias')->length(25)
-                    ->nullable(true)
-                    ->defaultValue('');
+                    // Update column
+                    $schema->char('alias')->length(25)
+                        ->nullable(true)
+                        ->defaultValue('');
 
-                // New index
-                $schema->addIndex('captain');
-            })
+                    // New index
+                    $schema->addIndex('captain');
+                }
+            )
         );
 
+        // phpcs:disable
         self::assertSqlFormatEquals(
             <<<SQL
-            SELECT [c].[ORDINAL_POSITION],
-                   [c].[COLUMN_DEFAULT],
-                   [c].[IS_NULLABLE],
-                   [c].[DATA_TYPE],
-                   [c].[CHARACTER_MAXIMUM_LENGTH],
-                   [c].[CHARACTER_OCTET_LENGTH],
-                   [c].[NUMERIC_PRECISION],
-                   [c].[NUMERIC_SCALE],
-                   [c].[COLUMN_NAME],
+            SELECT [C].[ORDINAL_POSITION],
+                   [C].[COLUMN_DEFAULT],
+                   [C].[IS_NULLABLE],
+                   [C].[DATA_TYPE],
+                   [C].[CHARACTER_MAXIMUM_LENGTH],
+                   [C].[CHARACTER_OCTET_LENGTH],
+                   [C].[NUMERIC_PRECISION],
+                   [C].[NUMERIC_SCALE],
+                   [C].[COLUMN_NAME],
                    [sc].[is_identity]
-            FROM [INFORMATION_SCHEMA].[COLUMNS] AS [c]
-                     LEFT JOIN [sys].[columns] AS [sc] ON [sc].[object_id] = object_id(c.TABLE_NAME)
-                AND [sc].[name] = [c].[COLUMN_NAME]
+            FROM [INFORMATION_SCHEMA].[COLUMNS] AS [C]
+                     LEFT JOIN [sys].[columns] AS [sc] ON [sc].[object_id] = object_id(C.TABLE_NAME)
+                AND [sc].[NAME] = [C].[COLUMN_NAME]
             WHERE [TABLE_NAME] = 'enterprise'
               AND [TABLE_SCHEMA] != 'INFORMATION_SCHEMA';
             ALTER TABLE
@@ -246,9 +249,9 @@ class SQLServerTableManagerTest extends AbstractDatabaseTestCase
                 DROP
                     CONSTRAINT [idx_enterprise_alias];
             SELECT schema_name(tbl.schema_id) AS schema_name,
-                   [tbl].[name]               AS [table_name],
-                   [col].[name]               AS [column_name],
-                   [idx].[name]               AS [index_name],
+                   [tbl].[NAME]               AS [TABLE_NAME],
+                   [col].[NAME]               AS [COLUMN_NAME],
+                   [idx].[NAME]               AS [index_name],
                    [col].*,
                    [idx].*
             FROM [sys].[columns] AS [col]
@@ -257,23 +260,23 @@ class SQLServerTableManagerTest extends AbstractDatabaseTestCase
                 AND [ic].[object_id] = [tbl].[object_id]
                      LEFT JOIN [sys].[indexes] AS [idx] ON [idx].[object_id] = [tbl].[object_id]
                 AND [idx].[index_id] = [ic].[index_id]
-            WHERE [tbl].[name] = 'enterprise'
+            WHERE [tbl].[NAME] = 'enterprise'
               AND (
-                    [idx].[name] IS NOT NULL
+                    [idx].[NAME] IS NOT NULL
                     OR [col].[is_identity] = 1
                     OR [idx].[is_primary_key] = 1
                 );
             ALTER TABLE
                 [enterprise]
-                ALTER COLUMN [alias] nchar(25) NOT NULL;
+                ALTER COLUMN [alias] NCHAR(25) NOT NULL;
             ALTER TABLE
                 [enterprise]
                 ADD
                     DEFAULT '' FOR [alias];
             SELECT schema_name(tbl.schema_id) AS schema_name,
-                   [tbl].[name]               AS [table_name],
-                   [col].[name]               AS [column_name],
-                   [idx].[name]               AS [index_name],
+                   [tbl].[NAME]               AS [TABLE_NAME],
+                   [col].[NAME]               AS [COLUMN_NAME],
+                   [idx].[NAME]               AS [index_name],
                    [col].*,
                    [idx].*
             FROM [sys].[columns] AS [col]
@@ -282,9 +285,9 @@ class SQLServerTableManagerTest extends AbstractDatabaseTestCase
                 AND [ic].[object_id] = [tbl].[object_id]
                      LEFT JOIN [sys].[indexes] AS [idx] ON [idx].[object_id] = [tbl].[object_id]
                 AND [idx].[index_id] = [ic].[index_id]
-            WHERE [tbl].[name] = 'enterprise'
+            WHERE [tbl].[NAME] = 'enterprise'
               AND (
-                    [idx].[name] IS NOT NULL
+                    [idx].[NAME] IS NOT NULL
                     OR [col].[is_identity] = 1
                     OR [idx].[is_primary_key] = 1
                 );
@@ -292,6 +295,7 @@ class SQLServerTableManagerTest extends AbstractDatabaseTestCase
             SQL,
             implode("\n;", $logs)
         );
+        // phpcs:enable
     }
 
     /**
@@ -308,25 +312,25 @@ class SQLServerTableManagerTest extends AbstractDatabaseTestCase
 
         self::assertSqlFormatEquals(
             <<<SQL
-            SELECT [c].[ORDINAL_POSITION],
-                   [c].[COLUMN_DEFAULT],
-                   [c].[IS_NULLABLE],
-                   [c].[DATA_TYPE],
-                   [c].[CHARACTER_MAXIMUM_LENGTH],
-                   [c].[CHARACTER_OCTET_LENGTH],
-                   [c].[NUMERIC_PRECISION],
-                   [c].[NUMERIC_SCALE],
-                   [c].[COLUMN_NAME],
+            SELECT [C].[ORDINAL_POSITION],
+                   [C].[COLUMN_DEFAULT],
+                   [C].[IS_NULLABLE],
+                   [C].[DATA_TYPE],
+                   [C].[CHARACTER_MAXIMUM_LENGTH],
+                   [C].[CHARACTER_OCTET_LENGTH],
+                   [C].[NUMERIC_PRECISION],
+                   [C].[NUMERIC_SCALE],
+                   [C].[COLUMN_NAME],
                    [sc].[is_identity]
-            FROM [INFORMATION_SCHEMA].[COLUMNS] AS [c]
-                     LEFT JOIN [sys].[columns] AS [sc] ON [sc].[object_id] = object_id(c.TABLE_NAME)
-                AND [sc].[name] = [c].[COLUMN_NAME]
+            FROM [INFORMATION_SCHEMA].[COLUMNS] AS [C]
+                     LEFT JOIN [sys].[columns] AS [sc] ON [sc].[object_id] = object_id(C.TABLE_NAME)
+                AND [sc].[NAME] = [C].[COLUMN_NAME]
             WHERE [TABLE_NAME] = 'enterprise'
               AND [TABLE_SCHEMA] != 'INFORMATION_SCHEMA';
             SELECT schema_name(tbl.schema_id) AS schema_name,
-                   [tbl].[name]               AS [table_name],
-                   [col].[name]               AS [column_name],
-                   [idx].[name]               AS [index_name],
+                   [tbl].[NAME]               AS [TABLE_NAME],
+                   [col].[NAME]               AS [COLUMN_NAME],
+                   [idx].[NAME]               AS [index_name],
                    [col].*,
                    [idx].*
             FROM [sys].[columns] AS [col]
@@ -335,9 +339,9 @@ class SQLServerTableManagerTest extends AbstractDatabaseTestCase
                 AND [ic].[object_id] = [tbl].[object_id]
                      LEFT JOIN [sys].[indexes] AS [idx] ON [idx].[object_id] = [tbl].[object_id]
                 AND [idx].[index_id] = [ic].[index_id]
-            WHERE [tbl].[name] = 'enterprise'
+            WHERE [tbl].[NAME] = 'enterprise'
               AND (
-                    [idx].[name] IS NOT NULL
+                    [idx].[NAME] IS NOT NULL
                     OR [col].[is_identity] = 1
                     OR [idx].[is_primary_key] = 1
                 );
@@ -356,7 +360,7 @@ class SQLServerTableManagerTest extends AbstractDatabaseTestCase
                 'idx_enterprise_title',
                 'idx_enterprise_start_date_title',
                 'idx_enterprise_created',
-                'idx_enterprise_captain'
+                'idx_enterprise_captain',
             ],
             array_keys($this->instance->getIndexes())
         );
@@ -400,27 +404,28 @@ class SQLServerTableManagerTest extends AbstractDatabaseTestCase
     public function testAddConstraint(): void
     {
         $logs = $this->logQueries(
-            fn () => $this->instance->addConstraint(
+            fn() => $this->instance->addConstraint(
                 ['captain', 'first_officer'],
                 Constraint::TYPE_UNIQUE
             )
         );
 
+        // phpcs:disable
         self::assertSqlFormatEquals(
             <<<SQL
-            SELECT [c].[ORDINAL_POSITION],
-                   [c].[COLUMN_DEFAULT],
-                   [c].[IS_NULLABLE],
-                   [c].[DATA_TYPE],
-                   [c].[CHARACTER_MAXIMUM_LENGTH],
-                   [c].[CHARACTER_OCTET_LENGTH],
-                   [c].[NUMERIC_PRECISION],
-                   [c].[NUMERIC_SCALE],
-                   [c].[COLUMN_NAME],
+            SELECT [C].[ORDINAL_POSITION],
+                   [C].[COLUMN_DEFAULT],
+                   [C].[IS_NULLABLE],
+                   [C].[DATA_TYPE],
+                   [C].[CHARACTER_MAXIMUM_LENGTH],
+                   [C].[CHARACTER_OCTET_LENGTH],
+                   [C].[NUMERIC_PRECISION],
+                   [C].[NUMERIC_SCALE],
+                   [C].[COLUMN_NAME],
                    [sc].[is_identity]
-            FROM [INFORMATION_SCHEMA].[COLUMNS] AS [c]
-                     LEFT JOIN [sys].[columns] AS [sc] ON [sc].[object_id] = object_id(c.TABLE_NAME)
-                AND [sc].[name] = [c].[COLUMN_NAME]
+            FROM [INFORMATION_SCHEMA].[COLUMNS] AS [C]
+                     LEFT JOIN [sys].[columns] AS [sc] ON [sc].[object_id] = object_id(C.TABLE_NAME)
+                AND [sc].[NAME] = [C].[COLUMN_NAME]
             WHERE [TABLE_NAME] = 'enterprise'
               AND [TABLE_SCHEMA] != 'INFORMATION_SCHEMA';
             SELECT [T].[TABLE_NAME],
@@ -470,6 +475,7 @@ class SQLServerTableManagerTest extends AbstractDatabaseTestCase
             SQL,
             implode(";\n", $logs)
         );
+        // phpcs:enable
     }
 
     /**
@@ -527,7 +533,7 @@ class SQLServerTableManagerTest extends AbstractDatabaseTestCase
      */
     public function testTruncate(): void
     {
-        $logs = $this->logQueries(fn () => $this->instance->truncate());
+        $logs = $this->logQueries(fn() => $this->instance->truncate());
 
         self::assertEquals('TRUNCATE TABLE [enterprise]', $logs[0]);
     }
@@ -553,7 +559,7 @@ class SQLServerTableManagerTest extends AbstractDatabaseTestCase
                 'created',
                 'updated',
                 'deleted',
-                'params'
+                'params',
             ],
             $cols
         );
@@ -595,7 +601,7 @@ class SQLServerTableManagerTest extends AbstractDatabaseTestCase
                 'created',
                 'updated',
                 'deleted',
-                'params'
+                'params',
             ],
             $this->instance->getColumnNames()
         );
@@ -682,7 +688,7 @@ class SQLServerTableManagerTest extends AbstractDatabaseTestCase
                 'const_enterprise_alias',
                 'idx_enterprise_title',
                 'idx_enterprise_start_date_title',
-                'idx_enterprise_created'
+                'idx_enterprise_created',
             ],
             $indexes
         );
@@ -697,23 +703,23 @@ class SQLServerTableManagerTest extends AbstractDatabaseTestCase
     {
         $this->instance->schemaName = 'dbo';
 
-        $logs = $this->logQueries(fn () => $this->instance->getColumns());
+        $logs = $this->logQueries(fn() => $this->instance->getColumns());
 
         self::assertSqlFormatEquals(
             <<<SQL
-            SELECT [c].[ORDINAL_POSITION],
-                   [c].[COLUMN_DEFAULT],
-                   [c].[IS_NULLABLE],
-                   [c].[DATA_TYPE],
-                   [c].[CHARACTER_MAXIMUM_LENGTH],
-                   [c].[CHARACTER_OCTET_LENGTH],
-                   [c].[NUMERIC_PRECISION],
-                   [c].[NUMERIC_SCALE],
-                   [c].[COLUMN_NAME],
+            SELECT [C].[ORDINAL_POSITION],
+                   [C].[COLUMN_DEFAULT],
+                   [C].[IS_NULLABLE],
+                   [C].[DATA_TYPE],
+                   [C].[CHARACTER_MAXIMUM_LENGTH],
+                   [C].[CHARACTER_OCTET_LENGTH],
+                   [C].[NUMERIC_PRECISION],
+                   [C].[NUMERIC_SCALE],
+                   [C].[COLUMN_NAME],
                    [sc].[is_identity]
-            FROM [INFORMATION_SCHEMA].[COLUMNS] AS [c]
-                     LEFT JOIN [sys].[columns] AS [sc] ON [sc].[object_id] = object_id(c.TABLE_NAME)
-                AND [sc].[name] = [c].[COLUMN_NAME]
+            FROM [INFORMATION_SCHEMA].[COLUMNS] AS [C]
+                     LEFT JOIN [sys].[columns] AS [sc] ON [sc].[object_id] = object_id(C.TABLE_NAME)
+                AND [sc].[NAME] = [C].[COLUMN_NAME]
             WHERE [TABLE_NAME] = 'enterprise'
               AND [TABLE_SCHEMA] = 'dbo'
             SQL,

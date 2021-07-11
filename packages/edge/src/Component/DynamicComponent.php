@@ -13,7 +13,7 @@ namespace Windwalker\Edge\Component;
 
 use Windwalker\Edge\Edge;
 use Windwalker\Utilities\Attributes\Prop;
-use Windwalker\Utilities\StrNormalize;
+use Windwalker\Utilities\StrNormalise;
 
 use function Windwalker\collect;
 
@@ -49,63 +49,39 @@ class DynamicComponent extends AbstractComponent
      */
     public function render(): \Closure|string
     {
-        return function ($edge, $data) {
-            try {
-                $bindings = $this->bindings($class = $this->classForComponent());
-
-                $template = <<<'EOF'
-<?php extract(\Windwalker\collect($attributes->getAttributes())->mapWithKeys(function ($value, $key) { return [Windwalker\Utilities\StrNormalize::toCamelCase(str_replace([':', '.'], ' ', $key)) => $value]; })->dump(), EXTR_SKIP); ?>
+        // phpcs:disable
+        $template = <<<'EOF'
+<?php extract(\Windwalker\collect($attributes->getAttributes())->mapWithKeys(function ($value, $key) { return [Windwalker\Utilities\StrNormalise::toCamelCase(str_replace([':', '.'], ' ', $key)) => $value]; })->dump(), EXTR_SKIP); ?>
 {{ props }}
 <x-{{ is }} {{ bindings }} {{ attributes }}>
 {{ slots }}
 {{ defaultSlot }}
 </x-{{ is }}>
 EOF;
+        // phpcs:enable
 
-                return str_replace(
-                    [
-                        '{{ is }}',
-                        '{{ props }}',
-                        '{{ bindings }}',
-                        '{{ attributes }}',
-                        '{{ slots }}',
-                        '{{ defaultSlot }}',
-                    ],
-                    [
-                        $this->is,
-                        $this->compileProps($bindings),
-                        $this->compileBindings($bindings),
-                        class_exists($class) ? '{{ $attributes }}' : '',
-                        $this->compileSlots($data['__edge_slots']),
-                        '{!! $slot ?? "" !!}',
-                    ],
-                    $template
-                );
-            } catch (\OutOfRangeException) {
-                $template = <<<'EOF'
-<?php extract(\Windwalker\collect($attributes->getAttributes())->mapWithKeys(function ($value, $key) { return [Windwalker\Utilities\StrNormalize::toCamelCase(str_replace([':', '.'], ' ', $key)) => $value]; })->dump(), EXTR_SKIP); ?>
-<{{ is }} {{ attributes }}>
-{{ slots }}
-{{ defaultSlot }}
-</{{ is }}>
-EOF;
+        return function ($edge, $data) use ($template) {
+            $bindings = $this->bindings($class = $this->classForComponent());
 
-                return str_replace(
-                    [
-                        '{{ is }}',
-                        '{{ attributes }}',
-                        '{{ slots }}',
-                        '{{ defaultSlot }}',
-                    ],
-                    [
-                        $this->is,
-                        '{!! $attributes !!}',
-                        $this->compileSlots($data['__edge_slots']),
-                        '{!! $slot ?? "" !!}',
-                    ],
-                    $template
-                );
-            }
+            return str_replace(
+                [
+                    '{{ is }}',
+                    '{{ props }}',
+                    '{{ bindings }}',
+                    '{{ attributes }}',
+                    '{{ slots }}',
+                    '{{ defaultSlot }}',
+                ],
+                [
+                    $this->is,
+                    $this->compileProps($bindings),
+                    $this->compileBindings($bindings),
+                    class_exists($class) ? '{{ $attributes }}' : '',
+                    $this->compileSlots($data['__edge_slots']),
+                    '{!! $slot ?? "" !!}',
+                ],
+                $template
+            );
         };
     }
 
@@ -122,11 +98,12 @@ EOF;
             return '';
         }
 
-        return '@props([\'' . implode(
+        return '@props([\'' .
+            implode(
                 '\',\'',
                 collect($bindings)->map(
                     function ($dataKey) {
-                        return StrNormalize::toCamelCase($dataKey);
+                        return StrNormalise::toCamelCase($dataKey);
                     }
                 )
                     ->dump()
@@ -145,7 +122,7 @@ EOF;
         return (string) collect($bindings)
             ->map(
                 function ($key) {
-                    return ':' . $key . '="$' . StrNormalize::toCamelCase(str_replace([':', '.'], ' ', $key)) . '"';
+                    return ':' . $key . '="$' . StrNormalise::toCamelCase(str_replace([':', '.'], ' ', $key)) . '"';
                 }
             )
             ->implode(' ');

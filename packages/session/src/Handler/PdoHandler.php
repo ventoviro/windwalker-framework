@@ -288,7 +288,7 @@ ON DUPLICATE KEY UPDATE %n = VALUES(%n), %n = VALUES(%n)",
                     '10',
                     '>='
                 ):
-                // @codingStandardsIgnoreStart
+                // phpcs:disable
                 // MERGE is only available since SQL Server 2008 and must be terminated by semicolon
                 // It also requires HOLDLOCK according to http://weblogs.sqlteam.com/dang/archive/2009/01/31/UPSERT-Race-Condition-With-MERGE.aspx
                 return $query->format(

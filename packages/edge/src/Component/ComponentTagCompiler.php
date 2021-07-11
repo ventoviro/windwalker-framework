@@ -16,8 +16,7 @@ use Windwalker\Data\Collection;
 use Windwalker\Edge\Edge;
 use Windwalker\Utilities\Attributes\Prop;
 use Windwalker\Utilities\Str;
-use Windwalker\Utilities\StrNormalize;
-
+use Windwalker\Utilities\StrNormalise;
 use Windwalker\Utilities\Wrapper\RawWrapper;
 
 use function Windwalker\collect;
@@ -212,7 +211,7 @@ class ComponentTagCompiler
 
         $data = $data->mapWithKeys(
             function ($value, $key) {
-                return [StrNormalize::toCamelCase($key) => $value];
+                return [StrNormalise::toCamelCase($key) => $value];
             }
         );
 
@@ -241,7 +240,8 @@ class ComponentTagCompiler
             unset($attributes['']);
         }
 
-        return "@component('{$class}', '{$component}', [" . $this->attributesToString(
+        return "@component('{$class}', '{$component}', [" .
+            $this->attributesToString(
                 $parameters,
                 false
             ) . '])
@@ -280,7 +280,7 @@ class ComponentTagCompiler
                 return $component;
             }
 
-            throw new \OutOfRangeException(
+            throw new \InvalidArgumentException(
                 "Unable to locate class or view [{$class}] for component [{$component}]."
             );
         }
@@ -289,7 +289,7 @@ class ComponentTagCompiler
             return $component;
         }
 
-        throw new \OutOfRangeException(
+        throw new \InvalidArgumentException(
             "Unable to locate a class or view for component [{$component}]."
         );
     }
@@ -312,14 +312,14 @@ class ComponentTagCompiler
         }
 
         $properties = (new \ReflectionClass($class))->getProperties();
-        $props      = [];
+        $props = [];
 
         foreach ($properties as $property) {
             AttributesAccessor::runAttributeIfExists(
                 $property,
                 Prop::class,
                 function ($prop, \ReflectionProperty $property) use (&$attributes, &$props) {
-                    $propName = StrNormalize::toKebabCase($property->getName());
+                    $propName = StrNormalise::toKebabCase($property->getName());
 
                     if ($attributes[$propName] ?? null) {
                         $props[$property->getName()] = $attributes[$propName];
@@ -407,7 +407,7 @@ class ComponentTagCompiler
         return collect($matches)->mapWithKeys(
             function ($match) {
                 $attribute = $match['attribute'];
-                $value     = $match['value'] ?? null;
+                $value = $match['value'] ?? null;
 
                 if (is_null($value)) {
                     $value = 'true';
@@ -533,15 +533,18 @@ class ComponentTagCompiler
                 function (string &$value, string $attribute) use ($escapeBound) {
                     if ($value instanceof RawWrapper) {
                         $value = $value();
+
                         return;
                     }
 
                     $value = $escapeBound
-                        && isset($this->boundAttributes[$attribute])
-                        && $value !== 'true'
-                        && !is_numeric($value)
+                    && isset($this->boundAttributes[$attribute])
+                    && $value !== 'true'
+                    // phpcs:disable
+                    && !is_numeric($value)
                         ? "'{$attribute}' => \Windwalker\Edge\Compiler\EdgeCompiler::sanitizeComponentAttribute({$value})"
                         : "'{$attribute}' => {$value}";
+                    // phpcs:enable
                 }
             )
             ->implode(',');

@@ -15,7 +15,6 @@ use DOMNode;
 use Windwalker\Data\Collection;
 use Windwalker\DOM\DOMElement;
 use Windwalker\DOM\HTMLFactory;
-
 use Windwalker\Utilities\TypeCast;
 
 use function Windwalker\DOM\h;
@@ -94,7 +93,7 @@ class ListField extends AbstractField
         }
 
         $option = clone $option;
-        $value  = $this->getValue();
+        $value = $this->getValue();
 
         if (!$this->isMultiple()) {
             if (value_compare($option['value'], $value, '==')) {

@@ -13,7 +13,6 @@ namespace Windwalker\Edge\Component;
 
 use Windwalker\Utilities\Arr;
 use Windwalker\Utilities\StrNormalize;
-
 use Windwalker\Utilities\TypeCast;
 
 use function Windwalker\collect;
