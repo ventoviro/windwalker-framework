@@ -16,8 +16,10 @@ use Windwalker\Database\Hydrator\FieldHydratorInterface;
 use Windwalker\Database\Hydrator\HydratorInterface;
 use Windwalker\ORM\Attributes\Column;
 use Windwalker\ORM\Attributes\Mapping;
+use Windwalker\ORM\Exception\CastingException;
 use Windwalker\ORM\Metadata\EntityMetadata;
 use Windwalker\ORM\ORM;
+use Windwalker\Utilities\TypeCast;
 
 /**
  * The EntityHydrator class.
@@ -153,14 +155,31 @@ class EntityHydrator implements FieldHydratorInterface
         $casts = array_reverse($casts);
 
         foreach ($casts as $cast) {
-            $value = $metadata->getORM()->getAttributesResolver()
-                ->call(
-                    $cast[1],
-                    [
-                        $value,
-                        'orm' => $metadata->getORM(),
-                    ]
+            try {
+                $value = $metadata->getORM()->getAttributesResolver()
+                    ->call(
+                        $cast[1],
+                        [
+                            $value,
+                            'orm' => $metadata->getORM(),
+                        ]
+                    );
+            } catch (\Throwable $e) {
+                $castName = is_object($cast[1]) ? $cast[1]::class : json_encode($cast[1]);
+
+                throw new CastingException(
+                    sprintf(
+                        'Error when extracting %s:%s to %s with value %s : %s',
+                        $metadata->getClassName(),
+                        $colName,
+                        $castName,
+                        get_debug_type($value),
+                        $e->getMessage()
+                    ),
+                    $e->getCode(),
+                    $e
                 );
+            }
         }
 
         return $value;
@@ -175,14 +194,31 @@ class EntityHydrator implements FieldHydratorInterface
         $casts = $metadata->getCastManager()->getFieldCasts($colName);
 
         foreach ($casts as $cast) {
-            $value = $metadata->getORM()->getAttributesResolver()
-                ->call(
-                    $cast[0],
-                    [
-                        $value,
-                        'orm' => $metadata->getORM(),
-                    ]
+            try {
+                $value = $metadata->getORM()->getAttributesResolver()
+                    ->call(
+                        $cast[0],
+                        [
+                            $value,
+                            'orm' => $metadata->getORM(),
+                        ]
+                    );
+            } catch (\Throwable $e) {
+                $castName = is_object($cast[0]) ? $cast[0]::class : json_encode($cast[0]);
+
+                throw new CastingException(
+                    sprintf(
+                        'Error when hydrating %s:%s to %s with value %s : %s',
+                        $metadata->getClassName(),
+                        $colName,
+                        $castName,
+                        get_debug_type($value),
+                        $e->getMessage()
+                    ),
+                    $e->getCode(),
+                    $e
                 );
+            }
         }
 
         return $value;

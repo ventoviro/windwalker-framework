@@ -43,7 +43,7 @@ class CustomHtmlTest extends TestCase
             'Flower'
         );
 
-        $this->instance->setAttribute('content', h('div', ['data-test-element' => true], 'Sakura'));
+        $this->instance->content(h('div', ['data-test-element' => true], 'Sakura'));
     }
 
     /**

@@ -945,7 +945,7 @@ SQL
 
             // Where with raw wrapper
             'Where with raw wrapper' => [
-                'SELECT * FROM "a" WHERE foo = YEAR(DATE)',
+                'SELECT * FROM "a" WHERE foo = YEAR(date)',
                 [raw('foo'), raw('YEAR(date)')],
             ],
         ];
@@ -1233,7 +1233,7 @@ SQL
 
             // Having with raw wrapper
             'Having with raw wrapper' => [
-                'SELECT * FROM "a" HAVING foo = YEAR(DATE)',
+                'SELECT * FROM "a" HAVING foo = YEAR(date)',
                 [raw('foo'), raw('YEAR(date)')],
             ],
         ];
@@ -1685,7 +1685,11 @@ SQL
             $query->clear($type);
 
             // Check the type has been cleared.
-            $this->assertNull($query->getType(), 'Query property: ' . $type . ' should be null.');
+            $this->assertEquals(
+                Query::TYPE_SELECT,
+                $query->getType(),
+                'Query property: ' . $type . ' should be null.'
+            );
 
             $this->assertNull($query->{'get' . ucfirst($type)}(), $type . ' should be null.');
 

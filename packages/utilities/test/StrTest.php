@@ -895,12 +895,12 @@ class StrTest extends TestCase
      *
      * @dataProvider wrapProvider
      */
-    public function testWrap(string $string, string $expected, $substring = null)
+    public function testSurrounds(string $string, string $expected, $substring = null)
     {
         if ($substring === null) {
-            self::assertEquals($expected, Str::wrap($string));
+            self::assertEquals($expected, Str::surrounds($string));
         } else {
-            self::assertEquals($expected, Str::wrap($string, $substring));
+            self::assertEquals($expected, Str::surrounds($string, $substring));
         }
     }
 

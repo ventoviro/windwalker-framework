@@ -31,7 +31,7 @@ class CustomHtmlField extends AbstractField
      *
      * @return  mixed
      */
-    public function buildInput(DOMElement $input, array $options = []): string
+    public function buildFieldElement(DOMElement $input, array $options = []): string
     {
         $content = $this->getContent();
 

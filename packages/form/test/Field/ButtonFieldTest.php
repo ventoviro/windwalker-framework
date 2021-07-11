@@ -74,10 +74,12 @@ class ButtonFieldTest extends TestCase
      */
     public function testRender()
     {
+        // phpcs:disable
         $html = <<<HTML
 <button id="test-field" name="flower" class="stub-flower" data-field-input data-test-element disabled readonly type="button">Sakura</button>
 HTML;
 
+        // phpcs:enable
         self::assertHtmlFormatEquals($html, $this->instance->renderInput());
     }
 }

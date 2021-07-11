@@ -129,6 +129,10 @@ class FileObject extends \SplFileInfo
         $path = $this->getRelativePath($root);
         $basename = $this->getBasename();
 
+        if ($path === '') {
+            return $basename;
+        }
+
         return $path . DIRECTORY_SEPARATOR . $basename;
     }
 
@@ -149,7 +153,7 @@ class FileObject extends \SplFileInfo
             throw new \InvalidArgumentException('No root path provided');
         }
 
-        $path = Path::normalize($this->getPathname());
+        $path = Path::normalize($this->getPath());
         $root = Path::normalize(static::unwrap($root));
 
         if ((string) $root === '') {

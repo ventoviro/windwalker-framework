@@ -30,7 +30,7 @@ class FileObjectTest extends AbstractVfsTestCase
     /**
      * @var Filesystem
      */
-    protected $instance;
+    protected Filesystem $instance;
 
     public function testItemsFirst(): void
     {
@@ -300,8 +300,8 @@ class FileObjectTest extends AbstractVfsTestCase
 
         self::assertPathEquals('vfs://root/files/folder1/foo/bar', $file->getRelativePathname());
         self::assertPathEquals(
-            '',
-            $file->getRelativePathname('vfs://root/files\\folder1/foo/bar')
+            'bar',
+            $file->getRelativePathname('vfs://root/files\\folder1/foo')
         );
         self::assertPathEquals(
             'vfs://root/files/folder1/foo/bar',

@@ -273,7 +273,7 @@ class Worker implements EventListenableInterface
                 }
             );
 
-            pcntl_alarm($timeout + $options['sleep'] ?? null);
+            pcntl_alarm((int) ($timeout + $options['sleep']));
         }
 
         // Wait job complete then stop

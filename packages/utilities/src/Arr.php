@@ -735,10 +735,18 @@ abstract class Arr
                     continue;
                 }
 
-                $value = static::get($item, $column, '');
+                if (method_exists($item, '__get')) {
+                    $value = $item->__get($column);
 
-                if ($keyName !== null) {
-                    $keyName = static::get($item, $keyName, '');
+                    if ($keyName !== null) {
+                        $keyName = $item->__get($keyName);
+                    }
+                } else {
+                    $value = static::get($item, $column, '');
+
+                    if ($keyName !== null) {
+                        $keyName = static::get($item, $keyName, '');
+                    }
                 }
             }
 

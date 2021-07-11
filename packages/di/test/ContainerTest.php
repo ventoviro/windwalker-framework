@@ -22,6 +22,7 @@ use Windwalker\DI\Attributes\AttributeType;
 use Windwalker\DI\Attributes\Inject;
 use Windwalker\DI\Container;
 use Windwalker\DI\Exception\DefinitionException;
+use Windwalker\DI\Exception\DefinitionResolveException;
 use Windwalker\DI\Exception\DependencyResolutionException;
 use Windwalker\DI\Test\Injection\HelloInner;
 use Windwalker\DI\Test\Injection\HelloWrapper;
@@ -353,7 +354,7 @@ class ContainerTest extends TestCase
 
         self::assertExpectedException(
             fn() => $container->newInstance(Foo::class, []),
-            DependencyResolutionException::class
+            DefinitionResolveException::class
         );
 
         // force autowire at calling
@@ -699,8 +700,8 @@ class ContainerTest extends TestCase
         $hello = $this->instance->resolve(HelloInner::class);
 
         self::assertEquals(
-            'Hello',
-            (string) $hello->logs[0]
+            'World',
+            (string) $hello->foo
         );
     }
 

@@ -18,6 +18,8 @@ use PHPUnit\Framework\TestCase;
 use Windwalker\Filesystem\FileObject;
 use Windwalker\Filesystem\Path;
 
+use function Evenement\Tests\setGlobalTestData;
+
 /**
  * The AbstractFilesystemTest class.
  *
@@ -30,7 +32,7 @@ abstract class AbstractVfsTestCase extends TestCase
     /**
      * @var array
      */
-    protected static $structure = [
+    protected static array $structure = [
         'files' => [
             'folder1' => [
                 'level2' => [
@@ -50,12 +52,12 @@ abstract class AbstractVfsTestCase extends TestCase
      *
      * @var string
      */
-    protected static $baseDir = 'vfs://root/files';
+    protected static string $baseDir = 'vfs://root/files';
 
     /**
-     * @var vfsStreamDirectory
+     * @var ?vfsStreamDirectory
      */
-    protected $root;
+    protected ?vfsStreamDirectory $root = null;
 
     /**
      * setUpBeforeClass

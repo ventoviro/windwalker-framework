@@ -74,6 +74,7 @@ class ListFieldTest extends TestCase
      */
     public function testRender()
     {
+        // phpcs:disable
         $html = <<<HTML
 <select id="input-flower" name="flower" class="stub-flower" data-field-input disabled onchange="return false;" size="10">
     <option value selected="selected"></option>
@@ -82,7 +83,7 @@ class ListFieldTest extends TestCase
 </select>
 HTML;
 
-        self::assertDomStringEqualsDomString($html, $this->instance->renderInput());
+        self::assertDomFormatEquals($html, $this->instance->renderInput());
 
         $this->instance->setValue(1);
 
@@ -94,7 +95,7 @@ HTML;
 </select>
 HTML;
 
-        self::assertDomStringEqualsDomString($html, $this->instance->renderInput());
+        self::assertDomFormatEquals($html, $this->instance->renderInput());
 
         $this->instance->setAttribute('multiple', true);
 
@@ -106,7 +107,8 @@ HTML;
 </select>
 HTML;
 
-        self::assertDomStringEqualsDomString($html, $this->instance->renderInput());
+        self::assertDomFormatEquals($html, $this->instance->renderInput());
+        // php:disable
     }
 
     /**

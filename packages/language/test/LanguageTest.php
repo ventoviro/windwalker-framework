@@ -25,7 +25,7 @@ class LanguageTest extends \PHPUnit\Framework\TestCase
      *
      * @var Language
      */
-    protected $instance;
+    protected Language $instance;
 
     /**
      * Sets up the fixture, for example, opens a network connection.
@@ -73,6 +73,8 @@ class LanguageTest extends \PHPUnit\Framework\TestCase
      */
     public function testTrans()
     {
+        $this->instance->setLocale('zh-TW');
+
         self::assertEquals('花', $this->instance->trans('WINDWALKER_LANGUAGE_TEST_FLOWER'));
         self::assertEquals('Olive', $this->instance->trans('WINDWALKER_LANGUAGE_TEST_Olive'));
         self::assertEquals('Sunflower', $this->instance->trans('Windwalker Language Test Sunflower'));
@@ -177,6 +179,7 @@ class LanguageTest extends \PHPUnit\Framework\TestCase
 
     public function testParent()
     {
+        $this->instance->setLocale('zh-TW');
         $child = $this->instance->extract('windwalker.language');
         $r = $child->trans('test.flower');
 

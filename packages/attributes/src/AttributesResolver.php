@@ -141,7 +141,7 @@ class AttributesResolver extends ObjectBuilder
      *
      * @return mixed
      */
-    public function call(callable $callable, $args = [], ?object $context = null): mixed
+    public function call(callable $callable, array $args = [], ?object $context = null): mixed
     {
         if ($this->invokeHandler) {
             return ($this->invokeHandler)($callable, $args, $context);
@@ -193,7 +193,20 @@ class AttributesResolver extends ObjectBuilder
         foreach ($parameters as $i => $parameter) {
             $key = $parameter->getName();
 
-            if (array_key_exists($parameter->getName(), $args)) {
+            if ($parameter->isVariadic()) {
+                $trailing = [];
+
+                foreach ($args as $key => $v) {
+                    if (is_numeric($key)) {
+                        $trailing[] = &$args[$key];
+                    }
+
+                    unset($v);
+                }
+
+                $trailing = array_slice($trailing, $i);
+                $newArgs = array_merge($newArgs, $trailing);
+            } elseif (array_key_exists($parameter->getName(), $args)) {
                 $newArgs[$key] = &$args[$parameter->getName()];
             } elseif (array_key_exists($i, $args)) {
                 $newArgs[$key] = &$args[$i];

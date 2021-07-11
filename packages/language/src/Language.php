@@ -181,7 +181,7 @@ class Language implements LanguageInterface
             if ($this->isDebug()) {
                 $this->orphans[$fullId] = $this->backtrace($fullId);
 
-                $id = '??' . $fullId . '??';
+                $id = '??' . $id . '??';
             }
 
             return [null, $id];

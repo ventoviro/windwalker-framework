@@ -36,13 +36,15 @@ class NestedSetMapperTest extends AbstractORMTestCase
         );
     }
 
-    public function testCheckParentIdEmpty()
+    public function testCheckInvalidParentId()
     {
         $this->expectException(NestedHandleException::class);
-        $this->expectExceptionMessage('Invalid parent_id: 0');
+        $this->expectExceptionMessage('ReferenceId is negative.');
 
         $child = new StubNestedSet();
         $child->setLft(2);
+
+        $this->instance->setPosition($child, -1, Position::LAST_CHILD);
 
         $this->instance->saveOne($child);
     }

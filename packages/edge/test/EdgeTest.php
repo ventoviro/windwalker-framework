@@ -163,7 +163,7 @@ HTML,
 
         self::assertStringDataEquals(
             <<<HTML
-            <?php /* File: $path */ ?><?php ?>
+            <?php /* File: $path */ ?>
             <?php echo \$__edge->escape(\$this::class); ?>
             HTML,
             file_get_contents(

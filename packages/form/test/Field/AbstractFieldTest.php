@@ -70,6 +70,7 @@ class AbstractFieldTest extends TestCase
      */
     public function testRenderInput()
     {
+        // phpcs:disable
         $expect = <<<HTML
 <input id="input-flower" name="flower" class="stub-flower" data-field-input placeholder="The Flower" type="text">
 HTML;
@@ -111,6 +112,7 @@ HTML;
 HTML;
 
         self::assertHtmlFormatEquals($expect, $this->instance->renderInput());
+        // phpcs:enable
     }
 
     /**
@@ -370,6 +372,7 @@ HTML;
     {
         $this->instance->appendNamespace('wind');
 
+        // phpcs:disable
         $expect = <<<HTML
 <input id="input-wind-flower" name="wind[flower]" class="stub-flower" data-field-input placeholder="The Flower" type="text">
 HTML;
@@ -382,6 +385,7 @@ HTML;
 <input id="input-wind-walker-flower" name="wind[walker][flower]" class="stub-flower" data-field-input placeholder="The Flower" type="text">
 HTML;
 
+        // phpcs:enable
         self::assertHtmlFormatEquals($expect, $this->instance->renderInput());
     }
 

@@ -11,13 +11,14 @@ declare(strict_types=1);
 
 namespace Windwalker\DI\Test\Injection;
 
+use Attribute;
 use Windwalker\DI\Attributes\AttributeHandler;
 use Windwalker\DI\Attributes\ContainerAttributeInterface;
 
 /**
  * The HelloWrapper class.
  */
-#[\Attribute]
+#[Attribute]
 class HelloWrapper implements ContainerAttributeInterface
 {
     /**
@@ -33,8 +34,7 @@ class HelloWrapper implements ContainerAttributeInterface
     public function __invoke(AttributeHandler $handler): callable
     {
         return function (...$args) use ($handler) {
-            show($args);
-            return $handler(...$args);
+            return $this;
         };
     }
 }

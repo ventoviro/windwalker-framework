@@ -52,8 +52,8 @@ class SelectorTest extends AbstractORMTestCase
                         'id' => '2',
                         'title' => 'Bar',
                         'ordering' => '2',
-                        'params' => ''
-                    ]
+                        'params' => '',
+                    ],
                 ],
                 [
                     'id' => '2',
@@ -67,8 +67,8 @@ class SelectorTest extends AbstractORMTestCase
                         'id' => '2',
                         'title' => 'Bar',
                         'ordering' => '2',
-                        'params' => ''
-                    ]
+                        'params' => '',
+                    ],
                 ],
                 [
                     'id' => '3',
@@ -82,9 +82,9 @@ class SelectorTest extends AbstractORMTestCase
                         'id' => '1',
                         'title' => 'Foo',
                         'ordering' => '1',
-                        'params' => ''
-                    ]
-                ]
+                        'params' => '',
+                    ],
+                ],
             ]
         );
     }
@@ -159,7 +159,7 @@ class SelectorTest extends AbstractORMTestCase
                 'id' => 2,
                 'title' => 'Bar',
                 'ordering' => 2,
-                'params' => '""'
+                'params' => '',
             ],
             $this->instance->getORM()->extractEntity($item->c)
         );

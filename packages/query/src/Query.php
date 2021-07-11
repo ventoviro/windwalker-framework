@@ -1831,7 +1831,7 @@ class Query implements QueryInterface, BindableInterface, \IteratorAggregate
             'bounded' => [],
         ];
 
-        if ($clauses === null) {
+        if ($clauses === []) {
             $clauses = array_keys($handlers);
         }
 

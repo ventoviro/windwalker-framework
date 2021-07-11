@@ -71,9 +71,9 @@ class StrNormaliseTest extends TestCase
     public function seedTestToKebabCase(): array
     {
         return [
-            ['Foo-Bar', 'Foo Bar'],
-            ['Foo-Bar', 'Foo-Bar'],
-            ['Foo-Bar', 'Foo_Bar'],
+            ['foo-bar', 'Foo Bar'],
+            ['foo-bar', 'Foo-Bar'],
+            ['foo-bar', 'Foo_Bar'],
             ['foo-bar', 'foo bar'],
             ['foo-bar', 'foo-bar'],
             ['foo-bar', 'foo_bar'],

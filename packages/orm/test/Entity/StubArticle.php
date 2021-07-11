@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace Windwalker\ORM\Test\Entity;
 
-use Windwalker\Event\Attributes\EventSubscriber;
-use Windwalker\Event\Attributes\ListenTo;
+use DateTimeImmutable;
+use Windwalker\Data\Collection;
 use Windwalker\ORM\Attributes\AutoIncrement;
 use Windwalker\ORM\Attributes\Cast;
 use Windwalker\ORM\Attributes\Column;
@@ -46,8 +46,8 @@ class StubArticle
     protected int $state = 1;
 
     #[Column('created')]
-    #[Cast(\DateTimeImmutable::class)]
-    protected \DateTimeImmutable $created;
+    #[Cast(DateTimeImmutable::class)]
+    protected DateTimeImmutable $created;
 
     #[Column('created_by')]
     protected int $createdBy = 0;
@@ -57,14 +57,15 @@ class StubArticle
     #[Cast('array')]
     protected ?array $params = [];
 
-    #[Cast(StubCategory::class, strategy: Cast::USE_HYDRATOR)]
-    public ?StubCategory $c = null;
+    #[Cast(StubCategory::class, options: Cast::USE_HYDRATOR)]
+    public StubCategory|Collection|null $c = null;
 
     public static int $counter = 0;
 
     #[AfterSaveEvent]
-    public static function afterSave(AfterSaveEvent $event): void
-    {
+    public static function afterSave(
+        AfterSaveEvent $event
+    ): void {
         static::$counter++;
 
         $data = $event->getData();
@@ -134,19 +135,19 @@ class StubArticle
     }
 
     /**
-     * @return \DateTimeImmutable
+     * @return DateTimeImmutable
      */
-    public function getCreated(): \DateTimeImmutable
+    public function getCreated(): DateTimeImmutable
     {
         return $this->created;
     }
 
     /**
-     * @param  \DateTimeImmutable  $created
+     * @param  DateTimeImmutable  $created
      *
      * @return  static  Return self to support chaining.
      */
-    public function setCreated(\DateTimeImmutable $created): static
+    public function setCreated(DateTimeImmutable $created): static
     {
         $this->created = $created;
 
