@@ -25,6 +25,7 @@ use TypeError;
 use UnexpectedValueException;
 use Windwalker\DI\Definition\DefinitionInterface;
 use Windwalker\DI\Definition\ObjectBuilderDefinition;
+use Windwalker\DI\Exception\DefinitionException;
 use Windwalker\DI\Exception\DefinitionResolveException;
 use Windwalker\DI\Exception\DependencyResolutionException;
 use Windwalker\Utilities\Reflection\ReflectionCallable;
@@ -141,7 +142,7 @@ class DependencyResolver
             $args = array_merge($this->container->whenCreating($class)->getArguments(), $args);
 
             $args = $this->getMethodArgs($constructor, $args, $options);
-        } catch (DependencyResolutionException $e) {
+        } catch (DependencyResolutionException|DefinitionException $e) {
             throw new DependencyResolutionException(
                 $e->getMessage() . ' - Target class: ' . $class,
                 $e->getCode(),
