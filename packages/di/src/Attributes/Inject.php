@@ -55,6 +55,7 @@ class Inject implements ContainerAttributeInterface
     public function __invoke(
         AttributeHandler $handler
     ): callable {
+        /** @var ReflectionProperty|ReflectionParameter $reflector */
         $reflector = $handler->getReflector();
 
         return function (...$args) use ($handler, $reflector) {
@@ -66,9 +67,7 @@ class Inject implements ContainerAttributeInterface
                 throw new RuntimeException('No object to inject.');
             }
 
-            $varClass = $this->getTypeName($reflector);
-
-            $value = $this->resolveInjectable($handler->getContainer(), $varClass);
+            $value = $this->resolveInjectable($handler->getContainer(), $reflector);
 
             $reflector->setValue($handler->getObject(), $value);
 
@@ -78,9 +77,7 @@ class Inject implements ContainerAttributeInterface
 
     protected function handleParameter(AttributeHandler $handler): mixed
     {
-        $varClass = $this->getTypeName($handler->getReflector());
-
-        return $this->resolveInjectable($handler->getContainer(), $varClass);
+        return $this->resolveInjectable($handler->getContainer(), $handler->getReflector());
     }
 
     protected function getTypeName(ReflectionProperty|ReflectionParameter $reflector): mixed
@@ -108,38 +105,35 @@ class Inject implements ContainerAttributeInterface
 
         if (!$varClass) {
             throw new DependencyResolutionException(
-                sprintf('unable to resolve injection of property: "%s".', $reflector->getName())
+                sprintf('Unable to resolve injection of property: "%s".', $reflector->getName())
             );
         }
 
         return $varClass;
     }
 
-    /**
-     * getInjectable
-     *
-     * @param  Container  $container
-     * @param  string     $class
-     *
-     * @return  mixed
-     *
-     * @throws DependencyResolutionException
-     */
-    public function resolveInjectable(Container $container, string $class): mixed
+    public function resolveInjectable(Container $container, ReflectionProperty|ReflectionParameter $reflector): mixed
     {
-        $id = $class;
+        $id = $this->getTypeName($reflector);
 
         if ($container->has($id)) {
             return $container->get($id, $this->forceNew);
         }
 
-        if (!class_exists($id)) {
+        if (class_exists($id) || interface_exists($id)) {
+            return $this->createObject($container, $id);
+        }
+
+        if (!$reflector->allowsNull()) {
+            $class = $reflector->getDeclaringClass();
+            $member = $reflector->getName();
+
             throw new DependencyResolutionException(
-                sprintf('Class: "%s" not exists.', $id)
+                "Unable to inject object $id for class $class::$member"
             );
         }
 
-        return $this->createObject($container, $id);
+        return null;
     }
 
     protected function createObject(Container $container, string $id): object

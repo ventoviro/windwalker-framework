@@ -30,6 +30,7 @@ use Windwalker\DI\Definition\ObjectBuilderDefinition;
 use Windwalker\DI\Definition\StoreDefinitionInterface;
 use Windwalker\DI\Exception\DefinitionException;
 use Windwalker\DI\Exception\DefinitionNotFoundException;
+use Windwalker\DI\Exception\DependencyResolutionException;
 use Windwalker\DI\Wrapper\CallbackWrapper;
 use Windwalker\Utilities\Arr;
 use Windwalker\Utilities\Assert\ArgumentsAssert;
@@ -225,7 +226,15 @@ class Container implements ContainerInterface, IteratorAggregate, Countable, Arr
             $definition->reset();
         }
 
-        return $definition->resolve($this);
+        try {
+            return $definition->resolve($this);
+        } catch (ContainerExceptionInterface $e) {
+            throw new DependencyResolutionException(
+                "Error when resolving $id: {$e->getMessage()}",
+                $e->getCode(),
+                $e
+            );
+        }
     }
 
     /**

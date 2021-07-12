@@ -14,6 +14,7 @@ namespace Windwalker\Filesystem;
 use InvalidArgumentException;
 use JetBrains\PhpStorm\Pure;
 use UnexpectedValueException;
+use Windwalker\Filesystem\Exception\FilesystemException;
 use Windwalker\Utilities\Arr;
 use Windwalker\Utilities\Str;
 
@@ -277,7 +278,7 @@ class Path
      */
     public static function stripTrailingDot(string $path, string $ds = DIRECTORY_SEPARATOR): string
     {
-        return Str::removeRight($path, DIRECTORY_SEPARATOR . '.');
+        return Str::removeRight($path, $ds . '.');
     }
 
     /**
@@ -347,9 +348,7 @@ class Path
         $file = preg_replace($regex, '', $file);
 
         // Remove any trailing dots, as those aren't ever valid file names.
-        $file = rtrim($file, '.');
-
-        return $file;
+        return rtrim($file, '.');
     }
 
     /**
@@ -361,7 +360,6 @@ class Path
      *
      * @since  3.4.5
      */
-    #[Pure]
     public static function makeUtf8Safe(
         string $file
     ): bool|string {
@@ -377,9 +375,6 @@ class Path
      *
      * @return bool Returns true if the path is absolute, false if it is
      *              relative or empty.
-     *
-     * @since 1.0 Added method.
-     * @since 2.0 Method now fails if $path is not a string.
      */
     public static function isAbsolute(string $path): bool
     {
@@ -427,6 +422,30 @@ class Path
     public static function isRelative(string $path): bool
     {
         return !static::isAbsolute($path);
+    }
+
+    /**
+     * Find root. if in xUNIX system will return `/`, if in Windows will return disk root name.
+     *
+     * @param  string  $path
+     *
+     * @return  string
+     */
+    public static function findRoot(string $path): string
+    {
+        if (DIRECTORY_SEPARATOR === '/') {
+            return '/';
+        }
+
+        if (!static::isAbsolute($path)) {
+            throw new FilesystemException("Finding root from a relative path: \"$path\".");
+        }
+
+        $paths = explode(DIRECTORY_SEPARATOR, static::normalize($path));
+
+        $root = array_shift($paths);
+
+        return Str::ensureRight($root, DIRECTORY_SEPARATOR);
     }
 
     /**

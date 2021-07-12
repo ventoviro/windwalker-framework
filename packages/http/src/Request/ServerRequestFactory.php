@@ -249,13 +249,15 @@ class ServerRequestFactory
     /**
      * Marshal the URI from the $_SERVER array and headers
      *
-     * @param  array  $server   The $_SERVER superglobal.
-     * @param  array  $headers  The headers variable from server.
+     * @param  array       $server   The $_SERVER superglobal.
+     * @param  array|null  $headers  The headers variable from server.
      *
      * @return  UriInterface  Prepared Uri object.
      */
-    public static function prepareUri(array $server, array $headers): UriInterface
+    public static function prepareUri(array $server, ?array $headers = null): UriInterface
     {
+        $headers ??= static::prepareHeaders($server);
+
         $uri = new Uri('');
 
         // URI scheme
