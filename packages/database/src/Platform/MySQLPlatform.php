@@ -427,12 +427,30 @@ class MySQLPlatform extends AbstractPlatform
                 $primaries[] = $column;
 
                 // Add AI later after table created.
-                $column = clone $column;
-                $column->autoIncrement(false);
+                // $column = clone $column;
+                // $column->autoIncrement(false);
             }
 
             $columns[$column->getColumnName()] = $this->getColumnExpression($column)
                 ->setName($this->db->quoteName($column->getColumnName()));
+        }
+
+        if ($primaries) {
+            $columns[] = sprintf(
+                'PRIMARY KEY (%s)',
+                implode(',', array_map(fn($col) => $this->getKeyColumnExpression($col), $primaries))
+            );
+        }
+
+        foreach ($schema->getIndexes() as $index) {
+            $columns[] = sprintf(
+                'INDEX %s (%s)',
+                $this->db->quoteName($index->indexName),
+                implode(
+                    ',',
+                    array_map(fn($col) => $this->getKeyColumnExpression($col), $index->getColumns())
+                )
+            );
         }
 
         $sql = $this->getGrammar()::build(
@@ -452,24 +470,24 @@ class MySQLPlatform extends AbstractPlatform
 
         $statement = $this->db->execute($sql);
 
-        if ($primaries) {
-            $this->addConstraint(
-                $table->getName(),
-                (new Constraint(Constraint::TYPE_PRIMARY_KEY, 'pk_' . $table->getName(), $table->getName()))
-                    ->columns($primaries),
-                $table->schemaName
-            );
-
-            foreach ($primaries as $column) {
-                if ($column->isAutoIncrement()) {
-                    $this->modifyColumn($table->getName(), $column, $table->schemaName);
-                }
-            }
-        }
-
-        foreach ($schema->getIndexes() as $index) {
-            $this->addIndex($table->getName(), $index, $table->schemaName);
-        }
+        // if ($primaries) {
+        //     $this->addConstraint(
+        //         $table->getName(),
+        //         (new Constraint(Constraint::TYPE_PRIMARY_KEY, 'pk_' . $table->getName(), $table->getName()))
+        //             ->columns($primaries),
+        //         $table->schemaName
+        //     );
+        //
+        //     foreach ($primaries as $column) {
+        //         if ($column->isAutoIncrement()) {
+        //             $this->modifyColumn($table->getName(), $column, $table->schemaName);
+        //         }
+        //     }
+        // }
+        //
+        // foreach ($schema->getIndexes() as $index) {
+        //     $this->addIndex($table->getName(), $index, $table->schemaName);
+        // }
 
         foreach ($schema->getConstraints() as $constraint) {
             $this->addConstraint($table->getName(), $constraint, $table->schemaName);
