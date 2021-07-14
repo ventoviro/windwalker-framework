@@ -104,6 +104,10 @@ class SelectorQuery extends Query implements EventAwareInterface
         $db = $this->getDb();
 
         foreach ($tables as $i => $clause) {
+            if ($clause->getValue() instanceof Query) {
+                continue;
+            }
+
             $tbm = $db->getTable(
                 static::convertClassToTable($clause->getValue(), $alias)
             );
