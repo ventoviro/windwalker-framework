@@ -700,4 +700,21 @@ class Str
             $encoding
         );
     }
+
+    public static function increment(string $string, string $pattern = '%s (%d)', ?int $n = null): string
+    {
+        $regex = str_replace(
+            ['%s', '%d'],
+            ['([\w\W]*)', '(\d+)'],
+            preg_quote($pattern, '/')
+        );
+
+        preg_match('/' . $regex . '/', $string, $matches);
+
+        if ($matches === []) {
+            return sprintf($pattern, $string, $n ?? 2);
+        }
+
+        return sprintf($pattern, $matches[1], $n ?? ($matches[2] + 1));
+    }
 }

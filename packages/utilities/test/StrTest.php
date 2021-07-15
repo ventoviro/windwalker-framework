@@ -1054,4 +1054,17 @@ class StrTest extends TestCase
 
         self::assertEquals('FooBarYoo', (string) $actual);
     }
+
+    public function testIncrement(): void
+    {
+        $title = 'Foo Bar';
+
+        self::assertEquals('Foo Bar (2)', $title = Str::increment($title));
+        self::assertEquals('Foo Bar (3)', $title = Str::increment($title));
+
+        $title = 'Foo Bar';
+
+        self::assertEquals('Foo Bar-2', $title = Str::increment($title, '%s-%d'));
+        self::assertEquals('Foo Bar-3', $title = Str::increment($title, '%s-%d'));
+    }
 }
