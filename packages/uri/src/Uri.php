@@ -577,6 +577,15 @@ class Uri implements UriInterface
         return $new;
     }
 
+    public function pathConcat(string $suffix): static
+    {
+        $new = clone $this;
+
+        $new->path .= $suffix;
+
+        return $new;
+    }
+
     /**
      * Magic method to get the string representation of the URI object.
      *
@@ -592,7 +601,7 @@ class Uri implements UriInterface
     /**
      * Returns full uri string.
      *
-     * @param  array  $parts  An array specifying the parts to render.
+     * @param  int  $parts  An array specifying the parts to render.
      *
      * @return  string  The rendered URI string.
      *
@@ -603,8 +612,7 @@ class Uri implements UriInterface
         // Make sure the query is created
         $query = $this->getQuery();
 
-        $uri = '';
-        $uri .= ($parts & static::SCHEME) ? (!empty($this->scheme) ? $this->scheme . '://' : '') : '';
+        $uri = ($parts & static::SCHEME) ? (!empty($this->scheme) ? $this->scheme . '://' : '') : '';
         $uri .= ($parts & static::USER) ? $this->user : '';
         $uri .= ($parts & static::PASSWORD)
             ? (!empty($this->pass) ? ':' : '') . $this->pass . (!empty($this->user) ? '@' : '')
@@ -657,14 +665,14 @@ class Uri implements UriInterface
     /**
      * Returns a query variable by name.
      *
-     * @param  string  $name     Name of the query variable to get.
-     * @param  string  $default  Default value to return if the variable is not set.
+     * @param  string       $name     Name of the query variable to get.
+     * @param  string|null  $default  Default value to return if the variable is not set.
      *
      * @return  mixed   Query variables.
      *
      * @since   2.0
      */
-    public function getVar(string $name, $default = null): mixed
+    public function getVar(string $name, string $default = null): mixed
     {
         return $this->vars[$name] ?? $default;
     }
@@ -699,7 +707,7 @@ class Uri implements UriInterface
      * Get URI host
      * Returns the hostname/ip or null if no hostname/ip was specified.
      *
-     * @return  string  The URI host.
+     * @return string|null The URI host.
      *
      * @since   2.0
      */

@@ -273,6 +273,19 @@ class UriTest extends TestCase
         self::assertEquals($expected, $uri->getFragment());
     }
 
+    public function testPathConcat(): void
+    {
+        $uri = new Uri('http://foo.com');
+        $uri = $uri->pathConcat('hello');
+
+        self::assertEquals('http://foo.com/hello', (string) $uri);
+
+        $uri = $uri->withFragment('goo');
+        $uri = $uri->pathConcat('/world');
+
+        self::assertEquals('http://foo.com/hello/world#goo', (string) $uri);
+    }
+
     /**
      * seedInvalidArguments
      *

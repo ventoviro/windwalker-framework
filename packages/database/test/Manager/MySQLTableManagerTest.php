@@ -78,7 +78,7 @@ class MySQLTableManagerTest extends AbstractDatabaseTestCase
                 SELECT DATABASE()
             );
             CREATE TABLE IF NOT EXISTS `enterprise` (
-            `id` int(11) NOT NULL,
+            `id` int(11) NOT NULL AUTO_INCREMENT,
             `type` char(25) NOT NULL DEFAULT '',
             `catid` int(11) DEFAULT NULL,
             `alias` varchar(255) NOT NULL DEFAULT '',
@@ -90,12 +90,11 @@ class MySQLTableManagerTest extends AbstractDatabaseTestCase
             `created` datetime NOT NULL DEFAULT '1000-01-01 00:00:00',
             `updated` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
             `deleted` timestamp NOT NULL DEFAULT '1970-01-01 12:00:01',
-            `params` json NOT NULL
+            `params` json NOT NULL,
+            PRIMARY KEY (`id`),
+            INDEX `idx_enterprise_catid_type` (`catid`, `type`),
+            INDEX `idx_enterprise_title` (`title`(150))
             ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-            ALTER TABLE `enterprise` ADD CONSTRAINT `pk_enterprise` PRIMARY KEY (`id`);
-            ALTER TABLE `enterprise` MODIFY COLUMN `id` int(11) NOT NULL AUTO_INCREMENT;
-            ALTER TABLE `enterprise` ADD INDEX `idx_enterprise_catid_type` (`catid`,`type`);
-            ALTER TABLE `enterprise` ADD INDEX `idx_enterprise_title` (`title`(150));
             ALTER TABLE `enterprise` ADD CONSTRAINT `idx_enterprise_alias` UNIQUE (`alias`)
             SQL,
             implode(";\n", $logs)
