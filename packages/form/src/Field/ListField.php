@@ -12,9 +12,11 @@ declare(strict_types=1);
 namespace Windwalker\Form\Field;
 
 use DOMNode;
+use MyCLabs\Enum\Enum;
 use Windwalker\Data\Collection;
 use Windwalker\DOM\DOMElement;
 use Windwalker\DOM\HTMLFactory;
+use Windwalker\Utilities\Assert\TypeAssert;
 use Windwalker\Utilities\TypeCast;
 
 use function Windwalker\DOM\h;
@@ -219,17 +221,33 @@ class ListField extends AbstractField
     /**
      * registerOptions
      *
-     * @param  array          $options
-     * @param  callable|null  $handler
+     * @param  iterable|string  $options
+     * @param  callable|null    $handler
      *
      * @return  static
      *
      * @since  3.5.2
      */
-    public function registerOptions(iterable $options, ?callable $handler = null): self
+    public function registerOptions(iterable|string $options, ?callable $handler = null): self
     {
+        $isEnum = false;
+
+        if (is_string($options)) {
+            if ($isEnum = is_subclass_of($options, Enum::class)) {
+                $options = array_flip($options::toArray());
+            } else {
+                TypeAssert::assert(
+                    false,
+                    'Options class must be Enum, {value} given.',
+                    $options
+                );
+            }
+        }
+
+        $isList = array_is_list($options);
+
         foreach ($options as $name => $option) {
-            if (is_numeric($name)) {
+            if ($isList && !$isEnum) {
                 // Option
                 if ($handler) {
                     $handler($this, $option, null);
