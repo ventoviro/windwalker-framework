@@ -35,6 +35,7 @@ use Windwalker\DI\Test\Mock\StubStack;
 use Windwalker\DI\Test\Mock\UnionTypeStub;
 use Windwalker\DI\Test\Stub\StubServiceProvider;
 use Windwalker\Scalars\ArrayObject;
+use Windwalker\Scalars\StringObject;
 use Windwalker\Test\Traits\BaseAssertionTrait;
 use Windwalker\Utilities\Reflection\ReflectAccessor;
 use Windwalker\Utilities\TypeCast;
@@ -560,6 +561,23 @@ class ContainerTest extends TestCase
 
         self::assertSame(
             123,
+            $result
+        );
+    }
+
+    public function testCallObjectInvoke(): void
+    {
+        $object = new class () {
+            public function __invoke(StringObject $str)
+            {
+                return 'fooooo';
+            }
+        };
+
+        $result = $this->instance->call($object, [], null, Container::AUTO_WIRE);
+
+        self::assertSame(
+            'fooooo',
             $result
         );
     }
