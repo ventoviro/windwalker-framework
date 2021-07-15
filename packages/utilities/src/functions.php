@@ -190,10 +190,10 @@ namespace Windwalker {
 
     if (!function_exists('\Windwalker\uid')) {
         /**
-         * uid
+         * Generate an unique ID.
          *
-         * @param  string  $prefix
-         * @param  bool    $timebase
+         * @param  string  $prefix    Prefix of this ID.
+         * @param  bool    $timebase  Make this ID time-based that can be sortable.
          *
          * @return  string
          *
@@ -210,6 +210,22 @@ namespace Windwalker {
             }
 
             return $prefix . bin2hex(random_bytes(12));
+        }
+    }
+
+    if (!function_exists('\Windwalker\tid')) {
+        /**
+         * Generate a time-based unique ID.
+         *
+         * @param  string  $prefix  Prefix of this ID.
+         *
+         * @return  string
+         *
+         * @throws Exception
+         */
+        function tid(string $prefix = ''): string
+        {
+            return uid($prefix, true);
         }
     }
 
