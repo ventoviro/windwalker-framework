@@ -19,12 +19,12 @@ class BoundedSequence
     /**
      * @var string
      */
-    protected $prefix;
+    protected string $prefix = '';
 
     /**
      * @var int
      */
-    protected $index;
+    protected int $index = 0;
 
     /**
      * BoundedSequence constructor.

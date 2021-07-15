@@ -1682,11 +1682,8 @@ class Query implements QueryInterface, BindableInterface, IteratorAggregate
                 $param['value']->setPlaceholder($sequence->get());
                 $key = $param['value']->getPlaceholder();
                 $param['value'] = $this->castValue($param['value']->getValue());
-
-                $bounded[$key] = $param;
-            } else {
-                $bounded[$key] = $param;
             }
+            $bounded[$key] = $param;
         }
 
         $all[] = $bounded;
