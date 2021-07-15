@@ -206,6 +206,10 @@ class AttributesResolver extends ObjectBuilder
             $key = $parameter->getName();
 
             if ($parameter->isVariadic()) {
+                if ($parameter->getPosition() === 0) {
+                    return $args;
+                }
+
                 $trailing = [];
 
                 foreach ($args as $key => $v) {

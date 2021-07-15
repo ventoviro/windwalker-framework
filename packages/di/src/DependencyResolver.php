@@ -13,6 +13,7 @@ namespace Windwalker\DI;
 
 use App\Module\Admin\Category\CategoryListView;
 use InvalidArgumentException;
+use Psr\Container\ContainerExceptionInterface;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionFunctionAbstract;
@@ -142,7 +143,7 @@ class DependencyResolver
             $args = array_merge($this->container->whenCreating($class)->getArguments(), $args);
 
             $args = $this->getMethodArgs($constructor, $args, $options);
-        } catch (DependencyResolutionException|DefinitionException $e) {
+        } catch (ContainerExceptionInterface $e) {
             throw new DependencyResolutionException(
                 $e->getMessage() . ' - Target class: ' . $class,
                 $e->getCode(),
@@ -180,6 +181,10 @@ class DependencyResolver
 
             // Prior (1): Handler ...$args
             if ($param->isVariadic()) {
+                if ($param->getPosition() === 0) {
+                    return $args;
+                }
+
                 $trailing = [];
 
                 foreach ($args as $key => $v) {

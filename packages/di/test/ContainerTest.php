@@ -33,6 +33,7 @@ use Windwalker\DI\Test\Mock\Bar2;
 use Windwalker\DI\Test\Mock\Foo;
 use Windwalker\DI\Test\Mock\StubStack;
 use Windwalker\DI\Test\Mock\UnionTypeStub;
+use Windwalker\DI\Test\Mock\WithVariadic;
 use Windwalker\DI\Test\Stub\StubServiceProvider;
 use Windwalker\Scalars\ArrayObject;
 use Windwalker\Scalars\StringObject;
@@ -426,7 +427,7 @@ class ContainerTest extends TestCase
      *
      * @since  3.4.4
      */
-    public function testNewInstanceWithPropertyAttributes()
+    public function testNewInstanceWithPropertyAttributes(): void
     {
         $container = new Container();
         $container->getAttributesResolver()
@@ -448,6 +449,23 @@ class ContainerTest extends TestCase
         self::assertInstanceOf(StubService::class, $obj->baz);
         self::assertInstanceOf(StubService::class, $obj->yoo);
         self::assertEquals(4, $obj->yoo->getCounter());
+    }
+
+    public function testNewInstanceWithVariadic()
+    {
+        $container = new Container();
+        $v = $container->newInstance(
+            WithVariadic::class,
+            [
+                str(),
+                'foo' => 'bar',
+                Collection::class => \Windwalker\collect()
+            ]
+        );
+
+        self::assertInstanceOf(StringObject::class, $v->args[0]);
+        self::assertEquals('bar', $v->args['foo']);
+        self::assertInstanceOf(Collection::class, $v->args[Collection::class]);
     }
 
     /**
