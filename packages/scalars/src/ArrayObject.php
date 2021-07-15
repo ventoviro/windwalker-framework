@@ -202,6 +202,13 @@ class ArrayObject implements AccessibleInterface
         return $this;
     }
 
+    public function bind(array &$data): static
+    {
+        $this->storage = &$data;
+
+        return $this;
+    }
+
     /**
      * keys
      *
@@ -212,7 +219,7 @@ class ArrayObject implements AccessibleInterface
      *
      * @since  3.5
      */
-    public function keys($search = null, ?bool $strict = null): static
+    public function keys(mixed $search = null, ?bool $strict = null): static
     {
         return $this->newInstance(array_keys($this->storage, ...array_filter(func_get_args())));
     }

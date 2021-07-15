@@ -68,6 +68,16 @@ class ArrayObjectTest extends TestCase
         self::assertEquals(['a', 'b', 3], $a->dump());
     }
 
+    public function testBind(): void
+    {
+        $data = ['a', 'b', null];
+        $a = $this->instance->bind($data);
+
+        $data['foo'] = 'bar';
+
+        self::assertEquals(['a', 'b', null, 'foo' => 'bar'], $a->dump());
+    }
+
     public function testJsonSerialize(): void
     {
         self::assertEquals('[1,2,3]', json_encode($this->instance));
