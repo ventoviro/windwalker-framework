@@ -42,7 +42,7 @@ class Path
      *
      * @since   2.0
      */
-    public static function setPermissions(string $path, $filemode = '0644', $foldermode = '0755'): bool
+    public static function setPermissions(string $path, string $filemode = '0644', string $foldermode = '0755'): bool
     {
         // Initialise return value
         $ret = true;
@@ -207,6 +207,37 @@ class Path
         }
 
         return rtrim(implode($ds, $parts), '.' . DIRECTORY_SEPARATOR);
+    }
+
+    public static function realpath(string $src, bool $checkExists = false): string|false
+    {
+        if ($src === '') {
+            return $src;
+        }
+
+        [$pathScheme, $path] = array_pad(explode('://', $src, 2), -2, null);
+
+        if (!$pathScheme && ($fastPath = stream_resolve_include_path($src))) {
+            return $fastPath;
+        }
+
+        $isRelative = static::isRelative($path);
+
+        if ($isRelative) {
+            $path = getcwd() . DIRECTORY_SEPARATOR . $path;
+        }
+
+        $path = static::normalize($path);
+
+        if ($pathScheme) {
+            $path = "{$pathScheme}://{$path}";
+        }
+
+        if ($checkExists && !file_exists($path)) {
+            return false;
+        }
+
+        return $path;
     }
 
     /**

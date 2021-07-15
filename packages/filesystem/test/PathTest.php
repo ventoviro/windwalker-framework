@@ -272,4 +272,11 @@ class PathTest extends AbstractVfsTestCase
     {
         $this->assertEquals(Path::makeSafe($name, $stripChars), $expected, $message);
     }
+
+    public function testRealpath(): void
+    {
+        $p = Path::realpath('foo/bar');
+
+        self::assertEquals(Path::clean(getcwd() . '/foo/bar'), $p);
+    }
 }
