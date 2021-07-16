@@ -22,6 +22,7 @@ class PdoMysqlConnection extends AbstractPdoConnection
     {
         $params['host'] = $options['host'] ?? null;
         $params['port'] = $options['port'] ?? null;
+        $params['unix_socket'] = $options['unix_socket'] ?? null;
         $params['dbname'] = $options['dbname'] ?? null;
         $params['charset'] = $options['charset'] ?? 'utf8';
 

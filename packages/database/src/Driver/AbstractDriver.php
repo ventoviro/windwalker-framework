@@ -81,13 +81,16 @@ abstract class AbstractDriver implements HydratorAwareInterface
             [
                 'driver' => null,
                 'host' => 'localhost',
+                'unix_socket' => null,
                 'dbname' => null,
                 'user' => null,
                 'password' => null,
                 'port' => null,
                 'prefix' => null,
                 'charset' => null,
+                'collation' => null,
                 'platform' => null,
+                'dsn' => null,
                 'driverOptions' => [],
             ]
         )
@@ -127,14 +130,15 @@ abstract class AbstractDriver implements HydratorAwareInterface
             return $conn;
         }
 
-        $conn->connect();
+        try {
+            $conn->connect();
+        } finally {
+            $conn->release();
+        }
 
         return $conn;
     }
 
-    /**
-     * @inheritDoc
-     */
     public function useConnection(callable $callback): mixed
     {
         $conn = $this->getConnection();

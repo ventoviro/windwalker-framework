@@ -29,7 +29,7 @@ abstract class AbstractConnection extends AbstractPoolConnection implements Conn
     /**
      * @var mixed
      */
-    protected $connection;
+    protected mixed $connection = null;
 
     /**
      * @var array

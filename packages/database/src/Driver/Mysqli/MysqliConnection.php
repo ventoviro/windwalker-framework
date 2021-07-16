@@ -24,7 +24,7 @@ class MysqliConnection extends AbstractConnection
     /**
      * @var mysqli
      */
-    protected $connection;
+    protected mixed $connection;
 
     /**
      * @inheritDoc
