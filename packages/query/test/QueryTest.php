@@ -833,6 +833,10 @@ SQL
                 'SELECT * FROM "a" WHERE "foo" IN (1, 2, \'yoo\')',
                 ['foo', 'in', [1, 2, 'yoo']],
             ],
+            'Where in iterate' => [
+                'SELECT * FROM "a" WHERE "foo" IN (1, 2, \'yoo\')',
+                ['foo', 'in', \Windwalker\collect([1, 2, 'yoo'])],
+            ],
             'Where between' => [
                 'SELECT * FROM "a" WHERE "foo" BETWEEN 1 AND 100',
                 ['foo', 'between', [1, 100]],
@@ -1028,12 +1032,14 @@ SQL
             ->select('*')
             ->from('foo')
             ->whereIn('id', [1, 2, 3])
+            ->whereNotIn('id', \Windwalker\collect([5, 6, 7]))
             ->whereBetween('time', '2012-03-30', '2020-02-24')
             ->whereNotIn('created', [55, 66])
             ->whereNotLike('content', '%qwe%');
 
         self::assertSqlEquals(
-            'SELECT * FROM "foo" WHERE "id" IN (1, 2, 3) AND "time" BETWEEN \'2012-03-30\' AND \'2020-02-24\' '
+            'SELECT * FROM "foo" WHERE "id" IN (1, 2, 3) AND "id" NOT IN (5, 6, 7) '
+            . 'AND "time" BETWEEN \'2012-03-30\' AND \'2020-02-24\' '
             . 'AND "created" NOT IN (55, 66) AND "content" NOT LIKE \'%qwe%\'',
             $q->render(true)
         );

@@ -85,14 +85,14 @@ use function Windwalker\value;
  * @method $this rightJoin($table, ?string $alias = null, ...$on)
  * @method $this outerJoin($table, ?string $alias = null, ...$on)
  * @method $this innerJoin($table, ?string $alias = null, ...$on)
- * @method $this whereIn($column, array $values)
- * @method $this whereNotIn($column, array $values)
+ * @method $this whereIn($column, iterable $values)
+ * @method $this whereNotIn($column, iterable $values)
  * @method $this whereBetween($column, $start, $end)
  * @method $this whereNotBetween($column, $start, $end)
  * @method $this whereLike($column, string $search)
  * @method $this whereNotLike($column, string $search)
- * @method $this havingIn($column, array $values)
- * @method $this havingNotIn($column, array $values)
+ * @method $this havingIn($column, iterable $values)
+ * @method $this havingNotIn($column, iterable $values)
  * @method $this havingBetween($column, $start, $end)
  * @method $this havingNotBetween($column, $start, $end)
  * @method $this havingLike($column, string $search)
@@ -594,7 +594,13 @@ class Query implements QueryInterface, BindableInterface, IteratorAggregate
 
                 $this->bind(null, $vc);
             }
-        } elseif (is_array($value)) {
+        } elseif ($value instanceof self) {
+            // Process Aub query object
+            $value = $this->val($value);
+            $this->injectSubQuery($origin);
+        } elseif (is_iterable($value)) {
+            $origin = TypeCast::toArray($origin);
+
             // Auto convert array value as IN() clause.
             if ($operator === '=') {
                 $operator = 'IN';
@@ -610,10 +616,6 @@ class Query implements QueryInterface, BindableInterface, IteratorAggregate
 
                 $this->bind(null, $vc);
             }
-        } elseif ($value instanceof self) {
-            // Process Aub query object
-            $value = $this->val($value);
-            $this->injectSubQuery($origin);
         } elseif ($value instanceof RawWrapper || $value instanceof QuoteNameClause) {
             // Process Raw
             $value = $this->val($value);
