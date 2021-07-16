@@ -25,7 +25,11 @@ class PdoMysqlConnection extends AbstractPdoConnection
         $params['dbname'] = $options['dbname'] ?? null;
         $params['charset'] = $options['charset'] ?? 'utf8';
 
-        $options['dsn'] = static::getDsn($params);
+        $options['dsn'] ??= static::getDsn($params);
+
+        if (strtolower($params['charset']) === 'utf8') {
+            $options['driverOptions'][\PDO::MYSQL_ATTR_INIT_COMMAND] = 'SET NAMES utf8';
+        }
 
         return $options;
     }

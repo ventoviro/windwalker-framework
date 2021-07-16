@@ -41,7 +41,7 @@ class PdoOdbcConnection extends AbstractPdoConnection
             $params['Database'] = $options['dbname'];
         }
 
-        $options['dsn'] = static::getDsn($params);
+        $options['dsn'] ??= static::getDsn($params);
 
         return $options;
     }

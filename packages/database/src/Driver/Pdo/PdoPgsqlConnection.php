@@ -25,7 +25,7 @@ class PdoPgsqlConnection extends AbstractPdoConnection
         $params['dbname'] = $options['dbname'] ?? null;
         $params['charset'] = $options['charset'] ?? null;
 
-        $options['dsn'] = static::getDsn($params);
+        $options['dsn'] ??= static::getDsn($params);
 
         return $options;
     }

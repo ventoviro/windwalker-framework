@@ -59,8 +59,14 @@ abstract class AbstractPdoConnection extends AbstractConnection
     }
 
     /**
-     * doConnect
-     *
+     * @return array
+     */
+    public static function getDefaultAttributes(): array
+    {
+        return static::$defaultAttributes;
+    }
+
+    /**
      * @param  array  $options
      *
      * @return  PDO
@@ -68,7 +74,7 @@ abstract class AbstractPdoConnection extends AbstractConnection
     protected function doConnect(array $options): PDO
     {
         $attrs = array_replace(
-            static::$defaultAttributes,
+            static::getDefaultAttributes(),
             $options['driverOptions'] ?? []
         );
 
