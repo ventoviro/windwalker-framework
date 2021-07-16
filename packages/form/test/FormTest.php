@@ -273,7 +273,26 @@ class FormTest extends TestCase
 
         $form = $this->getByDefine();
 
-        $fields = iterator_to_array($form->bind($data)->getFields());
+        $fields = iterator_to_array($form->fill($data)->getFields());
+
+        self::assertEquals(5, $fields['id']->getValue());
+        self::assertEquals('foo', $fields['u/username']->getValue());
+    }
+
+    public function testFillCollection()
+    {
+        $data = \Windwalker\collect(
+            [
+                'id' => 5,
+                'u' => [
+                    'username' => 'foo',
+                ],
+            ]
+        );
+
+        $form = $this->getByDefine();
+
+        $fields = iterator_to_array($form->fill($data)->getFields());
 
         self::assertEquals(5, $fields['id']->getValue());
         self::assertEquals('foo', $fields['u/username']->getValue());
