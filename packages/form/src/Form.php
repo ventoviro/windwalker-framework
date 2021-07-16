@@ -30,6 +30,7 @@ use Windwalker\Utilities\Arr;
 use Windwalker\Utilities\Classes\ObjectBuilderAwareTrait;
 use Windwalker\Utilities\Options\OptionAccessTrait;
 use Windwalker\Utilities\Symbol;
+use Windwalker\Utilities\TypeCast;
 
 /**
  * The Form class.
@@ -174,12 +175,14 @@ class Form implements IteratorAggregate, Countable
     /**
      * fill
      *
-     * @param  array  $data
+     * @param  mixed  $data
      *
      * @return  $this
      */
-    public function fill(array $data): static
+    public function fill(mixed $data): static
     {
+        $data = TypeCast::toArray($data);
+
         foreach ($this->fields as $name => $field) {
             $value = Arr::get($data, $name, '/');
 
