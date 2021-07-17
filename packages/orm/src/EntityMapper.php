@@ -306,7 +306,7 @@ class EntityMapper implements EventAwareInterface
             compact('data', 'type', 'metadata', 'oldData', 'source', 'options')
         );
 
-        $data = $this->castForSave($event->getData(), $updateNulls);
+        $data = $this->castForSave($fullData = $event->getData(), $updateNulls);
 
         $metadata = $event->getMetadata();
 
@@ -336,7 +336,7 @@ class EntityMapper implements EventAwareInterface
 
         $event = $this->emitEvent(
             AfterSaveEvent::class,
-            compact('data', 'type', 'metadata', 'entity', 'oldData', 'source', 'options')
+            compact('data', 'type', 'metadata', 'entity', 'oldData', 'source', 'options', 'fullData')
         );
 
         $metadata->getRelationManager()->save($event->getData(), $entity, $oldData);
