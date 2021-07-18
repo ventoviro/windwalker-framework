@@ -51,31 +51,27 @@ use Windwalker\Query\Query;
 /**
  * The ORM class.
  *
+ * phpcs:disable
+ *
  * @method  object|null   findOne(string $entityClass, mixed $conditions = [])
  * @method  ResultIterator findList(string $entityClass, mixed $conditions = [])
  * @method  string|null   findResult(string $entityClass, mixed $conditions = [])
  * @method  Collection   findColumn(string $entityClass, string $column, mixed $conditions = [])
  * @method  object  createOne(string $entityClass, array|object $item = [])
  * @method  iterable      createMultiple(string $entityClass, iterable $items)
- * @method  StatementInterface|null  updateOne(string $entityClass, array|object $item = [], array|string $condFields =
- *          null, int $options = 0)
- * @method  object[]      updateMultiple(string $entityClass, iterable $items, array|string $condFields = null, int
- *          $options = 0)
+ * @method  StatementInterface|null  updateOne(string $entityClass, array|object $item = [], array|string $condFields = null, int $options = 0)
+ * @method  object[]      updateMultiple(string $entityClass, iterable $items, array|string $condFields = null, int $options = 0)
  * @method  StatementInterface  updateWhere(string $entityClass, array|object $data, mixed $conditions = null)
- * @method  StatementInterface[]  updateBatch(string $entityClass, array|object $data, mixed $conditions = null, int
- *          $options = 0)
- * @method  iterable|object[] saveMultiple(string $entityClass, iterable $items, string|array $condFields = null, int
- *          $options = 0)
- * @method  object        saveOne(string $entityClass, array|object $item, array|string $condFields = null, int
- *          $options = 0)
- * @method  object        findOneOrCreate(string $entityClass, mixed $conditions, mixed $initData = null, bool
- *          $mergeConditions = true)
- * @method  object        updateOneOrCreate(string $entityClass, array|object $item, mixed $initData = null, ?array
- *          $condFields = null, int $options = 0)
+ * @method  StatementInterface[]  updateBatch(string $entityClass, array|object $data, mixed $conditions = null, int $options = 0)
+ * @method  iterable|object[] saveMultiple(string $entityClass, iterable $items, string|array $condFields = null, int $options = 0)
+ * @method  object        saveOne(string $entityClass, array|object $item, array|string $condFields = null, int $options = 0)
+ * @method  object        findOneOrCreate(string $entityClass, mixed $conditions, mixed $initData = null, bool $mergeConditions = true)
+ * @method  object        updateOneOrCreate(string $entityClass, array|object $item, mixed $initData = null, ?array $condFields = null, int $options = 0)
  * @method  StatementInterface[]  deleteWhere(string $entityClass, mixed $conditions)
  * @method  iterable|object[]     flush(string $entityClass, iterable $items, mixed $conditions = [])
- * @method  StatementInterface[]  sync(string $entityClass, iterable $items, mixed $conditions = [], ?array
- *          $compareKeys = null)
+ * @method  StatementInterface[]  sync(string $entityClass, iterable $items, mixed $conditions = [], ?array $compareKeys = null)
+ *
+ * phpcs:enable
  */
 class ORM
 {
