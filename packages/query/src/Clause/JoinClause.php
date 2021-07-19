@@ -14,8 +14,10 @@ namespace Windwalker\Query\Clause;
 use BadMethodCallException;
 use Closure;
 use InvalidArgumentException;
+use MyCLabs\Enum\Enum;
 use Windwalker\Query\Query;
 use Windwalker\Utilities\Assert\ArgumentsAssert;
+use Windwalker\Utilities\TypeCast;
 use Windwalker\Utilities\Wrapper\RawWrapper;
 
 use function Windwalker\Query\val;
@@ -168,6 +170,10 @@ class JoinClause implements ClauseInterface
             $value($value = $this->query->createSubQuery());
         }
 
+        if ($value instanceof Enum) {
+            $value = val($value->getValue());
+        }
+
         // Keep origin value a duplicate that we will need it later.
         // The $value will make it s a ValueClause object and inject to bounded params,
         // so that we can use it to generate prepared param placeholders.
@@ -182,7 +188,11 @@ class JoinClause implements ClauseInterface
             }
 
             $value = 'NULL';
-        } elseif (is_array($value)) {
+        } elseif ($value instanceof Query) {
+            $value = $this->query->as($origin, false);
+        } elseif (is_iterable($value)) {
+            $origin = TypeCast::toArray($origin);
+
             // Auto convert array value as IN() clause.
             if ($operator === '=') {
                 $operator = 'IN';
@@ -198,8 +208,6 @@ class JoinClause implements ClauseInterface
 
                 $this->query->bind(null, $vc);
             }
-        } elseif ($value instanceof Query) {
-            $value = $this->query->as($origin, false);
         } elseif ($value instanceof RawWrapper) {
             $value = $value();
         } elseif ($value instanceof ValueClause) {

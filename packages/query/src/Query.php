@@ -17,6 +17,7 @@ use DateTimeInterface;
 use Generator;
 use InvalidArgumentException;
 use IteratorAggregate;
+use MyCLabs\Enum\Enum;
 use PDO;
 use ReflectionClass;
 use SqlFormatter;
@@ -562,6 +563,10 @@ class Query implements QueryInterface, BindableInterface, IteratorAggregate
         // Closure means to create a sub query as value.
         if ($value instanceof Closure) {
             $value($value = $this->createSubQuery());
+        }
+
+        if ($value instanceof Enum) {
+            $value = $value->getValue();
         }
 
         // Keep origin value a duplicate that we will need it later.
